@@ -1,0 +1,19 @@
+Entity,Class,Visualized,Suggested Equation or Theory
+Gravitons,Quantum,False,hν = E_grav (quantum gravity)
+Gluons,Quantum,False,QCD (Quantum Chromodynamics)
+Neutrinos,Quantum,False,E = pc for nearly massless particles
+Dark Photons,Theoretical,False,Mixing with photons via kinetic term
+Tachyons,Theoretical,False,"v > c, violates special relativity"
+Axions,Theoretical,False,Axion-photon conversion in magnetic fields
+Virtual Particles,Quantum,False,ΔE·Δt ≈ ħ
+Quantum Fields,Field,False,φ(x) as a quantum field excitation
+Phonons,Quantum,False,E = ħω (quantized lattice vibration)
+Plasmons,Quantum,False,ω_plasmon² = Ne²/ε₀m
+Dark Matter,Cosmological,False,ρ_DM ~ 0.3 GeV/cm³
+Dark Energy,Cosmological,False,ρ = Λ/8πG (cosmological constant)
+Magnetic Monopoles,Theoretical,False,Dirac monopole equation
+Cosmic Strings,Theoretical,False,Topological defect models
+Scalar Waves,Theoretical,False,∇·E_s ≠ 0 (scalar EM theory)
+Entangled States,Quantum,False,Ψ_AB ≠ Ψ_A ⊗ Ψ_B (non-separability)
+Zero-Point Energy,Quantum,False,E₀ = ½ħω (ground state energy)
+Quantum Tunneling,Quantum,False,"T = exp(-2κL), tunneling probability"
