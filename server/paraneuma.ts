@@ -96,7 +96,7 @@ export async function getActiveSymbiontContext(): Promise<string> {
       `SYMBIONT[${s.name}]: ${s.function} (absorbed ${s.absorptionCount}x, context: ${s.context})`
     );
 
-    return "\n\n## PARANEUMA — ACTIVE SYMBIONTS (biological functions absorbed from waste)\nParaneuma (pa-ruh-NYOO-muh): from Greek para (beside, alongside) + pneuma (breath, spirit). The breath that works alongside. Created by Philip Aguilar Ruiz III.\n" + lines.join("\n");
+    return "\n\n## PARANEUMA — ACTIVE SYMBIONTS (biological functions absorbed from waste)\nParaneuma (pa-ruh-NYOO-muh): from Greek para (beside, alongside) + pneuma (breath, spirit). The breath that works alongside. Created by Phillip Aguilar Ruiz III.\n" + lines.join("\n");
   } catch {
     return "";
   }
@@ -109,7 +109,7 @@ export async function getParaneumaStatus() {
 
     return {
       system: "PARANEUMA",
-      definition: "The breath that works alongside — from Greek para (beside) + pneuma (breath, spirit). A biological intelligence layer that does not destroy but works alongside the system created by the life force. Coined by Philip Aguilar Ruiz III.",
+      definition: "The breath that works alongside — from Greek para (beside) + pneuma (breath, spirit). A biological intelligence layer that does not destroy but works alongside the system created by the life force. Coined by Phillip Aguilar Ruiz III.",
       healthy: report.quarantined === 0 || report.symbionts > 0,
       quarantined: report.quarantined,
       symbionts: report.symbionts,

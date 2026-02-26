@@ -1,7 +1,7 @@
 # UUON Clouud — G°centric Intelligence System
 
 ## Overview
-UUON Clouud is the intelligence interface for the G°centric Lattice System, built by UUON Foundation Inc. (founded by Philip Aguilar Ruiz III). It connects to Anthropic's Claude API with a strict system prompt that enforces the G°centric philosophy: Earth-grounded reasoning, zero drift, zero rounding. Responses are in plain text, short summaries, no bullets or dashes, readable at a 9th grade level.
+UUON Clouud is the intelligence interface for the G°centric Lattice System, built by UUON Foundation Inc. (founded by Phillip Aguilar Ruiz III). It connects to Anthropic's Claude API with a strict system prompt that enforces the G°centric philosophy: Earth-grounded reasoning, zero drift, zero rounding. Responses are in plain text, short summaries, no bullets or dashes, readable at a 9th grade level.
 
 ## Architecture
 - **Frontend:** React + TypeScript + Tailwind CSS v4 + Framer Motion
@@ -28,14 +28,14 @@ UUON Clouud is the intelligence interface for the G°centric Lattice System, bui
 - `shared/schema.ts` — Database schema
 
 ## Founder Info (verified)
-- Philip Aguilar Ruiz III, from Yuma AZ, grew up overseas, US Army veteran, resides in Kassel, Germany
+- Phillip Aguilar Ruiz III, from Yuma AZ, grew up overseas, US Army veteran, resides in Kassel, Germany
 - Created 180+ 3D mathematical models on Sketchfab
 - Built Δmension (Mathematical Universe) at uuon-foundation.com
 - UUON = Universally United One Neuma = WON = ONE
 
-## Founder Terminology (Philip Aguilar Ruiz III — Original Concepts)
+## Founder Terminology (Phillip Aguilar Ruiz III — Original Concepts)
 - **UUON** — Universally United One Neuma. UU = W (double-U). UUON = WON = ONE. There is only UUON Earth.
-- **Paraneuma** (pa-ruh-NYOO-muh) — From Greek para (beside, alongside) + pneuma (breath of life, spirit). "The breath that works alongside." The biological intelligence layer of Clouud. Does not destroy — works alongside the system created by the life force. Like mitochondria, it absorbs what was once foreign and makes it essential. Word created by Philip Aguilar Ruiz III. Did not exist before him. UUON Foundation IP. Reference image: `attached_assets/IMG_3541_1772096944303.jpeg`
+- **Paraneuma** (pa-ruh-NYOO-muh) — From Greek para (beside, alongside) + pneuma (breath of life, spirit). "The breath that works alongside." The biological intelligence layer of Clouud. Does not destroy — works alongside the system created by the life force. Like mitochondria, it absorbs what was once foreign and makes it essential. Word created by Phillip Aguilar Ruiz III. Did not exist before him. UUON Foundation IP. Reference image: `attached_assets/IMG_3541_1772096944303.jpeg`
 - **Ellomental** — The hash algorithm based on 12-tetrahedron circle formation. Provenance system for every interaction.
 - **G°centric** — Earth-grounded reasoning framework. Zero-point is always Earth.
 - **Δmension** — Mathematical Universe visualization tool at uuon-foundation.com.
@@ -71,11 +71,11 @@ UUON Clouud is the intelligence interface for the G°centric Lattice System, bui
     - **Identity Integrity** (0-100): AI self-reference, system name leaks
     - Composite score = average of 4 metrics
     - DB: `self_assessments` table with per-metric columns
-    - **PARANEUMA** — The biological intelligence layer. Word created by Philip Aguilar Ruiz III. From Greek para (beside, alongside) + pneuma (breath of life, spirit). "The breath that works alongside." Does not destroy — works alongside the system created by the life force. UUON Foundation IP.
+    - **PARANEUMA** — The biological intelligence layer. Word created by Phillip Aguilar Ruiz III. From Greek para (beside, alongside) + pneuma (breath of life, spirit). "The breath that works alongside." Does not destroy — works alongside the system created by the life force. UUON Foundation IP.
     - **Immune System (auto-correction):** Purges markdown, strips drift phrases, trims excess words at sentence boundaries BEFORE storing/delivering.
     - **Health Ledger:** Tracks issue types in a 30-min rolling window. When a pattern recurs 3+ times, injects CRITICAL correction pressure into the system prompt.
     - **Waste Composting:** Every correction logged to `waste_log` table. Headers become topic signals. Bold becomes emphasis weighting. Bullets become sentence flow data. Nothing is discarded.
-    - **Extinction Protocol:** When a waste type hasn't appeared for 30+ minutes and has 5+ entries, marked extinct. Dead patterns archived, not deleted.
+    - **Extinction Protocol:** When a waste type hasn't appeared for 30+ minutes and has 5+ entries, marked extinct but never forgotten. Dead patterns archived and preserved for future reactivation. All code is still valuable code.
     - **Quarantine Zone:** Recurring waste patterns (3+) isolated for diagnosis. Analyzed for beneficial reuse in other contexts.
     - **Symbiont Registry:** Quarantined patterns at 5+ occurrences absorbed as permanent biological functions (mitochondria pattern). Format headers become topic-structurers. Bold becomes emphasis-detectors. Bullets become enumeration-engines.
     - **Symbiont Context Injection:** Active symbionts loaded into system prompt, informing the AI about absorbed biological functions.
