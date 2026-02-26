@@ -1,4 +1,5 @@
 import fs from "fs";
+import { writeFile, mkdir } from "fs/promises";
 import path from "path";
 
 function hashStr(str: string): number {
@@ -557,12 +558,12 @@ export async function generateImageForClouud(img: {
   
   try {
     if (!fs.existsSync("generated_images")) {
-      fs.mkdirSync("generated_images", { recursive: true });
+      await mkdir("generated_images", { recursive: true });
     }
     
     const svg = generateSvgVisualization(img.concept, img.prompt, img.aspectRatio);
     const svgPath = img.outputPath.replace(".png", ".svg");
-    fs.writeFileSync(svgPath, svg);
+    await writeFile(svgPath, svg);
     
     img.status = "complete";
     img.outputPath = svgPath;

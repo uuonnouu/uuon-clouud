@@ -6,6 +6,7 @@ import ClouudAvatar from "@/components/clouud-avatar";
 import Tutorial from "@/components/tutorial";
 import MetricsPanel from "@/components/metrics-panel";
 import ExplorationEngine from "@/components/exploration-engine";
+import { crystalGet, crystalSet, crystalGetSync, crystalSetSync, crystalIncrement } from "@/lib/crystal";
 import uuonLogo from "@assets/A7950814-2592-4E7D-858F-3AEB1D632F98_1772064571557.png";
 
 type Message = {
@@ -54,19 +55,13 @@ export default function ClouudTerminal() {
   const [isLoading, setIsLoading] = useState(true);
   const [aiState, setAiState] = useState<"idle" | "thinking" | "speaking">("idle");
   const [showTutorial, setShowTutorial] = useState(() => {
-    if (typeof window !== "undefined") {
-      return !localStorage.getItem("clouud-tutorial-done");
-    }
-    return false;
+    return !crystalGetSync("clouud-tutorial-done", false);
   });
   const [isListening, setIsListening] = useState(false);
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [speakingMsgId, setSpeakingMsgId] = useState<number | null>(null);
   const [autoSpeak, setAutoSpeak] = useState(() => {
-    if (typeof window !== "undefined") {
-      return localStorage.getItem("clouud-auto-speak") === "true";
-    }
-    return false;
+    return crystalGetSync("clouud-auto-speak", false);
   });
   const [showLinkInput, setShowLinkInput] = useState(false);
   const [showDmension, setShowDmension] = useState(false);
@@ -83,9 +78,11 @@ export default function ClouudTerminal() {
   const recognitionRef = useRef<any>(null);
   const isSpeakingRef = useRef(false);
   const keepAliveRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const imagePollingRefs = useRef<Set<ReturnType<typeof setInterval>>>(new Set());
 
   useEffect(() => {
     loadConversations();
+    crystalIncrement("session-count").catch(() => {});
   }, []);
 
   useEffect(() => {
@@ -94,6 +91,8 @@ export default function ClouudTerminal() {
         recognitionRef.current.stop();
         recognitionRef.current = null;
       }
+      imagePollingRefs.current.forEach(id => clearInterval(id));
+      imagePollingRefs.current.clear();
     };
   }, []);
 
@@ -176,7 +175,8 @@ export default function ClouudTerminal() {
   }
 
   function completeTutorial() {
-    localStorage.setItem("clouud-tutorial-done", "true");
+    crystalSetSync("clouud-tutorial-done", true);
+    crystalSet("clouud-tutorial-done", "true");
     setShowTutorial(false);
   }
 
@@ -425,12 +425,14 @@ export default function ClouudTerminal() {
           
           if (data.status === "complete" && data.url) {
             clearInterval(pollInterval);
+            imagePollingRefs.current.delete(pollInterval);
             setGeneratedImages(prev => ({
               ...prev,
               [imageId]: { url: data.url, concept, status: "complete" }
             }));
           } else if (data.status === "failed") {
             clearInterval(pollInterval);
+            imagePollingRefs.current.delete(pollInterval);
             setGeneratedImages(prev => ({
               ...prev,
               [imageId]: { url: "", concept, status: "failed" }
@@ -438,10 +440,12 @@ export default function ClouudTerminal() {
           }
         } catch {
           clearInterval(pollInterval);
+          imagePollingRefs.current.delete(pollInterval);
         }
       }, 2000);
       
-      setTimeout(() => clearInterval(pollInterval), 120000);
+      imagePollingRefs.current.add(pollInterval);
+      setTimeout(() => { clearInterval(pollInterval); imagePollingRefs.current.delete(pollInterval); }, 120000);
     } catch (err) {
       console.error("Image generation trigger failed:", err);
     }
@@ -1325,7 +1329,8 @@ export default function ClouudTerminal() {
                 onClick={() => {
                   const next = !autoSpeak;
                   setAutoSpeak(next);
-                  localStorage.setItem("clouud-auto-speak", String(next));
+                  crystalSetSync("clouud-auto-speak", next);
+                  crystalSet("clouud-auto-speak", String(next));
                 }}
                 className={`p-1.5 rounded-sm transition-colors ${autoSpeak ? "text-[#f0b93b]" : "text-muted-foreground hover:text-primary"}`}
                 title={autoSpeak ? "Auto-speak ON (click to disable)" : "Auto-speak OFF (click to enable)"}

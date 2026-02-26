@@ -58,13 +58,22 @@ UUON Clouud is the intelligence interface for the G°centric Lattice System, bui
 - **Style:** Digital Brutalism with glassmorphism, sharp shadows, animated particles
 - **Avatar:** Static Clouud character image with state-driven glow/pulse animations
 
-## Performance
-- History window: 12 messages (reduced from 20)
+## Performance & Optimization (Master Diagnostic v1.0 Applied)
+- History window: Smart windowing — first message + tool results + last 12 exchanges (reduced from flat 20)
 - Max tokens: 768 (reduced from 1024)
 - Metrics polling: 15s interval
 - Particle cap: 15 max
 - Orbit rings: 2 CSS-animated (reduced from 3 Framer Motion)
 - API logging: trimmed, no JSON body dumps, metrics/assessment excluded
+- **Database indexes:** 10 indexes on messages(conversation_id, created_at), self_assessments(message_id, conversation_id), uuon_tokens(conversation_id), access_log(fingerprint_hash, created_at), uploads(conversation_id), uinverse_ideas(import_id), discoveries(active)
+- **Rate limiting:** express-rate-limit on chat (15/min), upload (10/min), scrape (5/min), ingest (3/min)
+- **Self-assessment async:** Decoupled from response pipeline — runs after response delivery
+- **Self-assessment trend awareness:** 5-response rolling window, auto-recalibration injected to system prompt when avg < 75
+- **Drift detection expanded:** 17 phrases including "certainly", "absolutely", "happy to help", "as an ai", "as a language model"
+- **Crystal system (IndexedDB):** Replaces localStorage for tutorial state, auto-speak, session count. Module: `client/src/lib/crystal.ts`
+- **Image polling cleanup:** All setInterval refs tracked, cleared on component unmount
+- **Async file operations:** Image generator and backup use fs/promises (writeFile, mkdir, readdir, unlink)
+- **Incremental backups:** Daily incrementals (only new rows since last backup), full backup every 7th run
 
 ## Environment Variables
 - `DATABASE_URL` — PostgreSQL connection string (auto-set)
