@@ -122,6 +122,37 @@ const ENGINE_AGENTS: EngineAgent[] = [
   },
 ];
 
+const CONSTELLATION_BONDS: [number, number, string][] = [
+  [0, 1, "tensor↔quantum: curvature tensors describe quantum field geometry"],
+  [1, 2, "quantum↔wave: wave functions ARE quantum mechanics"],
+  [2, 4, "wave↔collision: wave propagation through lattice Boltzmann"],
+  [0, 3, "tensor↔galaxy: general relativity governs cosmic structure"],
+  [3, 4, "galaxy↔collision: stellar feedback is fluid dynamics at cosmic scale"],
+  [5, 7, "fractal↔biological: life is fractal — blood vessels, lungs, neurons"],
+  [7, 6, "biological↔therapeutic: healing geometry mirrors life's architecture"],
+  [8, 9, "parametric↔nerf: core engine feeds neural radiance export"],
+  [8, 0, "parametric↔tensor: parametric surfaces render tensor fields"],
+  [8, 2, "parametric↔wave: wave equations are parametric"],
+  [1, 6, "quantum↔therapeutic: consciousness research meets quantum states"],
+  [5, 2, "fractal↔wave: fractal boundaries generate wave interference"],
+  [7, 4, "biological↔collision: blood flow modeled by collision operators"],
+  [3, 9, "galaxy↔nerf: cosmic structures reconstructed as radiance fields"],
+  [6, 5, "therapeutic↔fractal: sacred geometry IS fractal self-similarity"],
+];
+
+const GRID_POSITIONS: { x: number; y: number }[] = [
+  { x: 15, y: 15 },
+  { x: 50, y: 8 },
+  { x: 85, y: 15 },
+  { x: 8, y: 45 },
+  { x: 92, y: 45 },
+  { x: 15, y: 75 },
+  { x: 38, y: 55 },
+  { x: 62, y: 55 },
+  { x: 85, y: 75 },
+  { x: 50, y: 88 },
+];
+
 function TensorFieldShape({ color, size }: { color: string; size: number }) {
   return (
     <svg width={size} height={size} viewBox="0 0 80 80">
@@ -322,7 +353,7 @@ function BiologicalShape({ color, size }: { color: string; size: number }) {
         <line key={i} x1="30" y1={y} x2="50" y2={y} stroke={color} strokeWidth="1" opacity={0.15 + (i % 2) * 0.1} />
       ))}
       <circle cx="40" cy="20" r="2" fill={color} opacity="0.5">
-        <animate attributeName="opacity" values="0.3;0.8;0.3" dur={`${2 + 0.5}s`} repeatCount="indefinite" />
+        <animate attributeName="opacity" values="0.3;0.8;0.3" dur="2.5s" repeatCount="indefinite" />
       </circle>
       <circle cx="40" cy="44" r="2" fill={color} opacity="0.5">
         <animate attributeName="opacity" values="0.8;0.3;0.8" dur="2.5s" repeatCount="indefinite" />
@@ -388,19 +419,6 @@ function renderEngineShape(engineId: string, color: string, size: number) {
   }
 }
 
-const GRID_POSITIONS: { x: number; y: number }[] = [
-  { x: 15, y: 18 },
-  { x: 50, y: 10 },
-  { x: 85, y: 18 },
-  { x: 8, y: 45 },
-  { x: 92, y: 45 },
-  { x: 15, y: 72 },
-  { x: 38, y: 55 },
-  { x: 62, y: 55 },
-  { x: 85, y: 72 },
-  { x: 50, y: 85 },
-];
-
 type ExplorationEngineProps = {
   onExplore: (prompt: string) => void;
 };
@@ -408,6 +426,7 @@ type ExplorationEngineProps = {
 export default function ExplorationEngine({ onExplore }: ExplorationEngineProps) {
   const [hoveredNode, setHoveredNode] = useState<string | null>(null);
   const [activeNode, setActiveNode] = useState<string | null>(null);
+  const [hoveredBond, setHoveredBond] = useState<number | null>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const rafRef = useRef<number>(0);
 
@@ -417,8 +436,25 @@ export default function ExplorationEngine({ onExplore }: ExplorationEngineProps)
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
-    type Particle = { x: number; y: number; vx: number; vy: number; life: number; maxLife: number; r: number; g: number; b: number };
-    const particles: Particle[] = [];
+    type FlowParticle = {
+      bondIdx: number;
+      t: number;
+      speed: number;
+      r: number;
+      g: number;
+      b: number;
+      size: number;
+    };
+    type AmbientParticle = {
+      x: number; y: number;
+      vx: number; vy: number;
+      life: number; maxLife: number;
+      r: number; g: number; b: number;
+    };
+
+    const flowParticles: FlowParticle[] = [];
+    const ambientParticles: AmbientParticle[] = [];
+    let pulsePhase = 0;
 
     const handleResize = () => {
       canvas.width = canvas.offsetWidth;
@@ -430,6 +466,12 @@ export default function ExplorationEngine({ onExplore }: ExplorationEngineProps)
     let lastFrame = 0;
     const INTERVAL = 1000 / 30;
 
+    const hexRgb = (hex: string) => ({
+      r: parseInt(hex.slice(1, 3), 16),
+      g: parseInt(hex.slice(3, 5), 16),
+      b: parseInt(hex.slice(5, 7), 16),
+    });
+
     const animate = (ts: number) => {
       rafRef.current = requestAnimationFrame(animate);
       if (ts - lastFrame < INTERVAL) return;
@@ -438,52 +480,147 @@ export default function ExplorationEngine({ onExplore }: ExplorationEngineProps)
       const w = canvas.width;
       const h = canvas.height;
       ctx.clearRect(0, 0, w, h);
+      pulsePhase += 0.02;
 
-      for (let i = 0; i < ENGINE_AGENTS.length; i++) {
-        const agent = ENGINE_AGENTS[i];
-        const pos = GRID_POSITIONS[i];
-        const ax = (pos.x / 100) * w;
-        const ay = (pos.y / 100) * h;
+      const posPixels = GRID_POSITIONS.map(p => ({
+        x: (p.x / 100) * w,
+        y: (p.y / 100) * h,
+      }));
+      const centerX = w / 2;
+      const centerY = h / 2;
 
-        if (Math.random() < 0.03 && particles.length < 60) {
-          const hex = agent.color;
-          const r = parseInt(hex.slice(1, 3), 16);
-          const g = parseInt(hex.slice(3, 5), 16);
-          const b = parseInt(hex.slice(5, 7), 16);
-          const angle = Math.random() * Math.PI * 2;
-          const speed = 0.3 + Math.random() * 0.6;
-          const maxLife = 40 + Math.random() * 60;
-          particles.push({ x: ax, y: ay, vx: Math.cos(angle) * speed, vy: Math.sin(angle) * speed, life: maxLife, maxLife, r, g, b });
+      const globalPulse = 0.5 + 0.5 * Math.sin(pulsePhase * 0.8);
+
+      for (let b = 0; b < CONSTELLATION_BONDS.length; b++) {
+        const [a1, a2] = CONSTELLATION_BONDS[b];
+        const p1 = posPixels[a1];
+        const p2 = posPixels[a2];
+        const c1 = hexRgb(ENGINE_AGENTS[a1].color);
+        const c2 = hexRgb(ENGINE_AGENTS[a2].color);
+
+        const mr = (c1.r + c2.r) / 2;
+        const mg = (c1.g + c2.g) / 2;
+        const mb = (c1.b + c2.b) / 2;
+
+        const bondPulse = 0.5 + 0.5 * Math.sin(pulsePhase + b * 0.4);
+        const baseAlpha = 0.04 + bondPulse * 0.04;
+
+        ctx.beginPath();
+        ctx.moveTo(p1.x, p1.y);
+        const cpx = (p1.x + p2.x) / 2 + (centerX - (p1.x + p2.x) / 2) * 0.15;
+        const cpy = (p1.y + p2.y) / 2 + (centerY - (p1.y + p2.y) / 2) * 0.15;
+        ctx.quadraticCurveTo(cpx, cpy, p2.x, p2.y);
+        ctx.strokeStyle = `rgba(${mr},${mg},${mb},${baseAlpha})`;
+        ctx.lineWidth = 1;
+        ctx.stroke();
+
+        if (Math.random() < 0.06) {
+          const fromA = Math.random() > 0.5;
+          const col = fromA ? c1 : c2;
+          flowParticles.push({
+            bondIdx: b,
+            t: fromA ? 0 : 1,
+            speed: (fromA ? 1 : -1) * (0.008 + Math.random() * 0.012),
+            r: col.r, g: col.g, b: col.b,
+            size: 1 + Math.random() * 1.5,
+          });
         }
       }
 
       for (let i = 0; i < ENGINE_AGENTS.length; i++) {
-        const pos1 = GRID_POSITIONS[i];
-        const x1 = (pos1.x / 100) * w;
-        const y1 = (pos1.y / 100) * h;
-        const cx = w / 2;
-        const cy = h / 2;
+        const p = posPixels[i];
         ctx.beginPath();
-        ctx.moveTo(x1, y1);
-        ctx.lineTo(cx, cy);
-        ctx.strokeStyle = `rgba(240,185,59,0.04)`;
+        ctx.moveTo(p.x, p.y);
+        const cpx = p.x + (centerX - p.x) * 0.3;
+        const cpy = p.y + (centerY - p.y) * 0.3;
+        ctx.quadraticCurveTo(cpx, cpy, centerX, centerY);
+        ctx.strokeStyle = `rgba(240,185,59,${0.02 + globalPulse * 0.02})`;
         ctx.lineWidth = 0.5;
         ctx.stroke();
       }
 
-      for (let i = particles.length - 1; i >= 0; i--) {
-        const p = particles[i];
+      const coreRadius = 4 + globalPulse * 3;
+      const coreGrad = ctx.createRadialGradient(centerX, centerY, 0, centerX, centerY, coreRadius * 4);
+      coreGrad.addColorStop(0, `rgba(240,185,59,${0.15 + globalPulse * 0.1})`);
+      coreGrad.addColorStop(1, "rgba(240,185,59,0)");
+      ctx.beginPath();
+      ctx.arc(centerX, centerY, coreRadius * 4, 0, Math.PI * 2);
+      ctx.fillStyle = coreGrad;
+      ctx.fill();
+
+      for (let i = flowParticles.length - 1; i >= 0; i--) {
+        const fp = flowParticles[i];
+        fp.t += fp.speed;
+        if (fp.t < 0 || fp.t > 1) { flowParticles.splice(i, 1); continue; }
+
+        const [a1, a2] = CONSTELLATION_BONDS[fp.bondIdx];
+        const p1 = posPixels[a1];
+        const p2 = posPixels[a2];
+        const cpx = (p1.x + p2.x) / 2 + (centerX - (p1.x + p2.x) / 2) * 0.15;
+        const cpy = (p1.y + p2.y) / 2 + (centerY - (p1.y + p2.y) / 2) * 0.15;
+
+        const t = fp.t;
+        const mt = 1 - t;
+        const fx = mt * mt * p1.x + 2 * mt * t * cpx + t * t * p2.x;
+        const fy = mt * mt * p1.y + 2 * mt * t * cpy + t * t * p2.y;
+
+        const edgeFade = Math.min(fp.t, 1 - fp.t) * 4;
+        const alpha = Math.min(edgeFade, 1) * 0.7;
+
+        ctx.beginPath();
+        ctx.arc(fx, fy, fp.size, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(${fp.r},${fp.g},${fp.b},${alpha})`;
+        ctx.fill();
+
+        ctx.beginPath();
+        ctx.arc(fx, fy, fp.size * 3, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(${fp.r},${fp.g},${fp.b},${alpha * 0.15})`;
+        ctx.fill();
+      }
+
+      for (let i = 0; i < ENGINE_AGENTS.length; i++) {
+        const agent = ENGINE_AGENTS[i];
+        const p = posPixels[i];
+        if (Math.random() < 0.02 && ambientParticles.length < 50) {
+          const col = hexRgb(agent.color);
+          const angle = Math.random() * Math.PI * 2;
+          const speed = 0.15 + Math.random() * 0.3;
+          ambientParticles.push({
+            x: p.x, y: p.y,
+            vx: Math.cos(angle) * speed,
+            vy: Math.sin(angle) * speed,
+            life: 30 + Math.random() * 40,
+            maxLife: 30 + Math.random() * 40,
+            r: col.r, g: col.g, b: col.b,
+          });
+        }
+
+        const nodePulse = 0.5 + 0.5 * Math.sin(pulsePhase + i * 0.6);
+        const fieldRadius = 25 + nodePulse * 10;
+        const fieldGrad = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, fieldRadius);
+        const col = hexRgb(agent.color);
+        fieldGrad.addColorStop(0, `rgba(${col.r},${col.g},${col.b},${0.03 + nodePulse * 0.02})`);
+        fieldGrad.addColorStop(1, `rgba(${col.r},${col.g},${col.b},0)`);
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, fieldRadius, 0, Math.PI * 2);
+        ctx.fillStyle = fieldGrad;
+        ctx.fill();
+      }
+
+      for (let i = ambientParticles.length - 1; i >= 0; i--) {
+        const p = ambientParticles[i];
         p.x += p.vx;
         p.y += p.vy;
         p.life--;
-        if (p.life <= 0) { particles.splice(i, 1); continue; }
-        const alpha = Math.min(p.life / p.maxLife, (p.maxLife - p.life) / 15) * 0.4;
-        const radius = 1 + (1 - p.life / p.maxLife) * 1.5;
+        if (p.life <= 0) { ambientParticles.splice(i, 1); continue; }
+        const alpha = Math.min(p.life / p.maxLife, (p.maxLife - p.life) / 10) * 0.3;
         ctx.beginPath();
-        ctx.arc(p.x, p.y, radius, 0, Math.PI * 2);
+        ctx.arc(p.x, p.y, 1, 0, Math.PI * 2);
         ctx.fillStyle = `rgba(${p.r},${p.g},${p.b},${alpha})`;
         ctx.fill();
       }
+
+      if (flowParticles.length > 120) flowParticles.splice(0, flowParticles.length - 120);
     };
 
     rafRef.current = requestAnimationFrame(animate);
@@ -496,9 +633,14 @@ export default function ExplorationEngine({ onExplore }: ExplorationEngineProps)
 
   const handleNodeClick = useCallback((agent: EngineAgent) => {
     setActiveNode(agent.id);
-    setTimeout(() => {
-      onExplore(agent.prompt);
-    }, 500);
+    setTimeout(() => { onExplore(agent.prompt); }, 500);
+  }, [onExplore]);
+
+  const handleBondClick = useCallback((bondIdx: number) => {
+    const [a1, a2, reason] = CONSTELLATION_BONDS[bondIdx];
+    const eng1 = ENGINE_AGENTS[a1];
+    const eng2 = ENGINE_AGENTS[a2];
+    onExplore(`How do ${eng1.name} and ${eng2.name} fuse together? ${reason}. Show me where these two engines intersect and what new physics emerges at that junction.`);
   }, [onExplore]);
 
   const totalShapes = ENGINE_AGENTS.reduce((s, a) => s + a.count, 0);
@@ -506,14 +648,14 @@ export default function ExplorationEngine({ onExplore }: ExplorationEngineProps)
   return (
     <div className="flex-1 flex flex-col items-center justify-center p-4 md:p-6 relative overflow-hidden select-none" data-testid="exploration-engine">
       <div className="absolute inset-0 clouud-ambient" />
-      <div className="absolute inset-0 lattice-grid-deep opacity-30" />
+      <div className="absolute inset-0 lattice-grid-deep opacity-20" />
       <canvas ref={canvasRef} className="absolute inset-0 w-full h-full pointer-events-none" />
 
       <motion.div
         initial={{ opacity: 0, scale: 0.8 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
-        className="relative z-10 text-center mb-3 md:mb-5"
+        className="relative z-10 text-center mb-2 md:mb-4"
       >
         <h1 className="font-display text-3xl md:text-5xl text-white font-bold tracking-[0.3em] mb-1" style={{ textShadow: "0 0 30px rgba(240,185,59,0.25)" }}>CLOUUD</h1>
         <motion.p
@@ -522,7 +664,7 @@ export default function ExplorationEngine({ onExplore }: ExplorationEngineProps)
           transition={{ delay: 0.5, duration: 1 }}
           className="font-mono text-[9px] md:text-[11px] text-primary/70 tracking-[0.4em] uppercase"
         >
-          {totalShapes.toLocaleString()} shapes · {ENGINE_AGENTS.length} Δmension engines · Earth Enhancement
+          {totalShapes.toLocaleString()} shapes · {ENGINE_AGENTS.length} engines · {CONSTELLATION_BONDS.length} bonds · One System
         </motion.p>
       </motion.div>
 
@@ -545,11 +687,61 @@ export default function ExplorationEngine({ onExplore }: ExplorationEngineProps)
           </motion.div>
         </div>
 
+        <svg className="absolute inset-0 w-full h-full pointer-events-none z-[5]" viewBox="0 0 100 100" preserveAspectRatio="none">
+          {CONSTELLATION_BONDS.map(([a1, a2, reason], idx) => {
+            const p1 = GRID_POSITIONS[a1];
+            const p2 = GRID_POSITIONS[a2];
+            const cpx = (p1.x + p2.x) / 2 + (50 - (p1.x + p2.x) / 2) * 0.15;
+            const cpy = (p1.y + p2.y) / 2 + (48 - (p1.y + p2.y) / 2) * 0.15;
+            const midX = (p1.x + p2.x) / 2;
+            const midY = (p1.y + p2.y) / 2;
+            const isHovered = hoveredBond === idx;
+            return (
+              <g key={idx}>
+                <path
+                  d={`M${p1.x},${p1.y} Q${cpx},${cpy} ${p2.x},${p2.y}`}
+                  fill="none"
+                  stroke="transparent"
+                  strokeWidth="4"
+                  style={{ cursor: "pointer", pointerEvents: "stroke" }}
+                  onMouseEnter={() => setHoveredBond(idx)}
+                  onMouseLeave={() => setHoveredBond(null)}
+                  onClick={() => handleBondClick(idx)}
+                />
+                {isHovered && (
+                  <g>
+                    <circle cx={midX} cy={midY} r="1.5" fill="rgba(240,185,59,0.6)" />
+                    <foreignObject x={midX - 15} y={midY + 2} width="30" height="10" style={{ overflow: "visible" }}>
+                      <div style={{
+                        fontSize: "2.2px",
+                        color: "rgba(255,255,255,0.7)",
+                        textAlign: "center",
+                        whiteSpace: "nowrap",
+                        fontFamily: "monospace",
+                        background: "rgba(0,0,0,0.6)",
+                        padding: "0.5px 1.5px",
+                        borderRadius: "1px",
+                        border: "0.3px solid rgba(240,185,59,0.3)",
+                        transform: "translateX(-50%)",
+                        marginLeft: "50%",
+                        width: "fit-content",
+                      }}>
+                        {reason.split(":")[0]}
+                      </div>
+                    </foreignObject>
+                  </g>
+                )}
+              </g>
+            );
+          })}
+        </svg>
+
         {ENGINE_AGENTS.map((agent, i) => {
           const pos = GRID_POSITIONS[i];
           const isHovered = hoveredNode === agent.id;
           const isActive = activeNode === agent.id;
-          const shapeSize = isHovered ? 70 : 56;
+          const shapeSize = isHovered ? 65 : 52;
+          const bondCount = CONSTELLATION_BONDS.filter(([a, b]) => a === i || b === i).length;
 
           return (
             <motion.div
@@ -564,7 +756,7 @@ export default function ExplorationEngine({ onExplore }: ExplorationEngineProps)
               initial={{ opacity: 0, scale: 0 }}
               animate={{
                 opacity: isActive ? 0 : 1,
-                scale: isActive ? 1.8 : (isHovered ? 1.2 : 1),
+                scale: isActive ? 1.8 : (isHovered ? 1.15 : 1),
               }}
               transition={{
                 opacity: { duration: isActive ? 0.3 : 0.6, delay: isActive ? 0 : i * 0.08 },
@@ -580,16 +772,19 @@ export default function ExplorationEngine({ onExplore }: ExplorationEngineProps)
                   className="absolute inset-0 rounded-full blur-xl transition-all duration-300"
                   style={{
                     backgroundColor: agent.color,
-                    opacity: isHovered ? 0.35 : 0.1,
+                    opacity: isHovered ? 0.35 : 0.08,
                     transform: `scale(${isHovered ? 2.2 : 1.6})`,
                   }}
                 />
-                <div className="relative glass-panel rounded-full p-1" style={{ borderColor: `${agent.color}25` }}>
+                <div className="relative glass-panel rounded-full p-1" style={{ borderColor: `${agent.color}20` }}>
                   {renderEngineShape(agent.id, agent.color, shapeSize)}
                 </div>
-                <div className="absolute -bottom-1 left-1/2 -translate-x-1/2">
-                  <span className="font-mono text-[7px] px-1.5 py-0.5 rounded-sm whitespace-nowrap" style={{ color: agent.color, backgroundColor: `${agent.color}10`, border: `1px solid ${agent.color}20` }}>
+                <div className="absolute -bottom-1.5 left-1/2 -translate-x-1/2 flex gap-0.5">
+                  <span className="font-mono text-[6px] px-1 py-0.5 rounded-sm whitespace-nowrap" style={{ color: agent.color, backgroundColor: `${agent.color}10`, border: `1px solid ${agent.color}15` }}>
                     {agent.count}
+                  </span>
+                  <span className="font-mono text-[6px] px-1 py-0.5 rounded-sm whitespace-nowrap" style={{ color: "rgba(240,185,59,0.6)", backgroundColor: "rgba(240,185,59,0.05)", border: "1px solid rgba(240,185,59,0.1)" }}>
+                    {bondCount}⟁
                   </span>
                 </div>
               </div>
@@ -606,8 +801,8 @@ export default function ExplorationEngine({ onExplore }: ExplorationEngineProps)
                   >
                     <div className="font-display text-[9px] text-white font-bold tracking-wider uppercase">{agent.name}</div>
                     <div className="font-mono text-[7px] mt-1 leading-relaxed" style={{ color: agent.color }}>{agent.description}</div>
-                    <div className="font-mono text-[7px] mt-1.5 text-muted-foreground leading-relaxed">{agent.earthApplication}</div>
-                    <div className="flex flex-wrap justify-center gap-1 mt-1.5">
+                    <div className="font-mono text-[7px] mt-1 text-muted-foreground leading-relaxed">{agent.earthApplication}</div>
+                    <div className="flex flex-wrap justify-center gap-0.5 mt-1.5">
                       {agent.shapes.slice(0, 4).map((s) => (
                         <span key={s} className="font-mono text-[6px] px-1 py-0.5 rounded-sm" style={{ backgroundColor: `${agent.color}10`, color: `${agent.color}aa`, border: `1px solid ${agent.color}15` }}>
                           {s.replace(/_/g, " ")}
@@ -615,7 +810,7 @@ export default function ExplorationEngine({ onExplore }: ExplorationEngineProps)
                       ))}
                     </div>
                     {agent.mathematicalDNA && (
-                      <div className="flex flex-wrap justify-center gap-1 mt-1">
+                      <div className="flex flex-wrap justify-center gap-0.5 mt-1">
                         {agent.mathematicalDNA.slice(0, 3).map((d) => (
                           <span key={d} className="font-mono text-[5px] px-1 py-0.5 rounded-sm text-white/40" style={{ backgroundColor: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.06)" }}>
                             DNA: {d.replace(/_/g, " ")}
@@ -624,7 +819,7 @@ export default function ExplorationEngine({ onExplore }: ExplorationEngineProps)
                       </div>
                     )}
                     {agent.fusionDomains && (
-                      <div className="flex flex-wrap justify-center gap-1 mt-1">
+                      <div className="flex flex-wrap justify-center gap-0.5 mt-1">
                         {agent.fusionDomains.map((f) => (
                           <span key={f} className="font-mono text-[5px] px-1 py-0.5 rounded-sm text-white/40" style={{ backgroundColor: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.06)" }}>
                             ⟁ {f.replace(/_/g, " ")}
@@ -633,7 +828,7 @@ export default function ExplorationEngine({ onExplore }: ExplorationEngineProps)
                       </div>
                     )}
                     {agent.formats && (
-                      <div className="flex flex-wrap justify-center gap-1 mt-1">
+                      <div className="flex flex-wrap justify-center gap-0.5 mt-1">
                         {agent.formats.map((f) => (
                           <span key={f} className="font-mono text-[5px] px-1 py-0.5 rounded-sm text-white/40" style={{ backgroundColor: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.06)" }}>
                             ↗ {f}
@@ -641,8 +836,23 @@ export default function ExplorationEngine({ onExplore }: ExplorationEngineProps)
                         ))}
                       </div>
                     )}
+                    <div className="mt-1.5 pt-1 border-t border-white/5">
+                      <div className="font-mono text-[5px] text-white/30 mb-1">CONSTELLATION BONDS</div>
+                      <div className="flex flex-wrap justify-center gap-0.5">
+                        {CONSTELLATION_BONDS.filter(([a, b]) => a === i || b === i).map(([a, b, reason], bIdx) => {
+                          const other = a === i ? b : a;
+                          return (
+                            <span key={bIdx} className="font-mono text-[5px] px-1 py-0.5 rounded-sm" style={{ color: ENGINE_AGENTS[other].color, backgroundColor: `${ENGINE_AGENTS[other].color}08`, border: `1px solid ${ENGINE_AGENTS[other].color}15` }}>
+                              ⟁ {ENGINE_AGENTS[other].name.split(" ")[0]}
+                            </span>
+                          );
+                        })}
+                      </div>
+                    </div>
                     <div className="flex items-center justify-center gap-1 mt-2 text-[7px] text-white/50">
                       <span className="font-mono font-bold" style={{ color: agent.color }}>{agent.count} shapes</span>
+                      <span>·</span>
+                      <span>{bondCount} bonds</span>
                       <span>·</span>
                       <span>Tap to activate</span>
                       <ChevronRight className="w-2 h-2" />
@@ -659,10 +869,10 @@ export default function ExplorationEngine({ onExplore }: ExplorationEngineProps)
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 1, duration: 0.8 }}
-        className="relative z-10 mt-3 md:mt-5 text-center max-w-md"
+        className="relative z-10 mt-2 md:mt-4 text-center max-w-lg"
       >
-        <p className="font-mono text-[8px] text-muted-foreground/50 mb-2.5 tracking-wider">
-          EACH NODE IS A Δmension ENGINE · TAP TO ACTIVATE · OR ASK BELOW
+        <p className="font-mono text-[8px] text-muted-foreground/50 mb-2 tracking-wider">
+          NODES = ENGINES · LINES = FUSION BONDS · TAP NODES OR BONDS TO EXPLORE
         </p>
         <div className="flex flex-wrap justify-center gap-1.5">
           {[
