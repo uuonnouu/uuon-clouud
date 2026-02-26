@@ -63,6 +63,10 @@ UUON Clouud is the intelligence interface for the G°centric Lattice System, bui
     - **Identity Integrity** (0-100): AI self-reference, system name leaks
     - Composite score = average of 4 metrics
     - DB: `self_assessments` table with per-metric columns
+    - **Immune System (auto-correction):** Purges markdown, strips drift phrases, trims excess words at sentence boundaries BEFORE storing/delivering. Like a body fighting infection — detect, correct, deliver clean.
+    - **Health Ledger:** Tracks issue types in a 30-min rolling window. When a pattern recurs 3+ times, injects CRITICAL correction pressure into the system prompt. The system learns what Claude keeps doing wrong and applies counter-pressure automatically.
+    - **Log Waste Purge:** API response logging truncated to 200 chars max. No more dumping entire conversation histories into console.
+    - UI shows corrections in green (⚕ PURGED), flags in yellow, immune status in red when active
 23. **Code Audit Engine:** Upload Claude.ai or ChatGPT JSON exports. Clouud extracts code blocks, scores viability (0-100), flags issues, recommends keep/fix/discard/promote. G°centric alignment bonus scoring.
     - API: `POST /api/audit-export` (multipart, file field "export", body field "source": "claude"|"chatgpt")
 24. **File Generation:** Clouud generates downloadable files (HTML, Python, TypeScript, JSON, etc.)

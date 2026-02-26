@@ -153,9 +153,10 @@ ${profileLines}
 
 You remember Philip. You remember what he has shared. You continue the relationship, not restart it.`;
 
+  const pressure = healthLedger.getPromptPressure();
   return SYSTEM_PROMPT.replace(
     "## CLOSING ANCHOR",
-    creatorContext + "\n\n## CLOSING ANCHOR"
+    creatorContext + pressure + "\n\n## CLOSING ANCHOR"
   );
 }
 
@@ -206,6 +207,114 @@ function checkDrift(text: string): { clean: boolean; flagged: string[] } {
   const lower = text.toLowerCase();
   const flagged = DRIFT_PHRASES.filter(phrase => lower.includes(phrase));
   return { clean: flagged.length === 0, flagged };
+}
+
+const healthLedger = {
+  recentIssues: [] as { type: string; timestamp: number }[],
+  patterns: {} as Record<string, number>,
+  getRecurring(): string[] {
+    const now = Date.now();
+    const windowMs = 30 * 60 * 1000;
+    this.recentIssues = this.recentIssues.filter(i => now - i.timestamp < windowMs);
+    this.patterns = {};
+    for (const issue of this.recentIssues) {
+      this.patterns[issue.type] = (this.patterns[issue.type] || 0) + 1;
+    }
+    return Object.entries(this.patterns)
+      .filter(([, count]) => count >= 3)
+      .map(([type]) => type);
+  },
+  record(flags: string[]) {
+    const now = Date.now();
+    for (const flag of flags) {
+      const type = flag.split(":")[0].trim();
+      this.recentIssues.push({ type, timestamp: now });
+    }
+  },
+  getPromptPressure(): string {
+    const recurring = this.getRecurring();
+    if (recurring.length === 0) return "";
+    const pressures: string[] = [];
+    if (recurring.includes("WASTE") || recurring.includes("WASTE_MINOR")) {
+      pressures.push("CRITICAL: Your recent responses have been too long. Keep under 100 words. Be extremely concise.");
+    }
+    if (recurring.includes("FORMAT")) {
+      pressures.push("CRITICAL: You keep using markdown formatting. STOP using bullets, headers, bold, or italic. Plain text only.");
+    }
+    if (recurring.includes("IDENTITY")) {
+      pressures.push("CRITICAL: You keep referencing your underlying AI system. You are Clouud. Never mention Claude, Anthropic, AI, or language models.");
+    }
+    if (recurring.includes("GATEKEEPING")) {
+      pressures.push("CRITICAL: You keep using limiting phrases. Give direct answers. Do not say 'I cannot' or 'I'm not able to'.");
+    }
+    if (recurring.includes("REPETITION")) {
+      pressures.push("CRITICAL: You keep repeating phrases. Vary your language.");
+    }
+    if (recurring.includes("READABILITY")) {
+      pressures.push("CRITICAL: Your sentences are too long and complex. Use short, clear sentences. 9th grade reading level.");
+    }
+    return pressures.length > 0 ? "\n\n## ACTIVE CORRECTIONS (System detected recurring issues)\n" + pressures.join("\n") : "";
+  }
+};
+
+function purgeResponse(text: string): { cleaned: string; corrections: string[] } {
+  let cleaned = text;
+  const corrections: string[] = [];
+
+  cleaned = cleaned.replace(/^#{1,6}\s+(.+)$/gm, (_, content) => {
+    corrections.push("PURGED: Stripped markdown header");
+    return content;
+  });
+
+  cleaned = cleaned.replace(/\*\*([^*]+)\*\*/g, (_, content) => {
+    corrections.push("PURGED: Stripped bold formatting");
+    return content;
+  });
+  cleaned = cleaned.replace(/__([^_]+)__/g, (_, content) => content);
+  cleaned = cleaned.replace(/(?<!\*)\*([^*]+)\*(?!\*)/g, (_, content) => {
+    corrections.push("PURGED: Stripped italic formatting");
+    return content;
+  });
+
+  cleaned = cleaned.replace(/^[\s]*[-•*]\s+(.+)$/gm, (_, content) => {
+    corrections.push("PURGED: Converted bullet to plain text");
+    return content + ".";
+  });
+
+  cleaned = cleaned.replace(/^\d+\.\s+(.+)$/gm, (_, content) => {
+    return content + ".";
+  });
+
+  const sentences = cleaned.split(/(?<=[.!?])\s+/);
+  const wordCount = cleaned.split(/\s+/).filter(w => w.length > 0).length;
+  if (wordCount > 200) {
+    let truncated = "";
+    let count = 0;
+    for (const sentence of sentences) {
+      const sentenceWords = sentence.split(/\s+/).filter(w => w.length > 0).length;
+      if (count + sentenceWords > 160) break;
+      truncated += (truncated ? " " : "") + sentence;
+      count += sentenceWords;
+    }
+    if (truncated.length > 0) {
+      cleaned = truncated;
+      corrections.push(`PURGED: Trimmed from ${wordCount} to ~${count} words at sentence boundary`);
+    }
+  }
+
+  const driftPhrases = ["great question", "certainly!", "absolutely!", "i'd be happy to", "sure thing",
+    "of course!", "no problem!", "glad you asked", "that's a wonderful", "i appreciate your", "thank you for asking"];
+  for (const phrase of driftPhrases) {
+    const regex = new RegExp(phrase.replace(/[.*+?^${}()|[\]\\]/g, "\\$&") + "[.,!?]?\\s*", "gi");
+    if (regex.test(cleaned)) {
+      cleaned = cleaned.replace(regex, "");
+      corrections.push(`PURGED: Removed drift phrase`);
+    }
+  }
+
+  cleaned = cleaned.replace(/\n{3,}/g, "\n\n").trim();
+
+  return { cleaned, corrections };
 }
 
 function assessResponse(text: string): { pass: boolean; flags: string[]; score: number; missionAlignment: number; responseQuality: number; formatCompliance: number; identityIntegrity: number; wordCount: number } {
@@ -488,12 +597,17 @@ export async function registerRoutes(
         totalOutputTokens += response.usage?.output_tokens || 0;
       }
 
-      // Extract final text response
       for (const block of response.content) {
         if (block.type === "text") {
           finalResponse += block.text;
         }
       }
+
+      const { cleaned, corrections } = purgeResponse(finalResponse);
+      if (corrections.length > 0) {
+        console.log(`[IMMUNE SYSTEM] Applied ${corrections.length} corrections: ${corrections.join(", ")}`);
+      }
+      finalResponse = cleaned;
 
       const driftCheck = checkDrift(finalResponse);
       if (!driftCheck.clean) {
@@ -501,8 +615,10 @@ export async function registerRoutes(
       }
 
       const selfAssessment = assessResponse(finalResponse);
+      healthLedger.record(selfAssessment.flags);
       if (!selfAssessment.pass) {
-        console.warn(`[SELF-ASSESSMENT] Score: ${selfAssessment.score}/100 | Flags: ${selfAssessment.flags.join(", ")}`);
+        const recurring = healthLedger.getRecurring();
+        console.warn(`[SELF-ASSESSMENT] Score: ${selfAssessment.score}/100 | Flags: ${selfAssessment.flags.join(", ")}${recurring.length > 0 ? ` | RECURRING: ${recurring.join(", ")}` : ""}`);
       }
 
       const responseTimeMs = Date.now() - startTime;
@@ -558,6 +674,8 @@ export async function registerRoutes(
           wordCount: selfAssessment.wordCount,
           pass: selfAssessment.pass,
           flags: safeFlags,
+          corrections: corrections.length > 0 ? corrections : undefined,
+          immuneActive: healthLedger.getRecurring().length > 0,
         },
       });
     } catch (error: any) {
@@ -863,6 +981,7 @@ export async function registerRoutes(
   app.get("/api/status", async (_req: Request, res: Response) => {
     const hydration = await getHydrationStatus();
     const tokenCount = await storage.getUuonTokenCount();
+    const recurring = healthLedger.getRecurring();
     res.json({
       system: "UUON-CLOUUD",
       version: "1.0",
@@ -877,6 +996,11 @@ export async function registerRoutes(
       dimension: {
         connected: hydration.dimensionConnected,
         url: hydration.dimensionUrl,
+      },
+      immune: {
+        activePatterns: recurring,
+        pressureActive: recurring.length > 0,
+        recentIssues: healthLedger.recentIssues.length,
       },
     });
   });

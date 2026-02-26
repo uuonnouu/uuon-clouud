@@ -62,7 +62,7 @@ export default function ClouudTerminal() {
   const [linkUrl, setLinkUrl] = useState("");
   const [isUploading, setIsUploading] = useState(false);
   const [isScraping, setIsScraping] = useState(false);
-  const [msgAssessments, setMsgAssessments] = useState<Record<number, { score: number; missionAlignment: number; responseQuality: number; formatCompliance: number; identityIntegrity: number; flags: string[]; wordCount: number }>>({});
+  const [msgAssessments, setMsgAssessments] = useState<Record<number, { score: number; missionAlignment: number; responseQuality: number; formatCompliance: number; identityIntegrity: number; flags: string[]; wordCount: number; corrections?: string[]; immuneActive?: boolean }>>({});
   const scrollRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -241,6 +241,8 @@ export default function ClouudTerminal() {
             identityIntegrity: data.selfAssessment.identityIntegrity,
             flags: data.selfAssessment.flags,
             wordCount: data.selfAssessment.wordCount,
+            corrections: data.selfAssessment.corrections,
+            immuneActive: data.selfAssessment.immuneActive,
           }
         }));
       }
@@ -754,11 +756,23 @@ export default function ClouudTerminal() {
                                     </span>
                                     <span className="text-muted-foreground">{msgAssessments[msg.id].wordCount}w</span>
                                   </div>
+                                  {msgAssessments[msg.id].corrections && msgAssessments[msg.id].corrections!.length > 0 && (
+                                    <div className="font-mono text-[7px] text-emerald-400/70 space-y-0.5">
+                                      {msgAssessments[msg.id].corrections!.map((c, ci) => (
+                                        <div key={ci} className="truncate">⚕ {c}</div>
+                                      ))}
+                                    </div>
+                                  )}
                                   {msgAssessments[msg.id].flags.length > 0 && (
                                     <div className="font-mono text-[7px] text-yellow-500/60 space-y-0.5">
                                       {msgAssessments[msg.id].flags.slice(0, 3).map((flag, fi) => (
                                         <div key={fi} className="truncate">{flag}</div>
                                       ))}
+                                    </div>
+                                  )}
+                                  {msgAssessments[msg.id].immuneActive && (
+                                    <div className="font-mono text-[7px] text-red-400/60">
+                                      ◉ IMMUNE SYSTEM ACTIVE — recurring patterns detected
                                     </div>
                                   )}
                                 </div>
