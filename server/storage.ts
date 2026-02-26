@@ -1,6 +1,6 @@
 import { db } from "./db";
-import { conversations, messages, uuonTokens, creatorProfile } from "@shared/schema";
-import type { Conversation, InsertConversation, Message, InsertMessage, UuonToken, InsertUuonToken, CreatorProfileEntry } from "@shared/schema";
+import { conversations, messages, uuonTokens, creatorProfile, fingerprints, accessLog, uploads } from "@shared/schema";
+import type { Conversation, InsertConversation, Message, InsertMessage, UuonToken, InsertUuonToken, CreatorProfileEntry, Fingerprint, AccessLogEntry, Upload } from "@shared/schema";
 import { eq, desc, and, gte, count, sql } from "drizzle-orm";
 
 export interface IStorage {
@@ -18,6 +18,16 @@ export interface IStorage {
   getCreatorProfile(): Promise<Record<string, string>>;
   setCreatorProfileEntry(key: string, value: string): Promise<void>;
   getAllCreatorProfileEntries(): Promise<CreatorProfileEntry[]>;
+  getFingerprint(hash: string): Promise<Fingerprint | undefined>;
+  getOwnerFingerprint(): Promise<Fingerprint | undefined>;
+  registerFingerprint(hash: string, components: string, isOwner: boolean): Promise<Fingerprint>;
+  updateFingerprintLastSeen(hash: string): Promise<void>;
+  blockFingerprint(hash: string): Promise<void>;
+  logAccess(fingerprintHash: string, action: string, granted: boolean, ip?: string, userAgent?: string): Promise<void>;
+  getAccessLog(limit?: number): Promise<AccessLogEntry[]>;
+  saveUpload(data: { filename: string; originalName: string; mimeType: string; size: number; conversationId?: number; extractedText?: string }): Promise<Upload>;
+  getUpload(id: number): Promise<Upload | undefined>;
+  getUploadsByConversation(conversationId: number): Promise<Upload[]>;
 }
 
 class DatabaseStorage implements IStorage {
@@ -105,6 +115,62 @@ class DatabaseStorage implements IStorage {
 
   async getAllCreatorProfileEntries(): Promise<CreatorProfileEntry[]> {
     return db.select().from(creatorProfile).orderBy(creatorProfile.key);
+  }
+
+  async getFingerprint(hash: string): Promise<Fingerprint | undefined> {
+    const [fp] = await db.select().from(fingerprints).where(eq(fingerprints.hash, hash));
+    return fp;
+  }
+
+  async getOwnerFingerprint(): Promise<Fingerprint | undefined> {
+    const [fp] = await db.select().from(fingerprints).where(eq(fingerprints.isOwner, true));
+    return fp;
+  }
+
+  async registerFingerprint(hash: string, components: string, isOwner: boolean): Promise<Fingerprint> {
+    const existing = await this.getFingerprint(hash);
+    if (existing) {
+      await db.update(fingerprints)
+        .set({ lastSeen: sql`CURRENT_TIMESTAMP`, isOwner: isOwner || existing.isOwner })
+        .where(eq(fingerprints.hash, hash));
+      return { ...existing, isOwner: isOwner || existing.isOwner };
+    }
+    const [fp] = await db.insert(fingerprints).values({ hash, components, isOwner }).returning();
+    return fp;
+  }
+
+  async updateFingerprintLastSeen(hash: string): Promise<void> {
+    await db.update(fingerprints)
+      .set({ lastSeen: sql`CURRENT_TIMESTAMP` })
+      .where(eq(fingerprints.hash, hash));
+  }
+
+  async blockFingerprint(hash: string): Promise<void> {
+    await db.update(fingerprints)
+      .set({ blocked: true })
+      .where(eq(fingerprints.hash, hash));
+  }
+
+  async logAccess(fingerprintHash: string, action: string, granted: boolean, ip?: string, userAgent?: string): Promise<void> {
+    await db.insert(accessLog).values({ fingerprintHash, action, granted, ip, userAgent });
+  }
+
+  async getAccessLog(limit: number = 50): Promise<AccessLogEntry[]> {
+    return db.select().from(accessLog).orderBy(desc(accessLog.createdAt)).limit(limit);
+  }
+
+  async saveUpload(data: { filename: string; originalName: string; mimeType: string; size: number; conversationId?: number; extractedText?: string }): Promise<Upload> {
+    const [upload] = await db.insert(uploads).values(data).returning();
+    return upload;
+  }
+
+  async getUpload(id: number): Promise<Upload | undefined> {
+    const [upload] = await db.select().from(uploads).where(eq(uploads.id, id));
+    return upload;
+  }
+
+  async getUploadsByConversation(conversationId: number): Promise<Upload[]> {
+    return db.select().from(uploads).where(eq(uploads.conversationId, conversationId)).orderBy(desc(uploads.createdAt));
   }
 }
 

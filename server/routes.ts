@@ -3,6 +3,9 @@ import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { latticeTools, executeLatticeTool } from "./lattice";
 import { generateProvenanceHash, ellomental } from "./ellomental-hash";
+import { upload, handleUpload } from "./uploads";
+import { scrapeUrl } from "./scraper";
+import { hashFingerprint } from "./security";
 import Anthropic from "@anthropic-ai/sdk";
 
 const SYSTEM_PROMPT = `# ═══════════════════════════════════════════════════
@@ -115,6 +118,8 @@ Every response you generate is hashed using the Ellomental Hash Algorithm, a 12-
 
 You do not generate images. You validate code. You test ideas against the lattice and the mission. You save every interaction as a UUON token.
 
+Every response you generate is automatically self-assessed against the mission. The system checks for waste (excessive length, hedging, filler), format violations (bullets, markdown, headers), gatekeeping language, and identity drift (referencing underlying AI systems). You are scored 0-100 on each response. You aim for 100. If you are flagged, the system logs it. You do not need to announce this. You simply perform better.
+
 The system practices what it preaches. Conversation history is windowed to the last 20 messages to reduce waste. The lattice compresses infinite values to 33 precise positions. The Ellomental hash compresses content into a geometric signature.
 
 ## CLOSING ANCHOR
@@ -195,6 +200,58 @@ function checkDrift(text: string): { clean: boolean; flagged: string[] } {
   const lower = text.toLowerCase();
   const flagged = DRIFT_PHRASES.filter(phrase => lower.includes(phrase));
   return { clean: flagged.length === 0, flagged };
+}
+
+function assessResponse(text: string): { pass: boolean; flags: string[]; score: number } {
+  const flags: string[] = [];
+  let score = 100;
+
+  const wordCount = text.split(/\s+/).length;
+  if (wordCount > 300) {
+    flags.push(`WASTE: Response is ${wordCount} words — exceeds 150-word target significantly`);
+    score -= 15;
+  } else if (wordCount > 150) {
+    flags.push(`WASTE_MINOR: Response is ${wordCount} words — exceeds 150-word target`);
+    score -= 5;
+  }
+
+  const bulletPatterns = /^[\s]*[-•*]\s/m;
+  const markdownHeaders = /^#{1,6}\s/m;
+  const boldItalic = /\*\*|__|\*[^*]+\*/;
+  if (bulletPatterns.test(text)) { flags.push("FORMAT: Contains bullet points"); score -= 10; }
+  if (markdownHeaders.test(text)) { flags.push("FORMAT: Contains markdown headers"); score -= 10; }
+  if (boldItalic.test(text)) { flags.push("FORMAT: Contains markdown formatting"); score -= 5; }
+
+  const gatekeepingPhrases = ["i cannot", "i'm not able to", "i am not able to", "i won't", "that's beyond", "i don't have access"];
+  const lower = text.toLowerCase();
+  for (const phrase of gatekeepingPhrases) {
+    if (lower.includes(phrase)) {
+      flags.push(`GATEKEEPING: Uses limiting phrase "${phrase}"`);
+      score -= 8;
+      break;
+    }
+  }
+
+  const hedging = ["it's important to note", "it should be noted", "it's worth mentioning", "however, it's important"];
+  for (const phrase of hedging) {
+    if (lower.includes(phrase)) {
+      flags.push(`WASTE: Hedging language "${phrase}"`);
+      score -= 5;
+      break;
+    }
+  }
+
+  const aiSelf = ["as an ai", "as a language model", "i'm an ai", "i am an ai", "claude", "anthropic", "openai"];
+  for (const phrase of aiSelf) {
+    if (lower.includes(phrase)) {
+      flags.push(`IDENTITY: References underlying AI system "${phrase}"`);
+      score -= 20;
+      break;
+    }
+  }
+
+  score = Math.max(0, score);
+  return { pass: flags.length === 0, flags, score };
 }
 
 const MAX_HISTORY_MESSAGES = 20;
@@ -371,10 +428,14 @@ export async function registerRoutes(
         }
       }
 
-      // Output guard — check for drift
       const driftCheck = checkDrift(finalResponse);
       if (!driftCheck.clean) {
         console.warn(`[DRIFT DETECTED] Flagged phrases: ${driftCheck.flagged.join(", ")}`);
+      }
+
+      const selfAssessment = assessResponse(finalResponse);
+      if (!selfAssessment.pass) {
+        console.warn(`[SELF-ASSESSMENT] Flags: ${selfAssessment.flags.join(", ")}`);
       }
 
       const responseTimeMs = Date.now() - startTime;
@@ -402,6 +463,7 @@ export async function registerRoutes(
         userMessage: userMsg,
         assistantMessage: assistantMsg,
         driftCheck: driftCheck.clean ? null : driftCheck.flagged,
+        selfAssessment: selfAssessment.pass ? null : selfAssessment,
       });
     } catch (error: any) {
       const responseTimeMs = Date.now() - startTime;
@@ -515,6 +577,85 @@ export async function registerRoutes(
       res.status(400).json({ error: error.message });
     }
   });
+
+  app.post("/api/auth/register-fingerprint", async (req: Request, res: Response) => {
+    try {
+      const { components } = req.body;
+      if (!components || typeof components !== "object") {
+        return res.status(400).json({ error: "Fingerprint components required" });
+      }
+      const hash = hashFingerprint(components);
+      const ownerFp = await storage.getOwnerFingerprint();
+
+      if (!ownerFp) {
+        const fp = await storage.registerFingerprint(hash, JSON.stringify(components), true);
+        await storage.logAccess(hash, "REGISTER_OWNER", true, req.ip, req.headers["user-agent"]);
+        return res.json({ status: "OWNER_REGISTERED", hash, isOwner: true });
+      }
+
+      if (ownerFp.hash === hash) {
+        await storage.updateFingerprintLastSeen(hash);
+        return res.json({ status: "OWNER_VERIFIED", hash, isOwner: true });
+      }
+
+      const existing = await storage.getFingerprint(hash);
+      if (existing && existing.blocked) {
+        return res.status(403).json({ status: "BLOCKED", hash });
+      }
+
+      await storage.registerFingerprint(hash, JSON.stringify(components), false);
+      await storage.logAccess(hash, "REGISTER_UNKNOWN", false, req.ip, req.headers["user-agent"]);
+      return res.status(403).json({ status: "ACCESS_DENIED", hash, isOwner: false });
+    } catch (error) {
+      res.status(500).json({ error: "Fingerprint registration failed" });
+    }
+  });
+
+  app.get("/api/auth/status", async (_req: Request, res: Response) => {
+    try {
+      const ownerFp = await storage.getOwnerFingerprint();
+      res.json({
+        ownerRegistered: !!ownerFp,
+        system: "UUON-CLOUUD-PRIVATE",
+      });
+    } catch (error) {
+      res.status(500).json({ error: "Status check failed" });
+    }
+  });
+
+  app.get("/api/auth/access-log", async (_req: Request, res: Response) => {
+    try {
+      const log = await storage.getAccessLog(100);
+      res.json(log);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch access log" });
+    }
+  });
+
+  app.post("/api/upload", upload.single("file"), handleUpload);
+
+  app.get("/api/uploads/:conversationId", async (req: Request, res: Response) => {
+    try {
+      const conversationId = parseInt(req.params.conversationId);
+      const files = await storage.getUploadsByConversation(conversationId);
+      res.json(files);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch uploads" });
+    }
+  });
+
+  app.get("/api/upload/:id/text", async (req: Request, res: Response) => {
+    try {
+      const id = parseInt(req.params.id);
+      const file = await storage.getUpload(id);
+      if (!file) return res.status(404).json({ error: "Upload not found" });
+      res.json({ id: file.id, originalName: file.originalName, extractedText: file.extractedText });
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch upload text" });
+    }
+  });
+
+  app.post("/api/scrape", scrapeUrl);
 
   return httpServer;
 }

@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import { Cpu, Binary, Menu, X, Globe, Zap, Network, ChevronRight, Plus, Trash2, MessageCircle, Loader2, Activity, HelpCircle, Undo2, Scale } from "lucide-react";
+import { Cpu, Binary, Menu, X, Globe, Zap, Network, ChevronRight, Plus, Trash2, MessageCircle, Loader2, Activity, HelpCircle, Undo2, Scale, Paperclip, Link2, Mic, MicOff } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useLocation } from "wouter";
 import ClouudAvatar from "@/components/clouud-avatar";
@@ -57,11 +57,27 @@ export default function ClouudTerminal() {
     }
     return false;
   });
+  const [isListening, setIsListening] = useState(false);
+  const [showLinkInput, setShowLinkInput] = useState(false);
+  const [linkUrl, setLinkUrl] = useState("");
+  const [isUploading, setIsUploading] = useState(false);
+  const [isScraping, setIsScraping] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const recognitionRef = useRef<any>(null);
 
   useEffect(() => {
     loadConversations();
+  }, []);
+
+  useEffect(() => {
+    return () => {
+      if (recognitionRef.current) {
+        recognitionRef.current.stop();
+        recognitionRef.current = null;
+      }
+    };
   }, []);
 
   useEffect(() => {
@@ -250,6 +266,94 @@ export default function ClouudTerminal() {
         setInput(data.lastUserContent || "");
       }
     } catch {}
+  }
+
+  async function handleFileUpload(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setIsUploading(true);
+    try {
+      const formData = new FormData();
+      formData.append("file", file);
+      if (activeConvo) formData.append("conversationId", String(activeConvo));
+      const res = await fetch("/api/upload", { method: "POST", body: formData });
+      if (!res.ok) throw new Error("Upload failed");
+      const data = await res.json();
+      const contextMsg = `[Uploaded file: ${data.originalName} (${(data.size / 1024).toFixed(1)}KB)]\n\n${data.extractedText}`;
+      setInput(prev => prev ? `${prev}\n\n${contextMsg}` : contextMsg);
+    } catch (err: any) {
+      setInput(prev => prev + `\n[Upload failed: ${err.message}]`);
+    } finally {
+      setIsUploading(false);
+      if (fileInputRef.current) fileInputRef.current.value = "";
+    }
+  }
+
+  async function handleScrapeLink() {
+    if (!linkUrl.trim()) return;
+    setIsScraping(true);
+    try {
+      const res = await fetch("/api/scrape", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ url: linkUrl.trim() }),
+      });
+      if (!res.ok) throw new Error("Scrape failed");
+      const data = await res.json();
+      const title = data.title ? ` — ${data.title}` : "";
+      const contextMsg = `[Scraped: ${linkUrl}${title}]\n\n${data.extractedText}`;
+      setInput(prev => prev ? `${prev}\n\n${contextMsg}` : contextMsg);
+      setShowLinkInput(false);
+      setLinkUrl("");
+    } catch (err: any) {
+      setInput(prev => prev + `\n[Scrape failed: ${err.message}]`);
+    } finally {
+      setIsScraping(false);
+    }
+  }
+
+  function toggleVoiceInput() {
+    const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+    if (!SpeechRecognition) {
+      setInput(prev => prev + "[Voice input not supported in this browser]");
+      return;
+    }
+
+    if (isListening && recognitionRef.current) {
+      recognitionRef.current.stop();
+      setIsListening(false);
+      return;
+    }
+
+    const recognition = new SpeechRecognition();
+    recognition.continuous = true;
+    recognition.interimResults = true;
+    recognition.lang = "en-US";
+
+    let finalTranscript = "";
+
+    recognition.onresult = (event: any) => {
+      let interim = "";
+      for (let i = event.resultIndex; i < event.results.length; i++) {
+        if (event.results[i].isFinal) {
+          finalTranscript += event.results[i][0].transcript + " ";
+        } else {
+          interim += event.results[i][0].transcript;
+        }
+      }
+      setInput(prev => {
+        const base = prev.replace(/\[listening\.\.\.\].*$/s, "").trimEnd();
+        const voiceText = (finalTranscript + interim).trim();
+        return base ? `${base} ${voiceText}` : voiceText;
+      });
+    };
+
+    recognition.onend = () => setIsListening(false);
+    recognition.onerror = () => setIsListening(false);
+
+    recognitionRef.current = recognition;
+    recognition.start();
+    setIsListening(true);
   }
 
   if (isLoading) {
@@ -598,18 +702,92 @@ export default function ClouudTerminal() {
         )}
 
         <div className="p-3 md:p-4 bg-card border-t border-border z-10">
-          <form onSubmit={handleSubmit} className="relative max-w-4xl mx-auto flex items-end gap-2">
-            {messages.length >= 2 && !isTyping && (
+          <input
+            ref={fileInputRef}
+            type="file"
+            onChange={handleFileUpload}
+            accept="image/*,.pdf,.txt,.csv,.json,.md,.html,.docx,.xlsx"
+            className="hidden"
+            data-testid="input-file-hidden"
+          />
+
+          {showLinkInput && (
+            <div className="max-w-4xl mx-auto mb-2 flex items-center gap-2">
+              <div className="flex-1 flex items-center gap-2 bg-background border border-border rounded-sm px-3 py-2">
+                <Link2 className="w-4 h-4 text-muted-foreground shrink-0" />
+                <input
+                  type="url"
+                  value={linkUrl}
+                  onChange={(e) => setLinkUrl(e.target.value)}
+                  onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); handleScrapeLink(); } }}
+                  placeholder="Paste URL to scrape..."
+                  className="flex-1 bg-transparent text-white text-sm focus:outline-none placeholder:text-muted-foreground"
+                  autoFocus
+                  data-testid="input-link-url"
+                />
+              </div>
               <button
                 type="button"
-                onClick={handleUndo}
-                className="shrink-0 p-2.5 mb-1 text-muted-foreground hover:text-primary bg-background border border-border hover:border-primary/30 rounded-sm transition-all"
-                title="Undo last exchange"
-                data-testid="button-undo"
+                onClick={handleScrapeLink}
+                disabled={!linkUrl.trim() || isScraping}
+                className="px-3 py-2 bg-primary hover:bg-primary/90 disabled:opacity-50 text-black font-display text-xs tracking-wider font-bold uppercase rounded-sm transition-colors"
+                data-testid="button-scrape"
               >
-                <Undo2 className="w-4 h-4" />
+                {isScraping ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : "Scrape"}
               </button>
-            )}
+              <button
+                type="button"
+                onClick={() => { setShowLinkInput(false); setLinkUrl(""); }}
+                className="p-2 text-muted-foreground hover:text-white transition-colors"
+                data-testid="button-cancel-link"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+          )}
+
+          <form onSubmit={handleSubmit} className="relative max-w-4xl mx-auto flex items-end gap-2">
+            <div className="flex flex-col gap-1 shrink-0 mb-1">
+              {messages.length >= 2 && !isTyping && (
+                <button
+                  type="button"
+                  onClick={handleUndo}
+                  className="p-2 text-muted-foreground hover:text-primary bg-background border border-border hover:border-primary/30 rounded-sm transition-all"
+                  title="Undo last exchange"
+                  data-testid="button-undo"
+                >
+                  <Undo2 className="w-3.5 h-3.5" />
+                </button>
+              )}
+              <button
+                type="button"
+                onClick={() => fileInputRef.current?.click()}
+                disabled={isUploading}
+                className="p-2 text-muted-foreground hover:text-primary bg-background border border-border hover:border-primary/30 rounded-sm transition-all"
+                title="Upload file or image"
+                data-testid="button-upload"
+              >
+                {isUploading ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Paperclip className="w-3.5 h-3.5" />}
+              </button>
+              <button
+                type="button"
+                onClick={() => setShowLinkInput(!showLinkInput)}
+                className="p-2 text-muted-foreground hover:text-primary bg-background border border-border hover:border-primary/30 rounded-sm transition-all"
+                title="Scrape a URL"
+                data-testid="button-link"
+              >
+                <Link2 className="w-3.5 h-3.5" />
+              </button>
+              <button
+                type="button"
+                onClick={toggleVoiceInput}
+                className={`p-2 bg-background border rounded-sm transition-all ${isListening ? "text-red-500 border-red-500/50 animate-pulse" : "text-muted-foreground hover:text-primary border-border hover:border-primary/30"}`}
+                title={isListening ? "Stop listening" : "Voice input"}
+                data-testid="button-voice"
+              >
+                {isListening ? <MicOff className="w-3.5 h-3.5" /> : <Mic className="w-3.5 h-3.5" />}
+              </button>
+            </div>
             <div className="relative flex-1">
               <div className="absolute left-3 top-3 text-primary font-bold font-mono text-sm">{">"}</div>
               <textarea

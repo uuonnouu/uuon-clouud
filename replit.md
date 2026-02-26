@@ -59,6 +59,14 @@ UUON Clouud is the intelligence interface for the G°centric Lattice System, bui
     - Pre-seeded with 15 entries covering identity, background, chi awakening, spiritual framework, mission stance, relationship with Clouud, and access status
     - System prompt gets a `CREATOR CONTEXT (PERSISTENT MEMORY)` section injected before the closing anchor
 18. **Auto-expanding Input:** Textarea grows with content (up to 160px), Enter sends, Shift+Enter for newline
+19. **File Upload:** Paperclip button triggers file picker (images, PDFs, text, CSV, JSON, etc.), uploads via multer, extracts text, injects into input for context
+    - Backend: `server/uploads.ts` — multer handler with 10MB limit, text extraction
+    - API: `POST /api/upload`, `GET /api/uploads/:conversationId`, `GET /api/upload/:id/text`
+20. **Link Scraper:** Link button opens URL input bar, scrapes page content (HTML→text, JSON, plain text), injects into input
+    - Backend: `server/scraper.ts` — SSRF-protected (blocks private IPs, internal hostnames, DNS resolution check), 15s timeout
+    - API: `POST /api/scrape`
+21. **Voice Input:** Mic button toggles Web Speech API continuous recognition, transcribes speech into input field, cleanup on unmount
+22. **Self-Assessment System:** Every Clouud response is scored 0-100 against mission criteria (word count, format violations, gatekeeping language, hedging, identity drift). Flags logged server-side. Clouud's system prompt includes awareness of self-assessment
 
 ## Design System
 - **Palette:** Deep Navy (#030811), UUON Gold (#f0b93b), Atmosphere Blue (#4a8cd4)
