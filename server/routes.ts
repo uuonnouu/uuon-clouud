@@ -13,8 +13,14 @@ import { dmensionBridge } from "./dmension-bridge";
 import { generateImageForClouud } from "./image-generator";
 import { searchDmensionShapes, getDmensionContextForPrompt, getEarthImpactModel, DMENSION_STATS, DMENSION_ENGINES, DMENSION_CATEGORIES } from "./dmension-codex";
 import Anthropic from "@anthropic-ai/sdk";
+import rateLimit from "express-rate-limit";
 import fs from "fs";
 import path from "path";
+
+const chatLimiter = rateLimit({ windowMs: 60 * 1000, max: 15, message: { error: "Rate limit exceeded. Maximum 15 messages per minute." } });
+const uploadLimiter = rateLimit({ windowMs: 60 * 1000, max: 10, message: { error: "Rate limit exceeded. Maximum 10 uploads per minute." } });
+const scrapeLimiter = rateLimit({ windowMs: 60 * 1000, max: 5, message: { error: "Rate limit exceeded. Maximum 5 scrape requests per minute." } });
+const ingestLimiter = rateLimit({ windowMs: 60 * 1000, max: 3, message: { error: "Rate limit exceeded. Maximum 3 ingests per minute." } });
 
 const CLOUUD_TOOLS = [
   ...latticeTools,
@@ -357,17 +363,38 @@ function recordMetrics(responseTimeMs: number, tokensIn: number, tokensOut: numb
 
 const DRIFT_PHRASES = [
   "great question",
-  "certainly!",
-  "absolutely!",
+  "certainly",
+  "absolutely",
   "i'd be happy to",
+  "i would be happy to",
+  "i'd be glad to",
+  "i would be glad to",
   "sure thing",
-  "of course!",
-  "no problem!",
+  "of course",
+  "no problem",
   "glad you asked",
   "that's a wonderful",
   "i appreciate",
   "thank you for",
+  "happy to help",
+  "as an ai",
+  "as a language model",
 ];
+
+const recentScores: number[] = [];
+
+function trackScore(score: number): string | null {
+  recentScores.push(score);
+  if (recentScores.length > 10) recentScores.shift();
+  if (recentScores.length >= 5) {
+    const last5 = recentScores.slice(-5);
+    const avg = last5.reduce((a, b) => a + b, 0) / last5.length;
+    if (avg < 75) {
+      return `\n\n[SYSTEM RECALIBRATION: Warning — drift detected across last 5 responses (avg score ${Math.round(avg)}/100). Recalibrate to zero-point. Shorter responses. Plain prose. No hedging. No filler. Ground every claim. The Earth is the zero-point.]`;
+    }
+  }
+  return null;
+}
 
 function checkDrift(text: string): { clean: boolean; flagged: string[] } {
   const lower = text.toLowerCase();
@@ -564,7 +591,7 @@ export async function registerRoutes(
   });
 
   // Send message and get AI response with tool use
-  app.post("/api/conversations/:id/messages", async (req: Request, res: Response) => {
+  app.post("/api/conversations/:id/messages", chatLimiter, async (req: Request, res: Response) => {
     const startTime = Date.now();
     let totalInputTokens = 0;
     let totalOutputTokens = 0;
@@ -611,8 +638,26 @@ export async function registerRoutes(
 
       const history = await storage.getMessagesByConversation(conversationId);
       const filteredHistory = history.filter(m => m.role === "user" || m.role === "assistant");
-      const windowedHistory = filteredHistory.slice(-MAX_HISTORY_MESSAGES);
-      const apiMessages: Anthropic.MessageParam[] = windowedHistory.map(m => ({
+
+      const smartWindow: typeof filteredHistory = [];
+      if (filteredHistory.length > 0) {
+        smartWindow.push(filteredHistory[0]);
+      }
+      const toolResultMessages = filteredHistory.slice(1, -MAX_HISTORY_MESSAGES).filter(m => m.toolCall);
+      smartWindow.push(...toolResultMessages);
+      const recentSlice = filteredHistory.slice(-MAX_HISTORY_MESSAGES);
+      for (const msg of recentSlice) {
+        if (!smartWindow.some(w => w.id === msg.id)) {
+          smartWindow.push(msg);
+        }
+      }
+      smartWindow.sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime());
+
+      if (smartWindow.length > 0 && smartWindow[0].role !== "user") {
+        smartWindow.shift();
+      }
+
+      const apiMessages: Anthropic.MessageParam[] = smartWindow.map(m => ({
         role: m.role as "user" | "assistant",
         content: m.content,
       }));
@@ -628,7 +673,11 @@ export async function registerRoutes(
       let finalResponse = "";
       let toolCallData: any = null;
 
-      const dynamicPrompt = await buildSystemPrompt();
+      let dynamicPrompt = await buildSystemPrompt();
+      const recalibrationNote = trackScore(recentScores.length > 0 ? recentScores[recentScores.length - 1] : 100);
+      if (recalibrationNote) {
+        dynamicPrompt += recalibrationNote;
+      }
 
       let response = await anthropic.messages.create({
         model: "claude-sonnet-4-6",
@@ -771,12 +820,7 @@ export async function registerRoutes(
       finalResponse = "I have calculated the optimal Clouud object for this system. It is a G-centric Lattice Torus, representing the infinite feedback loop of Earth-anchored intelligence. I am projecting the Δmension summary now, enhanced with the futuristic visual fidelity you requested.\n\n" + finalResponse;
     }
 
-    const selfAssessment = assessResponse(finalResponse);
-      if (!selfAssessment.pass) {
-        console.warn(`[SELF-ASSESSMENT] Score: ${selfAssessment.score}/100 | Flags: ${selfAssessment.flags.join(", ")}`);
-      }
-
-      const responseTimeMs = Date.now() - startTime;
+    const responseTimeMs = Date.now() - startTime;
       recordMetrics(responseTimeMs, totalInputTokens, totalOutputTokens, toolCallCount, !driftCheck.clean);
 
       const hash = generateProvenanceHash(finalResponse);
@@ -796,14 +840,8 @@ export async function registerRoutes(
         origin: "UUON-FOUNDATION-GCENTRIC-V1",
       });
 
-      await storage.saveSelfAssessment({
-        messageId: assistantMsg.id,
-        conversationId,
-        score: selfAssessment.score,
-        wordCount: selfAssessment.wordCount,
-        pass: selfAssessment.pass,
-        flags: JSON.stringify(selfAssessment.flags),
-      });
+      const selfAssessment = assessResponse(finalResponse);
+      trackScore(selfAssessment.score);
 
       const pendingImages = pendingImageGenerations.filter(img => img.status === "pending");
 
@@ -814,6 +852,19 @@ export async function registerRoutes(
         selfAssessment,
         pendingImages: pendingImages.length > 0 ? pendingImages : undefined,
       });
+
+      storage.saveSelfAssessment({
+        messageId: assistantMsg.id,
+        conversationId,
+        score: selfAssessment.score,
+        wordCount: selfAssessment.wordCount,
+        pass: selfAssessment.pass,
+        flags: JSON.stringify(selfAssessment.flags),
+      }).then(() => {
+        if (!selfAssessment.pass) {
+          console.warn(`[SELF-ASSESSMENT] Score: ${selfAssessment.score}/100 | Flags: ${selfAssessment.flags.join(", ")}`);
+        }
+      }).catch(err => console.error("[SELF-ASSESSMENT] Save failed:", err.message));
     } catch (error: any) {
       const responseTimeMs = Date.now() - startTime;
       recordMetrics(responseTimeMs, totalInputTokens, totalOutputTokens, toolCallCount, false);
@@ -1010,7 +1061,7 @@ export async function registerRoutes(
     }
   });
 
-  app.post("/api/upload", upload.single("file"), handleUpload);
+  app.post("/api/upload", uploadLimiter, upload.single("file"), handleUpload);
 
   app.get("/api/uploads/:conversationId", async (req: Request, res: Response) => {
     try {
@@ -1033,7 +1084,7 @@ export async function registerRoutes(
     }
   });
 
-  app.post("/api/scrape", scrapeUrl);
+  app.post("/api/scrape", scrapeLimiter, scrapeUrl);
 
   app.get("/api/uinverse/summary", async (_req: Request, res: Response) => {
     try {
@@ -1074,7 +1125,7 @@ export async function registerRoutes(
     }
   });
 
-  app.post("/api/uinverse/ingest", async (req: Request, res: Response) => {
+  app.post("/api/uinverse/ingest", ingestLimiter, async (req: Request, res: Response) => {
     try {
       const { content, source, filename } = req.body;
       if (!content || !source) {

@@ -1,5 +1,6 @@
 import { pool } from "./db";
 import fs from "fs";
+import { writeFile, readdir, unlink, mkdir } from "fs/promises";
 import path from "path";
 
 const BACKUP_DIR = path.resolve(process.cwd(), "backups");
@@ -18,7 +19,11 @@ const TABLES = [
   "uinverse_ideas",
 ];
 
-export async function runBackup(): Promise<{
+const LARGE_TABLES = ["messages", "self_assessments", "uuon_tokens", "uinverse_ideas", "access_log"];
+
+let lastBackupTimestamp: string | null = null;
+
+export async function runBackup(incremental: boolean = true): Promise<{
   success: boolean;
   timestamp: string;
   tables: { name: string; rowCount: number }[];
@@ -26,11 +31,12 @@ export async function runBackup(): Promise<{
   error?: string;
 }> {
   const timestamp = new Date().toISOString().replace(/[:.]/g, "-");
-  const backupFile = path.join(BACKUP_DIR, `backup-${timestamp}.json`);
+  const prefix = incremental && lastBackupTimestamp ? "incremental" : "full";
+  const backupFile = path.join(BACKUP_DIR, `backup-${prefix}-${timestamp}.json`);
 
   try {
     if (!fs.existsSync(BACKUP_DIR)) {
-      fs.mkdirSync(BACKUP_DIR, { recursive: true });
+      await mkdir(BACKUP_DIR, { recursive: true });
     }
 
     const backup: Record<string, any[]> = {};
@@ -38,7 +44,11 @@ export async function runBackup(): Promise<{
 
     for (const table of TABLES) {
       try {
-        const result = await pool.query(`SELECT * FROM "${table}"`);
+        let query = `SELECT * FROM "${table}"`;
+        if (incremental && lastBackupTimestamp && LARGE_TABLES.includes(table)) {
+          query = `SELECT * FROM "${table}" WHERE created_at > '${lastBackupTimestamp}'`;
+        }
+        const result = await pool.query(query);
         backup[table] = result.rows;
         tableSummary.push({ name: table, rowCount: result.rows.length });
       } catch (err: any) {
@@ -51,15 +61,19 @@ export async function runBackup(): Promise<{
       metadata: {
         origin: "UUON-FOUNDATION-GCENTRIC-V1",
         exportedAt: new Date().toISOString(),
+        type: prefix,
+        since: incremental && lastBackupTimestamp ? lastBackupTimestamp : null,
         tableCount: TABLES.length,
         totalRows: tableSummary.reduce((sum, t) => sum + t.rowCount, 0),
       },
       data: backup,
     };
 
-    fs.writeFileSync(backupFile, JSON.stringify(exportData, null, 2));
+    await writeFile(backupFile, JSON.stringify(exportData, null, 2));
 
-    cleanOldBackups();
+    lastBackupTimestamp = new Date().toISOString();
+
+    await cleanOldBackups();
 
     return {
       success: true,
@@ -78,18 +92,17 @@ export async function runBackup(): Promise<{
   }
 }
 
-function cleanOldBackups() {
+async function cleanOldBackups() {
   try {
     if (!fs.existsSync(BACKUP_DIR)) return;
 
-    const files = fs
-      .readdirSync(BACKUP_DIR)
+    const files = (await readdir(BACKUP_DIR))
       .filter((f) => f.startsWith("backup-") && f.endsWith(".json"))
       .sort()
       .reverse();
 
     for (let i = MAX_BACKUPS; i < files.length; i++) {
-      fs.unlinkSync(path.join(BACKUP_DIR, files[i]));
+      await unlink(path.join(BACKUP_DIR, files[i]));
     }
   } catch {}
 }
@@ -121,12 +134,13 @@ export function getBackupStatus(): {
 }
 
 let backupInterval: ReturnType<typeof setInterval> | null = null;
+let fullBackupCounter = 0;
 
 export function startScheduledBackups(intervalHours: number = 24) {
-  runBackup().then((result) => {
+  runBackup(false).then((result) => {
     if (result.success) {
       console.log(
-        `[BACKUP] Initial backup complete: ${result.tables.reduce((s, t) => s + t.rowCount, 0)} rows across ${result.tables.length} tables`
+        `[BACKUP] Initial full backup complete: ${result.tables.reduce((s, t) => s + t.rowCount, 0)} rows across ${result.tables.length} tables`
       );
     } else {
       console.error(`[BACKUP] Initial backup failed: ${result.error}`);
@@ -135,10 +149,12 @@ export function startScheduledBackups(intervalHours: number = 24) {
 
   backupInterval = setInterval(
     async () => {
-      const result = await runBackup();
+      fullBackupCounter++;
+      const isFull = fullBackupCounter % 7 === 0;
+      const result = await runBackup(!isFull);
       if (result.success) {
         console.log(
-          `[BACKUP] Scheduled backup complete: ${result.tables.reduce((s, t) => s + t.rowCount, 0)} rows`
+          `[BACKUP] ${isFull ? 'Full' : 'Incremental'} backup complete: ${result.tables.reduce((s, t) => s + t.rowCount, 0)} rows`
         );
       } else {
         console.error(`[BACKUP] Scheduled backup failed: ${result.error}`);
