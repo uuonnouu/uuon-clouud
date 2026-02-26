@@ -1,7 +1,7 @@
 {
   "metadata": {
     "origin": "UUON-FOUNDATION-GCENTRIC-V1",
-    "exportedAt": "2026-02-26T16:34:42.035Z",
+    "exportedAt": "2026-02-26T19:14:43.502Z",
     "tableCount": 10,
     "totalRows": 349
   },
@@ -2570,12 +2570,6 @@
     ],
     "creator_profile": [
       {
-        "id": 1,
-        "key": "name",
-        "value": "Philip Aguilar Ruiz III",
-        "updated_at": "2026-02-26T02:54:15.312Z"
-      },
-      {
         "id": 2,
         "key": "role",
         "value": "Founder and Creator of UUON Foundation Inc. and this system (Clouud)",
@@ -2658,6 +2652,12 @@
         "key": "access_status",
         "value": "PRIVATE — admin and creator. This is Philips system. All interactions are with the founder unless otherwise specified.",
         "updated_at": "2026-02-26T02:54:15.378Z"
+      },
+      {
+        "id": 1,
+        "key": "name",
+        "value": "Philip Aguilar Ruiz III",
+        "updated_at": "2026-02-26T02:54:15.312Z"
       }
     ],
     "fingerprints": [
