@@ -1,4 +1,4 @@
-const DMENSION_URL = process.env.DMENSION_API_URL || 'https://dmension-mathematical-universe.replit.app';
+const DMENSION_URL = process.env.DMENSION_API_URL || 'https://uuon-foundation.com';
 const BRIDGE_SECRET = process.env.UUON_BRIDGE_SECRET || '';
 
 const HEADERS: Record<string, string> = {
