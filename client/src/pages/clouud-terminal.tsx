@@ -62,7 +62,7 @@ export default function ClouudTerminal() {
   const [linkUrl, setLinkUrl] = useState("");
   const [isUploading, setIsUploading] = useState(false);
   const [isScraping, setIsScraping] = useState(false);
-  const [msgAssessments, setMsgAssessments] = useState<Record<number, { score: number; flags: string[]; wordCount: number }>>({});
+  const [msgAssessments, setMsgAssessments] = useState<Record<number, { score: number; missionAlignment: number; responseQuality: number; formatCompliance: number; identityIntegrity: number; flags: string[]; wordCount: number }>>({});
   const scrollRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -235,6 +235,10 @@ export default function ClouudTerminal() {
           ...prev,
           [data.assistantMessage.id]: {
             score: data.selfAssessment.score,
+            missionAlignment: data.selfAssessment.missionAlignment,
+            responseQuality: data.selfAssessment.responseQuality,
+            formatCompliance: data.selfAssessment.formatCompliance,
+            identityIntegrity: data.selfAssessment.identityIntegrity,
             flags: data.selfAssessment.flags,
             wordCount: data.selfAssessment.wordCount,
           }
@@ -739,14 +743,19 @@ export default function ClouudTerminal() {
                                 <span className="truncate uppercase tracking-widest">{msg.hash}</span>
                               </div>
                               {msgAssessments[msg.id] && (
-                                <div className="flex items-center gap-1.5 font-mono text-[8px]">
-                                  <Scale className="w-2.5 h-2.5" style={{ color: msgAssessments[msg.id].score >= 90 ? '#22c55e' : msgAssessments[msg.id].score >= 70 ? '#f0b93b' : '#ef4444' }} />
-                                  <span style={{ color: msgAssessments[msg.id].score >= 90 ? '#22c55e' : msgAssessments[msg.id].score >= 70 ? '#f0b93b' : '#ef4444' }}>
-                                    SA:{msgAssessments[msg.id].score}/100
-                                  </span>
-                                  <span className="text-muted-foreground">{msgAssessments[msg.id].wordCount}w</span>
+                                <div className="space-y-1">
+                                  <div className="flex items-center gap-1.5 font-mono text-[8px]">
+                                    <Scale className="w-2.5 h-2.5" style={{ color: msgAssessments[msg.id].score >= 90 ? '#22c55e' : msgAssessments[msg.id].score >= 70 ? '#f0b93b' : '#ef4444' }} />
+                                    <span style={{ color: msgAssessments[msg.id].score >= 90 ? '#22c55e' : msgAssessments[msg.id].score >= 70 ? '#f0b93b' : '#ef4444' }}>
+                                      SA:{msgAssessments[msg.id].score}/100
+                                    </span>
+                                    <span className="text-muted-foreground/50">
+                                      M:{msgAssessments[msg.id].missionAlignment} Q:{msgAssessments[msg.id].responseQuality} F:{msgAssessments[msg.id].formatCompliance} I:{msgAssessments[msg.id].identityIntegrity}
+                                    </span>
+                                    <span className="text-muted-foreground">{msgAssessments[msg.id].wordCount}w</span>
+                                  </div>
                                   {msgAssessments[msg.id].flags.length > 0 && (
-                                    <span className="text-yellow-500/70 truncate">{msgAssessments[msg.id].flags[0]}</span>
+                                    <div className="font-mono text-[7px] text-yellow-500/60 truncate">{msgAssessments[msg.id].flags[0]}</div>
                                   )}
                                 </div>
                               )}

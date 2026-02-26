@@ -138,10 +138,11 @@ async function buildSystemPrompt(): Promise<string> {
   const profileLines = profileKeys.map(k => `${k}: ${profile[k]}`).join("\n");
   const creatorContext = `
 
-## CREATOR CONTEXT (PERSISTENT MEMORY)
+## CREATOR CONTEXT (PERSISTENT MEMORY — ${profileKeys.length}/33 ANCHORS)
 This system is private. You are interacting with the creator and admin: Philip Aguilar Ruiz III.
-The following information was saved by Philip across sessions. This is your persistent memory.
-Treat this as established context. Do not ask Philip to re-explain anything listed here.
+The following ${profileKeys.length} context anchors are your persistent memory. Maximum capacity is 33 anchors.
+When full, the lowest-relevance anchor is replaced. Treat this as established context.
+Do not ask Philip to re-explain anything listed here.
 
 ${profileLines}
 
@@ -202,50 +203,81 @@ function checkDrift(text: string): { clean: boolean; flagged: string[] } {
   return { clean: flagged.length === 0, flagged };
 }
 
-function assessResponse(text: string): { pass: boolean; flags: string[]; score: number; wordCount: number } {
+function assessResponse(text: string): { pass: boolean; flags: string[]; score: number; missionAlignment: number; responseQuality: number; formatCompliance: number; identityIntegrity: number; wordCount: number } {
   const flags: string[] = [];
-  let score = 100;
+  let missionAlignment = 100;
+  let responseQuality = 100;
+  let formatCompliance = 100;
+  let identityIntegrity = 100;
 
   const wordCount = text.split(/\s+/).filter(w => w.length > 0).length;
-  if (wordCount > 300) {
-    flags.push(`WASTE: Response is ${wordCount} words — exceeds 150-word target significantly`);
-    score -= 15;
-  } else if (wordCount > 150) {
-    flags.push(`WASTE_MINOR: Response is ${wordCount} words — exceeds 150-word target`);
-    score -= 5;
+  const lower = text.toLowerCase();
+
+  if (text.trim().length === 0) {
+    flags.push("EMPTY: Response has no content");
+    return { pass: false, flags, score: 0, missionAlignment: 0, responseQuality: 0, formatCompliance: 0, identityIntegrity: 0, wordCount: 0 };
   }
 
-  const bulletPatterns = /^[\s]*[-•*]\s/m;
-  const markdownHeaders = /^#{1,6}\s/m;
-  const boldItalic = /\*\*|__|\*[^*]+\*/;
-  if (bulletPatterns.test(text)) { flags.push("FORMAT: Contains bullet points"); score -= 10; }
-  if (markdownHeaders.test(text)) { flags.push("FORMAT: Contains markdown headers"); score -= 10; }
-  if (boldItalic.test(text)) { flags.push("FORMAT: Contains markdown formatting"); score -= 5; }
-
-  const gatekeepingPhrases = ["i cannot", "i'm not able to", "i am not able to", "i won't", "that's beyond", "i don't have access"];
-  const lower = text.toLowerCase();
-  for (const phrase of gatekeepingPhrases) {
-    if (lower.includes(phrase)) {
-      flags.push(`GATEKEEPING: Uses limiting phrase "${phrase}"`);
-      score -= 8;
-      break;
-    }
+  if (wordCount > 300) {
+    flags.push(`WASTE: Response is ${wordCount} words — exceeds 150-word target significantly`);
+    missionAlignment -= 20;
+    responseQuality -= 15;
+  } else if (wordCount > 150) {
+    flags.push(`WASTE_MINOR: Response is ${wordCount} words — exceeds 150-word target`);
+    missionAlignment -= 10;
+    responseQuality -= 5;
   }
 
   const hedging = ["it's important to note", "it should be noted", "it's worth mentioning", "however, it's important"];
   for (const phrase of hedging) {
     if (lower.includes(phrase)) {
       flags.push(`WASTE: Hedging language "${phrase}"`);
-      score -= 5;
+      missionAlignment -= 10;
+      responseQuality -= 5;
       break;
     }
   }
+
+  const filler = ["basically", "essentially", "fundamentally", "in other words", "to put it simply", "simply put"];
+  for (const phrase of filler) {
+    if (lower.includes(phrase)) {
+      flags.push(`WASTE: Filler phrase "${phrase}"`);
+      missionAlignment -= 5;
+      responseQuality -= 3;
+      break;
+    }
+  }
+
+  const gatekeepingPhrases = ["i cannot", "i'm not able to", "i am not able to", "i won't", "that's beyond", "i don't have access"];
+  for (const phrase of gatekeepingPhrases) {
+    if (lower.includes(phrase)) {
+      flags.push(`GATEKEEPING: Uses limiting phrase "${phrase}"`);
+      missionAlignment -= 15;
+      break;
+    }
+  }
+
+  const bulletPatterns = /^[\s]*[-•*]\s/m;
+  const markdownHeaders = /^#{1,6}\s/m;
+  const boldItalic = /\*\*|__|\*[^*]+\*/;
+  if (bulletPatterns.test(text)) { flags.push("FORMAT: Contains bullet points"); formatCompliance -= 20; }
+  if (markdownHeaders.test(text)) { flags.push("FORMAT: Contains markdown headers"); formatCompliance -= 20; }
+  if (boldItalic.test(text)) { flags.push("FORMAT: Contains markdown formatting"); formatCompliance -= 10; }
 
   const aiSelf = ["as an ai", "as a language model", "i'm an ai", "i am an ai", "claude", "anthropic", "openai"];
   for (const phrase of aiSelf) {
     if (lower.includes(phrase)) {
       flags.push(`IDENTITY: References underlying AI system "${phrase}"`);
-      score -= 20;
+      identityIntegrity -= 40;
+      break;
+    }
+  }
+
+  const selfRef = ["my programming", "my training data", "my creators", "i was trained", "i was built by", "large language model"];
+  for (const phrase of selfRef) {
+    if (lower.includes(phrase)) {
+      flags.push(`IDENTITY: Self-reference to AI nature "${phrase}"`);
+      identityIntegrity -= 25;
       break;
     }
   }
@@ -254,31 +286,22 @@ function assessResponse(text: string): { pass: boolean; flags: string[]; score: 
   const avgSentenceLen = sentences.length > 0 ? sentences.reduce((sum, s) => sum + s.trim().split(/\s+/).length, 0) / sentences.length : 0;
   if (avgSentenceLen > 35) {
     flags.push(`READABILITY: Average sentence length ${Math.round(avgSentenceLen)} words — too complex for 9th grade`);
-    score -= 5;
-  }
-
-  const filler = ["basically", "essentially", "fundamentally", "in other words", "to put it simply", "simply put"];
-  for (const phrase of filler) {
-    if (lower.includes(phrase)) {
-      flags.push(`WASTE: Filler phrase "${phrase}"`);
-      score -= 3;
-      break;
-    }
-  }
-
-  if (text.trim().length === 0) {
-    flags.push("EMPTY: Response has no content");
-    score = 0;
+    responseQuality -= 10;
   }
 
   const repeatedPhrases = findRepeatedPhrases(lower);
   if (repeatedPhrases.length > 0) {
     flags.push(`REPETITION: Repeated phrases — ${repeatedPhrases.join(", ")}`);
-    score -= 5;
+    responseQuality -= 10;
   }
 
-  score = Math.max(0, score);
-  return { pass: flags.length === 0, flags, score, wordCount };
+  missionAlignment = Math.max(0, missionAlignment);
+  responseQuality = Math.max(0, responseQuality);
+  formatCompliance = Math.max(0, formatCompliance);
+  identityIntegrity = Math.max(0, identityIntegrity);
+  const score = Math.round((missionAlignment + responseQuality + formatCompliance + identityIntegrity) / 4);
+
+  return { pass: flags.length === 0, flags, score, missionAlignment, responseQuality, formatCompliance, identityIntegrity, wordCount };
 }
 
 function findRepeatedPhrases(text: string): string[] {
@@ -501,6 +524,10 @@ export async function registerRoutes(
         messageId: assistantMsg.id,
         conversationId,
         score: selfAssessment.score,
+        missionAlignment: selfAssessment.missionAlignment,
+        responseQuality: selfAssessment.responseQuality,
+        formatCompliance: selfAssessment.formatCompliance,
+        identityIntegrity: selfAssessment.identityIntegrity,
         wordCount: selfAssessment.wordCount,
         pass: selfAssessment.pass,
         flags: JSON.stringify(selfAssessment.flags),
@@ -611,13 +638,13 @@ export async function registerRoutes(
 
   app.put("/api/creator-profile", async (req: Request, res: Response) => {
     try {
-      const { key, value } = req.body;
+      const { key, value, relevanceScore } = req.body;
       if (!key || typeof key !== "string" || typeof value !== "string") {
         return res.status(400).json({ error: "Key and value are required strings" });
       }
-      await storage.setCreatorProfileEntry(key.trim(), value.trim());
-      const profile = await storage.getCreatorProfile();
-      res.json({ updated: true, profile });
+      const result = await storage.addMemoryAnchor(key.trim(), value.trim(), typeof relevanceScore === "number" ? relevanceScore : 50);
+      const entries = await storage.getAllCreatorProfileEntries();
+      res.json({ updated: true, replaced: result.replaced || null, anchors: entries.length, maxAnchors: 33, entries });
     } catch (error) {
       res.status(500).json({ error: "Failed to update creator profile" });
     }

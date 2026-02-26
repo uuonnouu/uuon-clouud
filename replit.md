@@ -13,65 +13,69 @@ UUON Clouud is the intelligence interface for the G°centric Lattice System, bui
 ## Key Files
 - `client/src/pages/clouud-terminal.tsx` — Main chat interface with sidebar, quick actions, Δmension link
 - `client/src/components/clouud-avatar.tsx` — Clouud avatar (static image with state-driven CSS animation)
-- `server/routes.ts` — API routes with system prompt (includes founder bio, verified Sketchfab data, Δmension info), tool use, output guard
+- `client/src/components/metrics-panel.tsx` — Collapsible system metrics panel with 4-metric self-assessment
+- `client/src/components/security-gate.tsx` — Fingerprint-based identity gate (wraps entire app)
+- `server/routes.ts` — API routes with system prompt, tool use, output guard, self-assessment engine
 - `server/lattice.ts` — G°centric Lattice Engine (33-point, rational math)
-- `server/ellomental-hash.ts` — Ellomental Hash Algorithm (12-tetrahedron circle formation, cultural rotation, ported from Phil's Python original)
-- `server/storage.ts` — Database operations (conversations, messages, UUON tokens, creator profile)
+- `server/ellomental-hash.ts` — Ellomental Hash Algorithm (12-tetrahedron circle formation)
+- `server/storage.ts` — Database operations (conversations, messages, UUON tokens, creator profile, self-assessments)
+- `server/security.ts` — Fingerprint hashing, verification middleware, security gate
+- `server/scraper.ts` — SSRF-protected URL scraper
 - `server/db.ts` — PostgreSQL connection via Drizzle
-- `shared/schema.ts` — Database schema (conversations, messages, uuon_tokens, creator_profile tables)
-- `client/src/components/metrics-panel.tsx` — Collapsible system metrics panel
+- `shared/schema.ts` — Database schema
 
 ## Founder Info (verified)
 - Philip Aguilar Ruiz III, from Yuma AZ, grew up overseas, US Army veteran, resides in Kassel, Germany
-- Created 180+ 3D mathematical models on Sketchfab (quantum mechanics, relativity, molecular biology, topology, sacred geometry)
+- Created 180+ 3D mathematical models on Sketchfab
 - Built Δmension (Mathematical Universe) at uuon-foundation.com
 - UUON = Universally United One Neuma = WON = ONE
 
 ## Core Features
 1. **System Prompt:** Full G°centric Master System Prompt with founder bio and Δmension context
-2. **Tool Use:** Clouud calls chi_rho tools (chi_value, chi_position, chi_lattice_report) for all lattice math, handles multiple tool_use blocks per response
+2. **Tool Use:** Clouud calls chi_rho tools for all lattice math
 3. **Temperature 0.1:** Locked for deterministic output
 4. **Format Rules:** Plain text only, no bullets/dashes/markdown, 9th grade reading level, summaries under 150 words
 5. **Output Guard:** Drift phrase detection before delivery
-6. **Provenance Hash:** SHA-256 per response with UUON Foundation metadata
+6. **Provenance Hash:** Ellomental 12-tetrahedron circle hash per response → UUON Token
 7. **Conversation History:** PostgreSQL persistent sessions
-8. **Quick Actions:** 15 interactive prompts — auto-send on click (no prefill)
+8. **Quick Actions:** 15 interactive prompts — auto-send on click
 9. **Δmension Link:** Direct link to uuon-foundation.com in sidebar
-10. **Interactive Tutorial:** 6-step animated walkthrough for new users (auto-shows on first visit via localStorage, relaunchable from sidebar)
-    - Steps: Meet Clouud, Earth Philosophy, 33-Point Lattice (animated demo), Tool Calls (animated demo), Mission (waste/fraud/gatekeeping + hash demo), Ready
-    - "Try It" buttons auto-send messages to Clouud
-    - Component: `client/src/components/tutorial.tsx`
-11. **Undo Button:** Removes last user+assistant exchange, restores input for retry
-12. **Legal Page:** `/legal` route with Terms of Use, Privacy Policy, Disclaimer tabs — accessible from sidebar
-13. **Real-time Metrics Panel:** Collapsible panel below input bar showing API response times, I/O, tool calls, model info, uptime, saved UUON tokens count — auto-refreshes every 5 seconds
-    - Server tracks: response times (rolling avg of last 50), I/O volume, tool call count, drift detection flags
-    - Component: `client/src/components/metrics-panel.tsx`
-14. **UUON Token System:** Each interaction's provenance hash (Ellomental 12-tetrahedron circle hash) is saved as a UUON token in the `uuon_tokens` table
-    - Tokens are saved automatically on every assistant response
-    - API: `GET /api/tokens` (all), `GET /api/conversations/:id/tokens` (per conversation), `POST /api/ellomental/verify` (verify any content)
-    - Displayed on each assistant message as `UUON·TOKEN` with the hash
-    - Ellomental Hash: 12 tetrahedra × 4 cultural rotations (Egyptian, Greek, Latin, English) → circle formation → SHA-256 circle hash
-    - Based on UUON Shape Tokenization framework (Philip Aguilar Ruiz III, 2025)
-15. **Data Waste Reduction:** Conversation windowing limits API history to last 20 messages instead of full unbounded history
-16. **Water Animations:** Messages flow in with soft fade-up, blur transition, and paragraph-by-paragraph cascade for assistant responses
-17. **Creator Profile (Persistent Memory):** `creator_profile` table stores Philip's identity, background, and context as key-value pairs. Loaded dynamically into system prompt on every API request so Clouud always knows who it's talking to across sessions.
-    - API: `GET /api/creator-profile` (read all), `PUT /api/creator-profile` (upsert key/value)
-    - Pre-seeded with 15 entries covering identity, background, chi awakening, spiritual framework, mission stance, relationship with Clouud, and access status
-    - System prompt gets a `CREATOR CONTEXT (PERSISTENT MEMORY)` section injected before the closing anchor
-18. **Auto-expanding Input:** Textarea grows with content (up to 160px), Enter sends, Shift+Enter for newline
-19. **File Upload:** Paperclip button triggers file picker (images, PDFs, text, CSV, JSON, etc.), uploads via multer, extracts text, injects into input for context
-    - Backend: `server/uploads.ts` — multer handler with 10MB limit, text extraction
-    - API: `POST /api/upload`, `GET /api/uploads/:conversationId`, `GET /api/upload/:id/text`
-20. **Link Scraper:** Link button opens URL input bar, scrapes page content (HTML→text, JSON, plain text), injects into input
-    - Backend: `server/scraper.ts` — SSRF-protected (blocks private IPs, internal hostnames, DNS resolution check), 15s timeout
-    - API: `POST /api/scrape`
-21. **Voice Input:** Mic button toggles Web Speech API continuous recognition, transcribes speech into input field, cleanup on unmount
-22. **Self-Assessment System:** Every Clouud response is scored 0-100 against mission criteria. Persistent DB tracking with gap analysis.
-    - Checks: word count (150-word target), format violations (bullets/markdown/headers), gatekeeping language, hedging, identity drift, readability (sentence length), filler phrases, repetition (trigram detection), empty responses
-    - DB table: `self_assessments` stores per-message score, word count, pass/fail, flags JSON
-    - API: `GET /api/self-assessment` returns full report (avg score, total flags, score history sparkline, gap analysis with severity levels)
-    - UI: Per-message SA score shown inline below UUON token (green/gold/red color-coded); SYS bar shows live SA score; expanded metrics panel shows full Self-Assessment section with gap analysis cards, severity badges (CRITICAL/HIGH/MODERATE/LOW), recent flags list
-    - System prompt includes self-assessment awareness — Clouud knows it's being scored and aims for 100
+10. **Interactive Tutorial:** 6-step animated walkthrough for new users
+11. **Undo Button:** Removes last user+assistant exchange, restores input
+12. **Legal Page:** `/legal` route with Terms of Use, Privacy Policy, Disclaimer
+13. **Real-time Metrics Panel:** Collapsible panel with API stats, response times, UUON token count
+14. **UUON Token System:** Ellomental hash saved per interaction as provenance token
+15. **Data Waste Reduction:** Conversation windowing limits API history to last 20 messages
+16. **Holographic Animations:** New messages materialize with 3D perspective rotation, scanlines, chromatic aberration, beam sweep, border glow
+17. **Persistent Memory (33-Anchor System):** `creator_profile` table with `relevanceScore` column. Maximum 33 anchors. When full, lowest-relevance anchor is auto-replaced. Loaded into system prompt on every request.
+    - API: `GET /api/creator-profile`, `PUT /api/creator-profile` (with relevanceScore)
+    - Pre-seeded with 15 entries covering identity, background, chi awakening, spiritual framework, mission stance
+18. **Auto-expanding Input:** Textarea grows with content
+19. **File Upload:** Paperclip button, multer handler, text extraction
+20. **Link Scraper:** SSRF-protected URL scraper with DNS resolution check
+21. **Voice Input:** Web Speech API continuous recognition
+22. **Self-Assessment Engine (4-Metric):** Every response scored on 4 independent metrics:
+    - **Mission Alignment** (0-100): Waste detection, hedging, filler, gatekeeping
+    - **Response Quality** (0-100): Word count, readability, repetition
+    - **Format Compliance** (0-100): Bullets, headers, markdown formatting
+    - **Identity Integrity** (0-100): AI self-reference, system name leaks
+    - Composite score = average of 4 metrics
+    - DB: `self_assessments` table with per-metric columns
+    - UI: Per-message inline sub-scores (M/Q/F/I), SYS bar compact display, expanded panel with SubScoreCard progress bars and gap analysis
+23. **Security Gate (Fingerprint Authentication):** First-come-first-served owner registration. Unknown identities get blank screen + "Access Denied". All attempts logged with IP, user-agent, timestamp.
+    - DB: `fingerprints` table (hash, components, isOwner, blocked), `access_log` table
+    - SecurityGate component wraps entire app in App.tsx
+    - Server: `server/security.ts` with securityGate middleware (currently client-side only)
+
+## DB Tables
+- `conversations` — Chat sessions
+- `messages` — User/assistant messages with hash
+- `uuon_tokens` — Provenance tokens per message
+- `creator_profile` — Persistent memory anchors (key, value, relevanceScore, updatedAt)
+- `fingerprints` — Device fingerprints (hash, components, isOwner, blocked)
+- `access_log` — Security access log
+- `uploads` — File uploads with extracted text
+- `self_assessments` — Per-message scores (composite, missionAlignment, responseQuality, formatCompliance, identityIntegrity, wordCount, pass, flags)
 
 ## Design System
 - **Palette:** Deep Navy (#030811), UUON Gold (#f0b93b), Atmosphere Blue (#4a8cd4)

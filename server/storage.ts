@@ -28,8 +28,9 @@ export interface IStorage {
   saveUpload(data: { filename: string; originalName: string; mimeType: string; size: number; conversationId?: number; extractedText?: string }): Promise<Upload>;
   getUpload(id: number): Promise<Upload | undefined>;
   getUploadsByConversation(conversationId: number): Promise<Upload[]>;
-  saveSelfAssessment(data: { messageId: number; conversationId: number; score: number; wordCount: number; pass: boolean; flags: string }): Promise<SelfAssessment>;
-  getSelfAssessmentReport(): Promise<{ avgScore: number; totalAssessments: number; totalFlags: number; recentFlags: string[]; scoreHistory: number[]; gapAnalysis: { category: string; count: number; severity: string }[] }>;
+  addMemoryAnchor(key: string, value: string, relevanceScore?: number): Promise<{ replaced?: string }>;
+  saveSelfAssessment(data: { messageId: number; conversationId: number; score: number; missionAlignment: number; responseQuality: number; formatCompliance: number; identityIntegrity: number; wordCount: number; pass: boolean; flags: string }): Promise<SelfAssessment>;
+  getSelfAssessmentReport(): Promise<{ avgScore: number; avgMission: number; avgQuality: number; avgFormat: number; avgIdentity: number; totalAssessments: number; totalFlags: number; recentFlags: string[]; scoreHistory: number[]; subScoreHistory: { mission: number; quality: number; format: number; identity: number }[]; gapAnalysis: { category: string; count: number; severity: string }[] }>;
 }
 
 class DatabaseStorage implements IStorage {
@@ -106,17 +107,39 @@ class DatabaseStorage implements IStorage {
     return profile;
   }
 
-  async setCreatorProfileEntry(key: string, value: string): Promise<void> {
+  async setCreatorProfileEntry(key: string, value: string, relevanceScore?: number): Promise<void> {
     await db.insert(creatorProfile)
-      .values({ key, value })
+      .values({ key, value, relevanceScore: relevanceScore ?? 50 })
       .onConflictDoUpdate({
         target: creatorProfile.key,
-        set: { value, updatedAt: sql`CURRENT_TIMESTAMP` },
+        set: { value, relevanceScore: relevanceScore ?? 50, updatedAt: sql`CURRENT_TIMESTAMP` },
       });
   }
 
+  async addMemoryAnchor(key: string, value: string, relevanceScore: number = 50): Promise<{ replaced?: string }> {
+    const MAX_ANCHORS = 33;
+    const existing = await db.select().from(creatorProfile).where(eq(creatorProfile.key, key));
+    if (existing.length > 0) {
+      await db.update(creatorProfile)
+        .set({ value, relevanceScore, updatedAt: sql`CURRENT_TIMESTAMP` })
+        .where(eq(creatorProfile.key, key));
+      return {};
+    }
+
+    const allEntries = await db.select().from(creatorProfile).orderBy(creatorProfile.relevanceScore);
+    if (allEntries.length >= MAX_ANCHORS) {
+      const lowest = allEntries[0];
+      await db.delete(creatorProfile).where(eq(creatorProfile.id, lowest.id));
+      await db.insert(creatorProfile).values({ key, value, relevanceScore });
+      return { replaced: lowest.key };
+    }
+
+    await db.insert(creatorProfile).values({ key, value, relevanceScore });
+    return {};
+  }
+
   async getAllCreatorProfileEntries(): Promise<CreatorProfileEntry[]> {
-    return db.select().from(creatorProfile).orderBy(creatorProfile.key);
+    return db.select().from(creatorProfile).orderBy(desc(creatorProfile.relevanceScore));
   }
 
   async getFingerprint(hash: string): Promise<Fingerprint | undefined> {
@@ -175,21 +198,31 @@ class DatabaseStorage implements IStorage {
     return db.select().from(uploads).where(eq(uploads.conversationId, conversationId)).orderBy(desc(uploads.createdAt));
   }
 
-  async saveSelfAssessment(data: { messageId: number; conversationId: number; score: number; wordCount: number; pass: boolean; flags: string }): Promise<SelfAssessment> {
+  async saveSelfAssessment(data: { messageId: number; conversationId: number; score: number; missionAlignment: number; responseQuality: number; formatCompliance: number; identityIntegrity: number; wordCount: number; pass: boolean; flags: string }): Promise<SelfAssessment> {
     const [assessment] = await db.insert(selfAssessments).values(data).returning();
     return assessment;
   }
 
-  async getSelfAssessmentReport(): Promise<{ avgScore: number; totalAssessments: number; totalFlags: number; recentFlags: string[]; scoreHistory: number[]; gapAnalysis: { category: string; count: number; severity: string }[] }> {
+  async getSelfAssessmentReport(): Promise<{ avgScore: number; avgMission: number; avgQuality: number; avgFormat: number; avgIdentity: number; totalAssessments: number; totalFlags: number; recentFlags: string[]; scoreHistory: number[]; subScoreHistory: { mission: number; quality: number; format: number; identity: number }[]; gapAnalysis: { category: string; count: number; severity: string }[] }> {
     const allAssessments = await db.select().from(selfAssessments).orderBy(desc(selfAssessments.createdAt));
 
     if (allAssessments.length === 0) {
-      return { avgScore: 100, totalAssessments: 0, totalFlags: 0, recentFlags: [], scoreHistory: [], gapAnalysis: [] };
+      return { avgScore: 100, avgMission: 100, avgQuality: 100, avgFormat: 100, avgIdentity: 100, totalAssessments: 0, totalFlags: 0, recentFlags: [], scoreHistory: [], subScoreHistory: [], gapAnalysis: [] };
     }
 
     const totalAssessments = allAssessments.length;
     const avgScore = Math.round(allAssessments.reduce((sum, a) => sum + a.score, 0) / totalAssessments);
+    const avgMission = Math.round(allAssessments.reduce((sum, a) => sum + a.missionAlignment, 0) / totalAssessments);
+    const avgQuality = Math.round(allAssessments.reduce((sum, a) => sum + a.responseQuality, 0) / totalAssessments);
+    const avgFormat = Math.round(allAssessments.reduce((sum, a) => sum + a.formatCompliance, 0) / totalAssessments);
+    const avgIdentity = Math.round(allAssessments.reduce((sum, a) => sum + a.identityIntegrity, 0) / totalAssessments);
     const scoreHistory = allAssessments.slice(0, 50).reverse().map(a => a.score);
+    const subScoreHistory = allAssessments.slice(0, 50).reverse().map(a => ({
+      mission: a.missionAlignment,
+      quality: a.responseQuality,
+      format: a.formatCompliance,
+      identity: a.identityIntegrity,
+    }));
 
     const flagCounts: Record<string, number> = {};
     let totalFlags = 0;
@@ -219,10 +252,15 @@ class DatabaseStorage implements IStorage {
 
     return {
       avgScore,
+      avgMission,
+      avgQuality,
+      avgFormat,
+      avgIdentity,
       totalAssessments,
       totalFlags,
       recentFlags: recentFlagsSet.slice(0, 10),
       scoreHistory,
+      subScoreHistory,
       gapAnalysis,
     };
   }

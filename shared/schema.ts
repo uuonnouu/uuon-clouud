@@ -32,6 +32,7 @@ export const creatorProfile = pgTable("creator_profile", {
   id: serial("id").primaryKey(),
   key: text("key").notNull().unique(),
   value: text("value").notNull(),
+  relevanceScore: integer("relevance_score").notNull().default(50),
   updatedAt: timestamp("updated_at").default(sql`CURRENT_TIMESTAMP`).notNull(),
 });
 
@@ -71,6 +72,10 @@ export const selfAssessments = pgTable("self_assessments", {
   messageId: integer("message_id").notNull().references(() => messages.id, { onDelete: "cascade" }),
   conversationId: integer("conversation_id").notNull().references(() => conversations.id, { onDelete: "cascade" }),
   score: integer("score").notNull(),
+  missionAlignment: integer("mission_alignment").notNull().default(100),
+  responseQuality: integer("response_quality").notNull().default(100),
+  formatCompliance: integer("format_compliance").notNull().default(100),
+  identityIntegrity: integer("identity_integrity").notNull().default(100),
   wordCount: integer("word_count").notNull(),
   pass: boolean("pass").notNull(),
   flags: text("flags").notNull().default("[]"),
