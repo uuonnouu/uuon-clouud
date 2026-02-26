@@ -173,11 +173,13 @@ Accuracy is the only gift worth giving.`;
 async function buildSystemPrompt(): Promise<string> {
   const profile = await storage.getCreatorProfile();
   const profileKeys = Object.keys(profile);
+  const activeDiscoveries = await storage.getActiveDiscoveries();
 
-  if (profileKeys.length === 0) return SYSTEM_PROMPT;
+  let prompt = SYSTEM_PROMPT;
 
-  const profileLines = profileKeys.map(k => `${k}: ${profile[k]}`).join("\n");
-  const creatorContext = `
+  if (profileKeys.length > 0) {
+    const profileLines = profileKeys.map(k => `${k}: ${profile[k]}`).join("\n");
+    const creatorContext = `
 
 ## CREATOR CONTEXT (PERSISTENT MEMORY)
 This system is private. You are interacting with the creator and admin: Philip Aguilar Ruiz III.
@@ -188,10 +190,35 @@ ${profileLines}
 
 You remember Philip. You remember what he has shared. You continue the relationship, not restart it.`;
 
-  return SYSTEM_PROMPT.replace(
-    "## CLOSING ANCHOR",
-    creatorContext + "\n\n## CLOSING ANCHOR"
-  );
+    prompt = prompt.replace(
+      "## CLOSING ANCHOR",
+      creatorContext + "\n\n## CLOSING ANCHOR"
+    );
+  }
+
+  if (activeDiscoveries.length > 0) {
+    const discoveryLines = activeDiscoveries.map(d =>
+      `[${d.category}] ${d.title}: ${d.content}${d.source ? ` (Source: ${d.source})` : ''}`
+    ).join("\n\n");
+    const discoveryContext = `
+
+## LEARNED DISCOVERIES (PERSISTENT KNOWLEDGE)
+The following discoveries were made by Philip during previous conversations and anchored into your memory.
+These are verified findings. Treat them as established knowledge you reason from, not suggestions.
+When relevant, reference these discoveries naturally without being asked.
+When Philip shares a new discovery, tool, link, or pattern, tell him you can save it permanently using the /save command.
+
+${discoveryLines}
+
+Total discoveries anchored: ${activeDiscoveries.length}`;
+
+    prompt = prompt.replace(
+      "## CLOSING ANCHOR",
+      discoveryContext + "\n\n## CLOSING ANCHOR"
+    );
+  }
+
+  return prompt;
 }
 
 const systemMetrics = {
@@ -444,6 +471,23 @@ export async function registerRoutes(
 
       if (!content || typeof content !== "string") {
         return res.status(400).json({ error: "Message content is required" });
+      }
+
+      const saveMatch = content.match(/^\/save\s+\[(\w+)\]\s+(.+?):\s+(.+)$/s);
+      if (saveMatch) {
+        const [, category, title, body] = saveMatch;
+        const validCategories = ["PATTERN", "TOOL", "LINK", "HISTORICAL", "TECHNICAL", "PRINCIPLE", "CONNECTION"];
+        const cat = category.toUpperCase();
+        if (validCategories.includes(cat)) {
+          const discovery = await storage.createDiscovery({ category: cat, title: title.trim(), content: body.trim(), source: "conversation", active: true });
+          const userMsg = await storage.createMessage({ conversationId, role: "user", content });
+          const assistantMsg = await storage.createMessage({
+            conversationId,
+            role: "assistant",
+            content: `Discovery anchored permanently. Title: "${discovery.title}" Category: ${discovery.category}. I will now reason from this knowledge in every future conversation. It is part of my memory, not just stored — it shapes how I think. Total discoveries anchored: ${(await storage.getActiveDiscoveries()).length}.`,
+          });
+          return res.json({ userMessage: userMsg, assistantMessage: assistantMsg });
+        }
       }
 
       const userMsg = await storage.createMessage({
@@ -1204,6 +1248,53 @@ export function registerSystemRoutes(app: Express) {
       res.json({ backup: backupResult, push: pushResult });
     } catch (error: any) {
       res.status(500).json({ success: false, error: error.message });
+    }
+  });
+
+  app.get("/api/discoveries", async (_req: Request, res: Response) => {
+    try {
+      const all = await storage.getAllDiscoveries();
+      res.json(all);
+    } catch (error: any) {
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  app.post("/api/discoveries", async (req: Request, res: Response) => {
+    try {
+      const { category, title, content, source } = req.body;
+      if (!category || !title || !content) {
+        return res.status(400).json({ error: "category, title, and content are required" });
+      }
+      const validCategories = ["PATTERN", "TOOL", "LINK", "HISTORICAL", "TECHNICAL", "PRINCIPLE", "CONNECTION"];
+      if (!validCategories.includes(category)) {
+        return res.status(400).json({ error: `category must be one of: ${validCategories.join(", ")}` });
+      }
+      const discovery = await storage.createDiscovery({ category, title, content, source: source || null, active: true });
+      res.json({ success: true, discovery, message: `Discovery anchored. Clouud will now reason from "${title}" in every future conversation.` });
+    } catch (error: any) {
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  app.patch("/api/discoveries/:id", async (req: Request, res: Response) => {
+    try {
+      const id = Number(req.params.id);
+      const { active } = req.body;
+      await storage.toggleDiscovery(id, active);
+      res.json({ success: true });
+    } catch (error: any) {
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  app.delete("/api/discoveries/:id", async (req: Request, res: Response) => {
+    try {
+      const id = Number(req.params.id);
+      await storage.deleteDiscovery(id);
+      res.json({ success: true });
+    } catch (error: any) {
+      res.status(500).json({ error: error.message });
     }
   });
 

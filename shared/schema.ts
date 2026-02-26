@@ -103,6 +103,16 @@ export const uinverseIdeas = pgTable("uinverse_ideas", {
   createdAt: timestamp("created_at").default(sql`CURRENT_TIMESTAMP`).notNull(),
 });
 
+export const discoveries = pgTable("discoveries", {
+  id: serial("id").primaryKey(),
+  category: text("category").notNull(),
+  title: text("title").notNull(),
+  content: text("content").notNull(),
+  source: text("source"),
+  active: boolean("active").notNull().default(true),
+  createdAt: timestamp("created_at").default(sql`CURRENT_TIMESTAMP`).notNull(),
+});
+
 export const insertConversationSchema = createInsertSchema(conversations).omit({
   id: true,
   createdAt: true,
@@ -131,3 +141,10 @@ export type Upload = typeof uploads.$inferSelect;
 export type SelfAssessment = typeof selfAssessments.$inferSelect;
 export type UinverseImport = typeof uinverseImports.$inferSelect;
 export type UinverseIdea = typeof uinverseIdeas.$inferSelect;
+export type Discovery = typeof discoveries.$inferSelect;
+
+export const insertDiscoverySchema = createInsertSchema(discoveries).omit({
+  id: true,
+  createdAt: true,
+});
+export type InsertDiscovery = z.infer<typeof insertDiscoverySchema>;
