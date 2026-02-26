@@ -9,6 +9,7 @@ import { hashFingerprint } from "./security";
 import { runBackup, getBackupStatus, startScheduledBackups } from "./backup";
 import { backupAllModels } from "./sketchfab-backup";
 import { getGitHubStatus, createPrivateRepo, pushBackupToGitHub } from "./github";
+import { dmensionBridge } from "./dmension-bridge";
 import Anthropic from "@anthropic-ai/sdk";
 
 const SYSTEM_PROMPT = `# ═══════════════════════════════════════════════════
@@ -1119,6 +1120,13 @@ export function registerSystemRoutes(app: Express) {
       health.components.github = { connected: false, error: "Not configured" };
     }
 
+    try {
+      const dmStatus = await dmensionBridge.checkConnection();
+      health.components.dmension = { connected: true, latencyMs: dmStatus.latencyMs, url: process.env.DMENSION_API_URL };
+    } catch (e: any) {
+      health.components.dmension = { connected: false, error: e.message, url: process.env.DMENSION_API_URL };
+    }
+
     res.json(health);
   });
 
@@ -1194,6 +1202,80 @@ export function registerSystemRoutes(app: Express) {
       );
 
       res.json({ backup: backupResult, push: pushResult });
+    } catch (error: any) {
+      res.status(500).json({ success: false, error: error.message });
+    }
+  });
+
+  app.get("/api/dmension/status", async (_req: Request, res: Response) => {
+    try {
+      const status = await dmensionBridge.checkConnection();
+      res.json({ success: true, ...status });
+    } catch (error: any) {
+      res.json({ success: false, error: error.message, bridgeUrl: process.env.DMENSION_API_URL });
+    }
+  });
+
+  app.get("/api/dmension/shapes", async (req: Request, res: Response) => {
+    try {
+      const category = req.query.category as string | undefined;
+      const limit = req.query.limit ? Number(req.query.limit) : 50;
+      const shapes = await dmensionBridge.getShapes({ category, limit });
+      res.json({ success: true, ...shapes });
+    } catch (error: any) {
+      res.status(500).json({ success: false, error: error.message });
+    }
+  });
+
+  app.get("/api/dmension/ml-updates", async (_req: Request, res: Response) => {
+    try {
+      const updates = await dmensionBridge.getMLUpdates();
+      res.json({ success: true, ...updates });
+    } catch (error: any) {
+      res.status(500).json({ success: false, error: error.message });
+    }
+  });
+
+  app.post("/api/dmension/send-shape", async (req: Request, res: Response) => {
+    try {
+      const { shapeType, parameters, physicsCategory } = req.body;
+      if (!shapeType || !parameters) {
+        return res.status(400).json({ error: "shapeType and parameters required" });
+      }
+      const result = await dmensionBridge.sendShape({ shapeType, parameters, physicsCategory });
+      res.json({ success: true, ...result });
+    } catch (error: any) {
+      res.status(500).json({ success: false, error: error.message });
+    }
+  });
+
+  app.post("/api/dmension/send-ml", async (req: Request, res: Response) => {
+    try {
+      const { shapeType, embeddings, metadata } = req.body;
+      if (!shapeType || !embeddings) {
+        return res.status(400).json({ error: "shapeType and embeddings required" });
+      }
+      const result = await dmensionBridge.sendMLData(shapeType, embeddings, metadata || {});
+      res.json({ success: true, ...result });
+    } catch (error: any) {
+      res.status(500).json({ success: false, error: error.message });
+    }
+  });
+
+  app.post("/api/dmension/sync", async (req: Request, res: Response) => {
+    try {
+      const localShapes = req.body.shapes || [];
+      const result = await dmensionBridge.fullSync(localShapes);
+      res.json({ success: true, ...result });
+    } catch (error: any) {
+      res.status(500).json({ success: false, error: error.message });
+    }
+  });
+
+  app.get("/api/dmension/log", async (_req: Request, res: Response) => {
+    try {
+      const log = await dmensionBridge.viewSentLog();
+      res.json({ success: true, ...log });
     } catch (error: any) {
       res.status(500).json({ success: false, error: error.message });
     }

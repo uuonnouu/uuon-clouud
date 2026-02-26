@@ -43,3 +43,8 @@ waitForPort = 5000
 stack = "MOCKUP_JS"
 mockupState = "FULLSTACK"
 integrations = ["javascript_anthropic_ai_integrations:2.0.0", "github:1.0.0"]
+
+[userenv]
+
+[userenv.shared]
+DMENSION_API_URL = "https://dmension-mathematical-universe.replit.app"
