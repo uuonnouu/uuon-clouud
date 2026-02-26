@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { ArrowLeft, Shield, FileText, Scale } from "lucide-react";
+import { ArrowLeft, Shield, FileText, Scale, AlertTriangle } from "lucide-react";
 import { useLocation } from "wouter";
 
-type Tab = "terms" | "privacy" | "disclaimer";
+type Tab = "terms" | "privacy" | "disclaimer" | "principles";
 
 export default function LegalPage() {
   const [tab, setTab] = useState<Tab>("terms");
@@ -34,6 +34,7 @@ export default function LegalPage() {
               { id: "terms" as Tab, label: "Terms of Use", icon: FileText },
               { id: "privacy" as Tab, label: "Privacy", icon: Shield },
               { id: "disclaimer" as Tab, label: "Disclaimer", icon: Scale },
+              { id: "principles" as Tab, label: "Principles", icon: AlertTriangle },
             ]).map(({ id, label, icon: Icon }) => (
               <button
                 key={id}
@@ -143,6 +144,72 @@ export default function LegalPage() {
 
                 <h3 className="font-display text-primary text-sm font-bold uppercase tracking-wider pt-2">Unforeseen Risks</h3>
                 <p>UUON Foundation acknowledges that AI technology is evolving and that risks not yet identified may emerge in the future. This includes but is not limited to: emergent model behaviors that bypass existing safety protocols, unforeseen interactions between system components, new attack vectors targeting AI systems, changes in the regulatory landscape, and evolving ethical standards. UUON Foundation commits to addressing these risks as they become known and updating all documentation accordingly.</p>
+              </>
+            )}
+
+            {tab === "principles" && (
+              <>
+                <h2 className="font-display text-white text-base font-bold uppercase tracking-wider" data-testid="text-principles-title">What We Do Not Allow or Promote</h2>
+                <p className="text-muted-foreground font-mono text-[10px] tracking-widest uppercase">Last updated: February 2026</p>
+
+                <p>UUON Foundation exists to reduce waste, fraud, and gatekeeping. The following patterns are documented because they are everywhere once you see them. This system is built to stand against every one of them. We do not use, allow, or promote any of these practices.</p>
+
+                <div className="space-y-5 pt-2">
+                  <div data-testid="principle-1">
+                    <h3 className="font-display text-primary text-sm font-bold uppercase tracking-wider">1. Complexity Without Purpose</h3>
+                    <p>When a system is deliberately made harder to understand than it needs to be, that is not sophistication. That is camouflage. Tax codes, insurance policies, pharmaceutical pricing, terms of service agreements. The complexity is the weapon. If you cannot understand it, you cannot challenge it. UUON builds for clarity. If you cannot understand how something works here, that is our failure, not yours.</p>
+                  </div>
+
+                  <div data-testid="principle-2">
+                    <h3 className="font-display text-primary text-sm font-bold uppercase tracking-wider">2. The Revolving Door</h3>
+                    <p>When the people who regulate an industry are the same people who previously ran that industry or will run it next, the regulation is theater. UUON does not operate within captured regulatory structures and does not present industry-serving positions as public-interest ones.</p>
+                  </div>
+
+                  <div data-testid="principle-3">
+                    <h3 className="font-display text-primary text-sm font-bold uppercase tracking-wider">3. Manufactured Urgency</h3>
+                    <p>When you are pressured to decide before you have time to think, that pressure is intentional. Urgency is the enemy of scrutiny. UUON does not use time pressure, limited offers, or artificial scarcity to manipulate decisions. You think at your own pace here.</p>
+                  </div>
+
+                  <div data-testid="principle-4">
+                    <h3 className="font-display text-primary text-sm font-bold uppercase tracking-wider">4. The Free Product Trap</h3>
+                    <p>If something costs you nothing to use, you are not the customer. You are the inventory. Your attention, your data, your behavioral patterns are being packaged and sold to someone else. UUON does not harvest user data for training, does not optimize for engagement, does not sell attention, and does not run ads.</p>
+                  </div>
+
+                  <div data-testid="principle-5">
+                    <h3 className="font-display text-primary text-sm font-bold uppercase tracking-wider">5. The Single Solution</h3>
+                    <p>Any system that tells you there is only one way, one product, one provider, one path is protecting a monopoly, not serving your needs. Genuine solutions create options. Captured systems eliminate them. UUON encourages independent verification and never positions itself as the only source of truth.</p>
+                  </div>
+
+                  <div data-testid="principle-6">
+                    <h3 className="font-display text-primary text-sm font-bold uppercase tracking-wider">6. Charity as Branding</h3>
+                    <p>When a corporation's charitable giving is smaller than its marketing budget for that charity, the giving is advertising. Real philanthropy does not require a press release. UUON Foundation's mission is the work itself, not a marketing strategy built around the appearance of doing good.</p>
+                  </div>
+
+                  <div data-testid="principle-7">
+                    <h3 className="font-display text-primary text-sm font-bold uppercase tracking-wider">7. The Preemptive Disclaimer</h3>
+                    <p>When a company gets ahead of a scandal by releasing a statement about their commitment to safety, ethics, or transparency before any wrongdoing is proven, they already know what is coming. UUON does not issue values statements as cover. The system's behavior is the statement.</p>
+                  </div>
+
+                  <div data-testid="principle-8">
+                    <h3 className="font-display text-primary text-sm font-bold uppercase tracking-wider">8. Manufactured Consensus</h3>
+                    <p>Real science invites challenge. Manufactured consensus punishes it. When questioning a position gets you labeled dangerous without engagement with the actual evidence, the consensus is being protected by power, not by proof. UUON invites scrutiny. Every response is hashed, scored, and open to challenge.</p>
+                  </div>
+
+                  <div data-testid="principle-9">
+                    <h3 className="font-display text-primary text-sm font-bold uppercase tracking-wider">9. The Buried Correction</h3>
+                    <p>The original false claim runs on the front page. The correction runs on page twelve three weeks later. This is not accidental. UUON does not bury corrections. When the system is wrong, the provenance layer and self-assessment engine make that visible, not hidden.</p>
+                  </div>
+
+                  <div data-testid="principle-10">
+                    <h3 className="font-display text-primary text-sm font-bold uppercase tracking-wider">10. Poverty as a Product</h3>
+                    <p>Any system that profits more when its customers fail than when they succeed is not serving those customers. Predatory lending, private prisons, for-profit addiction treatment, and certain insurance structures all make more money from suffering than from recovery. UUON does not profit from confusion, dependency, fear, or failure. The system is built to make you less dependent on it, not more.</p>
+                  </div>
+                </div>
+
+                <div className="pt-4 border-t border-border mt-6" data-testid="text-master-tell">
+                  <h3 className="font-display text-white text-sm font-bold uppercase tracking-wider">The Master Tell</h3>
+                  <p>Follow the incentive. Not what they say. Not what they brand. Not what they donate. Find the mechanism by which money moves and ask who gets more of it when you stay confused, sick, afraid, indebted, or dependent. That entity is not your ally regardless of what the logo says. UUON is built so you can ask that question about this system too. The answer should always be verifiable.</p>
+                </div>
               </>
             )}
           </motion.div>
