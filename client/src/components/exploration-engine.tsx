@@ -196,53 +196,72 @@ export default function ExplorationEngine({ onExplore }: ExplorationEngineProps)
   const [hoveredNode, setHoveredNode] = useState<string | null>(null);
   const [activeNode, setActiveNode] = useState<string | null>(null);
   const [time, setTime] = useState(0);
-  const [particles, setParticles] = useState<{ id: number; x: number; y: number; vx: number; vy: number; life: number; color: string }[]>([]);
-  const animRef = useRef<number>(0);
-  const containerRef = useRef<HTMLDivElement>(null);
+  const [particles, setParticles] = useState<{ id: number; x: number; y: number; vx: number; vy: number; life: number; color: string; theory?: string }[]>([]);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+
+  // Theories into visual play
+  const THEORIES = [
+    { name: "Fluid Dynamics", color: "#4a8cd4", particles: 20, speed: 1.2 },
+    { name: "Entropy Reduction", color: "#f0b93b", particles: 10, speed: 0.4 },
+    { name: "Wave Interference", color: "#8b5cf6", particles: 15, speed: 1.8 },
+    { name: "Tensor Fields", color: "#22c55e", particles: 12, speed: 0.8 },
+  ];
 
   useEffect(() => {
-    let running = true;
-    let last = 0;
-    const tick = (now: number) => {
-      if (!running) return;
-      if (now - last > 64) {
-        setTime(t => t + 1);
-        last = now;
-      }
-      animRef.current = requestAnimationFrame(tick);
-    };
-    animRef.current = requestAnimationFrame(tick);
-    return () => { running = false; cancelAnimationFrame(animRef.current); };
-  }, []);
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
 
-  useEffect(() => {
-    const interval = setInterval(() => {
+    let animationFrameId: number;
+    const theory = THEORIES[Math.floor(Math.random() * THEORIES.length)];
+
+    const animate = () => {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      
       setParticles(prev => {
-        const alive = prev.filter(p => p.life > 0).map(p => ({
-          ...p,
-          x: p.x + p.vx,
-          y: p.y + p.vy,
-          life: p.life - 1,
-        }));
+        const alive = prev.map(p => {
+          const dx = p.vx * theory.speed;
+          const dy = p.vy * theory.speed;
+          return {
+            ...p,
+            x: p.x + dx,
+            y: p.y + dy,
+            life: p.life - 1
+          };
+        }).filter(p => p.life > 0);
 
-        if (Math.random() < 0.2 && alive.length < 15) {
-          const angle = Math.random() * Math.PI * 2;
-          const r = 15 + Math.random() * 10;
+        if (Math.random() < 0.1 && alive.length < 25) {
           alive.push({
-            id: Date.now() + Math.random(),
-            x: 50 + Math.cos(angle) * r,
-            y: 50 + Math.sin(angle) * r,
-            vx: (Math.random() - 0.5) * 0.2,
-            vy: (Math.random() - 0.5) * 0.2,
-            life: 30 + Math.random() * 30,
-            color: ["#4a8cd4", "#f0b93b", "#8b5cf6", "#22c55e"][Math.floor(Math.random() * 4)],
+            id: Math.random(),
+            x: Math.random() * 100,
+            y: Math.random() * 100,
+            vx: (Math.random() - 0.5) * 0.5,
+            vy: (Math.random() - 0.5) * 0.5,
+            life: 50 + Math.random() * 50,
+            color: theory.color,
+            theory: theory.name
           });
         }
-
         return alive;
       });
-    }, 100);
-    return () => clearInterval(interval);
+
+      animationFrameId = requestAnimationFrame(animate);
+    };
+
+    const handleResize = () => {
+      canvas.width = canvas.offsetWidth;
+      canvas.height = canvas.offsetHeight;
+    };
+
+    window.addEventListener("resize", handleResize);
+    handleResize();
+    animate();
+
+    return () => {
+      cancelAnimationFrame(animationFrameId);
+      window.removeEventListener("resize", handleResize);
+    };
   }, []);
 
   function handleNodeClick(node: ShapeNode) {
@@ -257,6 +276,11 @@ export default function ExplorationEngine({ onExplore }: ExplorationEngineProps)
       <div className="absolute inset-0 clouud-ambient" />
       <div className="absolute inset-0 lattice-grid-deep opacity-40" />
       
+      <canvas 
+        ref={canvasRef}
+        className="absolute inset-0 pointer-events-none"
+      />
+
       <div className="absolute inset-0 pointer-events-none">
         {particles.map(p => (
           <div
