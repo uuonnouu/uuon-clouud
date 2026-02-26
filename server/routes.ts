@@ -484,7 +484,10 @@ export async function registerRoutes(
           const assistantMsg = await storage.createMessage({
             conversationId,
             role: "assistant",
-            content: `Discovery anchored permanently. Title: "${discovery.title}" Category: ${discovery.category}. I will now reason from this knowledge in every future conversation. It is part of my memory, not just stored — it shapes how I think. Total discoveries anchored: ${(await storage.getActiveDiscoveries()).length}.`,
+            content: `Discovery anchored permanently. Title: "${discovery.title}" Category: ${discovery.category}. I will now reason from this knowledge in every future conversation. It is part of my memory, not just stored — it shapes how I think. Total discoveries anchored: ${(await storage.getActiveDiscoveries()).length}.
+
+Benefit Analysis:
+By anchoring this discovery, we eliminate the waste of re-explaining complex concepts. Clouud now uses this technical foundation (T3 precision, Δmension geometry) to detect fraud and gatekeeping in real-time. This information is no longer just "data" — it is a lens through which all future systems are evaluated to ensure they serve the Earth, not the extractor.`,
           });
           return res.json({ userMessage: userMsg, assistantMessage: assistantMsg });
         }
