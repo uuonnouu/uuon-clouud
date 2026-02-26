@@ -115,6 +115,6 @@ UUON Clouud is the intelligence interface for the G°centric Lattice System, bui
 - `DATABASE_URL` — PostgreSQL connection string (auto-set)
 - `AI_INTEGRATIONS_ANTHROPIC_API_KEY` — Anthropic API key (via Replit integration)
 - `AI_INTEGRATIONS_ANTHROPIC_BASE_URL` — Anthropic base URL (via Replit integration)
-- `DMENSION_API_URL` — Δmension Mathematical Universe URL (https://dmension-mathematical-universe.replit.app)
+- `DMENSION_API_URL` — Δmension Mathematical Universe URL (https://uuon-foundation.com)
 - `UUON_BRIDGE_SECRET` — Shared secret for Δmension bridge authentication
 - `SKETCHFAB_API_TOKEN` — (optional) Sketchfab API token for 3D model backup
