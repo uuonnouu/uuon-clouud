@@ -11,6 +11,16 @@ process.on("uncaughtException", (err) => {
   console.error("Uncaught Exception:", err);
 });
 
+// Global error handlers for process-level stability
+process.on('SIGTERM', () => {
+  console.info('SIGTERM signal received.');
+  process.exit(0);
+});
+process.on('SIGINT', () => {
+  console.info('SIGINT signal received.');
+  process.exit(0);
+});
+
 if (process.env.NODE_ENV !== "production") {
   const originalExit = process.exit.bind(process);
   Object.defineProperty(process, 'exit', {

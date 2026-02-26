@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import { Cpu, Binary, Menu, X, Globe, Zap, Network, ChevronRight, Plus, Trash2, MessageCircle, Loader2, Activity, HelpCircle, Undo2, Scale, Paperclip, Link2, Mic, MicOff } from "lucide-react";
+import { Cpu, Binary, Menu, X, Globe, Zap, Network, ChevronRight, Plus, Trash2, MessageCircle, Loader2, Activity, HelpCircle, Undo2, Scale, Paperclip, Link2, Mic, MicOff, ShieldAlert } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useLocation } from "wouter";
 import ClouudAvatar from "@/components/clouud-avatar";
@@ -39,6 +39,8 @@ const QUICK_ACTIONS = [
   "Why does rounding matter?",
   "Tell me about the 3D models",
   "What does UUON mean?",
+  "Prepare whistleblower report",
+  "Check antitrust patterns",
 ];
 
 export default function ClouudTerminal() {
@@ -538,6 +540,14 @@ export default function ClouudTerminal() {
                 >
                   <HelpCircle className="w-3.5 h-3.5 shrink-0" />
                   Interactive Tutorial
+                </button>
+                <button
+                  onClick={() => setLocation("/whistleblower")}
+                  className="w-full flex items-center gap-2 px-2 py-2 text-[11px] text-primary hover:text-white bg-background hover:bg-muted/60 border border-border hover:border-primary/30 rounded-sm transition-all"
+                  data-testid="button-whistleblower"
+                >
+                  <ShieldAlert className="w-3.5 h-3.5 shrink-0" />
+                  Whistleblower Portal
                 </button>
                 <button
                   onClick={() => setLocation("/legal")}

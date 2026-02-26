@@ -687,6 +687,7 @@ export async function registerRoutes(
       const setup = await (await import("./auth")).isSetupComplete();
       const setupComplete = setup.webauthn && setup.passphrase && setup.fingerprint;
       if (!setupComplete) {
+        // Reset fingerprints if setup is not fully complete to prevent deadlocks
         await storage.clearAllFingerprints();
         const fp = await storage.registerFingerprint(hash, JSON.stringify(components), true);
         await storage.logAccess(hash, "REGISTER_OWNER_RESET", true, req.ip, req.headers["user-agent"]);
@@ -724,6 +725,24 @@ export async function registerRoutes(
       res.json(log);
     } catch (error) {
       res.status(500).json({ error: "Failed to fetch access log" });
+    }
+  });
+
+  app.post("/api/whistleblower/claims", async (req: Request, res: Response) => {
+    try {
+      const claim = await storage.createWhistleblowerClaim(req.body);
+      res.status(201).json(claim);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to create claim" });
+    }
+  });
+
+  app.get("/api/whistleblower/claims", async (_req: Request, res: Response) => {
+    try {
+      const claims = await storage.getAllWhistleblowerClaims();
+      res.json(claims);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch claims" });
     }
   });
 

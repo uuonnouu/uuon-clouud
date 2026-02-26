@@ -1,6 +1,6 @@
 import { db } from "./db";
-import { conversations, messages, uuonTokens, creatorProfile, fingerprints, accessLog, uploads, selfAssessments } from "@shared/schema";
-import type { Conversation, InsertConversation, Message, InsertMessage, UuonToken, InsertUuonToken, CreatorProfileEntry, Fingerprint, AccessLogEntry, Upload, SelfAssessment } from "@shared/schema";
+import { conversations, messages, uuonTokens, creatorProfile, fingerprints, accessLog, uploads, selfAssessments, whistleblowerClaims } from "@shared/schema";
+import type { Conversation, InsertConversation, Message, InsertMessage, UuonToken, InsertUuonToken, CreatorProfileEntry, Fingerprint, AccessLogEntry, Upload, SelfAssessment, WhistleblowerClaim, InsertWhistleblowerClaim } from "@shared/schema";
 import { eq, desc, and, gte, count, sql, avg } from "drizzle-orm";
 
 export interface IStorage {
@@ -32,6 +32,8 @@ export interface IStorage {
   addMemoryAnchor(key: string, value: string, relevanceScore?: number): Promise<{ replaced?: string }>;
   saveSelfAssessment(data: { messageId: number; conversationId: number; score: number; missionAlignment: number; responseQuality: number; formatCompliance: number; identityIntegrity: number; wordCount: number; pass: boolean; flags: string }): Promise<SelfAssessment>;
   getSelfAssessmentReport(): Promise<{ avgScore: number; avgMission: number; avgQuality: number; avgFormat: number; avgIdentity: number; totalAssessments: number; totalFlags: number; recentFlags: string[]; scoreHistory: number[]; subScoreHistory: { mission: number; quality: number; format: number; identity: number }[]; gapAnalysis: { category: string; count: number; severity: string }[] }>;
+  createWhistleblowerClaim(data: InsertWhistleblowerClaim): Promise<WhistleblowerClaim>;
+  getAllWhistleblowerClaims(): Promise<WhistleblowerClaim[]>;
 }
 
 class DatabaseStorage implements IStorage {
@@ -268,6 +270,15 @@ class DatabaseStorage implements IStorage {
       subScoreHistory,
       gapAnalysis,
     };
+  }
+
+  async createWhistleblowerClaim(data: InsertWhistleblowerClaim): Promise<WhistleblowerClaim> {
+    const [claim] = await db.insert(whistleblowerClaims).values(data).returning();
+    return claim;
+  }
+
+  async getAllWhistleblowerClaims(): Promise<WhistleblowerClaim[]> {
+    return db.select().from(whistleblowerClaims).orderBy(desc(whistleblowerClaims.createdAt));
   }
 }
 

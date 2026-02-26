@@ -139,4 +139,22 @@ export type Upload = typeof uploads.$inferSelect;
 export type SelfAssessment = typeof selfAssessments.$inferSelect;
 export type WebAuthnCredential = typeof webauthnCredentials.$inferSelect;
 export type OwnerPassphrase = typeof ownerPassphrase.$inferSelect;
-export type AuthSession = typeof authSessions.$inferSelect;
+export const whistleblowerClaims = pgTable("whistleblower_claims", {
+  id: serial("id").primaryKey(),
+  targetCompany: text("target_company").notNull(),
+  misconductType: text("misconduct_type").notNull(),
+  description: text("description").notNull(),
+  evidenceSummary: text("evidence_summary").notNull(),
+  systemAnalysis: text("system_analysis").notNull(),
+  potentialForfeiture: text("potential_forfeiture"),
+  status: text("status").notNull().default("prepared"),
+  createdAt: timestamp("created_at").default(sql`CURRENT_TIMESTAMP`).notNull(),
+});
+
+export const insertWhistleblowerClaimSchema = createInsertSchema(whistleblowerClaims).omit({
+  id: true,
+  createdAt: true,
+});
+
+export type WhistleblowerClaim = typeof whistleblowerClaims.$inferSelect;
+export type InsertWhistleblowerClaim = z.infer<typeof insertWhistleblowerClaimSchema>;
