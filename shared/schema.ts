@@ -82,6 +82,34 @@ export const selfAssessments = pgTable("self_assessments", {
   createdAt: timestamp("created_at").default(sql`CURRENT_TIMESTAMP`).notNull(),
 });
 
+export const webauthnCredentials = pgTable("webauthn_credentials", {
+  id: serial("id").primaryKey(),
+  credentialId: text("credential_id").notNull().unique(),
+  publicKey: text("public_key").notNull(),
+  counter: integer("counter").notNull().default(0),
+  transports: text("transports"),
+  createdAt: timestamp("created_at").default(sql`CURRENT_TIMESTAMP`).notNull(),
+});
+
+export const ownerPassphrase = pgTable("owner_passphrase", {
+  id: serial("id").primaryKey(),
+  hash: text("hash").notNull(),
+  createdAt: timestamp("created_at").default(sql`CURRENT_TIMESTAMP`).notNull(),
+  updatedAt: timestamp("updated_at").default(sql`CURRENT_TIMESTAMP`).notNull(),
+});
+
+export const authSessions = pgTable("auth_sessions", {
+  id: serial("id").primaryKey(),
+  token: text("token").notNull().unique(),
+  fingerprintHash: text("fingerprint_hash").notNull(),
+  layersCompleted: integer("layers_completed").notNull().default(0),
+  webauthnVerified: boolean("webauthn_verified").notNull().default(false),
+  passphraseVerified: boolean("passphrase_verified").notNull().default(false),
+  fingerprintVerified: boolean("fingerprint_verified").notNull().default(false),
+  expiresAt: timestamp("expires_at").notNull(),
+  createdAt: timestamp("created_at").default(sql`CURRENT_TIMESTAMP`).notNull(),
+});
+
 export const insertConversationSchema = createInsertSchema(conversations).omit({
   id: true,
   createdAt: true,
@@ -108,3 +136,6 @@ export type Fingerprint = typeof fingerprints.$inferSelect;
 export type AccessLogEntry = typeof accessLog.$inferSelect;
 export type Upload = typeof uploads.$inferSelect;
 export type SelfAssessment = typeof selfAssessments.$inferSelect;
+export type WebAuthnCredential = typeof webauthnCredentials.$inferSelect;
+export type OwnerPassphrase = typeof ownerPassphrase.$inferSelect;
+export type AuthSession = typeof authSessions.$inferSelect;

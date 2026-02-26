@@ -62,10 +62,17 @@ UUON Clouud is the intelligence interface for the G°centric Lattice System, bui
     - Composite score = average of 4 metrics
     - DB: `self_assessments` table with per-metric columns
     - UI: Per-message inline sub-scores (M/Q/F/I), SYS bar compact display, expanded panel with SubScoreCard progress bars and gap analysis
-23. **Security Gate (Fingerprint Authentication):** First-come-first-served owner registration. Unknown identities get blank screen + "Access Denied". All attempts logged with IP, user-agent, timestamp.
-    - DB: `fingerprints` table (hash, components, isOwner, blocked), `access_log` table
-    - SecurityGate component wraps entire app in App.tsx
-    - Server: `server/security.ts` with securityGate middleware (currently client-side only)
+23. **3-Layer Biometric Authentication:**
+    - **Layer 1 — WebAuthn:** Platform biometric (fingerprint/Face ID via browser API), @simplewebauthn/server + @simplewebauthn/browser
+    - **Layer 2 — Passphrase:** bcrypt-hashed (12 rounds), verified per session
+    - **Layer 3 — Device Fingerprint:** Canvas/WebGL/Audio composite hash, session-bound, 30s integrity monitor
+    - Per-session challenge scoping prevents cross-session replay
+    - Protected API routes require all 3 layers verified (enforced in securityGate middleware)
+    - Setup flow: first visit → register biometric + set passphrase; subsequent visits → authenticate all 3 layers
+    - Session tokens stored in sessionStorage, auto-injected via global fetch interceptor in main.tsx
+    - DB: `webauthn_credentials`, `owner_passphrase`, `auth_sessions`, `fingerprints`, `access_log`
+    - Server: `server/auth.ts` (all auth endpoints), `server/security.ts` (enforceFullAuth middleware)
+    - Client: `client/src/components/security-gate.tsx` (full 3-layer UI flow)
 
 ## DB Tables
 - `conversations` — Chat sessions
@@ -76,6 +83,9 @@ UUON Clouud is the intelligence interface for the G°centric Lattice System, bui
 - `access_log` — Security access log
 - `uploads` — File uploads with extracted text
 - `self_assessments` — Per-message scores (composite, missionAlignment, responseQuality, formatCompliance, identityIntegrity, wordCount, pass, flags)
+- `webauthn_credentials` — WebAuthn credential storage (credentialId, publicKey, counter, transports)
+- `owner_passphrase` — Bcrypt-hashed owner passphrase
+- `auth_sessions` — 3-layer auth sessions (token, fingerprintHash, layer flags, expiry)
 
 ## Design System
 - **Palette:** Deep Navy (#030811), UUON Gold (#f0b93b), Atmosphere Blue (#4a8cd4)

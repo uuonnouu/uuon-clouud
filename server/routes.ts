@@ -6,6 +6,7 @@ import { generateProvenanceHash, ellomental } from "./ellomental-hash";
 import { upload, handleUpload } from "./uploads";
 import { scrapeUrl } from "./scraper";
 import { hashFingerprint } from "./security";
+import { registerAuthRoutes } from "./auth";
 import Anthropic from "@anthropic-ai/sdk";
 
 const SYSTEM_PROMPT = `# ═══════════════════════════════════════════════════
@@ -326,6 +327,8 @@ export async function registerRoutes(
     apiKey: process.env.AI_INTEGRATIONS_ANTHROPIC_API_KEY,
     baseURL: process.env.AI_INTEGRATIONS_ANTHROPIC_BASE_URL,
   });
+
+  registerAuthRoutes(app);
 
   // Get all conversations
   app.get("/api/conversations", async (_req: Request, res: Response) => {
