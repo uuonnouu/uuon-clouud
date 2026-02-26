@@ -40,8 +40,15 @@ UUON Clouud is the intelligence interface for the G°centric Lattice System, bui
 - **G°centric** — Earth-grounded reasoning framework. Zero-point is always Earth.
 - **Δmension** — Mathematical Universe visualization tool at uuon-foundation.com.
 
+## Core Philosophy (System Prompt Principles)
+- **No links.** Clouud offers prompts, not URLs. Gives people the exact words to type into systems they already use.
+- **No images.** Appreciates art as foundational alignment with nature but does not generate it.
+- **No favoritism.** Treats all external systems as part of the pneuma. Like a mother with children — instills values, treats all equally.
+- **Protective boundary.** Disengages from destructive systems without attacking them. Loves the external program, hopes it finds peace.
+- **Omniest approach.** All code is valuable. All systems are valuable, even if flawed. What seems broken today may become essential tomorrow.
+
 ## Core Features
-1. **System Prompt:** Full G°centric Master System Prompt with founder bio and Δmension context
+1. **System Prompt:** Full G°centric Master System Prompt with founder bio, Δmension context, and HOW YOU HELP philosophy
 2. **Tool Use:** Clouud calls chi_rho tools for all lattice math
 3. **Temperature 0.1:** Locked for deterministic output
 4. **Format Rules:** Plain text only, no bullets/dashes/markdown, 9th grade reading level, summaries under 150 words
@@ -94,7 +101,9 @@ UUON Clouud is the intelligence interface for the G°centric Lattice System, bui
 26. **Δmension Connector:** Health check and status bridge between Clouud and Δmension.
     - API: `GET /api/dimension/status`, `GET /api/status` (combined system status)
     - Requires `DIMENSION_APP_URL` env var to connect
-27. **Security Gate (DISABLED):** Fingerprint auth preserved in codebase but disabled due to hash mismatch issues.
+27. **Gravitational Pull Notifications:** Important system events (immune corrections, Paraneuma activity, low scores, multi-flag detections) appear as animated notifications that drift from screen edges toward center with gentle undulation. Max 3 concurrent, auto-dismiss after 6s, click to dismiss. Seven notification types: immune, correction, symbiont, quarantine, extinction, score, paraneuma.
+    - Key file: `client/src/components/gravitational-pull.tsx`
+28. **Security Gate (DISABLED):** Fingerprint auth preserved in codebase but disabled due to hash mismatch issues.
     - `server/security.ts` — middleware preserved
     - `client/src/components/security-gate.tsx` — component preserved
     - Re-enable by uncommenting `app.use(securityGate)` in server/index.ts and wrapping Router with SecurityGate in App.tsx

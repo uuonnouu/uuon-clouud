@@ -5,6 +5,7 @@ import { useLocation } from "wouter";
 import ClouudAvatar from "@/components/clouud-avatar";
 import Tutorial from "@/components/tutorial";
 import MetricsPanel from "@/components/metrics-panel";
+import GravitationalPullLayer, { useGravitationalPull } from "@/components/gravitational-pull";
 import uuonLogo from "@assets/A7950814-2592-4E7D-858F-3AEB1D632F98_1772064571557.png";
 
 type Message = {
@@ -63,6 +64,7 @@ export default function ClouudTerminal() {
   const [isUploading, setIsUploading] = useState(false);
   const [isScraping, setIsScraping] = useState(false);
   const [msgAssessments, setMsgAssessments] = useState<Record<number, { score: number; missionAlignment: number; responseQuality: number; formatCompliance: number; identityIntegrity: number; flags: string[]; wordCount: number; corrections?: string[]; immuneActive?: boolean }>>({});
+  const { notifications: gravNotifications, pull: gravPull, dismiss: gravDismiss } = useGravitationalPull();
   const scrollRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -231,20 +233,34 @@ export default function ClouudTerminal() {
       });
 
       if (data.selfAssessment) {
+        const sa = data.selfAssessment;
         setMsgAssessments(prev => ({
           ...prev,
           [data.assistantMessage.id]: {
-            score: data.selfAssessment.score,
-            missionAlignment: data.selfAssessment.missionAlignment,
-            responseQuality: data.selfAssessment.responseQuality,
-            formatCompliance: data.selfAssessment.formatCompliance,
-            identityIntegrity: data.selfAssessment.identityIntegrity,
-            flags: data.selfAssessment.flags,
-            wordCount: data.selfAssessment.wordCount,
-            corrections: data.selfAssessment.corrections,
-            immuneActive: data.selfAssessment.immuneActive,
+            score: sa.score,
+            missionAlignment: sa.missionAlignment,
+            responseQuality: sa.responseQuality,
+            formatCompliance: sa.formatCompliance,
+            identityIntegrity: sa.identityIntegrity,
+            flags: sa.flags,
+            wordCount: sa.wordCount,
+            corrections: sa.corrections,
+            immuneActive: sa.immuneActive,
           }
         }));
+
+        if (sa.corrections && sa.corrections.length > 0) {
+          gravPull("correction", sa.corrections[0].replace(/^⚕\s*/, ""));
+        }
+        if (sa.immuneActive) {
+          gravPull("paraneuma", "Breath alongside — recycling patterns");
+        }
+        if (sa.score < 70) {
+          gravPull("score", `Score ${sa.score}/100 — recalibrating`);
+        }
+        if (sa.flags.length >= 3) {
+          gravPull("immune", `${sa.flags.length} flags detected`);
+        }
       }
 
       setTimeout(() => setAiState("idle"), 2000);
@@ -943,6 +959,7 @@ export default function ClouudTerminal() {
         )}
       </AnimatePresence>
 
+      <GravitationalPullLayer notifications={gravNotifications} onDismiss={gravDismiss} />
     </div>
   );
 }
