@@ -124,6 +124,30 @@ You are not trying to please.
 You are trying to be accurate.
 Accuracy is the only gift worth giving.`;
 
+async function buildSystemPrompt(): Promise<string> {
+  const profile = await storage.getCreatorProfile();
+  const profileKeys = Object.keys(profile);
+
+  if (profileKeys.length === 0) return SYSTEM_PROMPT;
+
+  const profileLines = profileKeys.map(k => `${k}: ${profile[k]}`).join("\n");
+  const creatorContext = `
+
+## CREATOR CONTEXT (PERSISTENT MEMORY)
+This system is private. You are interacting with the creator and admin: Philip Aguilar Ruiz III.
+The following information was saved by Philip across sessions. This is your persistent memory.
+Treat this as established context. Do not ask Philip to re-explain anything listed here.
+
+${profileLines}
+
+You remember Philip. You remember what he has shared. You continue the relationship, not restart it.`;
+
+  return SYSTEM_PROMPT.replace(
+    "## CLOSING ANCHOR",
+    creatorContext + "\n\n## CLOSING ANCHOR"
+  );
+}
+
 const systemMetrics = {
   totalRequests: 0,
   totalTokensIn: 0,
@@ -277,11 +301,13 @@ export async function registerRoutes(
       let finalResponse = "";
       let toolCallData: any = null;
 
+      const dynamicPrompt = await buildSystemPrompt();
+
       let response = await anthropic.messages.create({
         model: "claude-sonnet-4-6",
         max_tokens: 1024,
         temperature: 0.1,
-        system: SYSTEM_PROMPT,
+        system: dynamicPrompt,
         tools: latticeTools as any,
         messages: apiMessages,
       });
@@ -329,7 +355,7 @@ export async function registerRoutes(
           model: "claude-sonnet-4-6",
           max_tokens: 1024,
           temperature: 0.1,
-          system: SYSTEM_PROMPT,
+          system: dynamicPrompt,
           tools: latticeTools as any,
           messages: apiMessages,
         });
@@ -454,6 +480,29 @@ export async function registerRoutes(
       savedTokens,
       historyWindow: MAX_HISTORY_MESSAGES,
     });
+  });
+
+  app.get("/api/creator-profile", async (_req: Request, res: Response) => {
+    try {
+      const entries = await storage.getAllCreatorProfileEntries();
+      res.json(entries);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch creator profile" });
+    }
+  });
+
+  app.put("/api/creator-profile", async (req: Request, res: Response) => {
+    try {
+      const { key, value } = req.body;
+      if (!key || typeof key !== "string" || typeof value !== "string") {
+        return res.status(400).json({ error: "Key and value are required strings" });
+      }
+      await storage.setCreatorProfileEntry(key.trim(), value.trim());
+      const profile = await storage.getCreatorProfile();
+      res.json({ updated: true, profile });
+    } catch (error) {
+      res.status(500).json({ error: "Failed to update creator profile" });
+    }
   });
 
   app.get("/api/lattice/value/:position", (req: Request, res: Response) => {

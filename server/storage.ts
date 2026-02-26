@@ -1,7 +1,7 @@
 import { db } from "./db";
-import { conversations, messages, uuonTokens } from "@shared/schema";
-import type { Conversation, InsertConversation, Message, InsertMessage, UuonToken, InsertUuonToken } from "@shared/schema";
-import { eq, desc, and, gte, count } from "drizzle-orm";
+import { conversations, messages, uuonTokens, creatorProfile } from "@shared/schema";
+import type { Conversation, InsertConversation, Message, InsertMessage, UuonToken, InsertUuonToken, CreatorProfileEntry } from "@shared/schema";
+import { eq, desc, and, gte, count, sql } from "drizzle-orm";
 
 export interface IStorage {
   getConversation(id: number): Promise<Conversation | undefined>;
@@ -15,6 +15,9 @@ export interface IStorage {
   getUuonTokens(): Promise<UuonToken[]>;
   getUuonTokensByConversation(conversationId: number): Promise<UuonToken[]>;
   getUuonTokenCount(): Promise<number>;
+  getCreatorProfile(): Promise<Record<string, string>>;
+  setCreatorProfileEntry(key: string, value: string): Promise<void>;
+  getAllCreatorProfileEntries(): Promise<CreatorProfileEntry[]>;
 }
 
 class DatabaseStorage implements IStorage {
@@ -80,6 +83,28 @@ class DatabaseStorage implements IStorage {
   async getUuonTokenCount(): Promise<number> {
     const [result] = await db.select({ value: count() }).from(uuonTokens);
     return result?.value ?? 0;
+  }
+
+  async getCreatorProfile(): Promise<Record<string, string>> {
+    const entries = await db.select().from(creatorProfile);
+    const profile: Record<string, string> = {};
+    for (const entry of entries) {
+      profile[entry.key] = entry.value;
+    }
+    return profile;
+  }
+
+  async setCreatorProfileEntry(key: string, value: string): Promise<void> {
+    await db.insert(creatorProfile)
+      .values({ key, value })
+      .onConflictDoUpdate({
+        target: creatorProfile.key,
+        set: { value, updatedAt: sql`CURRENT_TIMESTAMP` },
+      });
+  }
+
+  async getAllCreatorProfileEntries(): Promise<CreatorProfileEntry[]> {
+    return db.select().from(creatorProfile).orderBy(creatorProfile.key);
   }
 }
 

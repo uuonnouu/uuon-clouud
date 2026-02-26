@@ -28,6 +28,13 @@ export const uuonTokens = pgTable("uuon_tokens", {
   createdAt: timestamp("created_at").default(sql`CURRENT_TIMESTAMP`).notNull(),
 });
 
+export const creatorProfile = pgTable("creator_profile", {
+  id: serial("id").primaryKey(),
+  key: text("key").notNull().unique(),
+  value: text("value").notNull(),
+  updatedAt: timestamp("updated_at").default(sql`CURRENT_TIMESTAMP`).notNull(),
+});
+
 export const insertConversationSchema = createInsertSchema(conversations).omit({
   id: true,
   createdAt: true,
@@ -49,3 +56,4 @@ export type Message = typeof messages.$inferSelect;
 export type InsertMessage = z.infer<typeof insertMessageSchema>;
 export type UuonToken = typeof uuonTokens.$inferSelect;
 export type InsertUuonToken = z.infer<typeof insertUuonTokenSchema>;
+export type CreatorProfileEntry = typeof creatorProfile.$inferSelect;

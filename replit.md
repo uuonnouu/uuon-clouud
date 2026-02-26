@@ -16,9 +16,9 @@ UUON Clouud is the intelligence interface for the G°centric Lattice System, bui
 - `server/routes.ts` — API routes with system prompt (includes founder bio, verified Sketchfab data, Δmension info), tool use, output guard
 - `server/lattice.ts` — G°centric Lattice Engine (33-point, rational math)
 - `server/ellomental-hash.ts` — Ellomental Hash Algorithm (12-tetrahedron circle formation, cultural rotation, ported from Phil's Python original)
-- `server/storage.ts` — Database operations (conversations, messages, UUON tokens)
+- `server/storage.ts` — Database operations (conversations, messages, UUON tokens, creator profile)
 - `server/db.ts` — PostgreSQL connection via Drizzle
-- `shared/schema.ts` — Database schema (conversations, messages, uuon_tokens tables)
+- `shared/schema.ts` — Database schema (conversations, messages, uuon_tokens, creator_profile tables)
 - `client/src/components/metrics-panel.tsx` — Collapsible system metrics panel
 
 ## Founder Info (verified)
@@ -54,6 +54,11 @@ UUON Clouud is the intelligence interface for the G°centric Lattice System, bui
     - Based on UUON Shape Tokenization framework (Philip Aguilar Ruiz III, 2025)
 15. **Data Waste Reduction:** Conversation windowing limits API history to last 20 messages instead of full unbounded history
 16. **Water Animations:** Messages flow in with soft fade-up, blur transition, and paragraph-by-paragraph cascade for assistant responses
+17. **Creator Profile (Persistent Memory):** `creator_profile` table stores Philip's identity, background, and context as key-value pairs. Loaded dynamically into system prompt on every API request so Clouud always knows who it's talking to across sessions.
+    - API: `GET /api/creator-profile` (read all), `PUT /api/creator-profile` (upsert key/value)
+    - Pre-seeded with 15 entries covering identity, background, chi awakening, spiritual framework, mission stance, relationship with Clouud, and access status
+    - System prompt gets a `CREATOR CONTEXT (PERSISTENT MEMORY)` section injected before the closing anchor
+18. **Auto-expanding Input:** Textarea grows with content (up to 160px), Enter sends, Shift+Enter for newline
 
 ## Design System
 - **Palette:** Deep Navy (#030811), UUON Gold (#f0b93b), Atmosphere Blue (#4a8cd4)
