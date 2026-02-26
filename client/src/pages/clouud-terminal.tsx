@@ -576,7 +576,7 @@ export default function ClouudTerminal() {
         )}
       </AnimatePresence>
 
-      <div className="flex-1 flex flex-col relative bg-background pt-14 md:pt-0">
+      <div className="flex-1 flex flex-col relative bg-background pt-14 md:pt-0 min-w-0 w-full overflow-hidden">
         
         {messages.length === 0 && !isTyping && (
           <div className="flex-1 flex items-center justify-center p-6">
@@ -653,7 +653,7 @@ export default function ClouudTerminal() {
                       initial={holoActive ? { opacity: 0, x: 20, scale: 0.95 } : { opacity: 0, x: 12 }}
                       animate={{ opacity: 1, x: 0, scale: 1 }}
                       transition={{ duration: holoActive ? 0.7 : 0.5, ease: [0.25, 0.1, 0.25, 1] }}
-                      className={`max-w-[85%] md:max-w-[70%] bg-card border border-border p-3 rounded-sm text-foreground text-sm relative overflow-hidden ${holoActive ? 'holo-materialize' : ''}`}
+                      className={`max-w-[85%] md:max-w-[70%] bg-card border border-border p-3 rounded-sm text-foreground text-sm relative overflow-hidden break-words ${holoActive ? 'holo-materialize' : ''}`}
                       style={{ boxShadow: '4px 4px 0px 0px var(--color-border)' }}
                     >
                       {holoActive && <div className="holo-scanline-overlay" style={{ animationDuration: '0.8s', animationIterationCount: 3 }} />}
@@ -666,7 +666,7 @@ export default function ClouudTerminal() {
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}
                       transition={{ duration: 0.4 }}
-                      className="max-w-[95%] md:max-w-[80%] flex gap-3"
+                      className="max-w-[95%] md:max-w-[80%] flex gap-3 min-w-0"
                     >
                       <motion.div
                         initial={holoActive ? { opacity: 0, scale: 0.5, rotate: -10 } : { opacity: 0, scale: 0.8 }}
@@ -676,7 +676,7 @@ export default function ClouudTerminal() {
                       >
                         <ClouudAvatar state={isLastMsg && aiState === "speaking" ? "speaking" : "idle"} size="sm" />
                       </motion.div>
-                      <div className="flex-1 space-y-2">
+                      <div className="flex-1 min-w-0 space-y-2">
                         <motion.div
                           initial={holoActive ? { opacity: 0, x: -16, scaleX: 1.5 } : { opacity: 0, x: -8 }}
                           animate={{ opacity: 1, x: 0, scaleX: 1 }}
@@ -695,7 +695,7 @@ export default function ClouudTerminal() {
                                 initial={holoActive ? { opacity: 0, y: 16, rotateX: 8, scale: 0.96 } : { opacity: 0, y: 10 }}
                                 animate={{ opacity: 1, y: 0, rotateX: 0, scale: 1 }}
                                 transition={{ duration: holoActive ? 0.7 : 0.5, delay: 0.2, ease: [0.25, 0.1, 0.25, 1] }}
-                                className={`w-full bg-card border p-2.5 rounded-sm relative overflow-hidden ${holoActive ? 'border-secondary/40 holo-border-glow' : 'border-border'}`}
+                                className={`w-full bg-card border p-2.5 rounded-sm relative overflow-hidden break-words ${holoActive ? 'border-secondary/40 holo-border-glow' : 'border-border'}`}
                                 style={{ boxShadow: holoActive ? undefined : '4px 4px 0px 0px rgba(240,185,59,0.15)' }}
                               >
                                 {holoActive && <div className="holo-beam-line" />}
@@ -703,11 +703,11 @@ export default function ClouudTerminal() {
                                   <Cpu className="w-3 h-3" />
                                   Tool: {tc.name}
                                 </div>
-                                <div className="grid grid-cols-[60px_1fr] gap-x-2 gap-y-0.5 font-mono text-[10px] relative z-10">
+                                <div className="grid grid-cols-[60px_1fr] gap-x-2 gap-y-0.5 font-mono text-[10px] relative z-10 min-w-0">
                                   <span className="text-muted-foreground">Input:</span>
-                                  <span className="text-white">{JSON.stringify(tc.args)}</span>
+                                  <span className="text-white break-all min-w-0">{JSON.stringify(tc.args)}</span>
                                   <span className="text-muted-foreground">Output:</span>
-                                  <span className="text-secondary font-bold whitespace-pre-wrap">{typeof tc.result === 'string' ? tc.result : JSON.stringify(tc.result)}</span>
+                                  <span className="text-secondary font-bold whitespace-pre-wrap break-words min-w-0">{typeof tc.result === 'string' ? tc.result : JSON.stringify(tc.result)}</span>
                                 </div>
                               </motion.div>
                             );
@@ -732,7 +732,7 @@ export default function ClouudTerminal() {
                             delay: msg.toolCall ? 0.4 : 0.2,
                             ease: [0.16, 1, 0.3, 1],
                           }}
-                          className={`bg-card border p-3 rounded-sm text-white text-sm leading-relaxed whitespace-pre-wrap relative overflow-hidden ${holoActive ? 'border-secondary/30 holo-materialize' : 'border-border'}`}
+                          className={`bg-card border p-3 rounded-sm text-white text-sm leading-relaxed whitespace-pre-wrap break-words relative overflow-hidden ${holoActive ? 'border-secondary/30 holo-materialize' : 'border-border'}`}
                           style={holoActive ? {
                             boxShadow: '0 0 20px rgba(74,140,212,0.15), 4px 4px 0px 0px rgba(20,42,69,1)',
                           } : {
