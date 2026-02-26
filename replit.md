@@ -13,14 +13,16 @@ UUON Clouud is the intelligence interface for the G°centric Lattice System, bui
 ## Key Files
 - `client/src/pages/clouud-terminal.tsx` — Main chat interface with sidebar, quick actions, Δmension link
 - `client/src/components/clouud-avatar.tsx` — Clouud avatar (static image with state-driven CSS animation)
-- `client/src/components/metrics-panel.tsx` — Collapsible system metrics panel with 4-metric self-assessment
-- `client/src/components/security-gate.tsx` — Fingerprint-based identity gate (wraps entire app)
-- `server/routes.ts` — API routes with system prompt, tool use, output guard, self-assessment engine
+- `client/src/components/metrics-panel.tsx` — Collapsible system metrics panel (backend-only self-assessment, no per-message scores exposed)
+- `client/src/components/security-gate.tsx` — Fingerprint-based identity gate (currently disabled)
+- `server/routes.ts` — API routes with system prompt, tool use, output guard, self-assessment engine, audit, file gen, hydration, Δmension connector
 - `server/lattice.ts` — G°centric Lattice Engine (33-point, rational math)
 - `server/ellomental-hash.ts` — Ellomental Hash Algorithm (12-tetrahedron circle formation)
 - `server/storage.ts` — Database operations (conversations, messages, UUON tokens, creator profile, self-assessments)
 - `server/security.ts` — Fingerprint hashing, verification middleware, security gate
 - `server/scraper.ts` — SSRF-protected URL scraper
+- `server/audit.ts` — Code audit engine for Claude/ChatGPT JSON exports
+- `server/hydration.ts` — Hydration loop (15-min interval, Δmension health check, memory anchor refresh)
 - `server/db.ts` — PostgreSQL connection via Drizzle
 - `shared/schema.ts` — Database schema
 
@@ -54,18 +56,28 @@ UUON Clouud is the intelligence interface for the G°centric Lattice System, bui
 19. **File Upload:** Paperclip button, multer handler, text extraction
 20. **Link Scraper:** SSRF-protected URL scraper with DNS resolution check
 21. **Voice Input:** Web Speech API continuous recognition
-22. **Self-Assessment Engine (4-Metric):** Every response scored on 4 independent metrics:
+22. **Self-Assessment Engine (4-Metric, backend-only):** Every response scored on 4 independent metrics internally. Scores NOT exposed to user in chat. Available in metrics panel aggregate only.
     - **Mission Alignment** (0-100): Waste detection, hedging, filler, gatekeeping
     - **Response Quality** (0-100): Word count, readability, repetition
     - **Format Compliance** (0-100): Bullets, headers, markdown formatting
     - **Identity Integrity** (0-100): AI self-reference, system name leaks
     - Composite score = average of 4 metrics
     - DB: `self_assessments` table with per-metric columns
-    - UI: Per-message inline sub-scores (M/Q/F/I), SYS bar compact display, expanded panel with SubScoreCard progress bars and gap analysis
-23. **Security Gate (Fingerprint Authentication):** First-come-first-served owner registration. Unknown identities get blank screen + "Access Denied". All attempts logged with IP, user-agent, timestamp.
-    - DB: `fingerprints` table (hash, components, isOwner, blocked), `access_log` table
-    - SecurityGate component wraps entire app in App.tsx
-    - Server: `server/security.ts` with securityGate middleware (currently client-side only)
+23. **Code Audit Engine:** Upload Claude.ai or ChatGPT JSON exports. Clouud extracts code blocks, scores viability (0-100), flags issues, recommends keep/fix/discard/promote. G°centric alignment bonus scoring.
+    - API: `POST /api/audit-export` (multipart, file field "export", body field "source": "claude"|"chatgpt")
+24. **File Generation:** Clouud generates downloadable files (HTML, Python, TypeScript, JSON, etc.)
+    - API: `POST /api/generate-file` (body: content, filename, type)
+    - Files served at `/generated/<filename>`
+25. **Hydration Loop:** 15-minute interval auto-refresh. Keeps memory anchors current. Pings Δmension for health check.
+    - API: `GET /api/hydration/status`, `POST /api/hydration/run`
+    - Auto-starts on server boot
+26. **Δmension Connector:** Health check and status bridge between Clouud and Δmension.
+    - API: `GET /api/dimension/status`, `GET /api/status` (combined system status)
+    - Requires `DIMENSION_APP_URL` env var to connect
+27. **Security Gate (DISABLED):** Fingerprint auth preserved in codebase but disabled due to hash mismatch issues.
+    - `server/security.ts` — middleware preserved
+    - `client/src/components/security-gate.tsx` — component preserved
+    - Re-enable by uncommenting `app.use(securityGate)` in server/index.ts and wrapping Router with SecurityGate in App.tsx
 
 ## DB Tables
 - `conversations` — Chat sessions
@@ -87,3 +99,5 @@ UUON Clouud is the intelligence interface for the G°centric Lattice System, bui
 - `DATABASE_URL` — PostgreSQL connection string (auto-set)
 - `AI_INTEGRATIONS_ANTHROPIC_API_KEY` — Anthropic API key (via Replit integration)
 - `AI_INTEGRATIONS_ANTHROPIC_BASE_URL` — Anthropic base URL (via Replit integration)
+- `DIMENSION_APP_URL` — Δmension app URL (optional, enables cross-app connection)
+- `HYDRATION_INTERVAL_MIN` — Hydration loop interval in minutes (default: 15)

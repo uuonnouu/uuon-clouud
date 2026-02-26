@@ -1,11 +1,16 @@
 import type { Express, Request, Response } from "express";
 import { createServer, type Server } from "http";
+import { writeFile, mkdir } from "fs/promises";
+import { join } from "path";
+import { randomUUID } from "crypto";
 import { storage } from "./storage";
 import { latticeTools, executeLatticeTool } from "./lattice";
 import { generateProvenanceHash, ellomental } from "./ellomental-hash";
 import { upload, handleUpload } from "./uploads";
 import { scrapeUrl } from "./scraper";
 import { hashFingerprint } from "./security";
+import { auditConversationExport } from "./audit";
+import { getHydrationStatus, runHydrationNow } from "./hydration";
 import Anthropic from "@anthropic-ai/sdk";
 
 const SYSTEM_PROMPT = `# ═══════════════════════════════════════════════════
@@ -536,8 +541,6 @@ export async function registerRoutes(
       res.json({
         userMessage: userMsg,
         assistantMessage: assistantMsg,
-        driftCheck: driftCheck.clean ? null : driftCheck.flagged,
-        selfAssessment,
       });
     } catch (error: any) {
       const responseTimeMs = Date.now() - startTime;
@@ -739,6 +742,126 @@ export async function registerRoutes(
   });
 
   app.post("/api/scrape", scrapeUrl);
+
+  app.post("/api/audit-export", upload.single("export"), async (req: Request, res: Response) => {
+    if (!req.file) return res.status(400).json({ error: "No file uploaded." });
+
+    try {
+      const raw = req.file.buffer.toString("utf-8");
+      const data = JSON.parse(raw);
+      const source = (req.body.source ?? "claude") as "claude" | "chatgpt";
+
+      const report = auditConversationExport(data, source);
+
+      const topBlocks = report.blocks
+        .filter(b => b.recommendation === "promote")
+        .slice(0, 10)
+        .map(b => `[${b.language}] ${b.source}\n${b.code.slice(0, 300)}`)
+        .join("\n\n---\n\n");
+
+      res.json({
+        report,
+        topBlocksForClouud: topBlocks,
+        message: report.summary,
+      });
+    } catch (e: any) {
+      res.status(500).json({ error: `Audit failed: ${e.message}` });
+    }
+  });
+
+  app.post("/api/generate-file", async (req: Request, res: Response) => {
+    try {
+      const { content, filename, type } = req.body;
+
+      const safe = (filename ?? "output")
+        .replace(/[^a-zA-Z0-9._-]/g, "_")
+        .slice(0, 80);
+
+      const ext = type ?? safe.split(".").pop() ?? "txt";
+      const id = randomUUID().slice(0, 8);
+      const name = safe.includes(".") ? safe : `${safe}_${id}.${ext}`;
+
+      const outputDir = join(process.cwd(), "generated");
+      await mkdir(outputDir, { recursive: true });
+
+      const filepath = join(outputDir, name);
+      await writeFile(filepath, content, "utf-8");
+
+      res.json({
+        filename: name,
+        downloadUrl: `/generated/${name}`,
+        size: content.length,
+        message: "File ready.",
+      });
+    } catch (e: any) {
+      res.status(500).json({ error: `File generation failed: ${e.message}` });
+    }
+  });
+
+  const expressModule = await import("express");
+  app.use("/generated", expressModule.default.static(join(process.cwd(), "generated")));
+
+  app.get("/api/hydration/status", async (_req: Request, res: Response) => {
+    try {
+      const status = await getHydrationStatus();
+      res.json(status);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch hydration status" });
+    }
+  });
+
+  app.post("/api/hydration/run", async (_req: Request, res: Response) => {
+    try {
+      const result = await runHydrationNow();
+      res.json(result);
+    } catch (error) {
+      res.status(500).json({ error: "Hydration run failed" });
+    }
+  });
+
+  app.get("/api/dimension/status", async (_req: Request, res: Response) => {
+    const dimensionUrl = process.env.DIMENSION_APP_URL;
+    if (!dimensionUrl) {
+      return res.json({ connected: false, reason: "DIMENSION_APP_URL not configured" });
+    }
+    try {
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), 5000);
+      const response = await fetch(`${dimensionUrl}/api/status`, {
+        signal: controller.signal,
+        headers: { "X-Source": "UUON-CLOUUD" },
+      });
+      clearTimeout(timeout);
+      if (response.ok) {
+        const data = await response.json();
+        return res.json({ connected: true, url: dimensionUrl, data });
+      }
+      return res.json({ connected: false, reason: `Δmension responded ${response.status}` });
+    } catch (e: any) {
+      return res.json({ connected: false, reason: e.name === "AbortError" ? "timeout" : "unreachable" });
+    }
+  });
+
+  app.get("/api/status", async (_req: Request, res: Response) => {
+    const hydration = await getHydrationStatus();
+    const tokenCount = await storage.getUuonTokenCount();
+    res.json({
+      system: "UUON-CLOUUD",
+      version: "1.0",
+      status: "operational",
+      lattice: "33-PT",
+      tokens: tokenCount,
+      hydration: {
+        running: hydration.lastRun !== null,
+        interval: `${hydration.intervalMinutes}m`,
+        nextRun: hydration.nextRunIn,
+      },
+      dimension: {
+        connected: hydration.dimensionConnected,
+        url: hydration.dimensionUrl,
+      },
+    });
+  });
 
   return httpServer;
 }
