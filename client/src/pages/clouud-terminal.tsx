@@ -5,6 +5,7 @@ import { useLocation } from "wouter";
 import ClouudAvatar from "@/components/clouud-avatar";
 import Tutorial from "@/components/tutorial";
 import MetricsPanel from "@/components/metrics-panel";
+import ExplorationEngine from "@/components/exploration-engine";
 import uuonLogo from "@assets/A7950814-2592-4E7D-858F-3AEB1D632F98_1772064571557.png";
 
 type Message = {
@@ -31,17 +32,15 @@ const QUICK_ACTIONS = [
   "What is waste, fraud, and abuse?",
   "What is Δmension?",
   "How does the lattice work?",
-  "What is position 21?",
-  "Show the full lattice",
-  "What makes UUON different?",
-  "Explain the 33-point system",
+  "How can I help the Earth today?",
+  "What patterns connect everything?",
+  "Enhance my project",
   "What problems are you solving?",
-  "What is IEEE 754?",
-  "Why does rounding matter?",
+  "Show me something surprising",
+  "How do rivers and networks relate?",
   "Tell me about the 3D models",
   "What does UUON mean?",
-  "About Us",
-  "Tell me about the founder",
+  "Who built this?",
 ];
 
 export default function ClouudTerminal() {
@@ -81,6 +80,8 @@ export default function ClouudTerminal() {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const recognitionRef = useRef<any>(null);
+  const isSpeakingRef = useRef(false);
+  const keepAliveRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   useEffect(() => {
     loadConversations();
@@ -402,21 +403,51 @@ export default function ClouudTerminal() {
     setIsListening(true);
   }
 
+  function stopSpeaking() {
+    if (keepAliveRef.current) {
+      clearInterval(keepAliveRef.current);
+      keepAliveRef.current = null;
+    }
+    window.speechSynthesis.cancel();
+    isSpeakingRef.current = false;
+    setIsSpeaking(false);
+    setSpeakingMsgId(null);
+  }
+
   function speakMessage(msgId: number, text: string) {
-    if (isSpeaking && speakingMsgId === msgId) {
-      window.speechSynthesis.cancel();
-      setIsSpeaking(false);
-      setSpeakingMsgId(null);
+    if (!window.speechSynthesis) {
+      console.warn("Speech synthesis not available in this browser");
       return;
     }
 
-    window.speechSynthesis.cancel();
+    if (isSpeakingRef.current && speakingMsgId === msgId) {
+      stopSpeaking();
+      return;
+    }
+
+    stopSpeaking();
 
     const startSpeaking = () => {
-      const utterance = new SpeechSynthesisUtterance(text);
-      utterance.rate = 0.95;
-      utterance.pitch = 0.9;
-      utterance.volume = 1;
+      const cleanText = text
+        .replace(/[*_~`#]/g, "")
+        .replace(/\[([^\]]+)\]\([^)]+\)/g, "$1")
+        .replace(/https?:\/\/\S+/g, "")
+        .trim();
+
+      if (!cleanText) return;
+
+      const sentences = cleanText.match(/[^.!?]+[.!?]+|[^.!?]+$/g) || [cleanText];
+      const chunks: string[] = [];
+      let current = "";
+      for (const s of sentences) {
+        if ((current + s).length > 200) {
+          if (current) chunks.push(current.trim());
+          current = s;
+        } else {
+          current += s;
+        }
+      }
+      if (current.trim()) chunks.push(current.trim());
 
       const voices = window.speechSynthesis.getVoices();
       const preferred = voices.find(v =>
@@ -426,23 +457,40 @@ export default function ClouudTerminal() {
       ) || voices.find(v => v.lang === "en-US") || voices.find(v =>
         v.lang.startsWith("en")
       ) || voices[0];
-      if (preferred) utterance.voice = preferred;
 
-      utterance.onstart = () => {
-        setIsSpeaking(true);
-        setSpeakingMsgId(msgId);
-      };
-      utterance.onend = () => {
-        setIsSpeaking(false);
-        setSpeakingMsgId(null);
-      };
-      utterance.onerror = (e) => {
-        console.error("Speech synthesis error:", e);
-        setIsSpeaking(false);
-        setSpeakingMsgId(null);
-      };
+      isSpeakingRef.current = true;
+      setIsSpeaking(true);
+      setSpeakingMsgId(msgId);
 
-      window.speechSynthesis.speak(utterance);
+      keepAliveRef.current = setInterval(() => {
+        if (window.speechSynthesis.speaking) {
+          window.speechSynthesis.pause();
+          window.speechSynthesis.resume();
+        }
+      }, 10000);
+
+      chunks.forEach((chunk, i) => {
+        const utterance = new SpeechSynthesisUtterance(chunk);
+        utterance.rate = 0.95;
+        utterance.pitch = 0.9;
+        utterance.volume = 1;
+        if (preferred) utterance.voice = preferred;
+
+        if (i === chunks.length - 1) {
+          utterance.onend = () => {
+            stopSpeaking();
+          };
+        }
+
+        utterance.onerror = (e) => {
+          if (e.error !== "interrupted" && e.error !== "canceled") {
+            console.error("Speech synthesis error:", e.error);
+          }
+          stopSpeaking();
+        };
+
+        window.speechSynthesis.speak(utterance);
+      });
     };
 
     const voices = window.speechSynthesis.getVoices();
@@ -452,7 +500,7 @@ export default function ClouudTerminal() {
         window.speechSynthesis.onvoiceschanged = null;
       };
       setTimeout(() => {
-        if (!isSpeaking) startSpeaking();
+        if (!isSpeakingRef.current) startSpeaking();
       }, 500);
     } else {
       startSpeaking();
@@ -464,6 +512,7 @@ export default function ClouudTerminal() {
       window.speechSynthesis.getVoices();
     }
     return () => {
+      if (keepAliveRef.current) clearInterval(keepAliveRef.current);
       if (typeof window !== "undefined" && window.speechSynthesis) {
         window.speechSynthesis.cancel();
       }
@@ -709,33 +758,7 @@ export default function ClouudTerminal() {
       <div className="flex-1 flex flex-col relative bg-background pt-14 md:pt-0 overflow-x-hidden min-w-0">
         
         {messages.length === 0 && !isTyping && (
-          <div className="flex-1 flex items-center justify-center p-6">
-            <div className="text-center max-w-md">
-              <ClouudAvatar state={aiState} size="hero" showLabel />
-              <h2 className="font-display text-3xl md:text-4xl text-white tracking-widest mt-5 mb-2">
-                CLOUUD
-              </h2>
-              <p className="text-muted-foreground/60 text-xs font-mono mb-6">There is only UUON Earth.</p>
-              
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 text-left">
-                {[
-                  { label: "About Us", icon: <Globe className="w-3.5 h-3.5 text-primary shrink-0" /> },
-                  { label: "Waste, fraud, and abuse", icon: <Zap className="w-3.5 h-3.5 text-secondary shrink-0" /> },
-                  { label: "Build something for Earth", icon: <Network className="w-3.5 h-3.5 text-primary shrink-0" /> },
-                ].map((prompt, i) => (
-                  <button 
-                    key={i}
-                    onClick={() => setInput(prompt.label)}
-                    className="flex items-center gap-2 px-2.5 py-2 bg-card border border-border rounded-sm hover:border-primary/30 transition-colors text-xs text-muted-foreground hover:text-white"
-                    data-testid={`button-prompt-${i}`}
-                  >
-                    {prompt.icon}
-                    {prompt.label}
-                  </button>
-                ))}
-              </div>
-            </div>
-          </div>
+          <ExplorationEngine onExplore={(prompt) => sendMessage(prompt)} />
         )}
 
         <AnimatePresence>
@@ -1192,7 +1215,7 @@ export default function ClouudTerminal() {
               {isSpeaking && (
                 <button
                   type="button"
-                  onClick={() => { window.speechSynthesis.cancel(); setIsSpeaking(false); setSpeakingMsgId(null); }}
+                  onClick={() => stopSpeaking()}
                   className="p-1.5 rounded-sm text-red-500 animate-pulse transition-colors"
                   title="Stop speaking"
                   data-testid="button-stop-speak"
