@@ -8,6 +8,7 @@ import { scrapeUrl } from "./scraper";
 import { hashFingerprint } from "./security";
 import { runBackup, getBackupStatus, startScheduledBackups } from "./backup";
 import { backupAllModels } from "./sketchfab-backup";
+import { getGitHubStatus, createPrivateRepo, pushBackupToGitHub } from "./github";
 import Anthropic from "@anthropic-ai/sdk";
 
 const SYSTEM_PROMPT = `# ═══════════════════════════════════════════════════
@@ -1111,6 +1112,13 @@ export function registerSystemRoutes(app: Express) {
       selfAssessment: "server/routes.ts",
     };
 
+    try {
+      const githubStatus = await getGitHubStatus();
+      health.components.github = githubStatus;
+    } catch {
+      health.components.github = { connected: false, error: "Not configured" };
+    }
+
     res.json(health);
   });
 
@@ -1135,6 +1143,57 @@ export function registerSystemRoutes(app: Express) {
     try {
       const result = await backupAllModels(apiToken);
       res.json(result);
+    } catch (error: any) {
+      res.status(500).json({ success: false, error: error.message });
+    }
+  });
+
+  app.get("/api/github/status", async (_req: Request, res: Response) => {
+    try {
+      const status = await getGitHubStatus();
+      res.json(status);
+    } catch (error: any) {
+      res.status(500).json({ connected: false, error: error.message });
+    }
+  });
+
+  app.post("/api/github/create-repo", async (req: Request, res: Response) => {
+    const { name } = req.body;
+    if (!name) {
+      return res.status(400).json({ error: "Repository name is required" });
+    }
+    try {
+      const result = await createPrivateRepo(name);
+      res.json(result);
+    } catch (error: any) {
+      res.status(500).json({ success: false, error: error.message });
+    }
+  });
+
+  app.post("/api/github/push-backup", async (req: Request, res: Response) => {
+    const { owner, repo } = req.body;
+    if (!owner || !repo) {
+      return res.status(400).json({ error: "Owner and repo name are required" });
+    }
+    try {
+      const backupResult = await runBackup();
+      if (!backupResult.success) {
+        return res.status(500).json({ error: "Backup failed: " + backupResult.error });
+      }
+
+      const fs = await import("fs");
+      const backupContent = fs.readFileSync(backupResult.filePath, "utf-8");
+      const timestamp = new Date().toISOString().replace(/[:.]/g, "-");
+
+      const pushResult = await pushBackupToGitHub(
+        owner,
+        repo,
+        `backups/backup-${timestamp}.json`,
+        backupContent,
+        `[UUON BACKUP] Database export — ${new Date().toISOString()}`
+      );
+
+      res.json({ backup: backupResult, push: pushResult });
     } catch (error: any) {
       res.status(500).json({ success: false, error: error.message });
     }
