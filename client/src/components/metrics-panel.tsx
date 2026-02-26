@@ -79,7 +79,7 @@ export default function MetricsPanel() {
       fetchMetrics();
       fetchAssessment();
       setTick(t => t + 1);
-    }, 5000);
+    }, 15000);
     return () => clearInterval(interval);
   }, []);
 

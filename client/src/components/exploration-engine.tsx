@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Brain, Atom, Globe, Hexagon, Triangle, Circle, Zap, Network, ChevronRight } from "lucide-react";
+import { Brain, Globe, Zap, ChevronRight } from "lucide-react";
 
 type ShapeNode = {
   id: string;
@@ -279,15 +279,7 @@ export default function ExplorationEngine({ onExplore }: ExplorationEngineProps)
         transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
         className="relative z-10 text-center mb-4 md:mb-8"
       >
-        <motion.div
-          animate={{
-            filter: ["drop-shadow(0 0 20px rgba(240,185,59,0.3))", "drop-shadow(0 0 40px rgba(74,140,212,0.4))", "drop-shadow(0 0 20px rgba(240,185,59,0.3))"],
-          }}
-          transition={{ duration: 6, repeat: Infinity }}
-          className="inline-block"
-        >
-          <h1 className="font-display text-3xl md:text-5xl text-white font-bold tracking-[0.3em] mb-1">CLOUUD</h1>
-        </motion.div>
+        <h1 className="font-display text-3xl md:text-5xl text-white font-bold tracking-[0.3em] mb-1" style={{ textShadow: "0 0 30px rgba(240,185,59,0.25)" }}>CLOUUD</h1>
         <motion.p
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -300,21 +292,8 @@ export default function ExplorationEngine({ onExplore }: ExplorationEngineProps)
 
       <div className="relative w-full max-w-lg aspect-square md:max-w-xl z-10">
         <div className="absolute inset-0 flex items-center justify-center">
-          <motion.div
-            animate={{ rotate: 360 }}
-            transition={{ duration: 120, repeat: Infinity, ease: "linear" }}
-            className="w-[55%] h-[55%] rounded-full border border-secondary/10"
-          />
-          <motion.div
-            animate={{ rotate: -360 }}
-            transition={{ duration: 90, repeat: Infinity, ease: "linear" }}
-            className="absolute w-[75%] h-[75%] rounded-full border border-primary/5"
-          />
-          <motion.div
-            animate={{ rotate: 360 }}
-            transition={{ duration: 60, repeat: Infinity, ease: "linear" }}
-            className="absolute w-[90%] h-[90%] rounded-full border border-secondary/5"
-          />
+          <div className="w-[60%] h-[60%] rounded-full border border-secondary/8 animate-[spin_120s_linear_infinite]" />
+          <div className="absolute w-[85%] h-[85%] rounded-full border border-primary/5 animate-[spin_90s_linear_infinite_reverse]" />
         </div>
 
         <div className="absolute inset-0 flex items-center justify-center">
