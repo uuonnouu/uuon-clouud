@@ -67,6 +67,9 @@ UUON Clouud is the intelligence interface for the G°centric Lattice System, bui
     - **Health Ledger:** Tracks issue types in a 30-min rolling window. When a pattern recurs 3+ times, injects CRITICAL correction pressure into the system prompt. The system learns what Claude keeps doing wrong and applies counter-pressure automatically.
     - **Log Waste Purge:** API response logging truncated to 200 chars max. No more dumping entire conversation histories into console.
     - UI shows corrections in green (⚕ PURGED), flags in yellow, immune status in red when active
+    - **Waste Composting (recycling):** Every correction is logged to `waste_log` table with type, original content, correction applied, and recycled value. Headers become topic signals. Bold becomes emphasis weighting. Bullets become sentence flow data. Nothing is just discarded — it feeds the system's understanding.
+    - **Extinction Protocol:** When a waste type hasn't appeared in the health ledger for 30+ minutes and has 5+ historical entries, it's marked extinct. The system evolved past it. Dead patterns are archived, not deleted.
+    - API: `GET /api/waste/report` (full waste report with evolution data), `GET /api/waste/recyclable` (active recyclable waste patterns)
 23. **Code Audit Engine:** Upload Claude.ai or ChatGPT JSON exports. Clouud extracts code blocks, scores viability (0-100), flags issues, recommends keep/fix/discard/promote. G°centric alignment bonus scoring.
     - API: `POST /api/audit-export` (multipart, file field "export", body field "source": "claude"|"chatgpt")
 24. **File Generation:** Clouud generates downloadable files (HTML, Python, TypeScript, JSON, etc.)
@@ -92,6 +95,7 @@ UUON Clouud is the intelligence interface for the G°centric Lattice System, bui
 - `access_log` — Security access log
 - `uploads` — File uploads with extracted text
 - `self_assessments` — Per-message scores (composite, missionAlignment, responseQuality, formatCompliance, identityIntegrity, wordCount, pass, flags)
+- `waste_log` — Composted waste entries (wasteType, original, correction, recycledInto, extinct)
 
 ## Design System
 - **Palette:** Deep Navy (#030811), UUON Gold (#f0b93b), Atmosphere Blue (#4a8cd4)

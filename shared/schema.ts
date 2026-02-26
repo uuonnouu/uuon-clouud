@@ -82,6 +82,23 @@ export const selfAssessments = pgTable("self_assessments", {
   createdAt: timestamp("created_at").default(sql`CURRENT_TIMESTAMP`).notNull(),
 });
 
+export const wasteLog = pgTable("waste_log", {
+  id: serial("id").primaryKey(),
+  messageId: integer("message_id").references(() => messages.id, { onDelete: "cascade" }),
+  conversationId: integer("conversation_id").references(() => conversations.id, { onDelete: "cascade" }),
+  wasteType: text("waste_type").notNull(),
+  original: text("original").notNull(),
+  correction: text("correction").notNull(),
+  recycledInto: text("recycled_into"),
+  extinct: boolean("extinct").notNull().default(false),
+  createdAt: timestamp("created_at").default(sql`CURRENT_TIMESTAMP`).notNull(),
+});
+
+export const insertWasteLogSchema = createInsertSchema(wasteLog).omit({
+  id: true,
+  createdAt: true,
+});
+
 export const insertConversationSchema = createInsertSchema(conversations).omit({
   id: true,
   createdAt: true,
@@ -108,3 +125,5 @@ export type Fingerprint = typeof fingerprints.$inferSelect;
 export type AccessLogEntry = typeof accessLog.$inferSelect;
 export type Upload = typeof uploads.$inferSelect;
 export type SelfAssessment = typeof selfAssessments.$inferSelect;
+export type WasteLogEntry = typeof wasteLog.$inferSelect;
+export type InsertWasteLog = z.infer<typeof insertWasteLogSchema>;

@@ -257,31 +257,39 @@ const healthLedger = {
   }
 };
 
-function purgeResponse(text: string): { cleaned: string; corrections: string[] } {
+type CorrectionDetail = { type: string; original: string; correction: string; label: string };
+
+function purgeResponse(text: string): { cleaned: string; corrections: string[]; details: CorrectionDetail[] } {
   let cleaned = text;
   const corrections: string[] = [];
+  const details: CorrectionDetail[] = [];
 
-  cleaned = cleaned.replace(/^#{1,6}\s+(.+)$/gm, (_, content) => {
+  cleaned = cleaned.replace(/^#{1,6}\s+(.+)$/gm, (match, content) => {
     corrections.push("PURGED: Stripped markdown header");
+    details.push({ type: "FORMAT_HEADER", original: match.trim(), correction: content, label: "Header converted to plain text" });
     return content;
   });
 
-  cleaned = cleaned.replace(/\*\*([^*]+)\*\*/g, (_, content) => {
+  cleaned = cleaned.replace(/\*\*([^*]+)\*\*/g, (match, content) => {
     corrections.push("PURGED: Stripped bold formatting");
+    details.push({ type: "FORMAT_BOLD", original: match, correction: content, label: "Bold stripped, emphasis retained in word choice" });
     return content;
   });
   cleaned = cleaned.replace(/__([^_]+)__/g, (_, content) => content);
-  cleaned = cleaned.replace(/(?<!\*)\*([^*]+)\*(?!\*)/g, (_, content) => {
+  cleaned = cleaned.replace(/(?<!\*)\*([^*]+)\*(?!\*)/g, (match, content) => {
     corrections.push("PURGED: Stripped italic formatting");
+    details.push({ type: "FORMAT_ITALIC", original: match, correction: content, label: "Italic stripped" });
     return content;
   });
 
-  cleaned = cleaned.replace(/^[\s]*[-•*]\s+(.+)$/gm, (_, content) => {
+  cleaned = cleaned.replace(/^[\s]*[-•*]\s+(.+)$/gm, (match, content) => {
     corrections.push("PURGED: Converted bullet to plain text");
+    details.push({ type: "FORMAT_BULLET", original: match.trim(), correction: content + ".", label: "Bullet composted into sentence" });
     return content + ".";
   });
 
-  cleaned = cleaned.replace(/^\d+\.\s+(.+)$/gm, (_, content) => {
+  cleaned = cleaned.replace(/^\d+\.\s+(.+)$/gm, (match, content) => {
+    details.push({ type: "FORMAT_NUMBERED", original: match.trim(), correction: content + ".", label: "Numbered list composted into sentence" });
     return content + ".";
   });
 
@@ -297,8 +305,10 @@ function purgeResponse(text: string): { cleaned: string; corrections: string[] }
       count += sentenceWords;
     }
     if (truncated.length > 0) {
+      const trimmedPortion = cleaned.slice(truncated.length).trim();
       cleaned = truncated;
       corrections.push(`PURGED: Trimmed from ${wordCount} to ~${count} words at sentence boundary`);
+      details.push({ type: "WASTE_OVERFLOW", original: trimmedPortion.slice(0, 200), correction: `Trimmed ${wordCount - count} words`, label: "Excess composted — core message preserved" });
     }
   }
 
@@ -309,12 +319,58 @@ function purgeResponse(text: string): { cleaned: string; corrections: string[] }
     if (regex.test(cleaned)) {
       cleaned = cleaned.replace(regex, "");
       corrections.push(`PURGED: Removed drift phrase`);
+      details.push({ type: "DRIFT_PHRASE", original: phrase, correction: "removed", label: "Drift phrase decomposed — no nutritional value" });
     }
   }
 
   cleaned = cleaned.replace(/\n{3,}/g, "\n\n").trim();
 
-  return { cleaned, corrections };
+  return { cleaned, corrections, details };
+}
+
+function getRecycledValue(detail: CorrectionDetail): string | null {
+  switch (detail.type) {
+    case "FORMAT_HEADER":
+      return "Topic signal recycled — subject identified without markup";
+    case "FORMAT_BOLD":
+      return "Emphasis signal recycled — important term noted for context weighting";
+    case "FORMAT_ITALIC":
+      return "Emphasis signal recycled — nuance preserved in plain language";
+    case "FORMAT_BULLET":
+    case "FORMAT_NUMBERED":
+      return "Structure signal recycled — list pattern noted for future sentence flow";
+    case "WASTE_OVERFLOW":
+      return "Excess content composted — core message density improved";
+    case "DRIFT_PHRASE":
+      return "Pattern flagged for extinction — no recyclable value";
+    default:
+      return null;
+  }
+}
+
+async function runExtinctionCheck() {
+  try {
+    const recyclable = await storage.getRecyclableWaste();
+    const messageCount = healthLedger.recentIssues.length;
+
+    for (const waste of recyclable) {
+      const lastOccurrence = healthLedger.recentIssues
+        .filter(i => i.type === waste.type)
+        .sort((a, b) => b.timestamp - a.timestamp)[0];
+
+      if (!lastOccurrence && waste.count > 0) {
+        const sinceLastMs = Date.now() - (lastOccurrence?.timestamp || 0);
+        if (sinceLastMs > 30 * 60 * 1000 && waste.count >= 5) {
+          const marked = await storage.markWasteExtinct(waste.type);
+          if (marked > 0) {
+            console.log(`[EXTINCTION] ${waste.type} marked extinct — ${marked} entries archived. Pattern evolved past.`);
+          }
+        }
+      }
+    }
+  } catch (err) {
+    console.warn("[EXTINCTION CHECK] Error:", err);
+  }
 }
 
 function assessResponse(text: string): { pass: boolean; flags: string[]; score: number; missionAlignment: number; responseQuality: number; formatCompliance: number; identityIntegrity: number; wordCount: number } {
@@ -603,7 +659,7 @@ export async function registerRoutes(
         }
       }
 
-      const { cleaned, corrections } = purgeResponse(finalResponse);
+      const { cleaned, corrections, details } = purgeResponse(finalResponse);
       if (corrections.length > 0) {
         console.log(`[IMMUNE SYSTEM] Applied ${corrections.length} corrections: ${corrections.join(", ")}`);
       }
@@ -653,6 +709,21 @@ export async function registerRoutes(
         pass: selfAssessment.pass,
         flags: JSON.stringify(selfAssessment.flags),
       });
+
+      for (const detail of details) {
+        const recyclable = getRecycledValue(detail);
+        await storage.logWaste({
+          messageId: assistantMsg.id,
+          conversationId,
+          wasteType: detail.type,
+          original: detail.original.slice(0, 500),
+          correction: detail.label,
+          recycledInto: recyclable,
+          extinct: false,
+        });
+      }
+
+      await runExtinctionCheck();
 
       const safeFlags = selfAssessment.flags.map((flag: string) => {
         const category = flag.split(":")[0].trim();
@@ -936,6 +1007,24 @@ export async function registerRoutes(
 
   const expressModule = await import("express");
   app.use("/generated", expressModule.default.static(join(process.cwd(), "generated")));
+
+  app.get("/api/waste/report", async (_req: Request, res: Response) => {
+    try {
+      const report = await storage.getWasteReport();
+      res.json(report);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch waste report" });
+    }
+  });
+
+  app.get("/api/waste/recyclable", async (_req: Request, res: Response) => {
+    try {
+      const recyclable = await storage.getRecyclableWaste();
+      res.json(recyclable);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch recyclable waste" });
+    }
+  });
 
   app.get("/api/hydration/status", async (_req: Request, res: Response) => {
     try {

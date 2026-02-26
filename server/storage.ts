@@ -1,6 +1,6 @@
 import { db } from "./db";
-import { conversations, messages, uuonTokens, creatorProfile, fingerprints, accessLog, uploads, selfAssessments } from "@shared/schema";
-import type { Conversation, InsertConversation, Message, InsertMessage, UuonToken, InsertUuonToken, CreatorProfileEntry, Fingerprint, AccessLogEntry, Upload, SelfAssessment } from "@shared/schema";
+import { conversations, messages, uuonTokens, creatorProfile, fingerprints, accessLog, uploads, selfAssessments, wasteLog } from "@shared/schema";
+import type { Conversation, InsertConversation, Message, InsertMessage, UuonToken, InsertUuonToken, CreatorProfileEntry, Fingerprint, AccessLogEntry, Upload, SelfAssessment, WasteLogEntry, InsertWasteLog } from "@shared/schema";
 import { eq, desc, and, gte, count, sql, avg } from "drizzle-orm";
 
 export interface IStorage {
@@ -31,6 +31,10 @@ export interface IStorage {
   addMemoryAnchor(key: string, value: string, relevanceScore?: number): Promise<{ replaced?: string }>;
   saveSelfAssessment(data: { messageId: number; conversationId: number; score: number; missionAlignment: number; responseQuality: number; formatCompliance: number; identityIntegrity: number; wordCount: number; pass: boolean; flags: string }): Promise<SelfAssessment>;
   getSelfAssessmentReport(): Promise<{ avgScore: number; avgMission: number; avgQuality: number; avgFormat: number; avgIdentity: number; totalAssessments: number; totalFlags: number; recentFlags: string[]; scoreHistory: number[]; subScoreHistory: { mission: number; quality: number; format: number; identity: number }[]; gapAnalysis: { category: string; count: number; severity: string }[] }>;
+  logWaste(data: InsertWasteLog): Promise<WasteLogEntry>;
+  getWasteReport(): Promise<{ total: number; byType: Record<string, number>; recycled: number; extinct: number; recentWaste: WasteLogEntry[]; evolution: { type: string; count: number; lastSeen: string; extinct: boolean }[] }>;
+  markWasteExtinct(wasteType: string): Promise<number>;
+  getRecyclableWaste(): Promise<{ type: string; patterns: string[]; count: number }[]>;
 }
 
 class DatabaseStorage implements IStorage {
@@ -263,6 +267,62 @@ class DatabaseStorage implements IStorage {
       subScoreHistory,
       gapAnalysis,
     };
+  }
+
+  async logWaste(data: InsertWasteLog): Promise<WasteLogEntry> {
+    const [entry] = await db.insert(wasteLog).values(data).returning();
+    return entry;
+  }
+
+  async getWasteReport(): Promise<{ total: number; byType: Record<string, number>; recycled: number; extinct: number; recentWaste: WasteLogEntry[]; evolution: { type: string; count: number; lastSeen: string; extinct: boolean }[] }> {
+    const allWaste = await db.select().from(wasteLog).orderBy(desc(wasteLog.createdAt));
+    const total = allWaste.length;
+    const byType: Record<string, number> = {};
+    for (const w of allWaste) {
+      byType[w.wasteType] = (byType[w.wasteType] || 0) + 1;
+    }
+    const recycled = allWaste.filter(w => w.recycledInto !== null).length;
+    const extinct = allWaste.filter(w => w.extinct).length;
+    const recentWaste = allWaste.slice(0, 20);
+
+    const typeMap: Record<string, { count: number; lastSeen: string; extinct: boolean }> = {};
+    for (const w of allWaste) {
+      if (!typeMap[w.wasteType]) {
+        typeMap[w.wasteType] = { count: 0, lastSeen: w.createdAt.toISOString(), extinct: w.extinct };
+      }
+      typeMap[w.wasteType].count++;
+    }
+    const evolution = Object.entries(typeMap).map(([type, data]) => ({ type, ...data }));
+
+    return { total, byType, recycled, extinct, recentWaste, evolution };
+  }
+
+  async markWasteExtinct(wasteType: string): Promise<number> {
+    const result = await db.update(wasteLog)
+      .set({ extinct: true })
+      .where(eq(wasteLog.wasteType, wasteType))
+      .returning();
+    return result.length;
+  }
+
+  async getRecyclableWaste(): Promise<{ type: string; patterns: string[]; count: number }[]> {
+    const allWaste = await db.select().from(wasteLog)
+      .where(eq(wasteLog.extinct, false))
+      .orderBy(desc(wasteLog.createdAt));
+
+    const grouped: Record<string, string[]> = {};
+    for (const w of allWaste) {
+      if (!grouped[w.wasteType]) grouped[w.wasteType] = [];
+      if (grouped[w.wasteType].length < 5) {
+        grouped[w.wasteType].push(w.original.slice(0, 100));
+      }
+    }
+
+    return Object.entries(grouped).map(([type, patterns]) => ({
+      type,
+      patterns,
+      count: allWaste.filter(w => w.wasteType === type).length,
+    }));
   }
 }
 
