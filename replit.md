@@ -62,17 +62,12 @@ UUON Clouud is the intelligence interface for the G°centric Lattice System, bui
     - Composite score = average of 4 metrics
     - DB: `self_assessments` table with per-metric columns
     - UI: Per-message inline sub-scores (M/Q/F/I), SYS bar compact display, expanded panel with SubScoreCard progress bars and gap analysis
-23. **3-Layer Biometric Authentication:**
-    - **Layer 1 — WebAuthn:** Platform biometric (fingerprint/Face ID via browser API), @simplewebauthn/server + @simplewebauthn/browser
-    - **Layer 2 — Passphrase:** bcrypt-hashed (12 rounds), verified per session
-    - **Layer 3 — Device Fingerprint:** Canvas/WebGL/Audio composite hash, session-bound, 30s integrity monitor
-    - Per-session challenge scoping prevents cross-session replay
-    - Protected API routes require all 3 layers verified (enforced in securityGate middleware)
-    - Setup flow: first visit → register biometric + set passphrase; subsequent visits → authenticate all 3 layers
-    - Session tokens stored in sessionStorage, auto-injected via global fetch interceptor in main.tsx
-    - DB: `webauthn_credentials`, `owner_passphrase`, `auth_sessions`, `fingerprints`, `access_log`
-    - Server: `server/auth.ts` (all auth endpoints), `server/security.ts` (enforceFullAuth middleware)
-    - Client: `client/src/components/security-gate.tsx` (full 3-layer UI flow)
+23. **3-Layer Biometric Authentication (DISABLED):**
+    - Currently disabled due to persistent fingerprint hash mismatches causing access lockouts
+    - Code preserved in `server/auth.ts`, `server/security.ts`, `client/src/components/security-gate.tsx`
+    - SecurityGate removed from App.tsx wrapper, securityGate middleware commented out in server/index.ts
+    - Auth DB tables still exist: `webauthn_credentials`, `owner_passphrase`, `auth_sessions`, `fingerprints`, `access_log`
+    - Can be re-enabled by uncommenting `app.use(securityGate)` in server/index.ts and re-wrapping Router with SecurityGate in App.tsx
 
 ## DB Tables
 - `conversations` — Chat sessions
