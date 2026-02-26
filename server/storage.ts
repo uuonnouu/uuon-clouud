@@ -1,6 +1,6 @@
 import { db } from "./db";
-import { conversations, messages, uuonTokens, creatorProfile, fingerprints, accessLog, uploads, selfAssessments, wasteLog } from "@shared/schema";
-import type { Conversation, InsertConversation, Message, InsertMessage, UuonToken, InsertUuonToken, CreatorProfileEntry, Fingerprint, AccessLogEntry, Upload, SelfAssessment, WasteLogEntry, InsertWasteLog } from "@shared/schema";
+import { conversations, messages, uuonTokens, creatorProfile, fingerprints, accessLog, uploads, selfAssessments, wasteLog, quarantine, symbionts } from "@shared/schema";
+import type { Conversation, InsertConversation, Message, InsertMessage, UuonToken, InsertUuonToken, CreatorProfileEntry, Fingerprint, AccessLogEntry, Upload, SelfAssessment, WasteLogEntry, InsertWasteLog, QuarantineEntry, InsertQuarantine, Symbiont, InsertSymbiont } from "@shared/schema";
 import { eq, desc, and, gte, count, sql, avg } from "drizzle-orm";
 
 export interface IStorage {
@@ -35,6 +35,14 @@ export interface IStorage {
   getWasteReport(): Promise<{ total: number; byType: Record<string, number>; recycled: number; extinct: number; recentWaste: WasteLogEntry[]; evolution: { type: string; count: number; lastSeen: string; extinct: boolean }[] }>;
   markWasteExtinct(wasteType: string): Promise<number>;
   getRecyclableWaste(): Promise<{ type: string; patterns: string[]; count: number }[]>;
+  quarantinePattern(data: InsertQuarantine): Promise<QuarantineEntry>;
+  getQuarantined(): Promise<QuarantineEntry[]>;
+  updateQuarantineStatus(id: number, status: string, diagnosis?: string, beneficialUse?: string): Promise<QuarantineEntry | undefined>;
+  convertToSymbiont(quarantineId: number, symbiontData: InsertSymbiont): Promise<Symbiont>;
+  getSymbionts(): Promise<Symbiont[]>;
+  getActiveSymbionts(): Promise<Symbiont[]>;
+  incrementSymbiontAbsorption(name: string): Promise<void>;
+  getBiologicalReport(): Promise<{ quarantined: number; symbionts: number; extinctions: number; totalWaste: number; recycledPercent: number; quarantineEntries: QuarantineEntry[]; symbiontRegistry: Symbiont[] }>;
 }
 
 class DatabaseStorage implements IStorage {
@@ -323,6 +331,84 @@ class DatabaseStorage implements IStorage {
       patterns,
       count: allWaste.filter(w => w.wasteType === type).length,
     }));
+  }
+
+  async quarantinePattern(data: InsertQuarantine): Promise<QuarantineEntry> {
+    const existing = await db.select().from(quarantine)
+      .where(and(eq(quarantine.wasteType, data.wasteType), eq(quarantine.pattern, data.pattern)));
+    if (existing.length > 0) {
+      const [updated] = await db.update(quarantine)
+        .set({ occurrences: existing[0].occurrences + 1, updatedAt: new Date() })
+        .where(eq(quarantine.id, existing[0].id))
+        .returning();
+      return updated;
+    }
+    const [entry] = await db.insert(quarantine).values(data).returning();
+    return entry;
+  }
+
+  async getQuarantined(): Promise<QuarantineEntry[]> {
+    return db.select().from(quarantine).orderBy(desc(quarantine.updatedAt));
+  }
+
+  async updateQuarantineStatus(id: number, status: string, diagnosis?: string, beneficialUse?: string): Promise<QuarantineEntry | undefined> {
+    const updates: any = { status, updatedAt: new Date() };
+    if (diagnosis) updates.diagnosis = diagnosis;
+    if (beneficialUse) updates.beneficialUse = beneficialUse;
+    const [updated] = await db.update(quarantine).set(updates).where(eq(quarantine.id, id)).returning();
+    return updated;
+  }
+
+  async convertToSymbiont(quarantineId: number, symbiontData: InsertSymbiont): Promise<Symbiont> {
+    await db.update(quarantine)
+      .set({ status: "converted", convertedTo: symbiontData.name, updatedAt: new Date() })
+      .where(eq(quarantine.id, quarantineId));
+    const existing = await db.select().from(symbionts).where(eq(symbionts.name, symbiontData.name));
+    if (existing.length > 0) {
+      const [updated] = await db.update(symbionts)
+        .set({ absorptionCount: existing[0].absorptionCount + 1 })
+        .where(eq(symbionts.id, existing[0].id))
+        .returning();
+      return updated;
+    }
+    const [symbiont] = await db.insert(symbionts).values(symbiontData).returning();
+    return symbiont;
+  }
+
+  async getSymbionts(): Promise<Symbiont[]> {
+    return db.select().from(symbionts).orderBy(desc(symbionts.createdAt));
+  }
+
+  async getActiveSymbionts(): Promise<Symbiont[]> {
+    return db.select().from(symbionts).where(eq(symbionts.active, true));
+  }
+
+  async incrementSymbiontAbsorption(name: string): Promise<void> {
+    const existing = await db.select().from(symbionts).where(eq(symbionts.name, name));
+    if (existing.length > 0) {
+      await db.update(symbionts)
+        .set({ absorptionCount: existing[0].absorptionCount + 1 })
+        .where(eq(symbionts.id, existing[0].id));
+    }
+  }
+
+  async getBiologicalReport(): Promise<{ quarantined: number; symbionts: number; extinctions: number; totalWaste: number; recycledPercent: number; quarantineEntries: QuarantineEntry[]; symbiontRegistry: Symbiont[] }> {
+    const allWaste = await db.select().from(wasteLog);
+    const allQuarantine = await db.select().from(quarantine).orderBy(desc(quarantine.updatedAt));
+    const allSymbionts = await db.select().from(symbionts).orderBy(desc(symbionts.createdAt));
+    const totalWaste = allWaste.length;
+    const recycled = allWaste.filter(w => w.recycledInto !== null).length;
+    const extinctions = allWaste.filter(w => w.extinct).length;
+
+    return {
+      quarantined: allQuarantine.filter(q => q.status === "isolated" || q.status === "diagnosed").length,
+      symbionts: allSymbionts.filter(s => s.active).length,
+      extinctions,
+      totalWaste,
+      recycledPercent: totalWaste > 0 ? Math.round((recycled / totalWaste) * 100) : 0,
+      quarantineEntries: allQuarantine,
+      symbiontRegistry: allSymbionts,
+    };
   }
 }
 

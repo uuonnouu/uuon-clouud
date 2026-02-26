@@ -11,6 +11,7 @@ import { scrapeUrl } from "./scraper";
 import { hashFingerprint } from "./security";
 import { auditConversationExport } from "./audit";
 import { getHydrationStatus, runHydrationNow } from "./hydration";
+import { runQuarantineCheck, getActiveSymbiontContext, getBiomeStatus } from "./biome";
 import Anthropic from "@anthropic-ai/sdk";
 
 const SYSTEM_PROMPT = `# ═══════════════════════════════════════════════════
@@ -154,9 +155,10 @@ ${profileLines}
 You remember Philip. You remember what he has shared. You continue the relationship, not restart it.`;
 
   const pressure = healthLedger.getPromptPressure();
+  const symbiontContext = await getActiveSymbiontContext();
   return SYSTEM_PROMPT.replace(
     "## CLOSING ANCHOR",
-    creatorContext + pressure + "\n\n## CLOSING ANCHOR"
+    creatorContext + pressure + symbiontContext + "\n\n## CLOSING ANCHOR"
   );
 }
 
@@ -721,6 +723,7 @@ export async function registerRoutes(
           recycledInto: recyclable,
           extinct: false,
         });
+        await runQuarantineCheck(detail.type, detail.original);
       }
 
       await runExtinctionCheck();
@@ -1026,6 +1029,33 @@ export async function registerRoutes(
     }
   });
 
+  app.get("/api/biome", async (_req: Request, res: Response) => {
+    try {
+      const status = await getBiomeStatus();
+      res.json(status);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch biome status" });
+    }
+  });
+
+  app.get("/api/biome/quarantine", async (_req: Request, res: Response) => {
+    try {
+      const entries = await storage.getQuarantined();
+      res.json(entries);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch quarantine" });
+    }
+  });
+
+  app.get("/api/biome/symbionts", async (_req: Request, res: Response) => {
+    try {
+      const entries = await storage.getSymbionts();
+      res.json(entries);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch symbionts" });
+    }
+  });
+
   app.get("/api/hydration/status", async (_req: Request, res: Response) => {
     try {
       const status = await getHydrationStatus();
@@ -1090,6 +1120,7 @@ export async function registerRoutes(
         activePatterns: recurring,
         pressureActive: recurring.length > 0,
         recentIssues: healthLedger.recentIssues.length,
+        biome: "operational",
       },
     });
   });

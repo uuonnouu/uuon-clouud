@@ -70,6 +70,12 @@ UUON Clouud is the intelligence interface for the G°centric Lattice System, bui
     - **Waste Composting (recycling):** Every correction is logged to `waste_log` table with type, original content, correction applied, and recycled value. Headers become topic signals. Bold becomes emphasis weighting. Bullets become sentence flow data. Nothing is just discarded — it feeds the system's understanding.
     - **Extinction Protocol:** When a waste type hasn't appeared in the health ledger for 30+ minutes and has 5+ historical entries, it's marked extinct. The system evolved past it. Dead patterns are archived, not deleted.
     - API: `GET /api/waste/report` (full waste report with evolution data), `GET /api/waste/recyclable` (active recyclable waste patterns)
+    - **Quarantine Zone:** Recurring waste patterns (3+ occurrences) get isolated into quarantine for diagnosis. Each quarantined pattern is analyzed for potential beneficial reuse in other contexts.
+    - **Symbiont Registry:** Quarantined patterns that reach 5+ occurrences get absorbed as symbionts — permanent biological functions. Like mitochondria: once invaders, now essential. Format headers become topic-structurers. Bold becomes emphasis-detectors. Bullets become enumeration-engines.
+    - **Symbiont Context Injection:** Active symbionts are loaded into the system prompt, informing Claude about what biological functions the system has absorbed from its own waste.
+    - DB: `quarantine` table (wasteType, pattern, occurrences, status, diagnosis, beneficialUse, convertedTo), `symbionts` table (name, originType, originPattern, function, context, active, absorptionCount)
+    - API: `GET /api/biome` (full biological report), `GET /api/biome/quarantine`, `GET /api/biome/symbionts`
+    - Key file: `server/biome.ts` — Quarantine logic, symbiont map, biome status
 23. **Code Audit Engine:** Upload Claude.ai or ChatGPT JSON exports. Clouud extracts code blocks, scores viability (0-100), flags issues, recommends keep/fix/discard/promote. G°centric alignment bonus scoring.
     - API: `POST /api/audit-export` (multipart, file field "export", body field "source": "claude"|"chatgpt")
 24. **File Generation:** Clouud generates downloadable files (HTML, Python, TypeScript, JSON, etc.)
@@ -96,6 +102,8 @@ UUON Clouud is the intelligence interface for the G°centric Lattice System, bui
 - `uploads` — File uploads with extracted text
 - `self_assessments` — Per-message scores (composite, missionAlignment, responseQuality, formatCompliance, identityIntegrity, wordCount, pass, flags)
 - `waste_log` — Composted waste entries (wasteType, original, correction, recycledInto, extinct)
+- `quarantine` — Isolated recurring patterns under diagnosis (wasteType, pattern, occurrences, status, diagnosis, beneficialUse, convertedTo)
+- `symbionts` — Absorbed biological functions from waste (name, originType, originPattern, function, context, active, absorptionCount)
 
 ## Design System
 - **Palette:** Deep Navy (#030811), UUON Gold (#f0b93b), Atmosphere Blue (#4a8cd4)
