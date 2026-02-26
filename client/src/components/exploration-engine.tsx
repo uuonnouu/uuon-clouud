@@ -197,6 +197,8 @@ export default function ExplorationEngine({ onExplore }: ExplorationEngineProps)
   const [activeNode, setActiveNode] = useState<string | null>(null);
   const [time, setTime] = useState(0);
   const [particles, setParticles] = useState<{ id: number; x: number; y: number; vx: number; vy: number; life: number; color: string; theory?: string }[]>([]);
+  const animRef = useRef<number>(0);
+  const containerRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   // Theories into visual play
@@ -215,6 +217,12 @@ export default function ExplorationEngine({ onExplore }: ExplorationEngineProps)
 
     let animationFrameId: number;
     const theory = THEORIES[Math.floor(Math.random() * THEORIES.length)];
+
+    const tick = (now: number) => {
+      setTime(t => t + 1);
+      animRef.current = requestAnimationFrame(tick);
+    };
+    animRef.current = requestAnimationFrame(tick);
 
     const animate = () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -260,6 +268,7 @@ export default function ExplorationEngine({ onExplore }: ExplorationEngineProps)
 
     return () => {
       cancelAnimationFrame(animationFrameId);
+      cancelAnimationFrame(animRef.current);
       window.removeEventListener("resize", handleResize);
     };
   }, []);
