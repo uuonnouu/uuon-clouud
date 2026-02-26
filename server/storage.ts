@@ -22,6 +22,7 @@ export interface IStorage {
   getSelfAssessmentReport(): Promise<{ avgScore: number; avgMission: number; avgQuality: number; avgFormat: number; avgIdentity: number; totalAssessments: number; totalFlags: number; recentFlags: string[]; scoreHistory: number[]; subScoreHistory: { mission: number; quality: number; format: number; identity: number }[]; gapAnalysis: { category: string; count: number; severity: string }[] }>;
   createWhistleblowerClaim(data: InsertWhistleblowerClaim): Promise<WhistleblowerClaim>;
   getAllWhistleblowerClaims(): Promise<WhistleblowerClaim[]>;
+  registerFingerprint(hash: string, components: string, isOwner: boolean): Promise<void>;
 }
 
 class DatabaseStorage implements IStorage {
@@ -221,6 +222,10 @@ class DatabaseStorage implements IStorage {
 
   async getAllWhistleblowerClaims(): Promise<WhistleblowerClaim[]> {
     return db.select().from(whistleblowerClaims).orderBy(desc(whistleblowerClaims.createdAt));
+  }
+
+  async registerFingerprint(hash: string, components: string, isOwner: boolean): Promise<void> {
+    // Minimal implementation for open system
   }
 }
 
