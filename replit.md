@@ -95,7 +95,17 @@ UUON Clouud is the intelligence interface for the G°centric Lattice System, bui
 - **Style:** Digital Brutalism with sharp shadows
 - **Avatar:** Static Clouud character image with state-driven glow/pulse animations
 
+25. **Automated Database Backups:** Daily JSON export of all 10 database tables to `backups/` directory. Runs on startup and every 24 hours. Keeps last 30 backups. Manual trigger via `POST /api/backup/run`.
+    - Backend: `server/backup.ts`
+    - API: `POST /api/backup/run` (manual trigger), `GET /api/backup/status` (check status)
+26. **Health Check Endpoint:** `GET /api/health` returns full system status — database connectivity, backup status, mission document presence, core IP file locations.
+27. **UUON-MISSION.md:** Standalone mission document capturing all intellectual property (lattice, hash algorithm, system prompt, self-assessment engine, principles) in plain language, independent of any platform.
+28. **Sketchfab Backup Script:** `server/sketchfab-backup.ts` — Script to download all UUON Foundation 3D models from Sketchfab via API. Requires Sketchfab API token. Trigger via `POST /api/backup/sketchfab`.
+29. **Content Protection:** Client-side protections preventing right-click, text selection, copy/paste, keyboard shortcuts (Ctrl+U, Ctrl+S, F12, etc.), and drag operations. Input fields remain functional.
+30. **Principles Page:** Legal page includes "Principles" tab documenting 10 patterns UUON does not allow or promote (complexity without purpose, revolving door, manufactured urgency, free product trap, single solution, charity as branding, preemptive disclaimer, manufactured consensus, buried correction, poverty as a product).
+
 ## Environment Variables
 - `DATABASE_URL` — PostgreSQL connection string (auto-set)
 - `AI_INTEGRATIONS_ANTHROPIC_API_KEY` — Anthropic API key (via Replit integration)
 - `AI_INTEGRATIONS_ANTHROPIC_BASE_URL` — Anthropic base URL (via Replit integration)
+- `SKETCHFAB_API_TOKEN` — (optional) Sketchfab API token for 3D model backup

@@ -6,6 +6,8 @@ import { generateProvenanceHash, ellomental } from "./ellomental-hash";
 import { upload, handleUpload } from "./uploads";
 import { scrapeUrl } from "./scraper";
 import { hashFingerprint } from "./security";
+import { runBackup, getBackupStatus, startScheduledBackups } from "./backup";
+import { backupAllModels } from "./sketchfab-backup";
 import Anthropic from "@anthropic-ai/sdk";
 
 const SYSTEM_PROMPT = `# ═══════════════════════════════════════════════════
@@ -1057,4 +1059,84 @@ If no ideas are found, respond with an empty array [].`,
       ideasExtracted: 0,
     });
   }
+}
+
+export function registerSystemRoutes(app: Express) {
+  startScheduledBackups(24);
+
+  app.get("/api/health", async (_req: Request, res: Response) => {
+    const health: Record<string, any> = {
+      status: "operational",
+      timestamp: new Date().toISOString(),
+      origin: "UUON-FOUNDATION-GCENTRIC-V1",
+      components: {},
+    };
+
+    try {
+      const { pool } = await import("./db");
+      const result = await pool.query("SELECT 1 as check");
+      health.components.database = {
+        status: result.rows.length > 0 ? "connected" : "error",
+        type: "PostgreSQL",
+      };
+    } catch (err: any) {
+      health.components.database = { status: "disconnected", error: err.message };
+      health.status = "degraded";
+    }
+
+    const backupStatus = getBackupStatus();
+    health.components.backup = {
+      status: backupStatus.lastBackup ? "active" : "no_backups_yet",
+      lastBackup: backupStatus.lastBackup,
+      totalBackups: backupStatus.backupCount,
+      backupDir: backupStatus.backupDir,
+      schedule: "every 24 hours",
+    };
+
+    try {
+      const fs = await import("fs");
+      const missionExists = fs.existsSync("UUON-MISSION.md");
+      health.components.missionDocument = {
+        status: missionExists ? "present" : "missing",
+        path: "UUON-MISSION.md",
+      };
+    } catch {
+      health.components.missionDocument = { status: "unknown" };
+    }
+
+    health.components.coreIP = {
+      lattice: "server/lattice.ts",
+      ellomental: "server/ellomental-hash.ts",
+      systemPrompt: "server/routes.ts",
+      selfAssessment: "server/routes.ts",
+    };
+
+    res.json(health);
+  });
+
+  app.post("/api/backup/run", async (_req: Request, res: Response) => {
+    try {
+      const result = await runBackup();
+      res.json(result);
+    } catch (error: any) {
+      res.status(500).json({ success: false, error: error.message });
+    }
+  });
+
+  app.get("/api/backup/status", (_req: Request, res: Response) => {
+    res.json(getBackupStatus());
+  });
+
+  app.post("/api/backup/sketchfab", async (req: Request, res: Response) => {
+    const apiToken = req.body.apiToken || process.env.SKETCHFAB_API_TOKEN;
+    if (!apiToken) {
+      return res.status(400).json({ error: "Sketchfab API token required. Provide in request body or set SKETCHFAB_API_TOKEN env var." });
+    }
+    try {
+      const result = await backupAllModels(apiToken);
+      res.json(result);
+    } catch (error: any) {
+      res.status(500).json({ success: false, error: error.message });
+    }
+  });
 }
