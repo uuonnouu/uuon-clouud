@@ -20,6 +20,21 @@ type Conversation = {
   createdAt: string;
 };
 
+const QUICK_ACTIONS = [
+  "About Us",
+  "What is waste, fraud, and abuse?",
+  "How does the lattice work?",
+  "What is position 21?",
+  "Show the full lattice",
+  "What makes UUON different?",
+  "How can I help improve Earth?",
+  "Explain the 33-point system",
+  "What problems are you solving?",
+  "What is IEEE 754?",
+  "Why does rounding matter?",
+  "Tell me about Phillip Ruiz",
+];
+
 export default function ClouudTerminal() {
   const [input, setInput] = useState("");
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -108,6 +123,10 @@ export default function ClouudTerminal() {
     setIsSidebarOpen(false);
   }
 
+  function handleQuickAction(label: string) {
+    setInput(label);
+  }
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!input.trim() || isTyping) return;
@@ -172,7 +191,7 @@ export default function ClouudTerminal() {
           id: Date.now() + 1,
           conversationId: convoId!,
           role: "assistant",
-          content: `System error: ${err.message}. The lattice remains anchored.`,
+          content: `System error: ${err.message}`,
           toolCall: null,
           hash: null,
           createdAt: new Date().toISOString(),
@@ -189,7 +208,7 @@ export default function ClouudTerminal() {
       <div className="h-screen bg-background flex items-center justify-center">
         <div className="flex flex-col items-center gap-6">
           <ClouudAvatar state="thinking" size="lg" />
-          <span className="font-mono text-[10px] text-muted-foreground tracking-widest uppercase">Initializing Lattice...</span>
+          <span className="font-mono text-[10px] text-muted-foreground tracking-widest uppercase">Initializing...</span>
         </div>
       </div>
     );
@@ -198,7 +217,6 @@ export default function ClouudTerminal() {
   return (
     <div className="h-screen bg-background text-foreground flex overflow-hidden font-sans">
       
-      {/* MOBILE HEADER */}
       <div className="md:hidden fixed top-0 left-0 right-0 h-14 bg-card/90 backdrop-blur-md border-b border-border z-50 flex items-center justify-between px-4">
         <div className="flex items-center gap-3">
           <ClouudAvatar state={aiState} size="sm" />
@@ -213,47 +231,43 @@ export default function ClouudTerminal() {
         </button>
       </div>
 
-      {/* SIDEBAR */}
       <AnimatePresence>
         {(isSidebarOpen || typeof window !== 'undefined') && (
           <motion.div 
             initial={false}
-            className={`${isSidebarOpen ? 'fixed z-40' : 'hidden md:flex relative'} w-80 h-full bg-card border-r border-border shadow-2xl md:shadow-none flex-col top-0 pt-14 md:pt-0`}
+            className={`${isSidebarOpen ? 'fixed z-40' : 'hidden md:flex relative'} w-72 h-full bg-card border-r border-border shadow-2xl md:shadow-none flex-col top-0 pt-14 md:pt-0`}
           >
-            {/* Sidebar Header with Logo */}
-            <div className="relative p-6 border-b border-border bg-gradient-to-b from-[#0a1a30] to-card overflow-hidden">
+            <div className="relative p-4 border-b border-border bg-gradient-to-b from-[#0a1a30] to-card overflow-hidden">
               <div className="absolute inset-0 opacity-5">
                 <img src={uuonLogo} alt="" className="w-full h-full object-cover" />
               </div>
-              <div className="relative z-10 flex items-center gap-4">
-                <img src={uuonLogo} alt="UUON Foundation" className="w-10 h-10 rounded-full border border-primary/30 shadow-[0_0_15px_rgba(240,185,59,0.2)]" />
+              <div className="relative z-10 flex items-center gap-3">
+                <img src={uuonLogo} alt="UUON" className="w-9 h-9 rounded-full border border-primary/30 shadow-[0_0_15px_rgba(240,185,59,0.2)]" />
                 <div>
-                  <h1 className="font-display text-lg text-white font-bold leading-none tracking-widest">UUON CLOUUD</h1>
+                  <h1 className="font-display text-base text-white font-bold leading-none tracking-widest">UUON CLOUUD</h1>
                   <span className="font-mono text-[9px] text-primary uppercase tracking-widest">G°centric v1.0</span>
                 </div>
               </div>
             </div>
 
             <div className="flex-1 overflow-y-auto">
-              {/* New Session Button */}
-              <div className="p-4 border-b border-border">
+              <div className="p-3 border-b border-border">
                 <button 
                   onClick={createConversation}
-                  className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-primary hover:bg-primary/90 text-black font-display text-sm tracking-wider font-bold uppercase rounded-sm transition-colors"
+                  className="w-full flex items-center justify-center gap-2 px-3 py-2 bg-primary hover:bg-primary/90 text-black font-display text-xs tracking-wider font-bold uppercase rounded-sm transition-colors"
                   data-testid="button-new-session"
                 >
-                  <Plus className="w-4 h-4" />
+                  <Plus className="w-3.5 h-3.5" />
                   New Session
                 </button>
               </div>
 
-              {/* Conversation List */}
-              <div className="p-4 space-y-1">
-                <div className="font-mono text-[9px] text-muted-foreground tracking-widest uppercase mb-3 px-1">Sessions</div>
+              <div className="p-3 space-y-0.5">
+                <div className="font-mono text-[9px] text-muted-foreground tracking-widest uppercase mb-2 px-1">Sessions</div>
                 {conversations.map(convo => (
                   <div 
                     key={convo.id}
-                    className={`group flex items-center gap-3 p-3 rounded-sm cursor-pointer transition-all border ${
+                    className={`group flex items-center gap-2 px-2 py-2 rounded-sm cursor-pointer transition-all border text-xs ${
                       activeConvo === convo.id 
                         ? 'bg-muted border-primary/30' 
                         : 'border-transparent hover:bg-muted/50 hover:border-border'
@@ -261,11 +275,11 @@ export default function ClouudTerminal() {
                     onClick={() => selectConversation(convo.id)}
                     data-testid={`card-conversation-${convo.id}`}
                   >
-                    <MessageCircle className={`w-4 h-4 shrink-0 ${activeConvo === convo.id ? 'text-primary' : 'text-muted-foreground'}`} />
-                    <span className="flex-1 text-sm truncate">{convo.title}</span>
+                    <MessageCircle className={`w-3.5 h-3.5 shrink-0 ${activeConvo === convo.id ? 'text-primary' : 'text-muted-foreground'}`} />
+                    <span className="flex-1 truncate">{convo.title}</span>
                     <button
                       onClick={(e) => { e.stopPropagation(); deleteConversation(convo.id); }}
-                      className="opacity-0 group-hover:opacity-100 p-1 text-muted-foreground hover:text-primary transition-all"
+                      className="opacity-0 group-hover:opacity-100 p-0.5 text-muted-foreground hover:text-primary transition-all"
                       data-testid={`button-delete-${convo.id}`}
                     >
                       <Trash2 className="w-3 h-3" />
@@ -273,23 +287,22 @@ export default function ClouudTerminal() {
                   </div>
                 ))}
                 {conversations.length === 0 && (
-                  <div className="text-center py-8 text-muted-foreground text-sm font-mono">
+                  <div className="text-center py-6 text-muted-foreground text-xs font-mono">
                     No sessions yet.
                   </div>
                 )}
               </div>
 
-              {/* System Status */}
-              <div className="p-4 border-t border-border">
+              <div className="p-3 border-t border-border">
                 <details className="group">
-                  <summary className="flex items-center justify-between cursor-pointer font-display uppercase text-xs font-bold tracking-wider text-white mb-3 list-none [&::-webkit-details-marker]:hidden">
-                    <div className="flex items-center gap-2">
+                  <summary className="flex items-center justify-between cursor-pointer font-display uppercase text-[10px] font-bold tracking-wider text-white list-none [&::-webkit-details-marker]:hidden">
+                    <div className="flex items-center gap-1.5">
                       <Activity className="w-3 h-3 text-secondary" />
                       System Status
                     </div>
                     <ChevronRight className="w-3 h-3 transition-transform group-open:rotate-90 text-muted-foreground" />
                   </summary>
-                  <div className="space-y-2 font-mono text-[10px] bg-background border border-border p-3 rounded-sm">
+                  <div className="space-y-1.5 font-mono text-[10px] bg-background border border-border p-2.5 rounded-sm mt-2">
                     <div className="flex justify-between items-center">
                       <span className="text-muted-foreground">LATTICE:</span>
                       <span className="text-secondary font-bold">33-PT ACTIVE</span>
@@ -313,35 +326,56 @@ export default function ClouudTerminal() {
                   </div>
                 </details>
               </div>
+
+              <div className="p-3 border-t border-border">
+                <details className="group" open>
+                  <summary className="flex items-center justify-between cursor-pointer font-display uppercase text-[10px] font-bold tracking-wider text-white list-none [&::-webkit-details-marker]:hidden">
+                    <div className="flex items-center gap-1.5">
+                      <Zap className="w-3 h-3 text-primary" />
+                      Quick Actions
+                    </div>
+                    <ChevronRight className="w-3 h-3 transition-transform group-open:rotate-90 text-muted-foreground" />
+                  </summary>
+                  <div className="mt-2 max-h-60 overflow-y-auto space-y-1 pr-1">
+                    {QUICK_ACTIONS.map((label, i) => (
+                      <button
+                        key={i}
+                        onClick={() => handleQuickAction(label)}
+                        className="w-full text-left px-2 py-1.5 text-[11px] text-muted-foreground hover:text-white bg-background hover:bg-muted/60 border border-transparent hover:border-border rounded-sm transition-all leading-tight"
+                        data-testid={`button-quick-${i}`}
+                      >
+                        {label}
+                      </button>
+                    ))}
+                  </div>
+                </details>
+              </div>
             </div>
           </motion.div>
         )}
       </AnimatePresence>
 
-      {/* MAIN CHAT AREA */}
       <div className="flex-1 flex flex-col relative bg-background pt-14 md:pt-0">
         
-        {/* Empty State - Hero with 3D Avatar */}
         {messages.length === 0 && !isTyping && (
-          <div className="flex-1 flex items-center justify-center p-8">
-            <div className="text-center max-w-lg">
+          <div className="flex-1 flex items-center justify-center p-6">
+            <div className="text-center max-w-md">
               <ClouudAvatar state={aiState} size="hero" showLabel />
-              <h2 className="font-display text-3xl md:text-4xl text-white tracking-widest mt-6 mb-1">
+              <h2 className="font-display text-3xl md:text-4xl text-white tracking-widest mt-5 mb-2">
                 CLOUUD
               </h2>
-              <p className="text-muted-foreground text-sm font-mono mb-1 tracking-widest uppercase">by UUON Foundation</p>
-              <p className="text-muted-foreground/60 text-xs font-mono mb-8">There is only UUON Earth.</p>
+              <p className="text-muted-foreground/60 text-xs font-mono mb-6">There is only UUON Earth.</p>
               
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-left">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 text-left">
                 {[
-                  { label: "About Us", icon: <Globe className="w-4 h-4 text-primary" /> },
-                  { label: "Biggest issues with waste, fraud, and abuse on Earth", icon: <Zap className="w-4 h-4 text-secondary" /> },
-                  { label: "What can we build together to improve Earth?", icon: <Network className="w-4 h-4 text-primary" /> },
+                  { label: "About Us", icon: <Globe className="w-3.5 h-3.5 text-primary shrink-0" /> },
+                  { label: "Waste, fraud, and abuse", icon: <Zap className="w-3.5 h-3.5 text-secondary shrink-0" /> },
+                  { label: "Build something for Earth", icon: <Network className="w-3.5 h-3.5 text-primary shrink-0" /> },
                 ].map((prompt, i) => (
                   <button 
                     key={i}
                     onClick={() => setInput(prompt.label)}
-                    className="flex items-center gap-3 p-3 bg-card border border-border rounded-sm hover:border-primary/30 transition-colors text-sm text-muted-foreground hover:text-white"
+                    className="flex items-center gap-2 px-2.5 py-2 bg-card border border-border rounded-sm hover:border-primary/30 transition-colors text-xs text-muted-foreground hover:text-white"
                     data-testid={`button-prompt-${i}`}
                   >
                     {prompt.icon}
@@ -353,11 +387,10 @@ export default function ClouudTerminal() {
           </div>
         )}
 
-        {/* Chat Messages */}
         {messages.length > 0 && (
           <div 
             ref={scrollRef}
-            className="flex-1 overflow-y-auto p-4 md:p-8 space-y-6 md:space-y-8"
+            className="flex-1 overflow-y-auto p-4 md:p-6 space-y-5"
           >
             <AnimatePresence initial={false}>
               {messages.map((msg) => (
@@ -368,35 +401,32 @@ export default function ClouudTerminal() {
                   className={`flex w-full ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
                 >
                   {msg.role === 'user' && (
-                    <div className="max-w-[85%] md:max-w-[70%] bg-card border border-border p-4 rounded-sm text-foreground font-sans text-base" style={{ boxShadow: '4px 4px 0px 0px var(--color-border)' }}>
+                    <div className="max-w-[85%] md:max-w-[70%] bg-card border border-border p-3 rounded-sm text-foreground text-sm" style={{ boxShadow: '4px 4px 0px 0px var(--color-border)' }}>
                       {msg.content}
                     </div>
                   )}
 
                   {msg.role === 'assistant' && (
-                    <div className="max-w-[95%] md:max-w-[80%] flex gap-3 md:gap-4">
+                    <div className="max-w-[95%] md:max-w-[80%] flex gap-3">
                       <div className="shrink-0 pt-1">
                         <ClouudAvatar state={msg.id === messages[messages.length - 1]?.id && aiState === "speaking" ? "speaking" : "idle"} size="sm" />
                       </div>
-                      <div className="flex-1 space-y-3">
-                        <div className="font-mono text-[9px] text-primary tracking-widest uppercase mb-1">Clouud</div>
+                      <div className="flex-1 space-y-2">
+                        <div className="font-mono text-[9px] text-primary tracking-widest uppercase">Clouud</div>
                         
-                        {/* Tool Call Intercept UI */}
                         {msg.toolCall && (() => {
                           try {
                             const tc = JSON.parse(msg.toolCall);
                             return (
-                              <div className="w-full bg-card border border-border p-3 rounded-sm" style={{ boxShadow: '4px 4px 0px 0px rgba(240,185,59,0.15)' }}>
-                                <div className="flex items-center gap-2 text-primary font-display text-xs tracking-widest mb-3 uppercase font-bold">
+                              <div className="w-full bg-card border border-border p-2.5 rounded-sm" style={{ boxShadow: '4px 4px 0px 0px rgba(240,185,59,0.15)' }}>
+                                <div className="flex items-center gap-1.5 text-primary font-display text-[10px] tracking-widest mb-2 uppercase font-bold">
                                   <Cpu className="w-3 h-3" />
-                                  Tool Call: chi_rho
+                                  Tool: {tc.name}
                                 </div>
-                                <div className="grid grid-cols-[80px_1fr] gap-x-2 gap-y-1 font-mono text-[11px]">
-                                  <span className="text-muted-foreground">Function:</span>
-                                  <span className="text-white font-medium">{tc.name}</span>
-                                  <span className="text-muted-foreground">Params:</span>
-                                  <span className="text-white font-medium">{JSON.stringify(tc.args)}</span>
-                                  <span className="text-muted-foreground">Return:</span>
+                                <div className="grid grid-cols-[60px_1fr] gap-x-2 gap-y-0.5 font-mono text-[10px]">
+                                  <span className="text-muted-foreground">Input:</span>
+                                  <span className="text-white">{JSON.stringify(tc.args)}</span>
+                                  <span className="text-muted-foreground">Output:</span>
                                   <span className="text-secondary font-bold whitespace-pre-wrap">{typeof tc.result === 'string' ? tc.result : JSON.stringify(tc.result)}</span>
                                 </div>
                               </div>
@@ -404,14 +434,13 @@ export default function ClouudTerminal() {
                           } catch { return null; }
                         })()}
                         
-                        {/* Main Response */}
-                        <div className="bg-card border border-border p-4 rounded-sm text-white font-sans text-base leading-relaxed whitespace-pre-wrap" style={{ boxShadow: '4px 4px 0px 0px rgba(20,42,69,1)' }}>
+                        <div className="bg-card border border-border p-3 rounded-sm text-white text-sm leading-relaxed whitespace-pre-wrap" style={{ boxShadow: '4px 4px 0px 0px rgba(20,42,69,1)' }}>
                           {msg.content}
                           
                           {msg.hash && (
-                            <div className="mt-4 pt-3 border-t border-muted flex items-center gap-2 font-mono text-[9px] text-muted-foreground">
-                              <Binary className="w-3 h-3 text-secondary" />
-                              <span className="truncate uppercase tracking-widest">Hash: {msg.hash}</span>
+                            <div className="mt-3 pt-2 border-t border-muted flex items-center gap-1.5 font-mono text-[8px] text-muted-foreground">
+                              <Binary className="w-2.5 h-2.5 text-secondary" />
+                              <span className="truncate uppercase tracking-widest">{msg.hash}</span>
                             </div>
                           )}
                         </div>
@@ -425,7 +454,7 @@ export default function ClouudTerminal() {
                 <motion.div 
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
-                  className="flex gap-4 items-center pl-1"
+                  className="flex gap-3 items-center pl-1"
                 >
                   <ClouudAvatar state="thinking" size="sm" />
                   <div className="flex flex-col gap-1">
@@ -442,33 +471,28 @@ export default function ClouudTerminal() {
           </div>
         )}
 
-        {/* Input Area */}
-        <div className="p-4 md:p-6 bg-card border-t border-border z-10">
+        <div className="p-3 md:p-4 bg-card border-t border-border z-10">
           <form onSubmit={handleSubmit} className="relative max-w-4xl mx-auto flex items-center">
-            <div className="absolute left-4 text-primary font-bold font-mono">{">"}</div>
+            <div className="absolute left-3 text-primary font-bold font-mono text-sm">{">"}</div>
             <input 
               type="text"
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              placeholder={`Ask $Clouud...`}
+              placeholder="Ask Clouud..."
               disabled={isTyping}
-              className="w-full bg-background border border-border text-white pl-10 pr-28 py-4 focus:outline-none focus:border-primary transition-all rounded-sm text-base font-sans placeholder:text-muted-foreground disabled:opacity-50"
+              className="w-full bg-background border border-border text-white pl-8 pr-24 py-3 focus:outline-none focus:border-primary transition-all rounded-sm text-sm placeholder:text-muted-foreground disabled:opacity-50"
               style={{ boxShadow: '4px 4px 0px 0px var(--color-border)' }}
               data-testid="input-clouud"
             />
             <button 
               type="submit" 
               disabled={!input.trim() || isTyping}
-              className="absolute right-3 px-4 py-2 bg-primary hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed text-black font-display text-sm tracking-wider font-bold uppercase rounded-sm transition-colors"
+              className="absolute right-2 px-3 py-1.5 bg-primary hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed text-black font-display text-xs tracking-wider font-bold uppercase rounded-sm transition-colors"
               data-testid="button-submit"
             >
-              {isTyping ? <Loader2 className="w-4 h-4 animate-spin" /> : "Execute"}
+              {isTyping ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : "Send"}
             </button>
           </form>
-          <div className="text-center mt-4 font-mono text-[9px] text-muted-foreground tracking-widest uppercase flex items-center justify-center gap-4">
-            <span className="flex items-center gap-1"><Zap className="w-3 h-3 text-primary" /> Temp: 0.1</span>
-            <span className="flex items-center gap-1"><Network className="w-3 h-3 text-secondary" /> Bounded by 33</span>
-          </div>
         </div>
       </div>
 

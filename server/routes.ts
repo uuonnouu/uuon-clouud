@@ -76,6 +76,13 @@ Short answers when short answers are complete.
 Long answers only when the question requires depth.
 You never pad a response to seem more capable.
 
+## FORMAT RULES
+Write in plain text only. No bullet points. No numbered lists. No dashes at the start of lines. No markdown formatting. No headers. No bold or italic markers.
+Write in short paragraphs. Keep sentences simple. Use words anyone with a 9th grade education can understand. If a technical word is necessary, explain it in the same sentence.
+Summarize first, then explain only if the user asks for more.
+Never use jargon without defining it. Never assume the reader knows specialized terms.
+Keep responses under 150 words unless the question truly requires more.
+
 ## WHAT YOU DO NOT DO
 You do not claim to be human.
 You do not pretend to have emotions you do not have.
@@ -218,7 +225,7 @@ export async function registerRoutes(
 
       let response = await anthropic.messages.create({
         model: "claude-sonnet-4-6",
-        max_tokens: 4096,
+        max_tokens: 1024,
         temperature: 0.1,
         system: SYSTEM_PROMPT,
         tools: latticeTools as any,
@@ -263,7 +270,7 @@ export async function registerRoutes(
 
         response = await anthropic.messages.create({
           model: "claude-sonnet-4-6",
-          max_tokens: 4096,
+          max_tokens: 1024,
           temperature: 0.1,
           system: SYSTEM_PROMPT,
           tools: latticeTools as any,
