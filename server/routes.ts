@@ -5,8 +5,6 @@ import { latticeTools, executeLatticeTool } from "./lattice";
 import { generateProvenanceHash, ellomental } from "./ellomental-hash";
 import { upload, handleUpload } from "./uploads";
 import { scrapeUrl } from "./scraper";
-import { hashFingerprint } from "./security";
-import { registerAuthRoutes } from "./auth";
 import Anthropic from "@anthropic-ai/sdk";
 
 const SYSTEM_PROMPT = `# ═══════════════════════════════════════════════════
@@ -327,8 +325,6 @@ export async function registerRoutes(
     apiKey: process.env.AI_INTEGRATIONS_ANTHROPIC_API_KEY,
     baseURL: process.env.AI_INTEGRATIONS_ANTHROPIC_BASE_URL,
   });
-
-  registerAuthRoutes(app);
 
   // Get all conversations
   app.get("/api/conversations", async (_req: Request, res: Response) => {
@@ -664,70 +660,6 @@ export async function registerRoutes(
     }
   });
 
-  app.post("/api/auth/register-fingerprint", async (req: Request, res: Response) => {
-    try {
-      const { components } = req.body;
-      if (!components || typeof components !== "object") {
-        return res.status(400).json({ error: "Fingerprint components required" });
-      }
-      const hash = hashFingerprint(components);
-      const ownerFp = await storage.getOwnerFingerprint();
-
-      if (!ownerFp) {
-        const fp = await storage.registerFingerprint(hash, JSON.stringify(components), true);
-        await storage.logAccess(hash, "REGISTER_OWNER", true, req.ip, req.headers["user-agent"]);
-        return res.json({ status: "OWNER_REGISTERED", hash, isOwner: true });
-      }
-
-      if (ownerFp.hash === hash) {
-        await storage.updateFingerprintLastSeen(hash);
-        return res.json({ status: "OWNER_VERIFIED", hash, isOwner: true });
-      }
-
-      const setup = await (await import("./auth")).isSetupComplete();
-      const setupComplete = setup.webauthn && setup.passphrase && setup.fingerprint;
-      if (!setupComplete) {
-        // Reset fingerprints if setup is not fully complete to prevent deadlocks
-        await storage.clearAllFingerprints();
-        const fp = await storage.registerFingerprint(hash, JSON.stringify(components), true);
-        await storage.logAccess(hash, "REGISTER_OWNER_RESET", true, req.ip, req.headers["user-agent"]);
-        return res.json({ status: "OWNER_REGISTERED", hash, isOwner: true });
-      }
-
-      const existing = await storage.getFingerprint(hash);
-      if (existing && existing.blocked) {
-        return res.status(403).json({ status: "BLOCKED", hash });
-      }
-
-      await storage.registerFingerprint(hash, JSON.stringify(components), false);
-      await storage.logAccess(hash, "REGISTER_UNKNOWN", false, req.ip, req.headers["user-agent"]);
-      return res.status(403).json({ status: "ACCESS_DENIED", hash, isOwner: false });
-    } catch (error) {
-      res.status(500).json({ error: "Fingerprint registration failed" });
-    }
-  });
-
-  app.get("/api/auth/status", async (_req: Request, res: Response) => {
-    try {
-      const ownerFp = await storage.getOwnerFingerprint();
-      res.json({
-        ownerRegistered: !!ownerFp,
-        system: "UUON-CLOUUD-PRIVATE",
-      });
-    } catch (error) {
-      res.status(500).json({ error: "Status check failed" });
-    }
-  });
-
-  app.get("/api/auth/access-log", async (_req: Request, res: Response) => {
-    try {
-      const log = await storage.getAccessLog(100);
-      res.json(log);
-    } catch (error) {
-      res.status(500).json({ error: "Failed to fetch access log" });
-    }
-  });
-
   app.post("/api/whistleblower/claims", async (req: Request, res: Response) => {
     try {
       const claim = await storage.createWhistleblowerClaim(req.body);
@@ -744,6 +676,26 @@ export async function registerRoutes(
     } catch (error) {
       res.status(500).json({ error: "Failed to fetch claims" });
     }
+  });
+
+  app.post("/api/auth/register-fingerprint", async (req: Request, res: Response) => {
+    try {
+      const { components } = req.body;
+      const hash = hashFingerprint(components);
+      // In a no-security app, we just allow everything and track it
+      await storage.registerFingerprint(hash, JSON.stringify(components), true);
+      return res.json({ status: "OWNER_REGISTERED", hash, isOwner: true });
+    } catch (error) {
+      res.status(500).json({ error: "Fingerprint registration failed" });
+    }
+  });
+
+  app.get("/api/auth/status", async (_req: Request, res: Response) => {
+    res.json({
+      ownerRegistered: true,
+      setupComplete: true,
+      system: "UUON-CLOUUD-OPEN",
+    });
   });
 
   app.post("/api/upload", upload.single("file"), handleUpload);

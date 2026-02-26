@@ -2,7 +2,6 @@ import express, { type Request, Response, NextFunction } from "express";
 import { registerRoutes } from "./routes";
 import { serveStatic } from "./static";
 import { createServer } from "http";
-import { securityGate } from "./security";
 
 process.on("unhandledRejection", (reason, promise) => {
   console.error("Unhandled Rejection at:", promise, "reason:", reason);
@@ -23,17 +22,13 @@ process.on('SIGINT', () => {
 
 if (process.env.NODE_ENV !== "production") {
   const originalExit = process.exit.bind(process);
-  Object.defineProperty(process, 'exit', {
-    value: (code?: number) => {
-      if (code === 1) {
-        console.error("Prevented process.exit(1) — likely a Vite error. Server continues.");
-        return undefined as never;
-      }
-      return originalExit(code);
-    },
-    writable: true,
-    configurable: true,
-  });
+  (process as any).exit = (code?: number) => {
+    if (code === 1) {
+      console.error("Prevented process.exit(1) — likely a Vite error. Server continues.");
+      return undefined as never;
+    }
+    return originalExit(code);
+  };
 }
 
 const app = express();
@@ -54,9 +49,6 @@ app.use(
 );
 
 app.use(express.urlencoded({ extended: false }));
-
-// Security gate disabled — fingerprint system was causing persistent crashes and access blocks
-// app.use(securityGate);
 
 export function log(message: string, source = "express") {
   const formattedTime = new Date().toLocaleTimeString("en-US", {
