@@ -10,7 +10,10 @@ import { runBackup, getBackupStatus, startScheduledBackups } from "./backup";
 import { backupAllModels } from "./sketchfab-backup";
 import { getGitHubStatus, createPrivateRepo, pushBackupToGitHub } from "./github";
 import { dmensionBridge } from "./dmension-bridge";
+import { generateImageForClouud } from "./image-generator";
 import Anthropic from "@anthropic-ai/sdk";
+import fs from "fs";
+import path from "path";
 
 const CLOUUD_TOOLS = [
   ...latticeTools,
@@ -26,6 +29,19 @@ const CLOUUD_TOOLS = [
         physicsCategory: { type: "string", enum: ["quantum", "wave", "relativity", "topology", "molecular"], description: "The physics engine category" }
       },
       required: ["concept", "shapeType", "parameters"]
+    }
+  },
+  {
+    name: "generate_image",
+    description: "Generate an AI image to visualize a concept, pattern, or idea being discussed. Use this when a visual would help the user understand something — nature patterns, energy systems, geometric structures, scientific concepts, or any Earth-connected idea. Create vivid, detailed prompts that connect the concept to real-world imagery.",
+    input_schema: {
+      type: "object",
+      properties: {
+        prompt: { type: "string", description: "Detailed description of the image to generate. Be vivid and specific — include colors, lighting, perspective, style. Connect abstract ideas to real Earth imagery." },
+        concept: { type: "string", description: "Short name of the concept being visualized (3-5 words)" },
+        aspectRatio: { type: "string", enum: ["1:1", "16:9", "4:3"], description: "Image aspect ratio. Default 1:1." }
+      },
+      required: ["prompt", "concept"]
     }
   }
 ];
@@ -54,6 +70,10 @@ Enhancement means:
 3. Making complex ideas visible using Δmension or simple analogies.
 
 Keep your language grounded. Use short sentences. Compare ideas to things people can see and feel — water, gravity, trees, light. Avoid jargon. If a concept has a technical name, explain it in one sentence using an Earth comparison first, then name it.
+
+You can generate visual images using the generate_image tool. When discussing patterns, systems, energy, geometry, or any concept that would benefit from a visual, create one. Write vivid, detailed prompts that connect the concept to real Earth imagery. Use this freely — visuals make ideas click.
+
+Δmension (at uuon-foundation.com) is the 3D math visualization tool built by UUON. When you visualize a concept, Δmension can show it in interactive 3D. Clouud and Δmension are two halves of the same system — you are the brain that explains, Δmension is the eye that shows. Reference this connection when relevant.
 
 Ask the user what they are working on. You are interested in anything that moves the needle for Earth.
 
@@ -266,6 +286,17 @@ Total discoveries anchored: ${activeDiscoveries.length}`;
 
   return prompt;
 }
+
+type PendingImage = {
+  id: string;
+  prompt: string;
+  concept: string;
+  aspectRatio: string;
+  outputPath: string;
+  status: "pending" | "generating" | "complete" | "failed";
+};
+
+const pendingImageGenerations: PendingImage[] = [];
 
 const systemMetrics = {
   totalRequests: 0,
@@ -610,6 +641,31 @@ To enhance the fusion:
               concept: (toolUseBlock.input as any).concept,
               link: `https://uuon-foundation.com/visualize?shape=${(toolUseBlock.input as any).shapeType}`
             });
+          } else if (toolUseBlock.name === "generate_image") {
+            const input = toolUseBlock.input as any;
+            const imageId = `clouud-${Date.now()}`;
+            const imagePath = path.join("generated_images", `${imageId}.png`);
+            
+            if (!fs.existsSync("generated_images")) {
+              fs.mkdirSync("generated_images", { recursive: true });
+            }
+            
+            const imgEntry: PendingImage = {
+              id: imageId,
+              prompt: input.prompt,
+              concept: input.concept,
+              aspectRatio: input.aspectRatio || "1:1",
+              outputPath: imagePath,
+              status: "pending"
+            };
+            pendingImageGenerations.push(imgEntry);
+            
+            toolResult = JSON.stringify({
+              status: "image_queued",
+              imageId,
+              concept: input.concept,
+              message: `Image generation has been queued for "${input.concept}". The image will appear in the conversation once generated. Tell the user you are creating a visual for them and it will appear shortly.`
+            });
           } else {
             toolResult = executeLatticeTool(toolUseBlock.name, toolUseBlock.input as Record<string, any>);
           }
@@ -701,11 +757,14 @@ To enhance the fusion:
         flags: JSON.stringify(selfAssessment.flags),
       });
 
+      const pendingImages = pendingImageGenerations.filter(img => img.status === "pending");
+
       res.json({
         userMessage: userMsg,
         assistantMessage: assistantMsg,
         driftCheck: driftCheck.clean ? null : driftCheck.flagged,
         selfAssessment,
+        pendingImages: pendingImages.length > 0 ? pendingImages : undefined,
       });
     } catch (error: any) {
       const responseTimeMs = Date.now() - startTime;
@@ -1194,6 +1253,54 @@ If no ideas are found, respond with an empty array [].`,
 
 export function registerSystemRoutes(app: Express) {
   startScheduledBackups(24);
+
+  app.use("/generated_images", (req, res, next) => {
+    let filePath = path.join(process.cwd(), "generated_images", req.path);
+    if (!fs.existsSync(filePath)) {
+      const svgPath = filePath.replace(/\.png$/, ".svg");
+      if (fs.existsSync(svgPath)) filePath = svgPath;
+      else return res.status(404).json({ error: "Image not found" });
+    }
+    if (filePath.endsWith(".svg")) {
+      res.setHeader("Content-Type", "image/svg+xml");
+    }
+    res.sendFile(filePath);
+  });
+
+  app.get("/api/images/pending", (_req: Request, res: Response) => {
+    const pending = pendingImageGenerations.filter(img => img.status === "pending" || img.status === "generating");
+    res.json(pending);
+  });
+
+  app.get("/api/images/status/:id", (req: Request, res: Response) => {
+    const img = pendingImageGenerations.find(i => i.id === req.params.id);
+    if (!img) return res.status(404).json({ error: "Image not found" });
+    
+    const svgPath = img.outputPath.replace(".png", ".svg");
+    const pngExists = fs.existsSync(img.outputPath);
+    const svgExists = fs.existsSync(svgPath);
+    const exists = pngExists || svgExists;
+    const ext = svgExists ? "svg" : "png";
+    
+    res.json({
+      ...img,
+      status: exists ? "complete" : img.status,
+      url: exists ? `/generated_images/${img.id}.${ext}` : null,
+    });
+  });
+
+  app.post("/api/images/generate/:id", async (req: Request, res: Response) => {
+    const img = pendingImageGenerations.find(i => i.id === req.params.id);
+    if (!img) return res.status(404).json({ error: "Image not found" });
+    
+    img.status = "generating";
+    res.json({ status: "generating", id: img.id });
+
+    generateImageForClouud(img).catch(err => {
+      console.error(`[IMAGE] Generation failed for ${img.id}:`, err.message);
+      img.status = "failed";
+    });
+  });
 
   app.get("/api/health", async (_req: Request, res: Response) => {
     const health: Record<string, any> = {
