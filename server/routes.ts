@@ -2,8 +2,8 @@ import type { Express, Request, Response } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { latticeTools, executeLatticeTool } from "./lattice";
+import { generateProvenanceHash, ellomental } from "./ellomental-hash";
 import Anthropic from "@anthropic-ai/sdk";
-import crypto from "crypto";
 
 const SYSTEM_PROMPT = `# ═══════════════════════════════════════════════════
 # CLOUUD — MASTER SYSTEM PROMPT
@@ -166,16 +166,7 @@ function checkDrift(text: string): { clean: boolean; flagged: string[] } {
   return { clean: flagged.length === 0, flagged };
 }
 
-function generateProvenanceHash(content: string): string {
-  const signature = JSON.stringify({
-    origin: "UUON-FOUNDATION-GCENTRIC-V1",
-    founder: "Philip Aguilar Ruiz III",
-    system: "G°centric Lattice v1.0",
-    timestamp: new Date().toISOString(),
-    lattice: "33-point · Earth-grounded · 3-tier",
-  });
-  return crypto.createHash("sha256").update(content + signature).digest("hex");
-}
+const MAX_HISTORY_MESSAGES = 20;
 
 export async function registerRoutes(
   httpServer: Server,
@@ -269,12 +260,12 @@ export async function registerRoutes(
       });
 
       const history = await storage.getMessagesByConversation(conversationId);
-      const apiMessages: Anthropic.MessageParam[] = history
-        .filter(m => m.role === "user" || m.role === "assistant")
-        .map(m => ({
-          role: m.role as "user" | "assistant",
-          content: m.content,
-        }));
+      const filteredHistory = history.filter(m => m.role === "user" || m.role === "assistant");
+      const windowedHistory = filteredHistory.slice(-MAX_HISTORY_MESSAGES);
+      const apiMessages: Anthropic.MessageParam[] = windowedHistory.map(m => ({
+        role: m.role as "user" | "assistant",
+        content: m.content,
+      }));
 
       let finalResponse = "";
       let toolCallData: any = null;
@@ -394,6 +385,19 @@ export async function registerRoutes(
       res.json({ report: chiLatticeReport() });
     } catch (error) {
       res.status(500).json({ error: "Failed to generate lattice report" });
+    }
+  });
+
+  app.post("/api/ellomental/verify", (req: Request, res: Response) => {
+    try {
+      const { content } = req.body;
+      if (!content) {
+        return res.status(400).json({ error: "Content is required" });
+      }
+      const result = ellomental(content);
+      res.json(result);
+    } catch (error: any) {
+      res.status(500).json({ error: error.message });
     }
   });
 

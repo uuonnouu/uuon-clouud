@@ -15,6 +15,7 @@ UUON Clouud is the intelligence interface for the G°centric Lattice System, bui
 - `client/src/components/clouud-avatar.tsx` — Clouud avatar (static image with state-driven CSS animation)
 - `server/routes.ts` — API routes with system prompt (includes founder bio, verified Sketchfab data, Δmension info), tool use, output guard
 - `server/lattice.ts` — G°centric Lattice Engine (33-point, rational math)
+- `server/ellomental-hash.ts` — Ellomental Hash Algorithm (12-tetrahedron circle formation, cultural rotation, ported from Phil's Python original)
 - `server/storage.ts` — Database operations (conversations, messages, UUON tokens)
 - `server/db.ts` — PostgreSQL connection via Drizzle
 - `shared/schema.ts` — Database schema (conversations, messages, uuon_tokens tables)
@@ -45,12 +46,14 @@ UUON Clouud is the intelligence interface for the G°centric Lattice System, bui
 13. **Real-time Metrics Panel:** Collapsible panel below input bar showing API response times, I/O, tool calls, model info, uptime, saved UUON tokens count — auto-refreshes every 5 seconds
     - Server tracks: response times (rolling avg of last 50), I/O volume, tool call count, drift detection flags
     - Component: `client/src/components/metrics-panel.tsx`
-14. **UUON Token System:** Each interaction's SHA-256 provenance hash is saved as a UUON token in the `uuon_tokens` table
+14. **UUON Token System:** Each interaction's provenance hash (Ellomental 12-tetrahedron circle hash) is saved as a UUON token in the `uuon_tokens` table
     - Tokens are saved automatically on every assistant response
-    - API: `GET /api/tokens` (all), `GET /api/conversations/:id/tokens` (per conversation)
+    - API: `GET /api/tokens` (all), `GET /api/conversations/:id/tokens` (per conversation), `POST /api/ellomental/verify` (verify any content)
     - Displayed on each assistant message as `UUON·TOKEN` with the hash
+    - Ellomental Hash: 12 tetrahedra × 4 cultural rotations (Egyptian, Greek, Latin, English) → circle formation → SHA-256 circle hash
     - Based on UUON Shape Tokenization framework (Philip Aguilar Ruiz III, 2025)
-15. **Water Animations:** Messages flow in with soft fade-up, blur transition, and paragraph-by-paragraph cascade for assistant responses
+15. **Data Waste Reduction:** Conversation windowing limits API history to last 20 messages instead of full unbounded history
+16. **Water Animations:** Messages flow in with soft fade-up, blur transition, and paragraph-by-paragraph cascade for assistant responses
 
 ## Design System
 - **Palette:** Deep Navy (#030811), UUON Gold (#f0b93b), Atmosphere Blue (#4a8cd4)
