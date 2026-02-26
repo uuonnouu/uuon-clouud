@@ -22,7 +22,9 @@ type Conversation = {
 
 const QUICK_ACTIONS = [
   "About Us",
+  "Tell me about the founder",
   "What is waste, fraud, and abuse?",
+  "What is Δmension?",
   "How does the lattice work?",
   "What is position 21?",
   "Show the full lattice",
@@ -32,7 +34,8 @@ const QUICK_ACTIONS = [
   "What problems are you solving?",
   "What is IEEE 754?",
   "Why does rounding matter?",
-  "Tell me about Phillip Ruiz",
+  "Tell me about the 3D models",
+  "What does UUON mean?",
 ];
 
 export default function ClouudTerminal() {
@@ -349,6 +352,19 @@ export default function ClouudTerminal() {
                     ))}
                   </div>
                 </details>
+              </div>
+
+              <div className="p-3 border-t border-border">
+                <a
+                  href="https://uuon-foundation.com"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-2 px-2 py-2 text-[11px] text-primary hover:text-white bg-background hover:bg-muted/60 border border-border hover:border-primary/30 rounded-sm transition-all"
+                  data-testid="link-dmension"
+                >
+                  <Globe className="w-3.5 h-3.5 shrink-0" />
+                  Δmension — Mathematical Universe
+                </a>
               </div>
             </div>
           </motion.div>

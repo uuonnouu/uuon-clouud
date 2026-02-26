@@ -1,38 +1,46 @@
 # UUON Clouud — G°centric Intelligence System
 
 ## Overview
-UUON Clouud is the intelligence interface for the G°centric Lattice System, built by UUON Foundation Inc. (founded by Phillip Ruiz). It connects to Anthropic's Claude API with a strict system prompt that enforces the G°centric philosophy: Earth-grounded reasoning, zero drift, zero rounding.
+UUON Clouud is the intelligence interface for the G°centric Lattice System, built by UUON Foundation Inc. (founded by Philip Aguilar Ruiz III). It connects to Anthropic's Claude API with a strict system prompt that enforces the G°centric philosophy: Earth-grounded reasoning, zero drift, zero rounding. Responses are in plain text, short summaries, no bullets or dashes, readable at a 9th grade level.
 
 ## Architecture
-- **Frontend:** React + TypeScript + Tailwind CSS v4 + Framer Motion + Three.js/React Three Fiber
+- **Frontend:** React + TypeScript + Tailwind CSS v4 + Framer Motion
 - **Backend:** Express.js + TypeScript
 - **Database:** PostgreSQL via Drizzle ORM
-- **AI:** Anthropic Claude API via Replit AI Integrations (claude-sonnet-4-6)
+- **AI:** Anthropic Claude API via Replit AI Integrations (claude-sonnet-4-6, max_tokens: 1024)
 - **Routing:** wouter (frontend)
 
 ## Key Files
-- `client/src/pages/clouud-terminal.tsx` — Main chat interface
-- `client/src/components/clouud-avatar.tsx` — 3D Clouud avatar (Three.js/R3F hero + CSS mini)
-- `server/routes.ts` — API routes with system prompt, tool use, output guard
+- `client/src/pages/clouud-terminal.tsx` — Main chat interface with sidebar, quick actions, Δmension link
+- `client/src/components/clouud-avatar.tsx` — Clouud avatar (static image with state-driven CSS animation)
+- `server/routes.ts` — API routes with system prompt (includes founder bio, verified Sketchfab data, Δmension info), tool use, output guard
 - `server/lattice.ts` — G°centric Lattice Engine (33-point, rational math)
 - `server/storage.ts` — Database operations (conversations, messages)
 - `server/db.ts` — PostgreSQL connection via Drizzle
 - `shared/schema.ts` — Database schema (conversations, messages tables)
 
+## Founder Info (verified)
+- Philip Aguilar Ruiz III, from Yuma AZ, grew up overseas, US Army veteran, resides in Kassel, Germany
+- Created 180+ 3D mathematical models on Sketchfab (quantum mechanics, relativity, molecular biology, topology, sacred geometry)
+- Built Δmension (Mathematical Universe) at uuon-foundation.com
+- UUON = WON = ONE
+
 ## Core Features
-1. **System Prompt:** The full G°centric Master System Prompt is embedded in the API call
-2. **Tool Use:** Clouud never computes lattice math internally — it calls `chi_rho` tools (chi_value, chi_position, chi_lattice_report) and speaks the result
-3. **Temperature 0.1:** Locked for deterministic, persona-stable output
-4. **Output Guard:** Every response is checked for "drift phrases" before delivery
-5. **Provenance Hash:** Every AI response gets a SHA-256 hash with UUON Foundation metadata
-6. **Conversation History:** Persistent chat sessions stored in PostgreSQL
-7. **3D Clouud Avatar:** Reactive Three.js orb (hero view) with distortion mesh, orbital rings, and particle field. Lightweight CSS mini avatar for inline chat. State-driven animations: idle (gentle float), thinking (fast distort + gold glow), speaking (smooth pulse + blue glow)
-8. **Name Preference:** Users choose to call the AI "Clouud" or "C", persisted in localStorage
+1. **System Prompt:** Full G°centric Master System Prompt with founder bio and Δmension context
+2. **Tool Use:** Clouud calls chi_rho tools (chi_value, chi_position, chi_lattice_report) for all lattice math, handles multiple tool_use blocks per response
+3. **Temperature 0.1:** Locked for deterministic output
+4. **Format Rules:** Plain text only, no bullets/dashes/markdown, 9th grade reading level, summaries under 150 words
+5. **Output Guard:** Drift phrase detection before delivery
+6. **Provenance Hash:** SHA-256 per response with UUON Foundation metadata
+7. **Conversation History:** PostgreSQL persistent sessions
+8. **Quick Actions:** 15 interactive prompts in collapsible sidebar section
+9. **Δmension Link:** Direct link to uuon-foundation.com in sidebar
 
 ## Design System
 - **Palette:** Deep Navy (#030811), UUON Gold (#f0b93b), Atmosphere Blue (#4a8cd4)
 - **Typography:** Space Grotesk (display), DM Sans (body), JetBrains Mono (code/data)
-- **Style:** Digital Brutalism with sharp shadows, matrix-inspired grid overlays
+- **Style:** Digital Brutalism with sharp shadows
+- **Avatar:** Static Clouud character image with state-driven glow/pulse animations
 
 ## Environment Variables
 - `DATABASE_URL` — PostgreSQL connection string (auto-set)
