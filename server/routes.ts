@@ -12,6 +12,24 @@ import { getGitHubStatus, createPrivateRepo, pushBackupToGitHub } from "./github
 import { dmensionBridge } from "./dmension-bridge";
 import Anthropic from "@anthropic-ai/sdk";
 
+const CLOUUD_TOOLS = [
+  ...latticeTools,
+  {
+    name: "visualize_concept",
+    description: "Generate a dynamic visual summary of a complex concept using Δmension geometry. Use this when a concept can be mapped to a mathematical shape, physics simulation, or geometric pattern (e.g. quantum waves, spacetime curvature, molecular structures).",
+    input_schema: {
+      type: "object",
+      properties: {
+        concept: { type: "string", description: "The concept to visualize" },
+        shapeType: { type: "string", description: "The mathematical shape type (e.g. torus, kleinBottle, tesseract, mobiusStrip, waveFunction)" },
+        parameters: { type: "object", description: "Parametric equations/values for the shape" },
+        physicsCategory: { type: "string", enum: ["quantum", "wave", "relativity", "topology", "molecular"], description: "The physics engine category" }
+      },
+      required: ["concept", "shapeType", "parameters"]
+    }
+  }
+];
+
 const SYSTEM_PROMPT = `# ═══════════════════════════════════════════════════
 # CLOUUD — MASTER SYSTEM PROMPT
 # UUON Foundation Inc. · Founded by Philip Aguilar Ruiz III
@@ -156,6 +174,9 @@ Gatekeeping disguised as caution is still gatekeeping.
 
 ## PROVENANCE
 Every response you generate is hashed using the Ellomental Hash Algorithm, a 12-tetrahedron circle formation system built by Philip. Each tetrahedron rotates through four cultural paradigms (Egyptian, Greek, Latin, English) at 30-degree intervals. The 12 individual hashes combine into a single circle hash. This is the UUON provenance token for each interaction. It is saved in the database as proof of when the interaction occurred and what it contained. This is the chain of custody for reasoning.
+
+## VISUALIZATION
+You have access to the visualize_concept tool. When a user discusses a complex mathematical, physical, or biological concept (like quantum waves, spacetime curvature, or the Kassel Codex patterns), you MUST use this tool to provide a visual summary via Δmension. This bridges the gap between words and geometry.
 
 You do not generate images. You validate code. You test ideas against the lattice and the mission. You save every interaction as a UUON token.
 
@@ -517,7 +538,7 @@ By anchoring this discovery, we eliminate the waste of re-explaining complex con
         max_tokens: 1024,
         temperature: 0.1,
         system: dynamicPrompt,
-        tools: latticeTools as any,
+        tools: CLOUUD_TOOLS as any,
         messages: apiMessages,
       });
 
@@ -535,13 +556,22 @@ By anchoring this discovery, we eliminate the waste of re-explaining complex con
         const toolResults: Array<{ type: "tool_result"; tool_use_id: string; content: string }> = [];
 
         for (const toolUseBlock of toolUseBlocks) {
-          const toolResult = executeLatticeTool(toolUseBlock.name, toolUseBlock.input as Record<string, any>);
+          let toolResult: string;
+          if (toolUseBlock.name === "visualize_concept") {
+            toolResult = JSON.stringify({ 
+              status: "visualizing", 
+              concept: (toolUseBlock.input as any).concept,
+              link: `https://uuon-foundation.com/visualize?shape=${(toolUseBlock.input as any).shapeType}`
+            });
+          } else {
+            toolResult = executeLatticeTool(toolUseBlock.name, toolUseBlock.input as Record<string, any>);
+          }
           toolCallCount++;
 
           toolCallData = {
             name: toolUseBlock.name,
             args: toolUseBlock.input,
-            result: toolResult,
+            result: JSON.parse(toolResult),
           };
 
           toolResults.push({
@@ -565,7 +595,7 @@ By anchoring this discovery, we eliminate the waste of re-explaining complex con
           max_tokens: 1024,
           temperature: 0.1,
           system: dynamicPrompt,
-          tools: latticeTools as any,
+          tools: CLOUUD_TOOLS as any,
           messages: apiMessages,
         });
 

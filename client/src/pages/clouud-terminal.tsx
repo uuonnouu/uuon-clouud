@@ -71,6 +71,7 @@ export default function ClouudTerminal() {
   const [isUploading, setIsUploading] = useState(false);
   const [isScraping, setIsScraping] = useState(false);
   const [msgAssessments, setMsgAssessments] = useState<Record<number, { score: number; flags: string[]; wordCount: number }>>({});
+  const [visualSummary, setVisualSummary] = useState<{ concept: string; shapeType: string; parameters: any } | null>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -761,6 +762,52 @@ export default function ClouudTerminal() {
                         {msg.toolCall && (() => {
                           try {
                             const tc = JSON.parse(msg.toolCall);
+                            if (tc.name === "visualize_concept") {
+                              return (
+                                <motion.div
+                                  initial={holoActive ? { opacity: 0, y: 16, rotateX: 8, scale: 0.96 } : { opacity: 0, y: 10 }}
+                                  animate={{ opacity: 1, y: 0, rotateX: 0, scale: 1 }}
+                                  transition={{ duration: holoActive ? 0.7 : 0.5, delay: 0.2, ease: [0.25, 0.1, 0.25, 1] }}
+                                  className={`w-full bg-card border p-4 rounded-sm relative overflow-hidden ${holoActive ? 'border-secondary/40 holo-border-glow' : 'border-border'}`}
+                                  style={{ boxShadow: holoActive ? undefined : '4px 4px 0px 0px rgba(240,185,59,0.15)' }}
+                                >
+                                  {holoActive && <div className="holo-beam-line" />}
+                                  <div className="flex items-center gap-2 mb-3">
+                                    <div className="w-2 h-2 rounded-full bg-primary animate-pulse" />
+                                    <span className="text-[10px] font-mono text-primary uppercase tracking-widest">Δmension Visualization Active</span>
+                                  </div>
+                                  <div className="aspect-video w-full bg-black/40 rounded-sm overflow-hidden border border-border/50 relative group">
+                                    <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-secondary/5 pointer-events-none" />
+                                    <div className="absolute inset-0 flex flex-col items-center justify-center p-6 text-center">
+                                      <div className="w-12 h-12 mb-4 text-primary/40 group-hover:text-primary/60 transition-colors">
+                                        <Brain className="w-full h-full" />
+                                      </div>
+                                      <h4 className="text-xs font-display text-white font-bold mb-1 uppercase tracking-wider">{tc.args.concept}</h4>
+                                      <p className="text-[9px] font-mono text-muted-foreground max-w-[200px]">Generating parametric summary via {tc.args.shapeType} model...</p>
+                                    </div>
+                                    <div className="absolute bottom-3 right-3">
+                                      <a 
+                                        href={`https://uuon-foundation.com?concept=${encodeURIComponent(tc.args.concept)}&shape=${tc.args.shapeType}`}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="flex items-center gap-1.5 px-2 py-1 bg-primary text-black text-[9px] font-bold uppercase rounded-xs hover:bg-white transition-colors"
+                                      >
+                                        <Globe size={10} />
+                                        Interact in Δmension
+                                      </a>
+                                    </div>
+                                  </div>
+                                  <div className="mt-3 grid grid-cols-2 gap-2">
+                                    {tc.args.parameters && Object.entries(tc.args.parameters).slice(0, 4).map(([k, v]: [string, any]) => (
+                                      <div key={k} className="flex justify-between items-center px-2 py-1 bg-black/20 rounded-xs border border-border/30">
+                                        <span className="text-[8px] font-mono text-muted-foreground uppercase">{k}:</span>
+                                        <span className="text-[8px] font-mono text-secondary">{typeof v === 'number' ? v.toFixed(4) : String(v)}</span>
+                                      </div>
+                                    ))}
+                                  </div>
+                                </motion.div>
+                              );
+                            }
                             return (
                               <motion.div
                                 initial={holoActive ? { opacity: 0, y: 16, rotateX: 8, scale: 0.96 } : { opacity: 0, y: 10 }}
