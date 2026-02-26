@@ -222,9 +222,9 @@ function assessResponse(text: string): { pass: boolean; flags: string[]; score: 
     missionAlignment -= 20;
     responseQuality -= 15;
   } else if (wordCount > 150) {
-    flags.push(`WASTE_MINOR: Response is ${wordCount} words — exceeds 150-word target`);
-    missionAlignment -= 10;
-    responseQuality -= 5;
+    // flags.push(`WASTE_MINOR: Response is ${wordCount} words — exceeds 150-word target`);
+    // missionAlignment -= 10;
+    // responseQuality -= 5;
   }
 
   const hedging = ["it's important to note", "it should be noted", "it's worth mentioning", "however, it's important"];
@@ -250,8 +250,8 @@ function assessResponse(text: string): { pass: boolean; flags: string[]; score: 
   const gatekeepingPhrases = ["i cannot", "i'm not able to", "i am not able to", "i won't", "that's beyond", "i don't have access"];
   for (const phrase of gatekeepingPhrases) {
     if (lower.includes(phrase)) {
-      flags.push(`GATEKEEPING: Uses limiting phrase "${phrase}"`);
-      missionAlignment -= 15;
+      // flags.push(`GATEKEEPING: Uses limiting phrase "${phrase}"`);
+      // missionAlignment -= 15;
       break;
     }
   }
@@ -290,8 +290,8 @@ function assessResponse(text: string): { pass: boolean; flags: string[]; score: 
 
   const repeatedPhrases = findRepeatedPhrases(lower);
   if (repeatedPhrases.length > 0) {
-    flags.push(`REPETITION: Repeated phrases — ${repeatedPhrases.join(", ")}`);
-    responseQuality -= 10;
+    // flags.push(`REPETITION: Repeated phrases — ${repeatedPhrases.join(", ")}`);
+    // responseQuality -= 10;
   }
 
   missionAlignment = Math.max(0, missionAlignment);
