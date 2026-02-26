@@ -33,6 +33,7 @@ function detectDomain(concept: string, prompt: string): string {
   if (/waste|reduc|efficien|entropy|energy|sustain|carbon|thermal|heat/.test(text)) return "entropy";
   if (/lattice|crystal|grid|symmetr|tessellat|pattern|sacred|geometry/.test(text)) return "lattice";
   if (/earth|tree|root|branch|grow|leaf|nature|ecosystem/.test(text)) return "growth";
+  if (/geomorphology|terrain|landscape|topography|erosion|geological|mountain|valley/.test(text)) return "geomorphology";
   if (/network|connect|graph|node|mesh|distributed|web/.test(text)) return "network";
   return "universal";
 }
@@ -47,6 +48,7 @@ const PALETTES: Record<string, string[][]> = {
   entropy: [["#f97316","#7c2d12","#fdba74"], ["#ef4444","#7f1d1d","#fca5a5"]],
   lattice: [["#f0b93b","#78350f","#fde68a"], ["#4a8cd4","#1e3a5f","#93c5fd"]],
   growth: [["#22c55e","#14532d","#bbf7d0"], ["#84cc16","#365314","#d9f99d"]],
+  geomorphology: [["#92400e","#451a03","#d97706"], ["#065f46","#064e3b","#10b981"]],
   network: [["#4a8cd4","#1a3a5c","#7ab8f5"], ["#a855f7","#581c87","#d8b4fe"]],
   universal: [["#4a8cd4","#1a3a5c","#7ab8f5"], ["#f0b93b","#8b6914","#ffd970"]],
 };
@@ -471,6 +473,33 @@ function renderMolecular(cx: number, cy: number, w: number, h: number, rand: () 
   return svg;
 }
 
+function renderGeomorphology(cx: number, cy: number, w: number, h: number, rand: () => number, primary: string, light: string): string {
+  let svg = "";
+  const layers = 5;
+  for (let l = 0; l < layers; l++) {
+    const yBase = h * (0.4 + (l / layers) * 0.5);
+    let d = `M 0 ${h}`;
+    d += ` L 0 ${yBase}`;
+    for (let x = 0; x <= w; x += 20) {
+      const noise = Math.sin(x * 0.01 + l) * 20 + Math.cos(x * 0.03) * 10;
+      const py = yBase + noise * (1 - l / layers);
+      d += ` L ${x} ${py}`;
+    }
+    d += ` L ${w} ${h} Z`;
+    svg += `<path d="${d}" fill="${l % 2 === 0 ? primary : light}" opacity="${0.1 + (l / layers) * 0.3}"/>`;
+    
+    // Contour lines
+    let contour = `M 0 ${yBase}`;
+    for (let x = 0; x <= w; x += 10) {
+      const noise = Math.sin(x * 0.01 + l) * 20 + Math.cos(x * 0.03) * 10;
+      const py = yBase + noise * (1 - l / layers);
+      contour += ` L ${x} ${py}`;
+    }
+    svg += `<path d="${contour}" fill="none" stroke="${light}" stroke-width="0.5" opacity="0.2"/>`;
+  }
+  return svg;
+}
+
 export function generateSvgVisualization(concept: string, prompt: string, aspectRatio: string = "1:1"): string {
   const seed = hashStr(concept + prompt);
   const rand = seededRandom(seed);
@@ -518,6 +547,9 @@ export function generateSvgVisualization(concept: string, prompt: string, aspect
     case "molecular":
       shapes += renderMolecular(cx, cy, width, height, rand, primary, light);
       break;
+    case "geomorphology":
+      shapes += renderGeomorphology(cx, cy, width, height, rand, primary, light);
+      break;
     default:
       shapes += renderLatticeGrid(cx, cy, width, height, rand, primary, light);
       shapes += renderFlowField(cx, cy, width, height, rand, primary, light);
@@ -542,8 +574,13 @@ export function generateSvgVisualization(concept: string, prompt: string, aspect
   </defs>
   <rect width="${width}" height="${height}" fill="url(#bg)"/>
   ${shapes}
+  <g transform="translate(${width - 40}, ${height - 40}) scale(0.5)">
+    <circle cx="20" cy="20" r="18" fill="none" stroke="${primary}" stroke-width="2" opacity="0.5"/>
+    <path d="M 10 20 L 30 20 M 20 10 L 20 30" stroke="${primary}" stroke-width="2" opacity="0.5"/>
+    <text x="20" y="45" text-anchor="middle" fill="${primary}" font-family="monospace" font-size="8" opacity="0.6">UUON VERIFIED</text>
+  </g>
   <text x="${cx}" y="${height - 16}" text-anchor="middle" fill="${primary}" opacity="0.35" font-family="monospace" font-size="8" letter-spacing="3">${concept.toUpperCase().slice(0, 40)}</text>
-</svg>`;
+</svg>@VERIFIED-IRREPLACEABLE`;
 }
 
 export async function generateImageForClouud(img: {
