@@ -190,4 +190,13 @@
   .animate-scan {
     animation: scan 3s linear infinite;
   }
+
+  @keyframes orb-pulse {
+    0%, 100% { transform: scale(1); filter: blur(8px) brightness(1); }
+    50% { transform: scale(1.1); filter: blur(12px) brightness(1.5); }
+  }
+
+  .providence-orb-glow {
+    animation: orb-pulse 4s ease-in-out infinite;
+  }
 }

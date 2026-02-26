@@ -73,6 +73,7 @@ export default function ClouudTerminal() {
   const [isScraping, setIsScraping] = useState(false);
   const [msgAssessments, setMsgAssessments] = useState<Record<number, { score: number; flags: string[]; wordCount: number }>>({});
   const [visualSummary, setVisualSummary] = useState<{ concept: string; shapeType: string; parameters: any } | null>(null);
+  const [hashingIntensity, setHashingIntensity] = useState(0);
   const scrollRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -234,6 +235,12 @@ export default function ClouudTerminal() {
 
       setAiState("speaking");
       const data = await res.json();
+      
+      // Real-time Providence Orb verification sequence (12 tetrahedra)
+      for (let i = 1; i <= 12; i++) {
+        setTimeout(() => setHashingIntensity(i / 12), i * 100);
+      }
+      setTimeout(() => setHashingIntensity(0), 4000);
       
       setMessages(prev => {
         const withoutTemp = prev.filter(m => m.id !== tempUserMsg.id);
@@ -476,7 +483,19 @@ export default function ClouudTerminal() {
       
       <div className="md:hidden fixed top-0 left-0 right-0 h-14 bg-card/90 backdrop-blur-md border-b border-border z-50 flex items-center justify-between px-4">
         <div className="flex items-center gap-3">
-          <ClouudAvatar state={aiState} size="sm" />
+          <div className="relative">
+            <ClouudAvatar state={aiState} size="sm" />
+            <AnimatePresence>
+              {hashingIntensity > 0 && (
+                <motion.div
+                  initial={{ scale: 0, opacity: 0 }}
+                  animate={{ scale: 1.8, opacity: hashingIntensity * 0.5 }}
+                  exit={{ scale: 2.2, opacity: 0 }}
+                  className="absolute inset-0 bg-primary rounded-full blur-lg"
+                />
+              )}
+            </AnimatePresence>
+          </div>
           <span className="text-white font-display text-lg font-bold tracking-widest" data-testid="text-app-name">CLOUUD</span>
         </div>
         <button 
@@ -499,9 +518,32 @@ export default function ClouudTerminal() {
                 <img src={uuonLogo} alt="" className="w-full h-full object-cover" />
               </div>
               <div className="relative z-10 flex items-center gap-3">
-                <img src={uuonLogo} alt="UUON" className="w-9 h-9 rounded-full border border-primary/30 shadow-[0_0_15px_rgba(240,185,59,0.2)]" />
+                <div className="relative">
+                  <img src={uuonLogo} alt="UUON" className="w-9 h-9 rounded-full border border-primary/30 shadow-[0_0_15px_rgba(240,185,59,0.2)] relative z-10" />
+                  <AnimatePresence>
+                    {hashingIntensity > 0 && (
+                      <motion.div
+                        initial={{ scale: 0, opacity: 0 }}
+                        animate={{ scale: 2, opacity: hashingIntensity * 0.7 }}
+                        exit={{ scale: 2.5, opacity: 0 }}
+                        className="absolute inset-0 bg-primary rounded-full blur-2xl providence-orb-glow"
+                      />
+                    )}
+                  </AnimatePresence>
+                </div>
                 <div>
-                  <h1 className="font-display text-base text-white font-bold leading-none tracking-widest">UUON CLOUUD</h1>
+                  <div className="flex items-center gap-1.5">
+                    <h1 className="font-display text-base text-white font-bold leading-none tracking-widest">UUON CLOUUD</h1>
+                    {hashingIntensity > 0 && (
+                      <motion.div 
+                        initial={{ opacity: 0, x: -5 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        className="font-mono text-[7px] text-primary border border-primary/20 px-1 rounded-xs"
+                      >
+                        VERIFYING: {Math.round(hashingIntensity * 100)}%
+                      </motion.div>
+                    )}
+                  </div>
                   <span className="font-mono text-[9px] text-primary uppercase tracking-widest">G°centric v1.0</span>
                 </div>
               </div>
