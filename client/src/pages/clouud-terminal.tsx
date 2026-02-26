@@ -1,7 +1,8 @@
 import { useState, useRef, useEffect } from "react";
-import { Cpu, Binary, Menu, X, Globe, Zap, Network, ChevronRight, Plus, Trash2, MessageCircle, Loader2, Activity } from "lucide-react";
+import { Cpu, Binary, Menu, X, Globe, Zap, Network, ChevronRight, Plus, Trash2, MessageCircle, Loader2, Activity, HelpCircle } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import ClouudAvatar from "@/components/clouud-avatar";
+import Tutorial from "@/components/tutorial";
 import uuonLogo from "@assets/A7950814-2592-4E7D-858F-3AEB1D632F98_1772064571557.png";
 
 type Message = {
@@ -47,6 +48,12 @@ export default function ClouudTerminal() {
   const [isTyping, setIsTyping] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [aiState, setAiState] = useState<"idle" | "thinking" | "speaking">("idle");
+  const [showTutorial, setShowTutorial] = useState(() => {
+    if (typeof window !== "undefined") {
+      return !localStorage.getItem("clouud-tutorial-done");
+    }
+    return false;
+  });
   const scrollRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -130,9 +137,22 @@ export default function ClouudTerminal() {
     setInput(label);
   }
 
-  async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
-    if (!input.trim() || isTyping) return;
+  function completeTutorial() {
+    localStorage.setItem("clouud-tutorial-done", "true");
+    setShowTutorial(false);
+  }
+
+  function dismissTutorial() {
+    setShowTutorial(false);
+  }
+
+  function handleTutorialSend(msg: string) {
+    completeTutorial();
+    setTimeout(() => sendMessage(msg), 100);
+  }
+
+  async function sendMessage(text: string) {
+    if (!text.trim() || isTyping) return;
 
     let convoId = activeConvo;
     if (!convoId) {
@@ -140,7 +160,7 @@ export default function ClouudTerminal() {
         const res = await fetch("/api/conversations", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ title: input.slice(0, 50) }),
+          body: JSON.stringify({ title: text.slice(0, 50) }),
         });
         const convo = await res.json();
         setConversations(prev => [convo, ...prev]);
@@ -155,13 +175,12 @@ export default function ClouudTerminal() {
       id: Date.now(),
       conversationId: convoId!,
       role: "user",
-      content: input,
+      content: text,
       toolCall: null,
       hash: null,
       createdAt: new Date().toISOString(),
     };
     setMessages(prev => [...prev, tempUserMsg]);
-    const userInput = input;
     setInput("");
     setIsTyping(true);
     setAiState("thinking");
@@ -170,7 +189,7 @@ export default function ClouudTerminal() {
       const res = await fetch(`/api/conversations/${convoId}/messages`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ content: userInput }),
+        body: JSON.stringify({ content: text }),
       });
 
       if (!res.ok) {
@@ -204,6 +223,11 @@ export default function ClouudTerminal() {
     } finally {
       setIsTyping(false);
     }
+  }
+
+  function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    sendMessage(input);
   }
 
   if (isLoading) {
@@ -354,7 +378,7 @@ export default function ClouudTerminal() {
                 </details>
               </div>
 
-              <div className="p-3 border-t border-border">
+              <div className="p-3 border-t border-border space-y-1.5">
                 <a
                   href="https://uuon-foundation.com"
                   target="_blank"
@@ -365,6 +389,14 @@ export default function ClouudTerminal() {
                   <Globe className="w-3.5 h-3.5 shrink-0" />
                   Δmension — Mathematical Universe
                 </a>
+                <button
+                  onClick={() => setShowTutorial(true)}
+                  className="w-full flex items-center gap-2 px-2 py-2 text-[11px] text-secondary hover:text-white bg-background hover:bg-muted/60 border border-border hover:border-secondary/30 rounded-sm transition-all"
+                  data-testid="button-open-tutorial"
+                >
+                  <HelpCircle className="w-3.5 h-3.5 shrink-0" />
+                  Interactive Tutorial
+                </button>
               </div>
             </div>
           </motion.div>
@@ -511,6 +543,12 @@ export default function ClouudTerminal() {
           </form>
         </div>
       </div>
+
+      <AnimatePresence>
+        {showTutorial && (
+          <Tutorial onComplete={completeTutorial} onDismiss={dismissTutorial} onSendMessage={handleTutorialSend} />
+        )}
+      </AnimatePresence>
 
     </div>
   );

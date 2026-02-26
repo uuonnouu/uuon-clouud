@@ -35,6 +35,10 @@ UUON Clouud is the intelligence interface for the G°centric Lattice System, bui
 7. **Conversation History:** PostgreSQL persistent sessions
 8. **Quick Actions:** 15 interactive prompts in collapsible sidebar section
 9. **Δmension Link:** Direct link to uuon-foundation.com in sidebar
+10. **Interactive Tutorial:** 6-step animated walkthrough for new users (auto-shows on first visit via localStorage, relaunchable from sidebar)
+    - Steps: Meet Clouud, Earth Philosophy, 33-Point Lattice (animated demo), Tool Calls (animated demo), Mission (waste/fraud/gatekeeping + hash demo), Ready
+    - "Try It" buttons auto-send messages to Clouud
+    - Component: `client/src/components/tutorial.tsx`
 
 ## Design System
 - **Palette:** Deep Navy (#030811), UUON Gold (#f0b93b), Atmosphere Blue (#4a8cd4)
