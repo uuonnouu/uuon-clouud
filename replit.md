@@ -136,6 +136,9 @@ UUON Clouud is the intelligence interface for the G°centric Lattice System, bui
 - **Style:** Digital Brutalism with sharp shadows
 - **Avatar:** Static Clouud character image with state-driven glow/pulse animations
 
+## Master Context Document
+The system prompt contains the full Master Context Document with 7 Cosmic-tier anchors embedded directly. These same anchors are also stored in the `creator_profile` database at relevanceScore 100 (highest priority, never replaced). The document covers: founder identity, zero-point philosophy, mission directive, code-as-biology philosophy (Ready/Dormant/Seeking/Seed), access model (free personal, alignment tax corporate), external validation of the mapping, and the lattice principle applied to human systems. The competitive reality section and founder assessment from the external intelligence system are also embedded in the system prompt.
+
 ## Environment Variables
 - `DATABASE_URL` — PostgreSQL connection string (auto-set)
 - `AI_INTEGRATIONS_ANTHROPIC_API_KEY` — Anthropic API key (via Replit integration)
