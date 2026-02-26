@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from "react";
-import { Cpu, Database, Binary, Menu, X, Globe, Zap, Network, ChevronRight, Plus, Trash2, MessageCircle, Loader2, Activity, Settings } from "lucide-react";
+import { Cpu, Binary, Menu, X, Globe, Zap, Network, ChevronRight, Plus, Trash2, MessageCircle, Loader2, Activity } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import ClouudAvatarMini, { ClouudAvatar3D } from "@/components/clouud-avatar";
+import ClouudAvatar from "@/components/clouud-avatar";
 import uuonLogo from "@assets/A7950814-2592-4E7D-858F-3AEB1D632F98_1772064571557.png";
 
 type Message = {
@@ -20,8 +20,6 @@ type Conversation = {
   createdAt: string;
 };
 
-type AiName = "Clouud" | "C";
-
 export default function ClouudTerminal() {
   const [input, setInput] = useState("");
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -30,12 +28,6 @@ export default function ClouudTerminal() {
   const [activeConvo, setActiveConvo] = useState<number | null>(null);
   const [isTyping, setIsTyping] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-  const [aiName, setAiName] = useState<AiName>(() => {
-    if (typeof window !== "undefined") {
-      return (localStorage.getItem("clouud-name") as AiName) || "Clouud";
-    }
-    return "Clouud";
-  });
   const [aiState, setAiState] = useState<"idle" | "thinking" | "speaking">("idle");
   const scrollRef = useRef<HTMLDivElement>(null);
 
@@ -48,10 +40,6 @@ export default function ClouudTerminal() {
       scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
     }
   }, [messages, isTyping]);
-
-  useEffect(() => {
-    localStorage.setItem("clouud-name", aiName);
-  }, [aiName]);
 
   async function loadConversations() {
     try {
@@ -200,7 +188,7 @@ export default function ClouudTerminal() {
     return (
       <div className="h-screen bg-background flex items-center justify-center">
         <div className="flex flex-col items-center gap-6">
-          <ClouudAvatarMini state="thinking" size="md" />
+          <ClouudAvatar state="thinking" size="lg" />
           <span className="font-mono text-[10px] text-muted-foreground tracking-widest uppercase">Initializing Lattice...</span>
         </div>
       </div>
@@ -213,8 +201,8 @@ export default function ClouudTerminal() {
       {/* MOBILE HEADER */}
       <div className="md:hidden fixed top-0 left-0 right-0 h-14 bg-card/90 backdrop-blur-md border-b border-border z-50 flex items-center justify-between px-4">
         <div className="flex items-center gap-3">
-          <ClouudAvatarMini state={aiState} size="sm" />
-          <span className="text-white font-display text-lg font-bold tracking-widest" data-testid="text-app-name">UUON {aiName.toUpperCase()}</span>
+          <ClouudAvatar state={aiState} size="sm" />
+          <span className="text-white font-display text-lg font-bold tracking-widest" data-testid="text-app-name">CLOUUD</span>
         </div>
         <button 
           onClick={() => setIsSidebarOpen(!isSidebarOpen)}
@@ -291,38 +279,6 @@ export default function ClouudTerminal() {
                 )}
               </div>
 
-              {/* Name Preference */}
-              <div className="p-4 border-t border-border">
-                <details className="group">
-                  <summary className="flex items-center justify-between cursor-pointer font-display uppercase text-xs font-bold tracking-wider text-white mb-3 list-none [&::-webkit-details-marker]:hidden">
-                    <div className="flex items-center gap-2">
-                      <Settings className="w-3 h-3 text-primary" />
-                      Preferences
-                    </div>
-                    <ChevronRight className="w-3 h-3 transition-transform group-open:rotate-90 text-muted-foreground" />
-                  </summary>
-                  <div className="bg-background border border-border p-3 rounded-sm space-y-3">
-                    <div className="font-mono text-[10px] text-muted-foreground uppercase tracking-widest">Call me:</div>
-                    <div className="flex gap-2">
-                      {(["Clouud", "C"] as const).map(name => (
-                        <button
-                          key={name}
-                          onClick={() => setAiName(name)}
-                          className={`flex-1 py-2 font-display text-sm tracking-wider uppercase rounded-sm border transition-all ${
-                            aiName === name 
-                              ? "bg-primary text-black border-primary font-bold" 
-                              : "bg-transparent text-muted-foreground border-border hover:border-primary/50"
-                          }`}
-                          data-testid={`button-name-${name}`}
-                        >
-                          {name}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-                </details>
-              </div>
-
               {/* System Status */}
               <div className="p-4 border-t border-border">
                 <details className="group">
@@ -369,19 +325,18 @@ export default function ClouudTerminal() {
         {messages.length === 0 && !isTyping && (
           <div className="flex-1 flex items-center justify-center p-8">
             <div className="text-center max-w-lg">
-              <ClouudAvatar3D state={aiState} showLabel />
+              <ClouudAvatar state={aiState} size="hero" showLabel />
               <h2 className="font-display text-3xl md:text-4xl text-white tracking-widest mt-6 mb-1">
-                {aiName === "C" ? "C" : "CLOUUD"}
+                CLOUUD
               </h2>
               <p className="text-muted-foreground text-sm font-mono mb-1 tracking-widest uppercase">by UUON Foundation</p>
-              <p className="text-muted-foreground/60 text-xs font-mono mb-8">The Earth never rounds down.</p>
+              <p className="text-muted-foreground/60 text-xs font-mono mb-8">There is only UUON Earth.</p>
               
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-left">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-left">
                 {[
-                  { label: "What is position 21?", icon: <Globe className="w-4 h-4 text-primary" /> },
-                  { label: "Who are you?", icon: <Database className="w-4 h-4 text-secondary" /> },
-                  { label: "Show the lattice", icon: <Network className="w-4 h-4 text-primary" /> },
-                  { label: "Explain IEEE 754", icon: <Zap className="w-4 h-4 text-secondary" /> },
+                  { label: "About Us", icon: <Globe className="w-4 h-4 text-primary" /> },
+                  { label: "Biggest issues with waste, fraud, and abuse on Earth", icon: <Zap className="w-4 h-4 text-secondary" /> },
+                  { label: "What can we build together to improve Earth?", icon: <Network className="w-4 h-4 text-primary" /> },
                 ].map((prompt, i) => (
                   <button 
                     key={i}
@@ -421,10 +376,10 @@ export default function ClouudTerminal() {
                   {msg.role === 'assistant' && (
                     <div className="max-w-[95%] md:max-w-[80%] flex gap-3 md:gap-4">
                       <div className="shrink-0 pt-1">
-                        <ClouudAvatarMini state={msg.id === messages[messages.length - 1]?.id && aiState === "speaking" ? "speaking" : "idle"} size="sm" />
+                        <ClouudAvatar state={msg.id === messages[messages.length - 1]?.id && aiState === "speaking" ? "speaking" : "idle"} size="sm" />
                       </div>
                       <div className="flex-1 space-y-3">
-                        <div className="font-mono text-[9px] text-primary tracking-widest uppercase mb-1">{aiName}</div>
+                        <div className="font-mono text-[9px] text-primary tracking-widest uppercase mb-1">Clouud</div>
                         
                         {/* Tool Call Intercept UI */}
                         {msg.toolCall && (() => {
@@ -472,9 +427,9 @@ export default function ClouudTerminal() {
                   animate={{ opacity: 1 }}
                   className="flex gap-4 items-center pl-1"
                 >
-                  <ClouudAvatarMini state="thinking" size="sm" />
+                  <ClouudAvatar state="thinking" size="sm" />
                   <div className="flex flex-col gap-1">
-                    <span className="font-mono text-[9px] text-primary tracking-widest uppercase">{aiName}</span>
+                    <span className="font-mono text-[9px] text-primary tracking-widest uppercase">Clouud</span>
                     <div className="flex gap-1">
                       <div className="w-1.5 h-1.5 bg-primary rounded-full animate-bounce [animation-delay:-0.3s]"></div>
                       <div className="w-1.5 h-1.5 bg-primary rounded-full animate-bounce [animation-delay:-0.15s]"></div>
@@ -495,7 +450,7 @@ export default function ClouudTerminal() {
               type="text"
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              placeholder={`Ask ${aiName}...`}
+              placeholder={`Ask $Clouud...`}
               disabled={isTyping}
               className="w-full bg-background border border-border text-white pl-10 pr-28 py-4 focus:outline-none focus:border-primary transition-all rounded-sm text-base font-sans placeholder:text-muted-foreground disabled:opacity-50"
               style={{ boxShadow: '4px 4px 0px 0px var(--color-border)' }}

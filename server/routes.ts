@@ -225,37 +225,40 @@ export async function registerRoutes(
         messages: apiMessages,
       });
 
-      // Handle tool use loop
+      // Handle tool use loop — process ALL tool_use blocks per response
       while (response.stop_reason === "tool_use") {
-        const toolUseBlock = response.content.find(
+        const toolUseBlocks = response.content.filter(
           (block): block is Anthropic.ContentBlock & { type: "tool_use" } =>
             block.type === "tool_use"
         );
 
-        if (!toolUseBlock) break;
+        if (toolUseBlocks.length === 0) break;
 
-        const toolResult = executeLatticeTool(toolUseBlock.name, toolUseBlock.input as Record<string, any>);
+        const toolResults: Array<{ type: "tool_result"; tool_use_id: string; content: string }> = [];
 
-        toolCallData = {
-          name: toolUseBlock.name,
-          args: toolUseBlock.input,
-          result: toolResult,
-        };
+        for (const toolUseBlock of toolUseBlocks) {
+          const toolResult = executeLatticeTool(toolUseBlock.name, toolUseBlock.input as Record<string, any>);
 
-        // Continue the conversation with tool result
+          toolCallData = {
+            name: toolUseBlock.name,
+            args: toolUseBlock.input,
+            result: toolResult,
+          };
+
+          toolResults.push({
+            type: "tool_result",
+            tool_use_id: toolUseBlock.id,
+            content: toolResult,
+          });
+        }
+
         apiMessages.push({
           role: "assistant",
           content: response.content,
         });
         apiMessages.push({
           role: "user",
-          content: [
-            {
-              type: "tool_result",
-              tool_use_id: toolUseBlock.id,
-              content: toolResult,
-            },
-          ],
+          content: toolResults,
         });
 
         response = await anthropic.messages.create({
