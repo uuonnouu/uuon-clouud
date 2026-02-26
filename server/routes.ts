@@ -1216,6 +1216,35 @@ export function registerSystemRoutes(app: Express) {
     }
   });
 
+  app.get("/api/dmension/diagnostic", async (_req: Request, res: Response) => {
+    const url = process.env.DMENSION_API_URL || 'https://dmension-mathematical-universe.replit.app';
+    const monitor = dmensionBridge.getDmensionStatus();
+    const endpoints = ["/", "/api", "/api/bridge/status", "/api/health", "/api/shapes"];
+    const results: Record<string, any> = {};
+
+    for (const path of endpoints) {
+      try {
+        const start = Date.now();
+        const r = await fetch(`${url}${path}`, {
+          headers: { 'X-Bridge-Secret': process.env.UUON_BRIDGE_SECRET || '', 'X-Source-App': 'uuon-cloud' },
+          signal: AbortSignal.timeout(8000),
+        });
+        const body = await r.text();
+        results[path] = { status: r.status, latencyMs: Date.now() - start, body: body.slice(0, 200) };
+      } catch (e: any) {
+        results[path] = { error: e.message };
+      }
+    }
+
+    res.json({
+      timestamp: new Date().toISOString(),
+      targetUrl: url,
+      monitor,
+      endpointProbes: results,
+      verdict: Object.values(results).some((r: any) => r.status === 200) ? "BRIDGE ENDPOINTS REACHABLE" : "ALL ENDPOINTS RETURNING NON-200 — ISSUE IS ON DMENSION SIDE",
+    });
+  });
+
   app.get("/api/dmension/shapes", async (req: Request, res: Response) => {
     try {
       const category = req.query.category as string | undefined;

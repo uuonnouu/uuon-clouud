@@ -70,6 +70,47 @@ export async function viewSentLog() {
   return await safeFetch(`${DMENSION_URL}/api/bridge/log`, { headers: HEADERS });
 }
 
+let dmensionConnected = false;
+let lastCheckTime: string | null = null;
+let retryCount = 0;
+
+export function getDmensionStatus() {
+  return { connected: dmensionConnected, lastCheck: lastCheckTime, retries: retryCount, url: DMENSION_URL };
+}
+
+export function startConnectionMonitor() {
+  const RETRY_INTERVAL = 30000;
+  const MAX_RETRIES = 120;
+
+  async function tryConnect() {
+    if (dmensionConnected || retryCount >= MAX_RETRIES) return;
+    retryCount++;
+    lastCheckTime = new Date().toISOString();
+    try {
+      const start = Date.now();
+      const res = await fetch(`${DMENSION_URL}/api/bridge/status`, {
+        headers: HEADERS,
+        signal: AbortSignal.timeout(10000),
+      });
+      const latency = Date.now() - start;
+      if (res.ok) {
+        dmensionConnected = true;
+        console.log(`[DMENSION] Connected after ${retryCount} attempts (${latency}ms latency)`);
+        return;
+      }
+      const text = await res.text();
+      console.log(`[DMENSION] Attempt ${retryCount}: HTTP ${res.status} — ${text.slice(0, 80)}`);
+    } catch (e: any) {
+      console.log(`[DMENSION] Attempt ${retryCount}: ${e.message.slice(0, 80)}`);
+    }
+    setTimeout(tryConnect, RETRY_INTERVAL);
+  }
+
+  console.log(`[DMENSION] Starting connection monitor → ${DMENSION_URL}`);
+  console.log(`[DMENSION] Will retry every ${RETRY_INTERVAL / 1000}s for up to ${MAX_RETRIES} attempts`);
+  tryConnect();
+}
+
 export const dmensionBridge = {
   checkConnection,
   sendShape,
@@ -78,4 +119,6 @@ export const dmensionBridge = {
   getMLUpdates,
   fullSync,
   viewSentLog,
+  getDmensionStatus,
+  startConnectionMonitor,
 };
