@@ -6,6 +6,7 @@ import ClouudAvatar from "@/components/clouud-avatar";
 import Tutorial from "@/components/tutorial";
 import MetricsPanel from "@/components/metrics-panel";
 import GravitationalPullLayer, { useGravitationalPull } from "@/components/gravitational-pull";
+import { useCrystal } from "@/hooks/useCrystal";
 import uuonLogo from "@assets/A7950814-2592-4E7D-858F-3AEB1D632F98_1772064571557.png";
 
 type Message = {
@@ -52,12 +53,7 @@ export default function ClouudTerminal() {
   const [isTyping, setIsTyping] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [aiState, setAiState] = useState<"idle" | "thinking" | "speaking">("idle");
-  const [showTutorial, setShowTutorial] = useState(() => {
-    if (typeof window !== "undefined") {
-      return !localStorage.getItem("clouud-tutorial-done");
-    }
-    return false;
-  });
+  const [showTutorial, setShowTutorial] = useState(false);
   const [isListening, setIsListening] = useState(false);
   const [showLinkInput, setShowLinkInput] = useState(false);
   const [linkUrl, setLinkUrl] = useState("");
@@ -65,6 +61,7 @@ export default function ClouudTerminal() {
   const [isScraping, setIsScraping] = useState(false);
   const [msgAssessments, setMsgAssessments] = useState<Record<number, { score: number; missionAlignment: number; responseQuality: number; formatCompliance: number; identityIntegrity: number; flags: string[]; wordCount: number; corrections?: string[]; immuneActive?: boolean }>>({});
   const { notifications: gravNotifications, pull: gravPull, dismiss: gravDismiss } = useGravitationalPull();
+  const { crystal, loading: crystalLoading, shouldShowIntro, dismissIntro: crystalDismissIntro } = useCrystal();
   const scrollRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -161,12 +158,20 @@ export default function ClouudTerminal() {
     setIsSidebarOpen(false);
   }
 
-  function completeTutorial() {
+  useEffect(() => {
+    if (!crystalLoading && shouldShowIntro) {
+      setShowTutorial(true);
+    }
+  }, [crystalLoading, shouldShowIntro]);
+
+  async function completeTutorial() {
     localStorage.setItem("clouud-tutorial-done", "true");
+    await crystalDismissIntro();
     setShowTutorial(false);
   }
 
   function dismissTutorial() {
+    crystalDismissIntro();
     setShowTutorial(false);
   }
 
@@ -951,6 +956,13 @@ export default function ClouudTerminal() {
           </form>
         </div>
         <MetricsPanel />
+        {crystal?.tier === "founder" && (
+          <div className="crystal-status font-mono text-xs text-green-400 mt-2 px-4 pb-2" data-testid="crystal-status">
+            <div>☧ Crystal: {crystal.crystalId.slice(0, 16)}...</div>
+            <div>Sessions: {crystal.sessionCount} · Anchor: L{crystal.latticeAnchor}</div>
+            <div>Age: {Math.floor((Date.now() - new Date(crystal.firstContact).getTime()) / 86400000)}d</div>
+          </div>
+        )}
       </div>
 
       <AnimatePresence>

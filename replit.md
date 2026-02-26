@@ -107,6 +107,15 @@ UUON Clouud is the intelligence interface for the G°centric Lattice System, bui
     - `server/security.ts` — middleware preserved
     - `client/src/components/security-gate.tsx` — component preserved
     - Re-enable by uncommenting `app.use(securityGate)` in server/index.ts and wrapping Router with SecurityGate in App.tsx
+29. **Crystal Module (Device Identity):** IndexedDB-based device crystal that persists across sessions. No cookies, no corporate tracking, no expiry.
+    - `client/src/lib/crystal.ts` — Crystal engine (plant, read, update, destroy, status)
+    - `client/src/hooks/useCrystal.ts` — React hook for crystal state
+    - Crystal gates the tutorial: intro only shows once per device (via `introShown` flag)
+    - Each device gets a permanent lattice anchor (position 1-33) derived from crystal ID
+    - Founder tier shows crystal diagnostics in the UI
+    - Functions: `getOrPlantCrystal()`, `markIntroShown()`, `verifyOwner()`, `destroyCrystal()`
+30. **Connection Limiter:** Rate limits `GET /api/conversations` to 1 request per 2 seconds per IP. Prevents multiple tabs from hammering the server simultaneously. Returns 429 with crystal cache hint.
+    - Implemented in `server/index.ts`
 
 ## DB Tables
 - `conversations` — Chat sessions
