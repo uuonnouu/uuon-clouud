@@ -98,7 +98,7 @@ export const latticeTools = [
   },
   {
     name: "chi_position",
-    description: "Map a value (0–100) to its nearest lattice position (1–33).",
+    description: "Map any value (0–100) to its nearest lattice position (1–33) and return the exact values at all three tiers (Earth, Orbital, Cosmic).",
     input_schema: {
       type: "object" as const,
       properties: {
@@ -125,7 +125,16 @@ export function executeLatticeTool(name: string, input: Record<string, any>): st
     }
     case "chi_position": {
       const pos = chiPosition(input.value);
-      return JSON.stringify({ position: pos, value: input.value });
+      const earth = chiValue(pos, 1);
+      const orbital = chiValue(pos, 2);
+      const cosmic = chiValue(pos, 3);
+      return JSON.stringify({
+        inputValue: input.value,
+        nearestPosition: pos,
+        earth: { rational: earth.rational, float: earth.float },
+        orbital: { float: orbital.float },
+        cosmic: { float: cosmic.float },
+      }, null, 2);
     }
     case "chi_lattice_report": {
       return chiLatticeReport().join("\n");

@@ -58,6 +58,7 @@ export default function ClouudTerminal() {
     return false;
   });
   const scrollRef = useRef<HTMLDivElement>(null);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   useEffect(() => {
     loadConversations();
@@ -186,6 +187,9 @@ export default function ClouudTerminal() {
     };
     setMessages(prev => [...prev, tempUserMsg]);
     setInput("");
+    if (textareaRef.current) {
+      textareaRef.current.style.height = "auto";
+    }
     setIsTyping(true);
     setAiState("thinking");
 
@@ -469,7 +473,7 @@ export default function ClouudTerminal() {
             <AnimatePresence initial={false}>
               {messages.map((msg, msgIndex) => (
                 <motion.div 
-                  key={msg.id}
+                  key={`${msg.id}-${msg.role}-${msgIndex}`}
                   initial={{ opacity: 0, y: 20, filter: "blur(4px)" }}
                   animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
                   transition={{ duration: 0.6, ease: [0.25, 0.1, 0.25, 1], delay: msgIndex === messages.length - 1 ? 0.1 : 0 }}
@@ -594,12 +598,12 @@ export default function ClouudTerminal() {
         )}
 
         <div className="p-3 md:p-4 bg-card border-t border-border z-10">
-          <form onSubmit={handleSubmit} className="relative max-w-4xl mx-auto flex items-center gap-2">
+          <form onSubmit={handleSubmit} className="relative max-w-4xl mx-auto flex items-end gap-2">
             {messages.length >= 2 && !isTyping && (
               <button
                 type="button"
                 onClick={handleUndo}
-                className="shrink-0 p-2.5 text-muted-foreground hover:text-primary bg-background border border-border hover:border-primary/30 rounded-sm transition-all"
+                className="shrink-0 p-2.5 mb-1 text-muted-foreground hover:text-primary bg-background border border-border hover:border-primary/30 rounded-sm transition-all"
                 title="Undo last exchange"
                 data-testid="button-undo"
               >
@@ -607,21 +611,35 @@ export default function ClouudTerminal() {
               </button>
             )}
             <div className="relative flex-1">
-              <div className="absolute left-3 top-1/2 -translate-y-1/2 text-primary font-bold font-mono text-sm">{">"}</div>
-              <input 
-                type="text"
+              <div className="absolute left-3 top-3 text-primary font-bold font-mono text-sm">{">"}</div>
+              <textarea
+                ref={textareaRef}
                 value={input}
-                onChange={(e) => setInput(e.target.value)}
+                onChange={(e) => {
+                  setInput(e.target.value);
+                  const el = e.target;
+                  el.style.height = "auto";
+                  el.style.height = Math.min(el.scrollHeight, 160) + "px";
+                }}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" && !e.shiftKey) {
+                    e.preventDefault();
+                    if (input.trim() && !isTyping) {
+                      handleSubmit(e as unknown as React.FormEvent);
+                    }
+                  }
+                }}
                 placeholder="Ask Clouud..."
                 disabled={isTyping}
-                className="w-full bg-background border border-border text-white pl-8 pr-24 py-3 focus:outline-none focus:border-primary transition-all rounded-sm text-sm placeholder:text-muted-foreground disabled:opacity-50"
-                style={{ boxShadow: '4px 4px 0px 0px var(--color-border)' }}
+                rows={1}
+                className="w-full bg-background border border-border text-white pl-8 pr-24 py-3 focus:outline-none focus:border-primary transition-all rounded-sm text-sm placeholder:text-muted-foreground disabled:opacity-50 resize-none overflow-y-auto leading-relaxed"
+                style={{ boxShadow: '4px 4px 0px 0px var(--color-border)', minHeight: '44px', maxHeight: '160px' }}
                 data-testid="input-clouud"
               />
               <button 
                 type="submit" 
                 disabled={!input.trim() || isTyping}
-                className="absolute right-2 top-1/2 -translate-y-1/2 px-3 py-1.5 bg-primary hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed text-black font-display text-xs tracking-wider font-bold uppercase rounded-sm transition-colors"
+                className="absolute right-2 bottom-2 px-3 py-1.5 bg-primary hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed text-black font-display text-xs tracking-wider font-bold uppercase rounded-sm transition-colors"
                 data-testid="button-submit"
               >
                 {isTyping ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : "Send"}
