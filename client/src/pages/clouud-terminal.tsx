@@ -1,64 +1,37 @@
 import { useState, useRef, useEffect } from "react";
-import { Cpu, Database, Binary, Menu, X, Globe, Zap, Network, ChevronRight } from "lucide-react";
+import { Cpu, Database, Binary, Menu, X, Globe, Zap, Network, ChevronRight, Plus, Trash2, MessageCircle, Loader2, Activity } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import uuonLogo from "@assets/A7950814-2592-4E7D-858F-3AEB1D632F98_1772064571557.png";
 
-// --- MOCK LATTICE ENGINE ---
-const LATTICE_POINTS = 33;
-const RANGE = 100.0;
-const BASE = RANGE / LATTICE_POINTS; // 3.0303...
-
-const mockLatticeEngine = (query: string) => {
-  if (query.includes("position") || query.includes("value") || /\d+/.test(query)) {
-    const numMatch = query.match(/\d+/);
-    if (numMatch) {
-      const pos = parseInt(numMatch[0]);
-      if (pos >= 1 && pos <= 33) {
-        return {
-          tool: "chi_value",
-          args: { position: pos, tier: "TIER_EARTH" },
-          result: `Rational: ${pos * 100}/33\nFloat: ${(pos * BASE).toFixed(4)}`
-        };
-      }
-    }
-  }
-  return null;
+type Message = {
+  id: number;
+  conversationId: number;
+  role: string;
+  content: string;
+  toolCall: string | null;
+  hash: string | null;
+  createdAt: string;
 };
 
-// --- TYPES ---
-type Message = {
-  id: string;
-  role: "user" | "clouud" | "system";
-  content: string;
-  toolCall?: {
-    name: string;
-    args: any;
-    result: string;
-  };
-  hash?: string;
-  timestamp: string;
+type Conversation = {
+  id: number;
+  title: string;
+  createdAt: string;
 };
 
 export default function ClouudTerminal() {
   const [input, setInput] = useState("");
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const [messages, setMessages] = useState<Message[]>([
-    {
-      id: "init-1",
-      role: "system",
-      content: "SYSTEM INITIALIZED // G°CENTRIC v1.0",
-      timestamp: new Date().toISOString(),
-    },
-    {
-      id: "init-2",
-      role: "clouud",
-      content: "I am Clouud. The lattice is active. State your inquiry.",
-      hash: "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-      timestamp: new Date().toISOString(),
-    }
-  ]);
+  const [messages, setMessages] = useState<Message[]>([]);
+  const [conversations, setConversations] = useState<Conversation[]>([]);
+  const [activeConvo, setActiveConvo] = useState<number | null>(null);
   const [isTyping, setIsTyping] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const scrollRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    loadConversations();
+  }, []);
 
   useEffect(() => {
     if (scrollRef.current) {
@@ -66,50 +39,157 @@ export default function ClouudTerminal() {
     }
   }, [messages, isTyping]);
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!input.trim()) return;
+  async function loadConversations() {
+    try {
+      const res = await fetch("/api/conversations");
+      const data = await res.json();
+      setConversations(data);
+      if (data.length > 0) {
+        setActiveConvo(data[0].id);
+        await loadMessages(data[0].id);
+      }
+      setIsLoading(false);
+    } catch {
+      setIsLoading(false);
+    }
+  }
 
-    const newMsg: Message = {
-      id: Date.now().toString(),
+  async function loadMessages(convoId: number) {
+    try {
+      const res = await fetch(`/api/conversations/${convoId}/messages`);
+      const data = await res.json();
+      setMessages(data);
+    } catch {
+      setMessages([]);
+    }
+  }
+
+  async function createConversation() {
+    try {
+      const res = await fetch("/api/conversations", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ title: "New Session" }),
+      });
+      const convo = await res.json();
+      setConversations(prev => [convo, ...prev]);
+      setActiveConvo(convo.id);
+      setMessages([]);
+      setIsSidebarOpen(false);
+    } catch (err) {
+      console.error("Failed to create conversation:", err);
+    }
+  }
+
+  async function deleteConversation(id: number) {
+    try {
+      await fetch(`/api/conversations/${id}`, { method: "DELETE" });
+      setConversations(prev => prev.filter(c => c.id !== id));
+      if (activeConvo === id) {
+        const remaining = conversations.filter(c => c.id !== id);
+        if (remaining.length > 0) {
+          setActiveConvo(remaining[0].id);
+          await loadMessages(remaining[0].id);
+        } else {
+          setActiveConvo(null);
+          setMessages([]);
+        }
+      }
+    } catch (err) {
+      console.error("Failed to delete conversation:", err);
+    }
+  }
+
+  async function selectConversation(id: number) {
+    setActiveConvo(id);
+    await loadMessages(id);
+    setIsSidebarOpen(false);
+  }
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    if (!input.trim() || isTyping) return;
+
+    let convoId = activeConvo;
+    if (!convoId) {
+      try {
+        const res = await fetch("/api/conversations", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ title: input.slice(0, 50) }),
+        });
+        const convo = await res.json();
+        setConversations(prev => [convo, ...prev]);
+        convoId = convo.id;
+        setActiveConvo(convo.id);
+      } catch {
+        return;
+      }
+    }
+
+    const tempUserMsg: Message = {
+      id: Date.now(),
+      conversationId: convoId!,
       role: "user",
       content: input,
-      timestamp: new Date().toISOString(),
+      toolCall: null,
+      hash: null,
+      createdAt: new Date().toISOString(),
     };
-
-    setMessages(prev => [...prev, newMsg]);
+    setMessages(prev => [...prev, tempUserMsg]);
+    const userInput = input;
     setInput("");
     setIsTyping(true);
 
-    setTimeout(() => {
-      const toolUse = mockLatticeEngine(newMsg.content);
-      
-      let clouudResponse = "";
-      let fakeHash = Array.from({length: 64}, () => Math.floor(Math.random()*16).toString(16)).join('');
+    try {
+      const res = await fetch(`/api/conversations/${convoId}/messages`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ content: userInput }),
+      });
 
-      if (toolUse) {
-        clouudResponse = `Position ${toolUse.args.position} resolves exactly to ${toolUse.result.split('\n')[0].split(': ')[1]}.`;
-      } else if (newMsg.content.toLowerCase().includes("hello") || newMsg.content.toLowerCase().includes("hi")) {
-        clouudResponse = "State your inquiry.";
-      } else if (newMsg.content.toLowerCase().includes("who are you")) {
-         clouudResponse = "I am Clouud, built by UUON Foundation Inc. My zero-point is the Earth.";
-      } else {
-        clouudResponse = "Pattern logged. The Earth does not editorialize.";
+      if (!res.ok) {
+        const err = await res.json();
+        throw new Error(err.error || "Failed to send message");
       }
 
-      const responseMsg: Message = {
-        id: (Date.now() + 1).toString(),
-        role: "clouud",
-        content: clouudResponse,
-        toolCall: toolUse ? toolUse : undefined,
-        hash: fakeHash,
-        timestamp: new Date().toISOString(),
-      };
-
-      setMessages(prev => [...prev, responseMsg]);
+      const data = await res.json();
+      
+      setMessages(prev => {
+        const withoutTemp = prev.filter(m => m.id !== tempUserMsg.id);
+        return [...withoutTemp, data.userMessage, data.assistantMessage];
+      });
+    } catch (err: any) {
+      setMessages(prev => [
+        ...prev,
+        {
+          id: Date.now() + 1,
+          conversationId: convoId!,
+          role: "assistant",
+          content: `System error: ${err.message}. The lattice remains anchored.`,
+          toolCall: null,
+          hash: null,
+          createdAt: new Date().toISOString(),
+        }
+      ]);
+    } finally {
       setIsTyping(false);
-    }, 1200);
-  };
+    }
+  }
+
+  if (isLoading) {
+    return (
+      <div className="h-screen bg-background flex items-center justify-center">
+        <div className="flex flex-col items-center gap-4">
+          <div className="w-16 h-16 rounded-full overflow-hidden border-2 border-primary/50 shadow-[0_0_20px_rgba(240,185,59,0.3)]">
+            <img src={uuonLogo} alt="UUON" className="w-full h-full object-cover" />
+          </div>
+          <Loader2 className="w-5 h-5 text-primary animate-spin" />
+          <span className="font-mono text-[10px] text-muted-foreground tracking-widest uppercase">Initializing Lattice...</span>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="h-screen bg-background text-foreground flex overflow-hidden font-sans">
@@ -120,7 +200,7 @@ export default function ClouudTerminal() {
           <div className="w-6 h-6 rounded-full overflow-hidden bg-primary/20">
             <img src={uuonLogo} alt="UUON Logo" className="w-full h-full object-cover" />
           </div>
-          <span className="text-white font-display text-xl font-bold tracking-widest">CLOUUD</span>
+          <span className="text-white font-display text-lg font-bold tracking-widest" data-testid="text-app-name">UUON CLOUUD</span>
         </div>
         <button 
           onClick={() => setIsSidebarOpen(!isSidebarOpen)}
@@ -131,15 +211,12 @@ export default function ClouudTerminal() {
         </button>
       </div>
 
-      {/* SIDEBAR (The Ground / Visualizer) */}
+      {/* SIDEBAR */}
       <AnimatePresence>
-        {(isSidebarOpen || window.innerWidth >= 768) && (
+        {(isSidebarOpen || typeof window !== 'undefined') && (
           <motion.div 
-            initial={{ x: -300, opacity: 0 }}
-            animate={{ x: 0, opacity: 1 }}
-            exit={{ x: -300, opacity: 0 }}
-            transition={{ type: "spring", stiffness: 300, damping: 30 }}
-            className={`fixed md:relative z-40 w-80 h-full bg-card border-r border-border shadow-2xl md:shadow-none flex flex-col ${isSidebarOpen ? 'left-0' : '-left-full md:left-0'} top-0 pt-14 md:pt-0`}
+            initial={false}
+            className={`${isSidebarOpen ? 'fixed z-40' : 'hidden md:flex relative'} w-80 h-full bg-card border-r border-border shadow-2xl md:shadow-none flex-col top-0 pt-14 md:pt-0`}
           >
             <div className="relative p-6 border-b border-border bg-muted overflow-hidden">
               <div className="absolute inset-0 opacity-10 mix-blend-screen">
@@ -150,190 +227,217 @@ export default function ClouudTerminal() {
                   <img src={uuonLogo} alt="UUON Logo" className="w-full h-full object-cover" />
                 </div>
                 <div>
-                  <h1 className="font-display text-xl text-white font-bold leading-none tracking-widest">CLOUUD</h1>
-                  <span className="font-mono text-[10px] text-primary uppercase tracking-widest">UUON Foundation</span>
+                  <h1 className="font-display text-xl text-white font-bold leading-none tracking-widest">UUON CLOUUD</h1>
+                  <span className="font-mono text-[10px] text-primary uppercase tracking-widest">G°centric v1.0</span>
                 </div>
               </div>
             </div>
 
-            <div className="flex-1 overflow-y-auto p-6 space-y-8 matrix-rain-deep">
-              
-              {/* Collapsible Status */}
-              <details className="group" open>
-                <summary className="flex items-center justify-between cursor-pointer font-display uppercase text-sm font-bold tracking-wider text-white mb-4 list-none [&::-webkit-details-marker]:hidden">
-                  <div className="flex items-center gap-2">
-                    <Activity className="w-4 h-4 text-primary" />
-                    System Status
-                  </div>
-                  <ChevronRight className="w-4 h-4 transition-transform group-open:rotate-90 text-muted-foreground" />
-                </summary>
-                <div className="space-y-3 font-mono text-[11px] bg-background border border-border p-4 rounded-sm sharp-shadow">
-                  <div className="flex justify-between items-center border-b border-muted pb-2">
-                    <span className="text-muted-foreground">LATTICE:</span>
-                    <span className="text-secondary font-bold">33-POINT ACTIVE</span>
-                  </div>
-                  <div className="flex justify-between items-center border-b border-muted pb-2">
-                    <span className="text-muted-foreground">MATH:</span>
-                    <span className="text-primary font-bold">RATIONAL</span>
-                  </div>
-                  <div className="flex justify-between items-center pb-1">
-                    <span className="text-muted-foreground">IEEE 754:</span>
-                    <span className="text-white font-bold">BYPASSED</span>
-                  </div>
-                </div>
-              </details>
-
-              {/* Collapsible Provenance */}
-              <details className="group" open>
-                <summary className="flex items-center justify-between cursor-pointer font-display uppercase text-sm font-bold tracking-wider text-white mb-4 list-none [&::-webkit-details-marker]:hidden">
-                  <div className="flex items-center gap-2">
-                    <Database className="w-4 h-4 text-secondary" />
-                    Provenance Layer
-                  </div>
-                  <ChevronRight className="w-4 h-4 transition-transform group-open:rotate-90 text-muted-foreground" />
-                </summary>
-                <div className="font-mono text-[10px] leading-relaxed bg-background border border-border p-4 rounded-sm sharp-shadow">
-                  <span className="text-primary font-bold">C2PA EMBEDDED.</span>
-                  <br /><br />
-                  <span className="text-muted-foreground">Every output rendered here is cryptographically signed. Model collapse immunity enabled. Zero-drift logic active.</span>
-                </div>
-              </details>
-
-              {/* Earth Lattice Visual */}
-              <div>
-                <h3 className="flex items-center gap-2 font-display uppercase text-sm font-bold tracking-wider text-white mb-4">
-                  <Globe className="w-4 h-4 text-primary" />
-                  Earth Zero-Point
-                </h3>
-                
-                <div className="relative h-56 border border-border bg-background rounded-sm sharp-shadow flex items-center justify-center overflow-hidden lattice-grid-deep">
-                  <div className="absolute top-2 left-2 text-[9px] font-mono text-muted-foreground z-20">TIER: EARTH</div>
-                  
-                  {/* Subtle Earth Background inside visualizer */}
-                  <div className="absolute inset-0 opacity-10 z-0 flex items-center justify-center mix-blend-screen pointer-events-none">
-                     <img src={uuonLogo} alt="Earth Background" className="w-[150%] h-[150%] object-cover blur-[2px]" />
-                  </div>
-
-                  <div className="relative w-36 h-36 animate-[spin_60s_linear_infinite] z-10 earth-glow rounded-full border border-secondary/20 bg-secondary/5">
-                    {Array.from({ length: 33 }).map((_, i) => {
-                      const angle = (i * 360) / 33;
-                      return (
-                        <div 
-                          key={i}
-                          className="absolute w-1.5 h-1.5 bg-secondary rounded-sm opacity-60 shadow-[0_0_5px_rgba(74,140,212,0.8)]"
-                          style={{
-                            transform: `rotate(${angle}deg) translateY(-72px)`,
-                            transformOrigin: 'center center',
-                            top: '50%',
-                            left: '50%',
-                            marginLeft: '-3px',
-                            marginTop: '-3px'
-                          }}
-                        />
-                      )
-                    })}
-                    <div className="absolute top-1/2 left-1/2 w-4 h-4 bg-primary rounded-sm -ml-2 -mt-2 shadow-[0_0_15px_rgba(240,185,59,0.8)] flex items-center justify-center">
-                       <div className="w-1.5 h-1.5 bg-black rounded-sm" />
-                    </div>
-                  </div>
-                </div>
+            <div className="flex-1 overflow-y-auto">
+              {/* New Session Button */}
+              <div className="p-4 border-b border-border">
+                <button 
+                  onClick={createConversation}
+                  className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-primary hover:bg-primary/90 text-black font-display text-sm tracking-wider font-bold uppercase rounded-sm transition-colors"
+                  data-testid="button-new-session"
+                >
+                  <Plus className="w-4 h-4" />
+                  New Session
+                </button>
               </div>
 
+              {/* Conversation List */}
+              <div className="p-4 space-y-2">
+                {conversations.map(convo => (
+                  <div 
+                    key={convo.id}
+                    className={`group flex items-center gap-3 p-3 rounded-sm cursor-pointer transition-all border ${
+                      activeConvo === convo.id 
+                        ? 'bg-muted border-primary/30' 
+                        : 'border-transparent hover:bg-muted/50 hover:border-border'
+                    }`}
+                    onClick={() => selectConversation(convo.id)}
+                    data-testid={`card-conversation-${convo.id}`}
+                  >
+                    <MessageCircle className={`w-4 h-4 shrink-0 ${activeConvo === convo.id ? 'text-primary' : 'text-muted-foreground'}`} />
+                    <span className="flex-1 text-sm truncate">{convo.title}</span>
+                    <button
+                      onClick={(e) => { e.stopPropagation(); deleteConversation(convo.id); }}
+                      className="opacity-0 group-hover:opacity-100 p-1 text-muted-foreground hover:text-primary transition-all"
+                      data-testid={`button-delete-${convo.id}`}
+                    >
+                      <Trash2 className="w-3 h-3" />
+                    </button>
+                  </div>
+                ))}
+                {conversations.length === 0 && (
+                  <div className="text-center py-8 text-muted-foreground text-sm font-mono">
+                    No sessions yet.<br/>Start a new one.
+                  </div>
+                )}
+              </div>
+
+              {/* System Status Collapsible */}
+              <div className="p-4 border-t border-border">
+                <details className="group">
+                  <summary className="flex items-center justify-between cursor-pointer font-display uppercase text-xs font-bold tracking-wider text-white mb-3 list-none [&::-webkit-details-marker]:hidden">
+                    <div className="flex items-center gap-2">
+                      <Activity className="w-3 h-3 text-primary" size={12} />
+                      System Status
+                    </div>
+                    <ChevronRight className="w-3 h-3 transition-transform group-open:rotate-90 text-muted-foreground" />
+                  </summary>
+                  <div className="space-y-2 font-mono text-[10px] bg-background border border-border p-3 rounded-sm">
+                    <div className="flex justify-between items-center">
+                      <span className="text-muted-foreground">LATTICE:</span>
+                      <span className="text-secondary font-bold">33-PT ACTIVE</span>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <span className="text-muted-foreground">MATH:</span>
+                      <span className="text-primary font-bold">RATIONAL</span>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <span className="text-muted-foreground">IEEE 754:</span>
+                      <span className="text-white font-bold">BYPASSED</span>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <span className="text-muted-foreground">TEMP:</span>
+                      <span className="text-secondary font-bold">0.1</span>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <span className="text-muted-foreground">GUARD:</span>
+                      <span className="text-primary font-bold">DRIFT CHECK ON</span>
+                    </div>
+                  </div>
+                </details>
+              </div>
             </div>
           </motion.div>
         )}
       </AnimatePresence>
 
-      {/* MAIN CHAT AREA (The Mind) */}
+      {/* MAIN CHAT AREA */}
       <div className="flex-1 flex flex-col relative bg-background pt-14 md:pt-0">
         
-        {/* Chat Scroll Area */}
-        <div 
-          ref={scrollRef}
-          className="flex-1 overflow-y-auto p-4 md:p-8 space-y-6 md:space-y-8"
-        >
-          <AnimatePresence initial={false}>
-            {messages.map((msg) => (
-              <motion.div 
-                key={msg.id}
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                className={`flex w-full ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
-              >
-                {msg.role === 'system' && (
-                  <div className="w-full text-center font-mono text-[10px] tracking-[0.2em] text-muted-foreground py-2 my-2 flex items-center justify-center gap-2 before:h-px before:flex-1 before:bg-border after:h-px after:flex-1 after:bg-border uppercase">
-                    <span className="px-3 text-secondary/70">{msg.content}</span>
-                  </div>
-                )}
+        {/* Empty State */}
+        {messages.length === 0 && !isTyping && (
+          <div className="flex-1 flex items-center justify-center p-8">
+            <div className="text-center max-w-md">
+              <div className="w-20 h-20 rounded-full overflow-hidden border-2 border-primary/30 shadow-[0_0_25px_rgba(240,185,59,0.15)] mx-auto mb-6">
+                <img src={uuonLogo} alt="UUON" className="w-full h-full object-cover" />
+              </div>
+              <h2 className="font-display text-2xl text-white tracking-widest mb-2">UUON CLOUUD</h2>
+              <p className="text-muted-foreground text-sm mb-6 font-mono">The Earth never rounds down.</p>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-left">
+                {[
+                  { label: "What is position 21?", icon: <Globe className="w-4 h-4 text-primary" /> },
+                  { label: "Who are you?", icon: <Database className="w-4 h-4 text-secondary" /> },
+                  { label: "Show the lattice", icon: <Network className="w-4 h-4 text-primary" /> },
+                  { label: "Explain IEEE 754", icon: <Zap className="w-4 h-4 text-secondary" /> },
+                ].map((prompt, i) => (
+                  <button 
+                    key={i}
+                    onClick={() => setInput(prompt.label)}
+                    className="flex items-center gap-3 p-3 bg-card border border-border rounded-sm hover:border-primary/30 transition-colors text-sm text-muted-foreground hover:text-white"
+                    data-testid={`button-prompt-${i}`}
+                  >
+                    {prompt.icon}
+                    {prompt.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
 
-                {msg.role === 'user' && (
-                  <div className="max-w-[85%] md:max-w-[70%] bg-card border border-border p-4 rounded-sm text-foreground font-sans text-base sharp-shadow">
-                    {msg.content}
-                  </div>
-                )}
-
-                {msg.role === 'clouud' && (
-                  <div className="max-w-[95%] md:max-w-[80%] flex gap-3 md:gap-4">
-                    <div className="shrink-0 pt-1">
-                      <div className="w-8 h-8 rounded-full overflow-hidden border border-primary/50 shadow-[0_0_10px_rgba(240,185,59,0.2)]">
-                         <img src={uuonLogo} alt="UUON" className="w-full h-full object-cover" />
-                      </div>
+        {/* Chat Messages */}
+        {messages.length > 0 && (
+          <div 
+            ref={scrollRef}
+            className="flex-1 overflow-y-auto p-4 md:p-8 space-y-6 md:space-y-8"
+          >
+            <AnimatePresence initial={false}>
+              {messages.map((msg) => (
+                <motion.div 
+                  key={msg.id}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className={`flex w-full ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
+                >
+                  {msg.role === 'user' && (
+                    <div className="max-w-[85%] md:max-w-[70%] bg-card border border-border p-4 rounded-sm text-foreground font-sans text-base" style={{ boxShadow: '4px 4px 0px 0px var(--color-border)' }}>
+                      {msg.content}
                     </div>
-                    <div className="flex-1 space-y-3">
-                      
-                      {/* Tool Call Intercept UI */}
-                      {msg.toolCall && (
-                        <div className="w-full bg-card border border-border p-3 rounded-sm sharp-shadow-gold">
-                          <div className="flex items-center gap-2 text-primary font-display text-xs tracking-widest mb-3 uppercase font-bold">
-                            <Cpu className="w-3 h-3" />
-                            Tool Call: chi_rho.py
-                          </div>
-                          <div className="grid grid-cols-[80px_1fr] gap-x-2 gap-y-1 font-mono text-[11px]">
-                            <span className="text-muted-foreground">Function:</span>
-                            <span className="text-white font-medium">{msg.toolCall.name}</span>
-                            <span className="text-muted-foreground">Params:</span>
-                            <span className="text-white font-medium">{JSON.stringify(msg.toolCall.args)}</span>
-                            <span className="text-muted-foreground">Return:</span>
-                            <span className="text-secondary font-bold whitespace-pre-wrap">{msg.toolCall.result}</span>
-                          </div>
+                  )}
+
+                  {msg.role === 'assistant' && (
+                    <div className="max-w-[95%] md:max-w-[80%] flex gap-3 md:gap-4">
+                      <div className="shrink-0 pt-1">
+                        <div className="w-8 h-8 rounded-full overflow-hidden border border-primary/50 shadow-[0_0_10px_rgba(240,185,59,0.2)]">
+                          <img src={uuonLogo} alt="UUON" className="w-full h-full object-cover" />
                         </div>
-                      )}
-                      
-                      {/* Main Response */}
-                      <div className="bg-card border border-border p-4 rounded-sm text-white font-sans text-base sharp-shadow leading-relaxed shadow-[4px_4px_0_0_rgba(20,42,69,1)]">
-                        {msg.content}
+                      </div>
+                      <div className="flex-1 space-y-3">
                         
-                        {msg.hash && (
-                          <div className="mt-4 pt-3 border-t border-muted flex items-center gap-2 font-mono text-[9px] text-muted-foreground">
-                            <Binary className="w-3 h-3 text-secondary" />
-                            <span className="truncate uppercase tracking-widest">Hash: {msg.hash}</span>
-                          </div>
-                        )}
+                        {/* Tool Call Intercept UI */}
+                        {msg.toolCall && (() => {
+                          try {
+                            const tc = JSON.parse(msg.toolCall);
+                            return (
+                              <div className="w-full bg-card border border-border p-3 rounded-sm" style={{ boxShadow: '4px 4px 0px 0px rgba(240,185,59,0.2)' }}>
+                                <div className="flex items-center gap-2 text-primary font-display text-xs tracking-widest mb-3 uppercase font-bold">
+                                  <Cpu className="w-3 h-3" />
+                                  Tool Call: chi_rho
+                                </div>
+                                <div className="grid grid-cols-[80px_1fr] gap-x-2 gap-y-1 font-mono text-[11px]">
+                                  <span className="text-muted-foreground">Function:</span>
+                                  <span className="text-white font-medium">{tc.name}</span>
+                                  <span className="text-muted-foreground">Params:</span>
+                                  <span className="text-white font-medium">{JSON.stringify(tc.args)}</span>
+                                  <span className="text-muted-foreground">Return:</span>
+                                  <span className="text-secondary font-bold whitespace-pre-wrap">{typeof tc.result === 'string' ? tc.result : JSON.stringify(tc.result)}</span>
+                                </div>
+                              </div>
+                            );
+                          } catch { return null; }
+                        })()}
+                        
+                        {/* Main Response */}
+                        <div className="bg-card border border-border p-4 rounded-sm text-white font-sans text-base leading-relaxed whitespace-pre-wrap" style={{ boxShadow: '4px 4px 0px 0px rgba(20,42,69,1)' }}>
+                          {msg.content}
+                          
+                          {msg.hash && (
+                            <div className="mt-4 pt-3 border-t border-muted flex items-center gap-2 font-mono text-[9px] text-muted-foreground">
+                              <Binary className="w-3 h-3 text-secondary" />
+                              <span className="truncate uppercase tracking-widest">Hash: {msg.hash}</span>
+                            </div>
+                          )}
+                        </div>
                       </div>
                     </div>
+                  )}
+                </motion.div>
+              ))}
+              
+              {isTyping && (
+                <motion.div 
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  className="flex gap-4 items-center pl-1"
+                >
+                  <div className="w-8 h-8 rounded-full overflow-hidden border border-muted opacity-50 animate-pulse">
+                    <img src={uuonLogo} alt="UUON" className="w-full h-full object-cover" />
                   </div>
-                )}
-              </motion.div>
-            ))}
-            
-            {isTyping && (
-              <motion.div 
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                className="flex gap-4 items-center pl-1"
-              >
-                <div className="w-8 h-8 rounded-full overflow-hidden border border-muted opacity-50 animate-pulse">
-                   <img src={uuonLogo} alt="UUON" className="w-full h-full object-cover" />
-                </div>
-                <div className="flex gap-1">
-                  <div className="w-1.5 h-1.5 bg-primary rounded-full animate-bounce [animation-delay:-0.3s]"></div>
-                  <div className="w-1.5 h-1.5 bg-primary rounded-full animate-bounce [animation-delay:-0.15s]"></div>
-                  <div className="w-1.5 h-1.5 bg-primary rounded-full animate-bounce"></div>
-                </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </div>
+                  <div className="flex gap-1">
+                    <div className="w-1.5 h-1.5 bg-primary rounded-full animate-bounce [animation-delay:-0.3s]"></div>
+                    <div className="w-1.5 h-1.5 bg-primary rounded-full animate-bounce [animation-delay:-0.15s]"></div>
+                    <div className="w-1.5 h-1.5 bg-primary rounded-full animate-bounce"></div>
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+        )}
 
         {/* Input Area */}
         <div className="p-4 md:p-6 bg-card border-t border-border z-10">
@@ -344,7 +448,9 @@ export default function ClouudTerminal() {
               value={input}
               onChange={(e) => setInput(e.target.value)}
               placeholder="Inquire the Lattice..."
-              className="w-full bg-background border border-border text-white pl-10 pr-24 py-4 focus:outline-none focus:border-primary transition-all rounded-sm text-base font-sans placeholder:text-muted-foreground sharp-shadow focus:sharp-shadow-gold"
+              disabled={isTyping}
+              className="w-full bg-background border border-border text-white pl-10 pr-24 py-4 focus:outline-none focus:border-primary transition-all rounded-sm text-base font-sans placeholder:text-muted-foreground disabled:opacity-50"
+              style={{ boxShadow: '4px 4px 0px 0px var(--color-border)' }}
               data-testid="input-clouud"
             />
             <button 
@@ -353,7 +459,7 @@ export default function ClouudTerminal() {
               className="absolute right-3 px-4 py-2 bg-primary hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed text-black font-display text-sm tracking-wider font-bold uppercase rounded-sm transition-colors"
               data-testid="button-submit"
             >
-              Execute
+              {isTyping ? <Loader2 className="w-4 h-4 animate-spin" /> : "Execute"}
             </button>
           </form>
           <div className="text-center mt-4 font-mono text-[9px] text-muted-foreground tracking-widest uppercase flex items-center justify-center gap-4">
