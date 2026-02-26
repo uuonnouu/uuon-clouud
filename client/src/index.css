@@ -8,27 +8,27 @@
   --font-sans: 'DM Sans', sans-serif;
   --font-mono: 'JetBrains Mono', monospace;
   
-  /* Earth Neutral Palette - Lifted & Light */
-  --color-background: #f5f2eb; /* Bone / Sand */
-  --color-foreground: #2a332f; /* Deep Sage / Forest */
+  /* UUON Foundation Palette - The "Matrix Meets the Earth" */
+  --color-background: #030811; /* Deep Space/Ocean Navy */
+  --color-foreground: #e0e6ed; /* Starlight White */
   
-  --color-primary: #cd5c41; /* Terracotta / Earth Red */
-  --color-primary-foreground: #ffffff;
+  --color-primary: #f0b93b; /* UUON Gold */
+  --color-primary-foreground: #000000;
   
-  --color-secondary: #7b947b; /* Muted Sage */
+  --color-secondary: #4a8cd4; /* Atmosphere Blue */
   --color-secondary-foreground: #ffffff;
   
-  --color-accent: #c4a75c; /* Muted Gold / Wheat */
-  --color-accent-foreground: #1a221f;
+  --color-accent: #193655; /* Mid-Atmosphere */
+  --color-accent-foreground: #ffffff;
 
-  --color-muted: #e8e4db; /* Light Sand */
-  --color-muted-foreground: #66756d; /* Mid Sage */
+  --color-muted: #0a1324; /* Void Navy */
+  --color-muted-foreground: #6783a3; /* Muted Star */
 
-  --color-border: #dcd6cb; /* Shadow Sand */
-  --color-input: #ebe7de;
+  --color-border: #142a45; /* Deep Atmosphere Border */
+  --color-input: #08111f;
   
-  --color-card: #fdfcf9; /* Off White */
-  --color-card-border: #dcd6cb;
+  --color-card: #050b16; /* Near Void */
+  --color-card-border: #142a45;
 }
 
 @layer base {
@@ -41,7 +41,7 @@
   }
   
   h1, h2, h3, h4, h5, h6 {
-    @apply font-display tracking-tight text-foreground;
+    @apply font-display tracking-tight text-white;
   }
 }
 
@@ -55,17 +55,29 @@
     transform: translate(2px, 2px);
   }
   
-  .lattice-grid-light {
-    background-image: 
-      linear-gradient(to right, rgba(123, 148, 123, 0.15) 1px, transparent 1px),
-      linear-gradient(to bottom, rgba(123, 148, 123, 0.15) 1px, transparent 1px);
-    background-size: 24px 24px;
+  .sharp-shadow-gold {
+    box-shadow: 4px 4px 0px 0px rgba(240, 185, 59, 0.2);
   }
   
-  .matrix-rain-subtle {
+  .lattice-grid-deep {
+    background-image: 
+      linear-gradient(to right, rgba(74, 140, 212, 0.05) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(74, 140, 212, 0.05) 1px, transparent 1px);
+    background-size: 33px 33px;
+  }
+  
+  .uuon-glow {
+    text-shadow: 0 0 15px rgba(240, 185, 59, 0.4);
+  }
+  
+  .earth-glow {
+    box-shadow: 0 0 40px rgba(74, 140, 212, 0.15), inset 0 0 20px rgba(74, 140, 212, 0.3);
+  }
+  
+  .matrix-rain-deep {
     background: repeating-linear-gradient(180deg, 
-      rgba(123, 148, 123, 0.05) 0px, 
-      rgba(123, 148, 123, 0.05) 1px, 
+      rgba(74, 140, 212, 0.03) 0px, 
+      rgba(74, 140, 212, 0.03) 1px, 
       transparent 1px, 
       transparent 4px);
   }
