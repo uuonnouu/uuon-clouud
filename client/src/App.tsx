@@ -10,13 +10,11 @@ import LegalPage from "@/pages/legal";
 
 function Router() {
   return (
-    <SecurityGate>
-      <Switch>
-        <Route path="/" component={ClouudTerminal} />
-        <Route path="/legal" component={LegalPage} />
-        <Route component={NotFound} />
-      </Switch>
-    </SecurityGate>
+    <Switch>
+      <Route path="/" component={ClouudTerminal} />
+      <Route path="/legal" component={LegalPage} />
+      <Route component={NotFound} />
+    </Switch>
   );
 }
 
