@@ -4,30 +4,31 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
-  --font-display: 'Bebas Neue', sans-serif;
-  --font-mono: 'Share Tech Mono', monospace;
-  --font-serif: 'Crimson Pro', serif;
+  --font-display: 'Space Grotesk', sans-serif;
+  --font-sans: 'DM Sans', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
   
-  --color-background: #030507;
-  --color-foreground: #aaaaaa;
+  /* Earth Neutral Palette - Lifted & Light */
+  --color-background: #f5f2eb; /* Bone / Sand */
+  --color-foreground: #2a332f; /* Deep Sage / Forest */
   
-  --color-primary: #dc1e1e;
+  --color-primary: #cd5c41; /* Terracotta / Earth Red */
   --color-primary-foreground: #ffffff;
   
-  --color-secondary: #2d8a2d;
+  --color-secondary: #7b947b; /* Muted Sage */
   --color-secondary-foreground: #ffffff;
   
-  --color-accent: #c8a84b;
-  --color-accent-foreground: #000000;
+  --color-accent: #c4a75c; /* Muted Gold / Wheat */
+  --color-accent-foreground: #1a221f;
 
-  --color-muted: #111111;
-  --color-muted-foreground: #777777;
+  --color-muted: #e8e4db; /* Light Sand */
+  --color-muted-foreground: #66756d; /* Mid Sage */
 
-  --color-border: #0d0d0d;
-  --color-input: #0a1a2a;
+  --color-border: #dcd6cb; /* Shadow Sand */
+  --color-input: #ebe7de;
   
-  --color-card: #020508;
-  --color-card-border: #0a1a2a;
+  --color-card: #fdfcf9; /* Off White */
+  --color-card-border: #dcd6cb;
 }
 
 @layer base {
@@ -35,56 +36,53 @@
     @apply border-border;
   }
   body {
-    @apply font-serif antialiased bg-background text-foreground selection:bg-primary/30 selection:text-white;
+    @apply font-sans antialiased bg-background text-foreground selection:bg-primary/20 selection:text-primary;
     overflow-x: hidden;
   }
   
   h1, h2, h3, h4, h5, h6 {
-    @apply font-display text-white tracking-widest uppercase;
+    @apply font-display tracking-tight text-foreground;
   }
 }
 
 @layer utilities {
-  .chi-glow {
-    text-shadow: 0 0 20px rgba(220, 30, 30, 0.4);
+  .sharp-shadow {
+    box-shadow: 4px 4px 0px 0px var(--color-border);
   }
   
-  .lattice-grid {
+  .sharp-shadow-active {
+    box-shadow: 2px 2px 0px 0px var(--color-border);
+    transform: translate(2px, 2px);
+  }
+  
+  .lattice-grid-light {
     background-image: 
-      linear-gradient(to right, rgba(45, 138, 45, 0.05) 1px, transparent 1px),
-      linear-gradient(to bottom, rgba(45, 138, 45, 0.05) 1px, transparent 1px);
-    background-size: 40px 40px;
+      linear-gradient(to right, rgba(123, 148, 123, 0.15) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(123, 148, 123, 0.15) 1px, transparent 1px);
+    background-size: 24px 24px;
   }
   
-  .terminal-box {
-    @apply bg-[#020508] border border-[#0a1a2a] rounded-sm p-4 font-mono text-sm;
+  .matrix-rain-subtle {
+    background: repeating-linear-gradient(180deg, 
+      rgba(123, 148, 123, 0.05) 0px, 
+      rgba(123, 148, 123, 0.05) 1px, 
+      transparent 1px, 
+      transparent 4px);
   }
   
-  .panel-border {
-    position: relative;
-  }
-  
-  .panel-border::before {
-    content: '';
-    position: absolute;
-    top: 0; left: 0; right: 0;
-    height: 1px;
-    background: linear-gradient(90deg, var(--color-primary), var(--color-secondary), transparent);
-  }
-  
-  /* Scrollbar styling for terminal feel */
+  /* Modern Webkit Scrollbar */
   ::-webkit-scrollbar {
-    width: 6px;
-    height: 6px;
+    width: 4px;
+    height: 4px;
   }
   ::-webkit-scrollbar-track {
-    background: #030507; 
+    background: var(--color-background); 
   }
   ::-webkit-scrollbar-thumb {
-    background: #111; 
+    background: var(--color-border); 
     border-radius: 0px;
   }
   ::-webkit-scrollbar-thumb:hover {
-    background: #222; 
+    background: var(--color-secondary); 
   }
 }
