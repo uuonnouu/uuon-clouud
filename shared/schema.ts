@@ -77,6 +77,32 @@ export const selfAssessments = pgTable("self_assessments", {
   createdAt: timestamp("created_at").default(sql`CURRENT_TIMESTAMP`).notNull(),
 });
 
+export const uinverseImports = pgTable("uinverse_imports", {
+  id: serial("id").primaryKey(),
+  source: text("source").notNull(),
+  filename: text("filename"),
+  rawContent: text("raw_content").notNull(),
+  messageCount: integer("message_count").notNull().default(0),
+  ideasExtracted: integer("ideas_extracted").notNull().default(0),
+  status: text("status").notNull().default("pending"),
+  createdAt: timestamp("created_at").default(sql`CURRENT_TIMESTAMP`).notNull(),
+});
+
+export const uinverseIdeas = pgTable("uinverse_ideas", {
+  id: serial("id").primaryKey(),
+  importId: integer("import_id").notNull().references(() => uinverseImports.id, { onDelete: "cascade" }),
+  title: text("title").notNull(),
+  description: text("description").notNull(),
+  category: text("category").notNull(),
+  verdict: text("verdict").notNull(),
+  confidence: integer("confidence").notNull(),
+  reasoning: text("reasoning").notNull(),
+  sourceExcerpt: text("source_excerpt").notNull(),
+  priority: text("priority").notNull().default("MEDIUM"),
+  implemented: boolean("implemented").notNull().default(false),
+  createdAt: timestamp("created_at").default(sql`CURRENT_TIMESTAMP`).notNull(),
+});
+
 export const insertConversationSchema = createInsertSchema(conversations).omit({
   id: true,
   createdAt: true,
@@ -103,3 +129,5 @@ export type Fingerprint = typeof fingerprints.$inferSelect;
 export type AccessLogEntry = typeof accessLog.$inferSelect;
 export type Upload = typeof uploads.$inferSelect;
 export type SelfAssessment = typeof selfAssessments.$inferSelect;
+export type UinverseImport = typeof uinverseImports.$inferSelect;
+export type UinverseIdea = typeof uinverseIdeas.$inferSelect;

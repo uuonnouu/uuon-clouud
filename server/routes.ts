@@ -713,5 +713,286 @@ export async function registerRoutes(
 
   app.post("/api/scrape", scrapeUrl);
 
+  app.get("/api/uinverse/summary", async (_req: Request, res: Response) => {
+    try {
+      const summary = await storage.getUinverseSummary();
+      res.json(summary);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch UInVerse summary" });
+    }
+  });
+
+  app.get("/api/uinverse/imports", async (_req: Request, res: Response) => {
+    try {
+      const imports = await storage.getUinverseImports();
+      res.json(imports);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch imports" });
+    }
+  });
+
+  app.get("/api/uinverse/ideas", async (req: Request, res: Response) => {
+    try {
+      const importId = req.query.importId ? parseInt(req.query.importId as string) : undefined;
+      const ideas = await storage.getUinverseIdeas(importId);
+      res.json(ideas);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch ideas" });
+    }
+  });
+
+  app.patch("/api/uinverse/ideas/:id", async (req: Request, res: Response) => {
+    try {
+      const id = parseInt(req.params.id as string);
+      const { implemented } = req.body;
+      await storage.updateIdeaStatus(id, implemented);
+      res.json({ success: true });
+    } catch (error) {
+      res.status(500).json({ error: "Failed to update idea" });
+    }
+  });
+
+  app.post("/api/uinverse/ingest", async (req: Request, res: Response) => {
+    try {
+      const { content, source, filename } = req.body;
+      if (!content || !source) {
+        return res.status(400).json({ error: "Content and source are required" });
+      }
+
+      const chatMessages = parseImportedChat(content, source);
+      const imp = await storage.createUinverseImport({
+        source,
+        filename: filename || null,
+        rawContent: content.slice(0, 500000),
+        messageCount: chatMessages.length,
+      });
+
+      res.json({ importId: imp.id, messageCount: chatMessages.length, status: "analyzing" });
+
+      analyzeIdeasInBackground(imp.id, chatMessages, source);
+    } catch (error) {
+      console.error("UInVerse ingest error:", error);
+      res.status(500).json({ error: "Failed to ingest chat history" });
+    }
+  });
+
+  app.get("/api/uinverse/imports/:id", async (req: Request, res: Response) => {
+    try {
+      const id = parseInt(req.params.id as string);
+      const imp = await storage.getUinverseImport(id);
+      if (!imp) return res.status(404).json({ error: "Import not found" });
+      const ideas = await storage.getUinverseIdeas(id);
+      res.json({ ...imp, ideas });
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch import details" });
+    }
+  });
+
   return httpServer;
+}
+
+function parseImportedChat(content: string, source: string): Array<{ role: string; content: string }> {
+  const messages: Array<{ role: string; content: string }> = [];
+
+  if (source === "chatgpt") {
+    try {
+      const parsed = JSON.parse(content);
+      if (Array.isArray(parsed)) {
+        for (const conv of parsed) {
+          const mapping = conv.mapping || {};
+          for (const key of Object.keys(mapping)) {
+            const node = mapping[key];
+            if (node?.message?.content?.parts) {
+              const text = node.message.content.parts.join("\n").trim();
+              if (text) {
+                messages.push({
+                  role: node.message.author?.role === "assistant" ? "assistant" : "user",
+                  content: text,
+                });
+              }
+            }
+          }
+        }
+      }
+    } catch {
+      const lines = content.split("\n");
+      let currentRole = "user";
+      let currentContent = "";
+      for (const line of lines) {
+        if (line.match(/^(You|User|Human):/i)) {
+          if (currentContent.trim()) messages.push({ role: currentRole, content: currentContent.trim() });
+          currentRole = "user";
+          currentContent = line.replace(/^(You|User|Human):\s*/i, "");
+        } else if (line.match(/^(ChatGPT|Assistant|GPT|AI):/i)) {
+          if (currentContent.trim()) messages.push({ role: currentRole, content: currentContent.trim() });
+          currentRole = "assistant";
+          currentContent = line.replace(/^(ChatGPT|Assistant|GPT|AI):\s*/i, "");
+        } else {
+          currentContent += "\n" + line;
+        }
+      }
+      if (currentContent.trim()) messages.push({ role: currentRole, content: currentContent.trim() });
+    }
+  } else if (source === "claude") {
+    try {
+      const parsed = JSON.parse(content);
+      if (Array.isArray(parsed)) {
+        for (const item of parsed) {
+          if (item.chat_messages) {
+            for (const msg of item.chat_messages) {
+              const text = Array.isArray(msg.text) ? msg.text.join("\n") : (msg.text || "");
+              if (text.trim()) {
+                messages.push({
+                  role: msg.sender === "human" ? "user" : "assistant",
+                  content: text.trim(),
+                });
+              }
+            }
+          }
+        }
+      }
+    } catch {
+      const lines = content.split("\n");
+      let currentRole = "user";
+      let currentContent = "";
+      for (const line of lines) {
+        if (line.match(/^(You|Human|H):/i)) {
+          if (currentContent.trim()) messages.push({ role: currentRole, content: currentContent.trim() });
+          currentRole = "user";
+          currentContent = line.replace(/^(You|Human|H):\s*/i, "");
+        } else if (line.match(/^(Claude|Assistant|A):/i)) {
+          if (currentContent.trim()) messages.push({ role: currentRole, content: currentContent.trim() });
+          currentRole = "assistant";
+          currentContent = line.replace(/^(Claude|Assistant|A):\s*/i, "");
+        } else {
+          currentContent += "\n" + line;
+        }
+      }
+      if (currentContent.trim()) messages.push({ role: currentRole, content: currentContent.trim() });
+    }
+  } else {
+    const lines = content.split("\n");
+    let currentContent = "";
+    let currentRole = "user";
+    for (const line of lines) {
+      if (line.match(/^(You|User|Human):/i)) {
+        if (currentContent.trim()) messages.push({ role: currentRole, content: currentContent.trim() });
+        currentRole = "user";
+        currentContent = line.replace(/^(You|User|Human):\s*/i, "");
+      } else if (line.match(/^(Assistant|AI|Bot|Claude|ChatGPT|GPT):/i)) {
+        if (currentContent.trim()) messages.push({ role: currentRole, content: currentContent.trim() });
+        currentRole = "assistant";
+        currentContent = line.replace(/^(Assistant|AI|Bot|Claude|ChatGPT|GPT):\s*/i, "");
+      } else {
+        currentContent += "\n" + line;
+      }
+    }
+    if (currentContent.trim()) messages.push({ role: currentRole, content: currentContent.trim() });
+  }
+
+  return messages;
+}
+
+async function analyzeIdeasInBackground(importId: number, chatMessages: Array<{ role: string; content: string }>, source: string) {
+  try {
+    const anthropic = new Anthropic();
+
+    const userMessages = chatMessages
+      .filter(m => m.role === "user")
+      .map(m => m.content)
+      .filter(c => c.length > 30);
+
+    const chunks: string[][] = [];
+    let currentChunk: string[] = [];
+    let currentLength = 0;
+    for (const msg of userMessages) {
+      if (currentLength + msg.length > 15000 && currentChunk.length > 0) {
+        chunks.push(currentChunk);
+        currentChunk = [];
+        currentLength = 0;
+      }
+      currentChunk.push(msg);
+      currentLength += msg.length;
+    }
+    if (currentChunk.length > 0) chunks.push(currentChunk);
+
+    let totalIdeas = 0;
+
+    for (const chunk of chunks) {
+      const chunkText = chunk.map((m, i) => `[MSG ${i + 1}] ${m}`).join("\n\n---\n\n");
+
+      const response = await anthropic.messages.create({
+        model: "claude-sonnet-4-6",
+        max_tokens: 4096,
+        temperature: 0.1,
+        system: `You are UInVerse, the idea extraction engine for UUON Foundation Inc., founded by Philip Aguilar Ruiz III.
+
+You analyze chat histories from other AI systems to find ideas that should become functional tools in the UUON Clouud system.
+
+UUON Clouud is a private AI chat system with these existing capabilities:
+- G-centric Lattice (33-point rational math system, Earth as zero-point)
+- Ellomental Hash (12-tetrahedron provenance system)
+- Self-Assessment (response quality scoring)
+- UUON Shape Tokens (provenance tokens per message)
+- File upload, link scraping, voice input
+- Anti-waste, anti-fraud, anti-gatekeeping mission
+
+For each idea you find, classify it:
+- CATEGORY: one of TOOL, FEATURE, CONCEPT, ARCHITECTURE, INTEGRATION, VISUALIZATION
+- VERDICT: BUILD (should be built into the system), CONSIDER (worth exploring but not urgent), SKIP (interesting but not aligned with mission)
+- CONFIDENCE: 0-100 (how confident you are this idea is real and actionable)
+- PRIORITY: CRITICAL, HIGH, MEDIUM, LOW
+
+Only extract ideas that Philip himself expressed or explored. Do not invent ideas that are not present in the text.
+
+Respond with a JSON array of idea objects. Each object must have: title, description, category, verdict, confidence, reasoning, sourceExcerpt, priority.
+
+If no ideas are found, respond with an empty array [].`,
+        messages: [
+          {
+            role: "user",
+            content: `Analyze this ${source} chat history from Philip and extract functional ideas for the UUON Clouud system:\n\n${chunkText}`,
+          },
+        ],
+      });
+
+      const responseText = response.content[0].type === "text" ? response.content[0].text : "";
+
+      try {
+        const jsonMatch = responseText.match(/\[[\s\S]*\]/);
+        if (jsonMatch) {
+          const ideas = JSON.parse(jsonMatch[0]);
+          for (const idea of ideas) {
+            await storage.createUinverseIdea({
+              importId,
+              title: idea.title || "Untitled Idea",
+              description: idea.description || "",
+              category: idea.category || "CONCEPT",
+              verdict: idea.verdict || "CONSIDER",
+              confidence: idea.confidence || 50,
+              reasoning: idea.reasoning || "",
+              sourceExcerpt: (idea.sourceExcerpt || "").slice(0, 2000),
+              priority: idea.priority || "MEDIUM",
+            });
+            totalIdeas++;
+          }
+        }
+      } catch (parseErr) {
+        console.error("UInVerse parse error for chunk:", parseErr);
+      }
+    }
+
+    await storage.updateUinverseImport(importId, {
+      status: "complete",
+      ideasExtracted: totalIdeas,
+    });
+
+    console.log(`UInVerse: Analyzed import ${importId}, extracted ${totalIdeas} ideas from ${source}`);
+  } catch (error) {
+    console.error("UInVerse analysis error:", error);
+    await storage.updateUinverseImport(importId, {
+      status: "error",
+      ideasExtracted: 0,
+    });
+  }
 }

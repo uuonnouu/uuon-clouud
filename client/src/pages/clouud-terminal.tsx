@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import { Cpu, Binary, Menu, X, Globe, Zap, Network, ChevronRight, Plus, Trash2, MessageCircle, Loader2, Activity, HelpCircle, Undo2, Scale, Paperclip, Link2, Mic, MicOff } from "lucide-react";
+import { Cpu, Binary, Menu, X, Globe, Zap, Network, ChevronRight, Plus, Trash2, MessageCircle, Loader2, Activity, HelpCircle, Undo2, Scale, Paperclip, Link2, Mic, MicOff, Brain } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useLocation } from "wouter";
 import ClouudAvatar from "@/components/clouud-avatar";
@@ -354,7 +354,7 @@ export default function ClouudTerminal() {
         }
       }
       setInput(prev => {
-        const base = prev.replace(/\[listening\.\.\.\].*$/s, "").trimEnd();
+        const base = prev.replace(/\[listening\.\.\.\][\s\S]*$/, "").trimEnd();
         const voiceText = (finalTranscript + interim).trim();
         return base ? `${base} ${voiceText}` : voiceText;
       });
@@ -534,6 +534,14 @@ export default function ClouudTerminal() {
                 >
                   <HelpCircle className="w-3.5 h-3.5 shrink-0" />
                   Interactive Tutorial
+                </button>
+                <button
+                  onClick={() => setLocation("/uinverse")}
+                  className="w-full flex items-center gap-2 px-2 py-2 text-[11px] text-[#f0b93b] hover:text-white bg-[#f0b93b]/5 hover:bg-[#f0b93b]/15 border border-[#f0b93b]/20 hover:border-[#f0b93b]/40 rounded-sm transition-all"
+                  data-testid="button-uinverse"
+                >
+                  <Brain className="w-3.5 h-3.5 shrink-0" />
+                  UInVerse · Idea Engine
                 </button>
                 <button
                   onClick={() => setLocation("/legal")}

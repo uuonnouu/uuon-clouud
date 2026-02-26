@@ -6,11 +6,13 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import NotFound from "@/pages/not-found";
 import ClouudTerminal from "@/pages/clouud-terminal";
 import LegalPage from "@/pages/legal";
+import UInVerse from "@/pages/uinverse";
 
 function Router() {
   return (
     <Switch>
       <Route path="/" component={ClouudTerminal} />
+      <Route path="/uinverse" component={UInVerse} />
       <Route path="/legal" component={LegalPage} />
       <Route component={NotFound} />
     </Switch>

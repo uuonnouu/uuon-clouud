@@ -1,6 +1,6 @@
 import { db } from "./db";
-import { conversations, messages, uuonTokens, creatorProfile, fingerprints, accessLog, uploads, selfAssessments } from "@shared/schema";
-import type { Conversation, InsertConversation, Message, InsertMessage, UuonToken, InsertUuonToken, CreatorProfileEntry, Fingerprint, AccessLogEntry, Upload, SelfAssessment } from "@shared/schema";
+import { conversations, messages, uuonTokens, creatorProfile, fingerprints, accessLog, uploads, selfAssessments, uinverseImports, uinverseIdeas } from "@shared/schema";
+import type { Conversation, InsertConversation, Message, InsertMessage, UuonToken, InsertUuonToken, CreatorProfileEntry, Fingerprint, AccessLogEntry, Upload, SelfAssessment, UinverseImport, UinverseIdea } from "@shared/schema";
 import { eq, desc, and, gte, count, sql, avg } from "drizzle-orm";
 
 export interface IStorage {
@@ -30,6 +30,14 @@ export interface IStorage {
   getUploadsByConversation(conversationId: number): Promise<Upload[]>;
   saveSelfAssessment(data: { messageId: number; conversationId: number; score: number; wordCount: number; pass: boolean; flags: string }): Promise<SelfAssessment>;
   getSelfAssessmentReport(): Promise<{ avgScore: number; totalAssessments: number; totalFlags: number; recentFlags: string[]; scoreHistory: number[]; gapAnalysis: { category: string; count: number; severity: string }[] }>;
+  createUinverseImport(data: { source: string; filename?: string; rawContent: string; messageCount: number }): Promise<UinverseImport>;
+  updateUinverseImport(id: number, data: { status: string; ideasExtracted: number }): Promise<void>;
+  getUinverseImports(): Promise<UinverseImport[]>;
+  getUinverseImport(id: number): Promise<UinverseImport | undefined>;
+  createUinverseIdea(data: { importId: number; title: string; description: string; category: string; verdict: string; confidence: number; reasoning: string; sourceExcerpt: string; priority: string }): Promise<UinverseIdea>;
+  getUinverseIdeas(importId?: number): Promise<UinverseIdea[]>;
+  updateIdeaStatus(id: number, implemented: boolean): Promise<void>;
+  getUinverseSummary(): Promise<{ totalImports: number; totalIdeas: number; buildCount: number; considerCount: number; skipCount: number; implementedCount: number }>;
 }
 
 class DatabaseStorage implements IStorage {
@@ -224,6 +232,53 @@ class DatabaseStorage implements IStorage {
       recentFlags: recentFlagsSet.slice(0, 10),
       scoreHistory,
       gapAnalysis,
+    };
+  }
+
+  async createUinverseImport(data: { source: string; filename?: string; rawContent: string; messageCount: number }): Promise<UinverseImport> {
+    const [imp] = await db.insert(uinverseImports).values(data).returning();
+    return imp;
+  }
+
+  async updateUinverseImport(id: number, data: { status: string; ideasExtracted: number }): Promise<void> {
+    await db.update(uinverseImports).set(data).where(eq(uinverseImports.id, id));
+  }
+
+  async getUinverseImports(): Promise<UinverseImport[]> {
+    return db.select().from(uinverseImports).orderBy(desc(uinverseImports.createdAt));
+  }
+
+  async getUinverseImport(id: number): Promise<UinverseImport | undefined> {
+    const [imp] = await db.select().from(uinverseImports).where(eq(uinverseImports.id, id));
+    return imp;
+  }
+
+  async createUinverseIdea(data: { importId: number; title: string; description: string; category: string; verdict: string; confidence: number; reasoning: string; sourceExcerpt: string; priority: string }): Promise<UinverseIdea> {
+    const [idea] = await db.insert(uinverseIdeas).values(data).returning();
+    return idea;
+  }
+
+  async getUinverseIdeas(importId?: number): Promise<UinverseIdea[]> {
+    if (importId) {
+      return db.select().from(uinverseIdeas).where(eq(uinverseIdeas.importId, importId)).orderBy(desc(uinverseIdeas.confidence));
+    }
+    return db.select().from(uinverseIdeas).orderBy(desc(uinverseIdeas.confidence));
+  }
+
+  async updateIdeaStatus(id: number, implemented: boolean): Promise<void> {
+    await db.update(uinverseIdeas).set({ implemented }).where(eq(uinverseIdeas.id, id));
+  }
+
+  async getUinverseSummary(): Promise<{ totalImports: number; totalIdeas: number; buildCount: number; considerCount: number; skipCount: number; implementedCount: number }> {
+    const allIdeas = await db.select().from(uinverseIdeas);
+    const imports = await db.select({ value: count() }).from(uinverseImports);
+    return {
+      totalImports: imports[0]?.value ?? 0,
+      totalIdeas: allIdeas.length,
+      buildCount: allIdeas.filter(i => i.verdict === "BUILD").length,
+      considerCount: allIdeas.filter(i => i.verdict === "CONSIDER").length,
+      skipCount: allIdeas.filter(i => i.verdict === "SKIP").length,
+      implementedCount: allIdeas.filter(i => i.implemented).length,
     };
   }
 }

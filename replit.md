@@ -73,6 +73,16 @@ UUON Clouud is the intelligence interface for the G°centric Lattice System, bui
     - UI: Per-message SA score shown inline below UUON token (green/gold/red color-coded); SYS bar shows live SA score; expanded metrics panel shows full Self-Assessment section with gap analysis cards, severity badges (CRITICAL/HIGH/MODERATE/LOW), recent flags list
     - System prompt includes self-assessment awareness — Clouud knows it's being scored and aims for 100
 
+23. **UInVerse — Idea Extraction Engine:** Functional tool at `/uinverse` for ingesting ChatGPT and Claude chat histories. Clouud analyzes the conversations to extract actionable ideas for the system.
+    - Accepts: ChatGPT JSON export (`conversations.json`), Claude JSON export, or plain text paste
+    - Parser: Handles both structured JSON formats and plain text conversation patterns
+    - Analysis: Claude (`claude-sonnet-4-6`) processes user messages in 15k-char chunks, extracts ideas with title, description, category (TOOL/FEATURE/CONCEPT/ARCHITECTURE/INTEGRATION/VISUALIZATION), verdict (BUILD/CONSIDER/SKIP), confidence (0-100), priority (CRITICAL/HIGH/MEDIUM/LOW), reasoning, source excerpt
+    - Background processing: Ingestion returns immediately, analysis runs async
+    - DB tables: `uinverse_imports` (import metadata/status), `uinverse_ideas` (extracted ideas with verdict/category/priority)
+    - API: `POST /api/uinverse/ingest`, `GET /api/uinverse/imports`, `GET /api/uinverse/ideas`, `PATCH /api/uinverse/ideas/:id`, `GET /api/uinverse/summary`
+    - UI: Upload panel, import history with status tracking, filterable idea cards (by verdict and category), expandable detail view with reasoning and source excerpt, toggle implemented status
+    - Accessible from sidebar in main terminal ("UInVerse · Idea Engine" button)
+
 ## Design System
 - **Palette:** Deep Navy (#030811), UUON Gold (#f0b93b), Atmosphere Blue (#4a8cd4)
 - **Typography:** Space Grotesk (display), DM Sans (body), JetBrains Mono (code/data)
