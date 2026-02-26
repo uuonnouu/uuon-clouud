@@ -25,7 +25,7 @@ UUON Clouud is the intelligence interface for the G°centric Lattice System, bui
 - `shared/schema.ts` — Database schema
 
 ## Founder Info (verified)
-- Philip Aguilar Ruiz III, from Yuma AZ, grew up overseas, US Army veteran, resides in Kassel, Germany
+- Phillip Aguilar Ruiz III, from Yuma AZ, grew up overseas, US Army veteran, resides in Kassel, Germany
 - Created 180+ 3D mathematical models on Sketchfab
 - Built Δmension (Mathematical Universe) at uuon-foundation.com
 - UUON = Universally United One Neuma = WON = ONE
