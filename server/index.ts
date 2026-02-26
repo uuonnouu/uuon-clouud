@@ -5,6 +5,14 @@ import { createServer } from "http";
 import { securityGate } from "./security";
 import { startHydrationLoop } from "./hydration";
 
+process.on("uncaughtException", (err) => {
+  console.error("[PROCESS] Uncaught exception:", err);
+});
+
+process.on("unhandledRejection", (reason) => {
+  console.error("[PROCESS] Unhandled rejection:", reason);
+});
+
 const app = express();
 const httpServer = createServer(app);
 
