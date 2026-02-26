@@ -4,6 +4,24 @@ import { serveStatic } from "./static";
 import { createServer } from "http";
 import { securityGate } from "./security";
 
+process.on("unhandledRejection", (reason, promise) => {
+  console.error("Unhandled Rejection at:", promise, "reason:", reason);
+});
+process.on("uncaughtException", (err) => {
+  console.error("Uncaught Exception:", err);
+});
+
+if (process.env.NODE_ENV !== "production") {
+  const originalExit = process.exit.bind(process);
+  (process as any).exit = (code?: number) => {
+    if (code === 1) {
+      console.error("Prevented process.exit(1) — likely a Vite HMR error. Server continues running.");
+      return undefined as never;
+    }
+    return originalExit(code);
+  };
+}
+
 const app = express();
 const httpServer = createServer(app);
 

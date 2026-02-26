@@ -684,6 +684,15 @@ export async function registerRoutes(
         return res.json({ status: "OWNER_VERIFIED", hash, isOwner: true });
       }
 
+      const setup = await (await import("./auth")).isSetupComplete();
+      const setupComplete = setup.webauthn && setup.passphrase && setup.fingerprint;
+      if (!setupComplete) {
+        await storage.clearAllFingerprints();
+        const fp = await storage.registerFingerprint(hash, JSON.stringify(components), true);
+        await storage.logAccess(hash, "REGISTER_OWNER_RESET", true, req.ip, req.headers["user-agent"]);
+        return res.json({ status: "OWNER_REGISTERED", hash, isOwner: true });
+      }
+
       const existing = await storage.getFingerprint(hash);
       if (existing && existing.blocked) {
         return res.status(403).json({ status: "BLOCKED", hash });

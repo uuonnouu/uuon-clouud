@@ -22,6 +22,7 @@ export interface IStorage {
   getOwnerFingerprint(): Promise<Fingerprint | undefined>;
   registerFingerprint(hash: string, components: string, isOwner: boolean): Promise<Fingerprint>;
   updateFingerprintLastSeen(hash: string): Promise<void>;
+  clearAllFingerprints(): Promise<void>;
   blockFingerprint(hash: string): Promise<void>;
   logAccess(fingerprintHash: string, action: string, granted: boolean, ip?: string, userAgent?: string): Promise<void>;
   getAccessLog(limit?: number): Promise<AccessLogEntry[]>;
@@ -168,6 +169,10 @@ class DatabaseStorage implements IStorage {
     await db.update(fingerprints)
       .set({ lastSeen: sql`CURRENT_TIMESTAMP` })
       .where(eq(fingerprints.hash, hash));
+  }
+
+  async clearAllFingerprints(): Promise<void> {
+    await db.delete(fingerprints);
   }
 
   async blockFingerprint(hash: string): Promise<void> {
