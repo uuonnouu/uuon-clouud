@@ -47,6 +47,35 @@ function deriveLatticeAnchor(crystalId: string): number {
   return (Math.abs(hash) % 33) + 1;
 }
 
+function crystalToRecord(crystal: Crystal): Record<string, unknown> {
+  return {
+    key: CRYSTAL_KEY,
+    crystalId: crystal.crystalId,
+    firstContact: crystal.firstContact,
+    lastSession: crystal.lastSession,
+    sessionCount: crystal.sessionCount,
+    ownerVerified: crystal.ownerVerified,
+    introShown: crystal.introShown,
+    tier: crystal.tier,
+    latticeAnchor: crystal.latticeAnchor,
+    notes: crystal.notes,
+  };
+}
+
+function recordToCrystal(record: Record<string, unknown>): Crystal {
+  return {
+    crystalId: String(record.crystalId || ""),
+    firstContact: String(record.firstContact || ""),
+    lastSession: String(record.lastSession || ""),
+    sessionCount: Number(record.sessionCount || 0),
+    ownerVerified: Boolean(record.ownerVerified),
+    introShown: Boolean(record.introShown),
+    tier: (record.tier === "founder" ? "founder" : "user") as "founder" | "user",
+    latticeAnchor: Number(record.latticeAnchor || 1),
+    notes: String(record.notes || ""),
+  };
+}
+
 export async function plantCrystal(
   overrides: Partial<Crystal> = {}
 ): Promise<Crystal> {
@@ -55,22 +84,21 @@ export async function plantCrystal(
   const now = new Date().toISOString();
 
   const crystal: Crystal = {
-    crystalId:     id,
-    firstContact:  now,
-    lastSession:   now,
-    sessionCount:  1,
-    ownerVerified: false,
-    introShown:    false,
-    tier:          "user",
-    latticeAnchor: deriveLatticeAnchor(id),
-    notes:         "",
-    ...overrides,
+    crystalId:     overrides.crystalId || id,
+    firstContact:  overrides.firstContact || now,
+    lastSession:   overrides.lastSession || now,
+    sessionCount:  overrides.sessionCount || 1,
+    ownerVerified: overrides.ownerVerified || false,
+    introShown:    overrides.introShown || false,
+    tier:          overrides.tier || "user",
+    latticeAnchor: overrides.latticeAnchor || deriveLatticeAnchor(id),
+    notes:         overrides.notes || "",
   };
 
   return new Promise((resolve, reject) => {
     const tx      = db.transaction(CRYSTAL_STORE, "readwrite");
     const store   = tx.objectStore(CRYSTAL_STORE);
-    const request = store.put({ key: CRYSTAL_KEY, ...crystal });
+    const request = store.put(crystalToRecord(crystal));
 
     request.onsuccess = () => resolve(crystal);
     request.onerror   = () => reject(request.error);
@@ -88,7 +116,8 @@ export async function getCrystal(): Promise<Crystal | null> {
 
       request.onsuccess = () => {
         const result = request.result;
-        resolve(result ? { ...result, key: undefined } as Crystal : null);
+        if (!result) { resolve(null); return; }
+        resolve(recordToCrystal(result));
       };
       request.onerror = () => reject(request.error);
     });
@@ -107,16 +136,21 @@ export async function updateCrystal(
   const now = new Date().toISOString();
 
   const updated: Crystal = {
-    ...existing,
-    ...updates,
-    lastSession:  now,
-    sessionCount: existing.sessionCount + (updates.sessionCount ? 0 : 1),
+    crystalId:     updates.crystalId || existing.crystalId,
+    firstContact:  existing.firstContact,
+    lastSession:   now,
+    sessionCount:  existing.sessionCount + (updates.sessionCount ? 0 : 1),
+    ownerVerified: updates.ownerVerified !== undefined ? updates.ownerVerified : existing.ownerVerified,
+    introShown:    updates.introShown !== undefined ? updates.introShown : existing.introShown,
+    tier:          updates.tier || existing.tier,
+    latticeAnchor: updates.latticeAnchor || existing.latticeAnchor,
+    notes:         updates.notes !== undefined ? updates.notes : existing.notes,
   };
 
   return new Promise((resolve, reject) => {
     const tx      = db.transaction(CRYSTAL_STORE, "readwrite");
     const store   = tx.objectStore(CRYSTAL_STORE);
-    const request = store.put({ key: CRYSTAL_KEY, ...updated });
+    const request = store.put(crystalToRecord(updated));
 
     request.onsuccess = () => resolve(updated);
     request.onerror   = () => reject(request.error);

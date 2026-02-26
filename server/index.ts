@@ -34,29 +34,32 @@ app.use(express.urlencoded({ extended: false }));
 
 // app.use(securityGate);
 
-const recentRequests = new Map<string, number>();
-const WINDOW_MS      = 2000;
-const MAX_PER_WINDOW = 1;
+const recentConvoRequests = new Map<string, { count: number; windowStart: number }>();
+const CONVO_WINDOW_MS = 3000;
+const CONVO_MAX_PER_WINDOW = 3;
 
 app.use("/api/conversations", (req: Request, res: Response, next: NextFunction) => {
   if (req.method !== "GET") return next();
+  if (req.path !== "/" && req.path !== "") return next();
   const ip  = req.ip ?? "unknown";
   const now = Date.now();
-  const last = recentRequests.get(ip) ?? 0;
+  const entry = recentConvoRequests.get(ip);
 
-  if (now - last < WINDOW_MS) {
-    return res.status(429).json({
-      error:  "duplicate_tab",
-      message: "Crystal cache is current. No fetch needed.",
-      hint:   "Use crystal.lastSession to determine if refresh is needed.",
-    });
+  if (entry && now - entry.windowStart < CONVO_WINDOW_MS) {
+    entry.count++;
+    if (entry.count > CONVO_MAX_PER_WINDOW) {
+      return res.status(429).json({
+        error:  "duplicate_tab",
+        message: "Crystal cache is current. No fetch needed.",
+      });
+    }
+  } else {
+    recentConvoRequests.set(ip, { count: 1, windowStart: now });
   }
 
-  recentRequests.set(ip, now);
-
-  if (recentRequests.size > 100) {
-    for (const [key, time] of recentRequests) {
-      if (now - time > WINDOW_MS * 10) recentRequests.delete(key);
+  if (recentConvoRequests.size > 100) {
+    for (const [key, e] of recentConvoRequests) {
+      if (now - e.windowStart > CONVO_WINDOW_MS * 10) recentConvoRequests.delete(key);
     }
   }
 

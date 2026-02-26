@@ -89,7 +89,15 @@ export default function ClouudTerminal() {
   async function loadConversations() {
     try {
       const res = await fetch("/api/conversations");
+      if (!res.ok) {
+        setIsLoading(false);
+        return;
+      }
       const data = await res.json();
+      if (!Array.isArray(data)) {
+        setIsLoading(false);
+        return;
+      }
       setConversations(data);
       if (data.length > 0) {
         setActiveConvo(data[0].id);
@@ -104,7 +112,9 @@ export default function ClouudTerminal() {
   async function loadMessages(convoId: number) {
     try {
       const res = await fetch(`/api/conversations/${convoId}/messages`);
+      if (!res.ok) return;
       const data = await res.json();
+      if (!Array.isArray(data)) return;
       setMessages(data);
     } catch {
       setMessages([]);
