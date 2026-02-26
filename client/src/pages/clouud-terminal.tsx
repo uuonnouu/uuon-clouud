@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from "react";
-import { Cpu, Database, Binary, Menu, X, Globe, Zap, Network, ChevronRight, Plus, Trash2, MessageCircle, Loader2, Activity } from "lucide-react";
+import { Cpu, Database, Binary, Menu, X, Globe, Zap, Network, ChevronRight, Plus, Trash2, MessageCircle, Loader2, Activity, Settings } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import ClouudAvatarMini, { ClouudAvatar3D } from "@/components/clouud-avatar";
 import uuonLogo from "@assets/A7950814-2592-4E7D-858F-3AEB1D632F98_1772064571557.png";
 
 type Message = {
@@ -19,6 +20,8 @@ type Conversation = {
   createdAt: string;
 };
 
+type AiName = "Clouud" | "C";
+
 export default function ClouudTerminal() {
   const [input, setInput] = useState("");
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -27,6 +30,13 @@ export default function ClouudTerminal() {
   const [activeConvo, setActiveConvo] = useState<number | null>(null);
   const [isTyping, setIsTyping] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [aiName, setAiName] = useState<AiName>(() => {
+    if (typeof window !== "undefined") {
+      return (localStorage.getItem("clouud-name") as AiName) || "Clouud";
+    }
+    return "Clouud";
+  });
+  const [aiState, setAiState] = useState<"idle" | "thinking" | "speaking">("idle");
   const scrollRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -38,6 +48,10 @@ export default function ClouudTerminal() {
       scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
     }
   }, [messages, isTyping]);
+
+  useEffect(() => {
+    localStorage.setItem("clouud-name", aiName);
+  }, [aiName]);
 
   async function loadConversations() {
     try {
@@ -140,6 +154,7 @@ export default function ClouudTerminal() {
     const userInput = input;
     setInput("");
     setIsTyping(true);
+    setAiState("thinking");
 
     try {
       const res = await fetch(`/api/conversations/${convoId}/messages`, {
@@ -153,12 +168,15 @@ export default function ClouudTerminal() {
         throw new Error(err.error || "Failed to send message");
       }
 
+      setAiState("speaking");
       const data = await res.json();
       
       setMessages(prev => {
         const withoutTemp = prev.filter(m => m.id !== tempUserMsg.id);
         return [...withoutTemp, data.userMessage, data.assistantMessage];
       });
+
+      setTimeout(() => setAiState("idle"), 2000);
     } catch (err: any) {
       setMessages(prev => [
         ...prev,
@@ -172,6 +190,7 @@ export default function ClouudTerminal() {
           createdAt: new Date().toISOString(),
         }
       ]);
+      setAiState("idle");
     } finally {
       setIsTyping(false);
     }
@@ -180,11 +199,8 @@ export default function ClouudTerminal() {
   if (isLoading) {
     return (
       <div className="h-screen bg-background flex items-center justify-center">
-        <div className="flex flex-col items-center gap-4">
-          <div className="w-16 h-16 rounded-full overflow-hidden border-2 border-primary/50 shadow-[0_0_20px_rgba(240,185,59,0.3)]">
-            <img src={uuonLogo} alt="UUON" className="w-full h-full object-cover" />
-          </div>
-          <Loader2 className="w-5 h-5 text-primary animate-spin" />
+        <div className="flex flex-col items-center gap-6">
+          <ClouudAvatarMini state="thinking" size="md" />
           <span className="font-mono text-[10px] text-muted-foreground tracking-widest uppercase">Initializing Lattice...</span>
         </div>
       </div>
@@ -196,11 +212,9 @@ export default function ClouudTerminal() {
       
       {/* MOBILE HEADER */}
       <div className="md:hidden fixed top-0 left-0 right-0 h-14 bg-card/90 backdrop-blur-md border-b border-border z-50 flex items-center justify-between px-4">
-        <div className="flex items-center gap-2">
-          <div className="w-6 h-6 rounded-full overflow-hidden bg-primary/20">
-            <img src={uuonLogo} alt="UUON Logo" className="w-full h-full object-cover" />
-          </div>
-          <span className="text-white font-display text-lg font-bold tracking-widest" data-testid="text-app-name">UUON CLOUUD</span>
+        <div className="flex items-center gap-3">
+          <ClouudAvatarMini state={aiState} size="sm" />
+          <span className="text-white font-display text-lg font-bold tracking-widest" data-testid="text-app-name">UUON {aiName.toUpperCase()}</span>
         </div>
         <button 
           onClick={() => setIsSidebarOpen(!isSidebarOpen)}
@@ -218,17 +232,16 @@ export default function ClouudTerminal() {
             initial={false}
             className={`${isSidebarOpen ? 'fixed z-40' : 'hidden md:flex relative'} w-80 h-full bg-card border-r border-border shadow-2xl md:shadow-none flex-col top-0 pt-14 md:pt-0`}
           >
-            <div className="relative p-6 border-b border-border bg-muted overflow-hidden">
-              <div className="absolute inset-0 opacity-10 mix-blend-screen">
-                <img src={uuonLogo} alt="Earth Background" className="w-full h-full object-cover" />
+            {/* Sidebar Header with Logo */}
+            <div className="relative p-6 border-b border-border bg-gradient-to-b from-[#0a1a30] to-card overflow-hidden">
+              <div className="absolute inset-0 opacity-5">
+                <img src={uuonLogo} alt="" className="w-full h-full object-cover" />
               </div>
-              <div className="relative z-10 flex items-center gap-4 mb-2">
-                <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-primary/50 shadow-[0_0_15px_rgba(240,185,59,0.3)]">
-                  <img src={uuonLogo} alt="UUON Logo" className="w-full h-full object-cover" />
-                </div>
+              <div className="relative z-10 flex items-center gap-4">
+                <img src={uuonLogo} alt="UUON Foundation" className="w-10 h-10 rounded-full border border-primary/30 shadow-[0_0_15px_rgba(240,185,59,0.2)]" />
                 <div>
-                  <h1 className="font-display text-xl text-white font-bold leading-none tracking-widest">UUON CLOUUD</h1>
-                  <span className="font-mono text-[10px] text-primary uppercase tracking-widest">G°centric v1.0</span>
+                  <h1 className="font-display text-lg text-white font-bold leading-none tracking-widest">UUON CLOUUD</h1>
+                  <span className="font-mono text-[9px] text-primary uppercase tracking-widest">G°centric v1.0</span>
                 </div>
               </div>
             </div>
@@ -247,7 +260,8 @@ export default function ClouudTerminal() {
               </div>
 
               {/* Conversation List */}
-              <div className="p-4 space-y-2">
+              <div className="p-4 space-y-1">
+                <div className="font-mono text-[9px] text-muted-foreground tracking-widest uppercase mb-3 px-1">Sessions</div>
                 {conversations.map(convo => (
                   <div 
                     key={convo.id}
@@ -272,17 +286,49 @@ export default function ClouudTerminal() {
                 ))}
                 {conversations.length === 0 && (
                   <div className="text-center py-8 text-muted-foreground text-sm font-mono">
-                    No sessions yet.<br/>Start a new one.
+                    No sessions yet.
                   </div>
                 )}
               </div>
 
-              {/* System Status Collapsible */}
+              {/* Name Preference */}
               <div className="p-4 border-t border-border">
                 <details className="group">
                   <summary className="flex items-center justify-between cursor-pointer font-display uppercase text-xs font-bold tracking-wider text-white mb-3 list-none [&::-webkit-details-marker]:hidden">
                     <div className="flex items-center gap-2">
-                      <Activity className="w-3 h-3 text-primary" size={12} />
+                      <Settings className="w-3 h-3 text-primary" />
+                      Preferences
+                    </div>
+                    <ChevronRight className="w-3 h-3 transition-transform group-open:rotate-90 text-muted-foreground" />
+                  </summary>
+                  <div className="bg-background border border-border p-3 rounded-sm space-y-3">
+                    <div className="font-mono text-[10px] text-muted-foreground uppercase tracking-widest">Call me:</div>
+                    <div className="flex gap-2">
+                      {(["Clouud", "C"] as const).map(name => (
+                        <button
+                          key={name}
+                          onClick={() => setAiName(name)}
+                          className={`flex-1 py-2 font-display text-sm tracking-wider uppercase rounded-sm border transition-all ${
+                            aiName === name 
+                              ? "bg-primary text-black border-primary font-bold" 
+                              : "bg-transparent text-muted-foreground border-border hover:border-primary/50"
+                          }`}
+                          data-testid={`button-name-${name}`}
+                        >
+                          {name}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                </details>
+              </div>
+
+              {/* System Status */}
+              <div className="p-4 border-t border-border">
+                <details className="group">
+                  <summary className="flex items-center justify-between cursor-pointer font-display uppercase text-xs font-bold tracking-wider text-white mb-3 list-none [&::-webkit-details-marker]:hidden">
+                    <div className="flex items-center gap-2">
+                      <Activity className="w-3 h-3 text-secondary" />
                       System Status
                     </div>
                     <ChevronRight className="w-3 h-3 transition-transform group-open:rotate-90 text-muted-foreground" />
@@ -319,15 +365,17 @@ export default function ClouudTerminal() {
       {/* MAIN CHAT AREA */}
       <div className="flex-1 flex flex-col relative bg-background pt-14 md:pt-0">
         
-        {/* Empty State */}
+        {/* Empty State - Hero with 3D Avatar */}
         {messages.length === 0 && !isTyping && (
           <div className="flex-1 flex items-center justify-center p-8">
-            <div className="text-center max-w-md">
-              <div className="w-20 h-20 rounded-full overflow-hidden border-2 border-primary/30 shadow-[0_0_25px_rgba(240,185,59,0.15)] mx-auto mb-6">
-                <img src={uuonLogo} alt="UUON" className="w-full h-full object-cover" />
-              </div>
-              <h2 className="font-display text-2xl text-white tracking-widest mb-2">UUON CLOUUD</h2>
-              <p className="text-muted-foreground text-sm mb-6 font-mono">The Earth never rounds down.</p>
+            <div className="text-center max-w-lg">
+              <ClouudAvatar3D state={aiState} showLabel />
+              <h2 className="font-display text-3xl md:text-4xl text-white tracking-widest mt-6 mb-1">
+                {aiName === "C" ? "C" : "CLOUUD"}
+              </h2>
+              <p className="text-muted-foreground text-sm font-mono mb-1 tracking-widest uppercase">by UUON Foundation</p>
+              <p className="text-muted-foreground/60 text-xs font-mono mb-8">The Earth never rounds down.</p>
+              
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-left">
                 {[
                   { label: "What is position 21?", icon: <Globe className="w-4 h-4 text-primary" /> },
@@ -373,18 +421,17 @@ export default function ClouudTerminal() {
                   {msg.role === 'assistant' && (
                     <div className="max-w-[95%] md:max-w-[80%] flex gap-3 md:gap-4">
                       <div className="shrink-0 pt-1">
-                        <div className="w-8 h-8 rounded-full overflow-hidden border border-primary/50 shadow-[0_0_10px_rgba(240,185,59,0.2)]">
-                          <img src={uuonLogo} alt="UUON" className="w-full h-full object-cover" />
-                        </div>
+                        <ClouudAvatarMini state={msg.id === messages[messages.length - 1]?.id && aiState === "speaking" ? "speaking" : "idle"} size="sm" />
                       </div>
                       <div className="flex-1 space-y-3">
+                        <div className="font-mono text-[9px] text-primary tracking-widest uppercase mb-1">{aiName}</div>
                         
                         {/* Tool Call Intercept UI */}
                         {msg.toolCall && (() => {
                           try {
                             const tc = JSON.parse(msg.toolCall);
                             return (
-                              <div className="w-full bg-card border border-border p-3 rounded-sm" style={{ boxShadow: '4px 4px 0px 0px rgba(240,185,59,0.2)' }}>
+                              <div className="w-full bg-card border border-border p-3 rounded-sm" style={{ boxShadow: '4px 4px 0px 0px rgba(240,185,59,0.15)' }}>
                                 <div className="flex items-center gap-2 text-primary font-display text-xs tracking-widest mb-3 uppercase font-bold">
                                   <Cpu className="w-3 h-3" />
                                   Tool Call: chi_rho
@@ -425,13 +472,14 @@ export default function ClouudTerminal() {
                   animate={{ opacity: 1 }}
                   className="flex gap-4 items-center pl-1"
                 >
-                  <div className="w-8 h-8 rounded-full overflow-hidden border border-muted opacity-50 animate-pulse">
-                    <img src={uuonLogo} alt="UUON" className="w-full h-full object-cover" />
-                  </div>
-                  <div className="flex gap-1">
-                    <div className="w-1.5 h-1.5 bg-primary rounded-full animate-bounce [animation-delay:-0.3s]"></div>
-                    <div className="w-1.5 h-1.5 bg-primary rounded-full animate-bounce [animation-delay:-0.15s]"></div>
-                    <div className="w-1.5 h-1.5 bg-primary rounded-full animate-bounce"></div>
+                  <ClouudAvatarMini state="thinking" size="sm" />
+                  <div className="flex flex-col gap-1">
+                    <span className="font-mono text-[9px] text-primary tracking-widest uppercase">{aiName}</span>
+                    <div className="flex gap-1">
+                      <div className="w-1.5 h-1.5 bg-primary rounded-full animate-bounce [animation-delay:-0.3s]"></div>
+                      <div className="w-1.5 h-1.5 bg-primary rounded-full animate-bounce [animation-delay:-0.15s]"></div>
+                      <div className="w-1.5 h-1.5 bg-primary rounded-full animate-bounce"></div>
+                    </div>
                   </div>
                 </motion.div>
               )}
@@ -447,9 +495,9 @@ export default function ClouudTerminal() {
               type="text"
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              placeholder="Inquire the Lattice..."
+              placeholder={`Ask ${aiName}...`}
               disabled={isTyping}
-              className="w-full bg-background border border-border text-white pl-10 pr-24 py-4 focus:outline-none focus:border-primary transition-all rounded-sm text-base font-sans placeholder:text-muted-foreground disabled:opacity-50"
+              className="w-full bg-background border border-border text-white pl-10 pr-28 py-4 focus:outline-none focus:border-primary transition-all rounded-sm text-base font-sans placeholder:text-muted-foreground disabled:opacity-50"
               style={{ boxShadow: '4px 4px 0px 0px var(--color-border)' }}
               data-testid="input-clouud"
             />

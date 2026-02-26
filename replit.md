@@ -4,7 +4,7 @@
 UUON Clouud is the intelligence interface for the G°centric Lattice System, built by UUON Foundation Inc. (founded by Phillip Ruiz). It connects to Anthropic's Claude API with a strict system prompt that enforces the G°centric philosophy: Earth-grounded reasoning, zero drift, zero rounding.
 
 ## Architecture
-- **Frontend:** React + TypeScript + Tailwind CSS v4 + Framer Motion
+- **Frontend:** React + TypeScript + Tailwind CSS v4 + Framer Motion + Three.js/React Three Fiber
 - **Backend:** Express.js + TypeScript
 - **Database:** PostgreSQL via Drizzle ORM
 - **AI:** Anthropic Claude API via Replit AI Integrations (claude-sonnet-4-6)
@@ -12,6 +12,7 @@ UUON Clouud is the intelligence interface for the G°centric Lattice System, bui
 
 ## Key Files
 - `client/src/pages/clouud-terminal.tsx` — Main chat interface
+- `client/src/components/clouud-avatar.tsx` — 3D Clouud avatar (Three.js/R3F hero + CSS mini)
 - `server/routes.ts` — API routes with system prompt, tool use, output guard
 - `server/lattice.ts` — G°centric Lattice Engine (33-point, rational math)
 - `server/storage.ts` — Database operations (conversations, messages)
@@ -25,6 +26,8 @@ UUON Clouud is the intelligence interface for the G°centric Lattice System, bui
 4. **Output Guard:** Every response is checked for "drift phrases" before delivery
 5. **Provenance Hash:** Every AI response gets a SHA-256 hash with UUON Foundation metadata
 6. **Conversation History:** Persistent chat sessions stored in PostgreSQL
+7. **3D Clouud Avatar:** Reactive Three.js orb (hero view) with distortion mesh, orbital rings, and particle field. Lightweight CSS mini avatar for inline chat. State-driven animations: idle (gentle float), thinking (fast distort + gold glow), speaking (smooth pulse + blue glow)
+8. **Name Preference:** Users choose to call the AI "Clouud" or "C", persisted in localStorage
 
 ## Design System
 - **Palette:** Deep Navy (#030811), UUON Gold (#f0b93b), Atmosphere Blue (#4a8cd4)

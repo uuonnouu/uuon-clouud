@@ -8,26 +8,25 @@
   --font-sans: 'DM Sans', sans-serif;
   --font-mono: 'JetBrains Mono', monospace;
   
-  /* UUON Foundation Palette - The "Matrix Meets the Earth" */
-  --color-background: #030811; /* Deep Space/Ocean Navy */
-  --color-foreground: #e0e6ed; /* Starlight White */
+  --color-background: #030811;
+  --color-foreground: #e0e6ed;
   
-  --color-primary: #f0b93b; /* UUON Gold */
+  --color-primary: #f0b93b;
   --color-primary-foreground: #000000;
   
-  --color-secondary: #4a8cd4; /* Atmosphere Blue */
+  --color-secondary: #4a8cd4;
   --color-secondary-foreground: #ffffff;
   
-  --color-accent: #193655; /* Mid-Atmosphere */
+  --color-accent: #193655;
   --color-accent-foreground: #ffffff;
 
-  --color-muted: #0a1324; /* Void Navy */
-  --color-muted-foreground: #6783a3; /* Muted Star */
+  --color-muted: #0a1324;
+  --color-muted-foreground: #6783a3;
 
-  --color-border: #142a45; /* Deep Atmosphere Border */
+  --color-border: #142a45;
   --color-input: #08111f;
   
-  --color-card: #050b16; /* Near Void */
+  --color-card: #050b16;
   --color-card-border: #142a45;
 }
 
@@ -81,8 +80,25 @@
       transparent 1px, 
       transparent 4px);
   }
+
+  .clouud-ambient {
+    background: radial-gradient(
+      ellipse at 50% 40%,
+      rgba(74, 140, 212, 0.06) 0%,
+      rgba(240, 185, 59, 0.02) 40%,
+      transparent 70%
+    );
+  }
+
+  @keyframes pulse-ring {
+    0%, 100% { opacity: 0.3; transform: scale(1); }
+    50% { opacity: 0.6; transform: scale(1.05); }
+  }
+
+  .animate-pulse-ring {
+    animation: pulse-ring 3s ease-in-out infinite;
+  }
   
-  /* Modern Webkit Scrollbar */
   ::-webkit-scrollbar {
     width: 4px;
     height: 4px;
