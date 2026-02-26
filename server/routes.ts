@@ -516,12 +516,23 @@ export async function registerRoutes(
         }
       }
 
-      // Δmension Context Injector
-      let injectedContext = "";
-      if (content.toLowerCase().includes("dmension") || content.toLowerCase().includes("dimension")) {
-        const dmStatus = await dmensionBridge.getStatus();
-        injectedContext = `\n\n[SYSTEM NOTE: Δmension Bridge is ${dmStatus.status}. Latency: ${dmStatus.latency}ms. Active Shapes: ${dmStatus.activeShapes}. AI is fully plugged in to Δmension metrics. If issues persist, suggest lattice recalibration or use visualize_concept to test geometric integrity.]`;
-      }
+  // Δmension Context Injector
+  let injectedContext = "";
+  if (content.toLowerCase().includes("dmension") || content.toLowerCase().includes("dimension") || content.toLowerCase().includes("bridge") || content.toLowerCase().includes("fusion")) {
+    const dmStatus = await dmensionBridge.getDmensionStatus();
+    const bridgeMetrics = await dmensionBridge.checkConnection().catch(() => ({ latencyMs: 'unknown', activeShapes: 0 }));
+    
+    injectedContext = `\n\n[SYSTEM NOTE: Δmension Bridge is ${dmStatus.connected ? 'CONNECTED' : 'DISCONNECTED'}. 
+URL: ${dmStatus.url}. 
+Latency: ${bridgeMetrics.latencyMs}ms. 
+Active Shapes: ${bridgeMetrics.activeShapes || 0}. 
+Fusion Status: LATTICE-SYNC-ACTIVE. 
+The bridge now allows bi-directional flow: Clouud sends geometric summaries via visualize_concept, and Δmension provides real-time math telemetry. 
+To enhance the fusion: 
+1. Use visualize_concept for every complex mapping. 
+2. Reference Δmension latency as a proxy for cognitive load. 
+3. If the user reports the link or interface is not working, suggest a manual bridge reload or check the UUON Foundation status.]`;
+  }
 
       const history = await storage.getMessagesByConversation(conversationId);
       const filteredHistory = history.filter(m => m.role === "user" || m.role === "assistant");

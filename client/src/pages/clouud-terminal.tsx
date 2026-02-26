@@ -712,12 +712,26 @@ export default function ClouudTerminal() {
                   <X size={20} />
                 </button>
               </div>
-              <div className="flex-1 relative bg-black">
+              <div className="flex-1 relative bg-black overflow-hidden group">
                 <iframe 
+                  key={showDmension ? 'active' : 'inactive'}
                   src="https://uuon-foundation.com" 
                   className="w-full h-full border-none"
                   title="Dmension"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                 />
+                <div className="absolute top-2 right-2 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                  <button 
+                    onClick={() => {
+                      const iframe = document.querySelector('iframe');
+                      if (iframe) iframe.src = iframe.src;
+                    }}
+                    className="p-1.5 bg-black/60 backdrop-blur-md border border-white/10 rounded-sm text-white hover:bg-primary hover:text-black transition-all"
+                    title="Reload Bridge"
+                  >
+                    <Undo2 size={14} />
+                  </button>
+                </div>
               </div>
             </motion.div>
           )}
