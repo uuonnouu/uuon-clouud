@@ -1,7 +1,7 @@
 import { db } from "./db";
-import { conversations, messages } from "@shared/schema";
-import type { Conversation, InsertConversation, Message, InsertMessage } from "@shared/schema";
-import { eq, desc, and, gte } from "drizzle-orm";
+import { conversations, messages, uuonTokens } from "@shared/schema";
+import type { Conversation, InsertConversation, Message, InsertMessage, UuonToken, InsertUuonToken } from "@shared/schema";
+import { eq, desc, and, gte, count } from "drizzle-orm";
 
 export interface IStorage {
   getConversation(id: number): Promise<Conversation | undefined>;
@@ -11,6 +11,10 @@ export interface IStorage {
   getMessagesByConversation(conversationId: number): Promise<Message[]>;
   createMessage(data: InsertMessage): Promise<Message>;
   deleteLastExchange(conversationId: number): Promise<Message | null>;
+  saveUuonToken(data: InsertUuonToken): Promise<UuonToken>;
+  getUuonTokens(): Promise<UuonToken[]>;
+  getUuonTokensByConversation(conversationId: number): Promise<UuonToken[]>;
+  getUuonTokenCount(): Promise<number>;
 }
 
 class DatabaseStorage implements IStorage {
@@ -58,6 +62,24 @@ class DatabaseStorage implements IStorage {
       return lastUser;
     }
     return null;
+  }
+
+  async saveUuonToken(data: InsertUuonToken): Promise<UuonToken> {
+    const [token] = await db.insert(uuonTokens).values(data).onConflictDoNothing().returning();
+    return token;
+  }
+
+  async getUuonTokens(): Promise<UuonToken[]> {
+    return db.select().from(uuonTokens).orderBy(desc(uuonTokens.createdAt));
+  }
+
+  async getUuonTokensByConversation(conversationId: number): Promise<UuonToken[]> {
+    return db.select().from(uuonTokens).where(eq(uuonTokens.conversationId, conversationId)).orderBy(desc(uuonTokens.createdAt));
+  }
+
+  async getUuonTokenCount(): Promise<number> {
+    const [result] = await db.select({ value: count() }).from(uuonTokens);
+    return result?.value ?? 0;
   }
 }
 

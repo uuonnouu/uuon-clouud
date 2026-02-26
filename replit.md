@@ -15,9 +15,10 @@ UUON Clouud is the intelligence interface for the G°centric Lattice System, bui
 - `client/src/components/clouud-avatar.tsx` — Clouud avatar (static image with state-driven CSS animation)
 - `server/routes.ts` — API routes with system prompt (includes founder bio, verified Sketchfab data, Δmension info), tool use, output guard
 - `server/lattice.ts` — G°centric Lattice Engine (33-point, rational math)
-- `server/storage.ts` — Database operations (conversations, messages)
+- `server/storage.ts` — Database operations (conversations, messages, UUON tokens)
 - `server/db.ts` — PostgreSQL connection via Drizzle
-- `shared/schema.ts` — Database schema (conversations, messages tables)
+- `shared/schema.ts` — Database schema (conversations, messages, uuon_tokens tables)
+- `client/src/components/metrics-panel.tsx` — Collapsible system metrics panel
 
 ## Founder Info (verified)
 - Philip Aguilar Ruiz III, from Yuma AZ, grew up overseas, US Army veteran, resides in Kassel, Germany
@@ -41,10 +42,15 @@ UUON Clouud is the intelligence interface for the G°centric Lattice System, bui
     - Component: `client/src/components/tutorial.tsx`
 11. **Undo Button:** Removes last user+assistant exchange, restores input for retry
 12. **Legal Page:** `/legal` route with Terms of Use, Privacy Policy, Disclaimer tabs — accessible from sidebar
-13. **Real-time Metrics Panel:** Collapsible panel below input bar showing live API response times, token usage, tool calls, model info, uptime, drift flags — auto-refreshes every 5 seconds
-    - Server tracks: response times (rolling avg of last 50), input/output tokens, tool call count, drift detection flags
+13. **Real-time Metrics Panel:** Collapsible panel below input bar showing API response times, I/O, tool calls, model info, uptime, saved UUON tokens count — auto-refreshes every 5 seconds
+    - Server tracks: response times (rolling avg of last 50), I/O volume, tool call count, drift detection flags
     - Component: `client/src/components/metrics-panel.tsx`
-14. **Water Animations:** Messages flow in with soft fade-up, blur transition, and paragraph-by-paragraph cascade for assistant responses
+14. **UUON Token System:** Each interaction's SHA-256 provenance hash is saved as a UUON token in the `uuon_tokens` table
+    - Tokens are saved automatically on every assistant response
+    - API: `GET /api/tokens` (all), `GET /api/conversations/:id/tokens` (per conversation)
+    - Displayed on each assistant message as `UUON·TOKEN` with the hash
+    - Based on UUON Shape Tokenization framework (Philip Aguilar Ruiz III, 2025)
+15. **Water Animations:** Messages flow in with soft fade-up, blur transition, and paragraph-by-paragraph cascade for assistant responses
 
 ## Design System
 - **Palette:** Deep Navy (#030811), UUON Gold (#f0b93b), Atmosphere Blue (#4a8cd4)

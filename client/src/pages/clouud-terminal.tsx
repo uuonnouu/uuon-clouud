@@ -561,6 +561,7 @@ export default function ClouudTerminal() {
                           {msg.hash && (
                             <div className="mt-3 pt-2 border-t border-muted flex items-center gap-1.5 font-mono text-[8px] text-muted-foreground">
                               <Binary className="w-2.5 h-2.5 text-secondary" />
+                              <span className="text-secondary/70 mr-1">UUON·TOKEN</span>
                               <span className="truncate uppercase tracking-widest">{msg.hash}</span>
                             </div>
                           )}

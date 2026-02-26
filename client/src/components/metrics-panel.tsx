@@ -17,6 +17,7 @@ type Metrics = {
   temperature: number;
   maxTokens: number;
   latticePoints: number;
+  savedTokens: number;
 };
 
 export default function MetricsPanel() {
@@ -96,7 +97,7 @@ export default function MetricsPanel() {
               />
               <MetricCard
                 icon={<Binary className="w-3 h-3" />}
-                label="Tokens"
+                label="I/O"
                 value={formatTokens(metrics.totalTokensIn + metrics.totalTokensOut)}
                 sub={`In: ${formatTokens(metrics.totalTokensIn)} · Out: ${formatTokens(metrics.totalTokensOut)}`}
               />
@@ -104,8 +105,9 @@ export default function MetricsPanel() {
             <div className="px-4 pb-2 flex items-center justify-between text-[9px] font-mono text-muted-foreground">
               <span className="tracking-widest uppercase">Uptime: {metrics.uptime}</span>
               <span className="tracking-widest uppercase">Lattice: {metrics.latticePoints}-pt</span>
+              <span className="text-secondary tracking-widest uppercase">UUON Tokens: {metrics.savedTokens}</span>
               {metrics.totalDriftFlags > 0 && (
-                <span className="text-yellow-500 tracking-widest uppercase">Drift flags: {metrics.totalDriftFlags}</span>
+                <span className="text-yellow-500 tracking-widest uppercase">Drift: {metrics.totalDriftFlags}</span>
               )}
             </div>
           </motion.div>

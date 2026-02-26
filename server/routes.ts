@@ -359,13 +359,19 @@ export async function registerRoutes(
       // Generate provenance hash
       const hash = generateProvenanceHash(finalResponse);
 
-      // Save assistant message
       const assistantMsg = await storage.createMessage({
         conversationId,
         role: "assistant",
         content: finalResponse,
         toolCall: toolCallData ? JSON.stringify(toolCallData) : null,
         hash,
+      });
+
+      await storage.saveUuonToken({
+        hash,
+        messageId: assistantMsg.id,
+        conversationId,
+        origin: "UUON-FOUNDATION-GCENTRIC-V1",
       });
 
       res.json({
@@ -391,10 +397,33 @@ export async function registerRoutes(
     }
   });
 
-  app.get("/api/metrics", (_req: Request, res: Response) => {
+  app.get("/api/tokens", async (_req: Request, res: Response) => {
+    try {
+      const tokens = await storage.getUuonTokens();
+      res.json(tokens);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch tokens" });
+    }
+  });
+
+  app.get("/api/conversations/:id/tokens", async (req: Request, res: Response) => {
+    try {
+      const id = parseInt(req.params.id);
+      const tokens = await storage.getUuonTokensByConversation(id);
+      res.json(tokens);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch tokens" });
+    }
+  });
+
+  app.get("/api/metrics", async (_req: Request, res: Response) => {
     const uptimeMs = Date.now() - systemMetrics.uptime;
     const uptimeHours = Math.floor(uptimeMs / 3600000);
     const uptimeMinutes = Math.floor((uptimeMs % 3600000) / 60000);
+    let savedTokens = 0;
+    try {
+      savedTokens = await storage.getUuonTokenCount();
+    } catch {}
     res.json({
       totalRequests: systemMetrics.totalRequests,
       totalTokensIn: systemMetrics.totalTokensIn,
@@ -410,6 +439,7 @@ export async function registerRoutes(
       temperature: 0.1,
       maxTokens: 1024,
       latticePoints: 33,
+      savedTokens,
     });
   });
 

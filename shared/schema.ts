@@ -19,6 +19,15 @@ export const messages = pgTable("messages", {
   createdAt: timestamp("created_at").default(sql`CURRENT_TIMESTAMP`).notNull(),
 });
 
+export const uuonTokens = pgTable("uuon_tokens", {
+  id: serial("id").primaryKey(),
+  hash: text("hash").notNull().unique(),
+  messageId: integer("message_id").notNull().references(() => messages.id, { onDelete: "cascade" }),
+  conversationId: integer("conversation_id").notNull().references(() => conversations.id, { onDelete: "cascade" }),
+  origin: text("origin").notNull().default("UUON-FOUNDATION-GCENTRIC-V1"),
+  createdAt: timestamp("created_at").default(sql`CURRENT_TIMESTAMP`).notNull(),
+});
+
 export const insertConversationSchema = createInsertSchema(conversations).omit({
   id: true,
   createdAt: true,
@@ -29,7 +38,14 @@ export const insertMessageSchema = createInsertSchema(messages).omit({
   createdAt: true,
 });
 
+export const insertUuonTokenSchema = createInsertSchema(uuonTokens).omit({
+  id: true,
+  createdAt: true,
+});
+
 export type Conversation = typeof conversations.$inferSelect;
 export type InsertConversation = z.infer<typeof insertConversationSchema>;
 export type Message = typeof messages.$inferSelect;
 export type InsertMessage = z.infer<typeof insertMessageSchema>;
+export type UuonToken = typeof uuonTokens.$inferSelect;
+export type InsertUuonToken = z.infer<typeof insertUuonTokenSchema>;
