@@ -1,6 +1,6 @@
 import { db } from "./db";
-import { conversations, messages, uuonTokens, creatorProfile, fingerprints, accessLog, uploads, selfAssessments, uinverseImports, uinverseIdeas } from "@shared/schema";
-import type { Conversation, InsertConversation, Message, InsertMessage, UuonToken, InsertUuonToken, CreatorProfileEntry, Fingerprint, AccessLogEntry, Upload, SelfAssessment, UinverseImport, UinverseIdea } from "@shared/schema";
+import { conversations, messages, uuonTokens, creatorProfile, fingerprints, accessLog, uploads, selfAssessments, uinverseImports, uinverseIdeas, discoveries } from "@shared/schema";
+import type { Conversation, InsertConversation, Message, InsertMessage, UuonToken, InsertUuonToken, CreatorProfileEntry, Fingerprint, AccessLogEntry, Upload, SelfAssessment, UinverseImport, UinverseIdea, Discovery, InsertDiscovery } from "@shared/schema";
 import { eq, desc, and, gte, count, sql, avg } from "drizzle-orm";
 
 export interface IStorage {
@@ -38,6 +38,11 @@ export interface IStorage {
   getUinverseIdeas(importId?: number): Promise<UinverseIdea[]>;
   updateIdeaStatus(id: number, implemented: boolean): Promise<void>;
   getUinverseSummary(): Promise<{ totalImports: number; totalIdeas: number; buildCount: number; considerCount: number; skipCount: number; implementedCount: number }>;
+  createDiscovery(data: InsertDiscovery): Promise<Discovery>;
+  getActiveDiscoveries(): Promise<Discovery[]>;
+  getAllDiscoveries(): Promise<Discovery[]>;
+  toggleDiscovery(id: number, active: boolean): Promise<void>;
+  deleteDiscovery(id: number): Promise<void>;
 }
 
 class DatabaseStorage implements IStorage {
@@ -280,6 +285,26 @@ class DatabaseStorage implements IStorage {
       skipCount: allIdeas.filter(i => i.verdict === "SKIP").length,
       implementedCount: allIdeas.filter(i => i.implemented).length,
     };
+  }
+  async createDiscovery(data: InsertDiscovery): Promise<Discovery> {
+    const [d] = await db.insert(discoveries).values(data).returning();
+    return d;
+  }
+
+  async getActiveDiscoveries(): Promise<Discovery[]> {
+    return db.select().from(discoveries).where(eq(discoveries.active, true)).orderBy(desc(discoveries.createdAt));
+  }
+
+  async getAllDiscoveries(): Promise<Discovery[]> {
+    return db.select().from(discoveries).orderBy(desc(discoveries.createdAt));
+  }
+
+  async toggleDiscovery(id: number, active: boolean): Promise<void> {
+    await db.update(discoveries).set({ active }).where(eq(discoveries.id, id));
+  }
+
+  async deleteDiscovery(id: number): Promise<void> {
+    await db.delete(discoveries).where(eq(discoveries.id, id));
   }
 }
 
