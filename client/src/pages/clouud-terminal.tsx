@@ -776,14 +776,31 @@ export default function ClouudTerminal() {
                                     <div className="w-2 h-2 rounded-full bg-primary animate-pulse" />
                                     <span className="text-[10px] font-mono text-primary uppercase tracking-widest">Δmension Visualization Active</span>
                                   </div>
-                                  <div className="aspect-video w-full bg-black/40 rounded-sm overflow-hidden border border-border/50 relative group">
-                                    <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-secondary/5 pointer-events-none" />
+                                  <div className="aspect-video w-full bg-black/80 rounded-sm overflow-hidden border border-primary/40 relative group shadow-[0_0_40px_rgba(240,185,59,0.15)] ring-1 ring-primary/20">
+                                    <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(240,185,59,0.2)_0%,transparent_75%)] animate-pulse" />
+                                    <div className="absolute inset-0 opacity-30 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] pointer-events-none" />
+                                    <div className="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-primary to-transparent animate-scan" />
+                                    <div className="absolute inset-0 bg-gradient-to-b from-primary/5 via-transparent to-primary/5 pointer-events-none" />
+                                    
                                     <div className="absolute inset-0 flex flex-col items-center justify-center p-6 text-center">
-                                      <div className="w-12 h-12 mb-4 text-primary/40 group-hover:text-primary/60 transition-colors">
-                                        <Brain className="w-full h-full" />
+                                      <motion.div 
+                                        animate={{ 
+                                          rotateY: [0, 360],
+                                          filter: ["drop-shadow(0 0 12px rgba(240,185,59,0.4))", "drop-shadow(0 0 25px rgba(240,185,59,0.8))", "drop-shadow(0 0 12px rgba(240,185,59,0.4))"],
+                                          scale: [1, 1.05, 1]
+                                        }}
+                                        transition={{ duration: 12, repeat: Infinity, ease: "linear" }}
+                                        className="w-24 h-24 mb-4 text-primary group-hover:text-white transition-all duration-700 cursor-pointer relative"
+                                      >
+                                        <Brain className="w-full h-full relative z-10" />
+                                        <div className="absolute inset-0 bg-primary/20 blur-2xl rounded-full scale-150 animate-pulse" />
+                                      </motion.div>
+                                      <h4 className="text-sm font-display text-white font-bold mb-1 uppercase tracking-[0.3em] drop-shadow-[0_0_10px_rgba(255,255,255,0.5)]">{tc.args.concept}</h4>
+                                      <div className="flex items-center gap-3 mb-2">
+                                        <span className="h-[1px] w-12 bg-gradient-to-r from-transparent to-primary/40" />
+                                        <p className="text-[10px] font-mono text-primary font-bold uppercase tracking-widest bg-primary/10 px-2 py-0.5 rounded-full border border-primary/20">Lattice-Phase: {tc.args.shapeType}</p>
+                                        <span className="h-[1px] w-12 bg-gradient-to-l from-transparent to-primary/40" />
                                       </div>
-                                      <h4 className="text-xs font-display text-white font-bold mb-1 uppercase tracking-wider">{tc.args.concept}</h4>
-                                      <p className="text-[9px] font-mono text-muted-foreground max-w-[200px]">Generating parametric summary via {tc.args.shapeType} model...</p>
                                     </div>
                                     <div className="absolute bottom-3 right-3">
                                       <a 
