@@ -356,7 +356,7 @@ export async function registerRoutes(
   // Delete conversation
   app.delete("/api/conversations/:id", async (req: Request, res: Response) => {
     try {
-      const id = parseInt(req.params.id);
+      const id = parseInt(req.params.id as string);
       await storage.deleteConversation(id);
       res.status(204).send();
     } catch (error) {
@@ -367,7 +367,7 @@ export async function registerRoutes(
 
   app.delete("/api/conversations/:id/messages/last", async (req: Request, res: Response) => {
     try {
-      const id = parseInt(req.params.id);
+      const id = parseInt(req.params.id as string);
       const deletedUserMsg = await storage.deleteLastExchange(id);
       if (!deletedUserMsg) {
         return res.status(404).json({ error: "No exchange to undo" });
@@ -382,7 +382,7 @@ export async function registerRoutes(
   // Get messages for a conversation
   app.get("/api/conversations/:id/messages", async (req: Request, res: Response) => {
     try {
-      const id = parseInt(req.params.id);
+      const id = parseInt(req.params.id as string);
       const msgs = await storage.getMessagesByConversation(id);
       res.json(msgs);
     } catch (error) {
@@ -399,7 +399,7 @@ export async function registerRoutes(
     let toolCallCount = 0;
 
     try {
-      const conversationId = parseInt(req.params.id);
+      const conversationId = parseInt(req.params.id as string);
       const { content } = req.body;
 
       if (!content || typeof content !== "string") {
@@ -584,7 +584,7 @@ export async function registerRoutes(
 
   app.get("/api/conversations/:id/tokens", async (req: Request, res: Response) => {
     try {
-      const id = parseInt(req.params.id);
+      const id = parseInt(req.params.id as string);
       const tokens = await storage.getUuonTokensByConversation(id);
       res.json(tokens);
     } catch (error) {
@@ -656,7 +656,7 @@ export async function registerRoutes(
   app.get("/api/lattice/value/:position", (req: Request, res: Response) => {
     try {
       const { chiValue } = require("./lattice");
-      const position = parseInt(req.params.position);
+      const position = parseInt(req.params.position as string);
       const tier = parseInt(req.query.tier as string) || 1;
       res.json(chiValue(position, tier));
     } catch (error: any) {
@@ -722,7 +722,7 @@ export async function registerRoutes(
 
   app.get("/api/uploads/:conversationId", async (req: Request, res: Response) => {
     try {
-      const conversationId = parseInt(req.params.conversationId);
+      const conversationId = parseInt(req.params.conversationId as string);
       const files = await storage.getUploadsByConversation(conversationId);
       res.json(files);
     } catch (error) {
@@ -732,7 +732,7 @@ export async function registerRoutes(
 
   app.get("/api/upload/:id/text", async (req: Request, res: Response) => {
     try {
-      const id = parseInt(req.params.id);
+      const id = parseInt(req.params.id as string);
       const file = await storage.getUpload(id);
       if (!file) return res.status(404).json({ error: "Upload not found" });
       res.json({ id: file.id, originalName: file.originalName, extractedText: file.extractedText });

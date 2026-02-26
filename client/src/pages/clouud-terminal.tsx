@@ -358,7 +358,7 @@ export default function ClouudTerminal() {
         }
       }
       setInput(prev => {
-        const base = prev.replace(/\[listening\.\.\.\].*$/s, "").trimEnd();
+        const base = prev.replace(/\[listening\.\.\.\].*$/, "").trimEnd();
         const voiceText = (finalTranscript + interim).trim();
         return base ? `${base} ${voiceText}` : voiceText;
       });

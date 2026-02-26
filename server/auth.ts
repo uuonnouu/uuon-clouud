@@ -38,7 +38,7 @@ function challengeKey(prefix: string, req: Request): string {
 
 function storeChallenge(key: string, challenge: string) {
   challenges.set(key, { challenge, expires: Date.now() + 300000 });
-  for (const [k, v] of challenges) {
+  for (const [k, v] of Array.from(challenges.entries())) {
     if (v.expires < Date.now()) challenges.delete(k);
   }
 }
