@@ -463,7 +463,7 @@ function findRepeatedPhrases(text: string): string[] {
     .map(([phrase]) => phrase);
 }
 
-const MAX_HISTORY_MESSAGES = 20;
+const MAX_HISTORY_MESSAGES = 12;
 
 export async function registerRoutes(
   httpServer: Server,
@@ -613,7 +613,7 @@ To enhance the fusion:
 
       let response = await anthropic.messages.create({
         model: "claude-sonnet-4-6",
-        max_tokens: 1024,
+        max_tokens: 768,
         temperature: 0.1,
         system: dynamicPrompt,
         tools: CLOUUD_TOOLS as any,
@@ -695,7 +695,7 @@ To enhance the fusion:
 
         response = await anthropic.messages.create({
           model: "claude-sonnet-4-6",
-          max_tokens: 1024,
+          max_tokens: 768,
           temperature: 0.1,
           system: dynamicPrompt,
           tools: CLOUUD_TOOLS as any,
@@ -838,7 +838,7 @@ To enhance the fusion:
       lastRequestAt: systemMetrics.lastRequestAt,
       model: systemMetrics.modelUsed,
       temperature: 0.1,
-      maxTokens: 1024,
+      maxTokens: 768,
       latticePoints: 33,
       savedTokens,
       historyWindow: MAX_HISTORY_MESSAGES,
