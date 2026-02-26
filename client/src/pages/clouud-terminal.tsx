@@ -588,8 +588,9 @@ export default function ClouudTerminal() {
         {messages.length > 0 && (
           <div 
             ref={scrollRef}
-            className="flex-1 overflow-y-auto p-4 md:p-6 space-y-5"
+            className="flex-1 overflow-y-auto p-4 md:p-6"
           >
+            <div className="max-w-4xl mx-auto space-y-5">
             <AnimatePresence initial={false}>
               {messages.map((msg, msgIndex) => {
                 const isNewest = msgIndex >= messages.length - 2;
@@ -787,6 +788,7 @@ export default function ClouudTerminal() {
                 </motion.div>
               )}
             </AnimatePresence>
+            </div>
           </div>
         )}
 
