@@ -772,7 +772,7 @@ export default function ClouudTerminal() {
                                   )}
                                   {msgAssessments[msg.id].immuneActive && (
                                     <div className="font-mono text-[7px] text-red-400/60">
-                                      ◉ IMMUNE SYSTEM ACTIVE — recurring patterns detected
+                                      ◉ PARANEUMA ACTIVE — breath alongside, recycling patterns
                                     </div>
                                   )}
                                 </div>

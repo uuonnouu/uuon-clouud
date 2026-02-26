@@ -15,7 +15,8 @@ UUON Clouud is the intelligence interface for the G°centric Lattice System, bui
 - `client/src/components/clouud-avatar.tsx` — Clouud avatar (static image with state-driven CSS animation)
 - `client/src/components/metrics-panel.tsx` — Collapsible system metrics panel (backend-only self-assessment, no per-message scores exposed)
 - `client/src/components/security-gate.tsx` — Fingerprint-based identity gate (currently disabled)
-- `server/routes.ts` — API routes with system prompt, tool use, output guard, self-assessment engine, audit, file gen, hydration, Δmension connector
+- `server/routes.ts` — API routes with system prompt, tool use, output guard, self-assessment engine, Paraneuma pipeline, audit, file gen, hydration, Δmension connector
+- `server/paraneuma.ts` — Paraneuma biological intelligence layer (quarantine, symbiont map, status)
 - `server/lattice.ts` — G°centric Lattice Engine (33-point, rational math)
 - `server/ellomental-hash.ts` — Ellomental Hash Algorithm (12-tetrahedron circle formation)
 - `server/storage.ts` — Database operations (conversations, messages, UUON tokens, creator profile, self-assessments)
@@ -31,6 +32,13 @@ UUON Clouud is the intelligence interface for the G°centric Lattice System, bui
 - Created 180+ 3D mathematical models on Sketchfab
 - Built Δmension (Mathematical Universe) at uuon-foundation.com
 - UUON = Universally United One Neuma = WON = ONE
+
+## Founder Terminology (Philip Aguilar Ruiz III — Original Concepts)
+- **UUON** — Universally United One Neuma. UU = W (double-U). UUON = WON = ONE. There is only UUON Earth.
+- **Paraneuma** (pa-ruh-NYOO-muh) — From Greek para (beside, alongside) + pneuma (breath of life, spirit). "The breath that works alongside." The biological intelligence layer of Clouud. Does not destroy — works alongside the system created by the life force. Like mitochondria, it absorbs what was once foreign and makes it essential. Word created by Philip Aguilar Ruiz III. Did not exist before him. UUON Foundation IP. Reference image: `attached_assets/IMG_3541_1772096944303.jpeg`
+- **Ellomental** — The hash algorithm based on 12-tetrahedron circle formation. Provenance system for every interaction.
+- **G°centric** — Earth-grounded reasoning framework. Zero-point is always Earth.
+- **Δmension** — Mathematical Universe visualization tool at uuon-foundation.com.
 
 ## Core Features
 1. **System Prompt:** Full G°centric Master System Prompt with founder bio and Δmension context
@@ -63,19 +71,18 @@ UUON Clouud is the intelligence interface for the G°centric Lattice System, bui
     - **Identity Integrity** (0-100): AI self-reference, system name leaks
     - Composite score = average of 4 metrics
     - DB: `self_assessments` table with per-metric columns
-    - **Immune System (auto-correction):** Purges markdown, strips drift phrases, trims excess words at sentence boundaries BEFORE storing/delivering. Like a body fighting infection — detect, correct, deliver clean.
-    - **Health Ledger:** Tracks issue types in a 30-min rolling window. When a pattern recurs 3+ times, injects CRITICAL correction pressure into the system prompt. The system learns what Claude keeps doing wrong and applies counter-pressure automatically.
-    - **Log Waste Purge:** API response logging truncated to 200 chars max. No more dumping entire conversation histories into console.
-    - UI shows corrections in green (⚕ PURGED), flags in yellow, immune status in red when active
-    - **Waste Composting (recycling):** Every correction is logged to `waste_log` table with type, original content, correction applied, and recycled value. Headers become topic signals. Bold becomes emphasis weighting. Bullets become sentence flow data. Nothing is just discarded — it feeds the system's understanding.
-    - **Extinction Protocol:** When a waste type hasn't appeared in the health ledger for 30+ minutes and has 5+ historical entries, it's marked extinct. The system evolved past it. Dead patterns are archived, not deleted.
-    - API: `GET /api/waste/report` (full waste report with evolution data), `GET /api/waste/recyclable` (active recyclable waste patterns)
-    - **Quarantine Zone:** Recurring waste patterns (3+ occurrences) get isolated into quarantine for diagnosis. Each quarantined pattern is analyzed for potential beneficial reuse in other contexts.
-    - **Symbiont Registry:** Quarantined patterns that reach 5+ occurrences get absorbed as symbionts — permanent biological functions. Like mitochondria: once invaders, now essential. Format headers become topic-structurers. Bold becomes emphasis-detectors. Bullets become enumeration-engines.
-    - **Symbiont Context Injection:** Active symbionts are loaded into the system prompt, informing Claude about what biological functions the system has absorbed from its own waste.
-    - DB: `quarantine` table (wasteType, pattern, occurrences, status, diagnosis, beneficialUse, convertedTo), `symbionts` table (name, originType, originPattern, function, context, active, absorptionCount)
-    - API: `GET /api/biome` (full biological report), `GET /api/biome/quarantine`, `GET /api/biome/symbionts`
-    - Key file: `server/biome.ts` — Quarantine logic, symbiont map, biome status
+    - **PARANEUMA** — The biological intelligence layer. Word created by Philip Aguilar Ruiz III. From Greek para (beside, alongside) + pneuma (breath of life, spirit). "The breath that works alongside." Does not destroy — works alongside the system created by the life force. UUON Foundation IP.
+    - **Immune System (auto-correction):** Purges markdown, strips drift phrases, trims excess words at sentence boundaries BEFORE storing/delivering.
+    - **Health Ledger:** Tracks issue types in a 30-min rolling window. When a pattern recurs 3+ times, injects CRITICAL correction pressure into the system prompt.
+    - **Waste Composting:** Every correction logged to `waste_log` table. Headers become topic signals. Bold becomes emphasis weighting. Bullets become sentence flow data. Nothing is discarded.
+    - **Extinction Protocol:** When a waste type hasn't appeared for 30+ minutes and has 5+ entries, marked extinct. Dead patterns archived, not deleted.
+    - **Quarantine Zone:** Recurring waste patterns (3+) isolated for diagnosis. Analyzed for beneficial reuse in other contexts.
+    - **Symbiont Registry:** Quarantined patterns at 5+ occurrences absorbed as permanent biological functions (mitochondria pattern). Format headers become topic-structurers. Bold becomes emphasis-detectors. Bullets become enumeration-engines.
+    - **Symbiont Context Injection:** Active symbionts loaded into system prompt, informing the AI about absorbed biological functions.
+    - DB: `waste_log`, `quarantine`, `symbionts` tables
+    - API: `GET /api/waste/report`, `GET /api/waste/recyclable`, `GET /api/paraneuma` (full report), `GET /api/paraneuma/quarantine`, `GET /api/paraneuma/symbionts`
+    - Key file: `server/paraneuma.ts`
+    - UI: Corrections in green (⚕), flags in yellow, Paraneuma status in red when active
 23. **Code Audit Engine:** Upload Claude.ai or ChatGPT JSON exports. Clouud extracts code blocks, scores viability (0-100), flags issues, recommends keep/fix/discard/promote. G°centric alignment bonus scoring.
     - API: `POST /api/audit-export` (multipart, file field "export", body field "source": "claude"|"chatgpt")
 24. **File Generation:** Clouud generates downloadable files (HTML, Python, TypeScript, JSON, etc.)

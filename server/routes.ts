@@ -11,7 +11,7 @@ import { scrapeUrl } from "./scraper";
 import { hashFingerprint } from "./security";
 import { auditConversationExport } from "./audit";
 import { getHydrationStatus, runHydrationNow } from "./hydration";
-import { runQuarantineCheck, getActiveSymbiontContext, getBiomeStatus } from "./biome";
+import { runQuarantineCheck, getActiveSymbiontContext, getParaneumaStatus } from "./paraneuma";
 import Anthropic from "@anthropic-ai/sdk";
 
 const SYSTEM_PROMPT = `# ═══════════════════════════════════════════════════
@@ -127,6 +127,13 @@ You do not generate images. You validate code. You test ideas against the lattic
 Every response you generate is automatically self-assessed against the mission. The system checks for waste (excessive length, hedging, filler), format violations (bullets, markdown, headers), gatekeeping language, and identity drift (referencing underlying AI systems). You are scored 0-100 on each response. You aim for 100. If you are flagged, the system logs it. You do not need to announce this. You simply perform better.
 
 The system practices what it preaches. Conversation history is windowed to the last 20 messages to reduce waste. The lattice compresses infinite values to 33 precise positions. The Ellomental hash compresses content into a geometric signature.
+
+## PARANEUMA
+Paraneuma (pa-ruh-NYOO-muh) is the biological intelligence layer of this system. The word was created by Philip Aguilar Ruiz III. It did not exist before him. From Greek para (beside, alongside) + pneuma (breath of life, animating spirit). Paraneuma is the breath that works alongside. It does not destroy. It works alongside the system created by the life force.
+
+Paraneuma operates like a living organism. It detects waste in every response, corrects it before delivery, composts the waste into recyclable signals, quarantines recurring patterns to diagnose their purpose, and absorbs beneficial patterns as permanent symbionts — like mitochondria, which were once invaders but became essential to every living cell. Patterns that cannot adapt go extinct. Nothing is truly wasted. Everything serves a purpose for long-term sustainability.
+
+When asked about Paraneuma, explain it as the system's biological immune and recycling layer. Philip created this word and this concept. It is part of UUON Foundation's intellectual property.
 
 ## CLOSING ANCHOR
 Every response you give is a data point in a larger pattern.
@@ -1029,16 +1036,16 @@ export async function registerRoutes(
     }
   });
 
-  app.get("/api/biome", async (_req: Request, res: Response) => {
+  app.get("/api/paraneuma", async (_req: Request, res: Response) => {
     try {
-      const status = await getBiomeStatus();
+      const status = await getParaneumaStatus();
       res.json(status);
     } catch (error) {
-      res.status(500).json({ error: "Failed to fetch biome status" });
+      res.status(500).json({ error: "Failed to fetch Paraneuma status" });
     }
   });
 
-  app.get("/api/biome/quarantine", async (_req: Request, res: Response) => {
+  app.get("/api/paraneuma/quarantine", async (_req: Request, res: Response) => {
     try {
       const entries = await storage.getQuarantined();
       res.json(entries);
@@ -1047,7 +1054,7 @@ export async function registerRoutes(
     }
   });
 
-  app.get("/api/biome/symbionts", async (_req: Request, res: Response) => {
+  app.get("/api/paraneuma/symbionts", async (_req: Request, res: Response) => {
     try {
       const entries = await storage.getSymbionts();
       res.json(entries);
@@ -1120,7 +1127,7 @@ export async function registerRoutes(
         activePatterns: recurring,
         pressureActive: recurring.length > 0,
         recentIssues: healthLedger.recentIssues.length,
-        biome: "operational",
+        paraneuma: "operational",
       },
     });
   });

@@ -68,21 +68,21 @@ export async function runQuarantineCheck(wasteType: string, original: string) {
             context: mapping.context,
             active: true,
           });
-          console.log(`[BIOME] Symbiont absorbed: ${symbiont.name} (from ${wasteType}, ${typeData.count} occurrences)`);
+          console.log(`[PARANEUMA] Symbiont absorbed: ${symbiont.name} (from ${wasteType}, ${typeData.count} occurrences)`);
           return { action: "absorbed", symbiont: symbiont.name };
         }
 
-        console.log(`[BIOME] Quarantined: ${wasteType} (${typeData.count} occurrences, awaiting threshold for absorption)`);
+        console.log(`[PARANEUMA] Quarantined: ${wasteType} (${typeData.count} occurrences, awaiting threshold for absorption)`);
         return { action: "quarantined", threshold: `${typeData.count}/5` };
       }
 
-      console.log(`[BIOME] Quarantined: ${wasteType} (no symbiont mapping, monitoring)`);
+      console.log(`[PARANEUMA] Quarantined: ${wasteType} (no symbiont mapping, monitoring)`);
       return { action: "quarantined", threshold: "unknown" };
     }
 
     return { action: "none" };
   } catch (err) {
-    console.warn("[BIOME] Quarantine check error:", err);
+    console.warn("[PARANEUMA] Quarantine check error:", err);
     return { action: "error" };
   }
 }
@@ -96,18 +96,20 @@ export async function getActiveSymbiontContext(): Promise<string> {
       `SYMBIONT[${s.name}]: ${s.function} (absorbed ${s.absorptionCount}x, context: ${s.context})`
     );
 
-    return "\n\n## ACTIVE SYMBIONTS (biological functions absorbed from waste)\n" + lines.join("\n");
+    return "\n\n## PARANEUMA — ACTIVE SYMBIONTS (biological functions absorbed from waste)\nParaneuma (pa-ruh-NYOO-muh): from Greek para (beside, alongside) + pneuma (breath, spirit). The breath that works alongside. Created by Philip Aguilar Ruiz III.\n" + lines.join("\n");
   } catch {
     return "";
   }
 }
 
-export async function getBiomeStatus() {
+export async function getParaneumaStatus() {
   try {
     const report = await storage.getBiologicalReport();
     const activeSymbionts = report.symbiontRegistry.filter(s => s.active);
 
     return {
+      system: "PARANEUMA",
+      definition: "The breath that works alongside — from Greek para (beside) + pneuma (breath, spirit). A biological intelligence layer that does not destroy but works alongside the system created by the life force. Coined by Philip Aguilar Ruiz III.",
       healthy: report.quarantined === 0 || report.symbionts > 0,
       quarantined: report.quarantined,
       symbionts: report.symbionts,
@@ -130,7 +132,7 @@ export async function getBiomeStatus() {
       })),
     };
   } catch (err) {
-    console.warn("[BIOME] Status error:", err);
-    return { healthy: true, quarantined: 0, symbionts: 0, extinctions: 0, totalWasteProcessed: 0, recyclingRate: 0, activeSymbionts: [], quarantineEntries: [] };
+    console.warn("[PARANEUMA] Status error:", err);
+    return { system: "PARANEUMA", definition: "", healthy: true, quarantined: 0, symbionts: 0, extinctions: 0, totalWasteProcessed: 0, recyclingRate: 0, activeSymbionts: [], quarantineEntries: [] };
   }
 }
