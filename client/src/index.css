@@ -180,4 +180,14 @@
   ::-webkit-scrollbar-thumb:hover {
     background: var(--color-secondary); 
   }
+
+  @keyframes scan {
+    0% { transform: translateY(-100%); opacity: 0; }
+    50% { opacity: 0.8; }
+    100% { transform: translateY(300%); opacity: 0; }
+  }
+
+  .animate-scan {
+    animation: scan 3s linear infinite;
+  }
 }
