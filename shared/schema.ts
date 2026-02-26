@@ -104,6 +104,7 @@ export const authSessions = pgTable("auth_sessions", {
   fingerprintHash: text("fingerprint_hash").notNull(),
   layersCompleted: integer("layers_completed").notNull().default(0),
   webauthnVerified: boolean("webauthn_verified").notNull().default(false),
+  webauthnSkipped: boolean("webauthn_skipped").notNull().default(false),
   passphraseVerified: boolean("passphrase_verified").notNull().default(false),
   fingerprintVerified: boolean("fingerprint_verified").notNull().default(false),
   expiresAt: timestamp("expires_at").notNull(),

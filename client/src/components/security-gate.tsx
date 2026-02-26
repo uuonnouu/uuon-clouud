@@ -1,7 +1,7 @@
-import { useState, useEffect, useCallback, useRef } from "react";
-import { Shield, ShieldAlert, Fingerprint, Loader2, Lock, KeyRound, Scan, CheckCircle2 } from "lucide-react";
+import { useState, useEffect, useRef } from "react";
+import { Shield, ShieldAlert, Fingerprint, Loader2, Lock, KeyRound, Scan, CheckCircle2, AlertTriangle } from "lucide-react";
 import { generateFingerprint, getStoredFingerprint } from "../lib/fingerprint";
-import { startRegistration, startAuthentication } from "@simplewebauthn/browser";
+import { startRegistration, startAuthentication, browserSupportsWebAuthn } from "@simplewebauthn/browser";
 
 interface SecurityGateProps {
   children: React.ReactNode;
@@ -23,16 +23,20 @@ export function SecurityGate({ children }: SecurityGateProps) {
   const [passphraseError, setPassphraseError] = useState("");
   const [isProcessing, setIsProcessing] = useState(false);
   const [layerStatus, setLayerStatus] = useState({ webauthn: false, passphrase: false, fingerprint: false });
+  const [webauthnAvailable, setWebauthnAvailable] = useState(true);
+  const [webauthnSkipped, setWebauthnSkipped] = useState(false);
   const integrityInterval = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
-    checkAuth();
+    const available = browserSupportsWebAuthn();
+    setWebauthnAvailable(available);
+    checkAuth(available);
     return () => {
       if (integrityInterval.current) clearInterval(integrityInterval.current);
     };
   }, []);
 
-  async function checkAuth() {
+  async function checkAuth(webauthnSupported: boolean) {
     try {
       const existingToken = sessionStorage.getItem("uuon-session-token");
       if (existingToken) {
@@ -42,6 +46,7 @@ export function SecurityGate({ children }: SecurityGateProps) {
         const status = await statusRes.json();
         if (status.authenticated) {
           setLayerStatus(status.layers);
+          setWebauthnSkipped(status.layers.webauthnSkipped || false);
           setPhase("verified");
           startIntegrityMonitor();
           return;
@@ -57,19 +62,26 @@ export function SecurityGate({ children }: SecurityGateProps) {
         const updatedRes = await fetch("/api/auth/setup-status");
         const updated: SetupStatus = await updatedRes.json();
         setSetupStatus(updated);
-        if (!updated.layers.webauthn || !updated.layers.passphrase) {
+        if (!updated.layers.passphrase) {
           setPhase("setup");
           return;
         }
       }
 
-      if (!setup.layers.webauthn || !setup.layers.passphrase) {
+      if (!setup.layers.passphrase) {
         setPhase("setup");
         return;
       }
 
-      await createSession();
-      setPhase("layer1");
+      const skipWebauthn = !webauthnSupported || !setup.layers.webauthn;
+      setWebauthnSkipped(skipWebauthn);
+      await createSession(skipWebauthn);
+
+      if (!skipWebauthn && setup.layers.webauthn) {
+        setPhase("layer1");
+      } else {
+        setPhase("layer2");
+      }
     } catch (err) {
       console.error("Auth check error:", err);
       setMessage("Authentication system error");
@@ -88,13 +100,13 @@ export function SecurityGate({ children }: SecurityGateProps) {
     }
   }
 
-  async function createSession() {
+  async function createSession(skipWebauthn: boolean) {
     const fpHash = getStoredFingerprint() || (await generateFingerprint()).hash;
     sessionStorage.setItem("uuon-fingerprint", fpHash);
     const res = await fetch("/api/auth/session/create", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ fingerprintHash: fpHash }),
+      body: JSON.stringify({ fingerprintHash: fpHash, webauthnSkipped: skipWebauthn }),
     });
     const data = await res.json();
     if (data.token) {
@@ -258,7 +270,7 @@ export function SecurityGate({ children }: SecurityGateProps) {
     }, 30000);
   }
 
-  const setupReady = setupStatus?.layers.webauthn && setupStatus?.layers.passphrase;
+  const setupReady = setupStatus?.layers.passphrase;
 
   if (phase === "loading") {
     return (
@@ -271,7 +283,7 @@ export function SecurityGate({ children }: SecurityGateProps) {
           <div className="text-center">
             <p className="font-display text-sm tracking-widest uppercase text-primary">UUON CLOUUD</p>
             <p className="font-mono text-[10px] text-muted-foreground tracking-widest mt-2">
-              Initializing 3-layer security...
+              Initializing security...
             </p>
           </div>
         </div>
@@ -319,33 +331,47 @@ export function SecurityGate({ children }: SecurityGateProps) {
           <div>
             <p className="font-display text-sm tracking-widest uppercase text-primary">INITIAL SETUP</p>
             <p className="font-mono text-[10px] text-muted-foreground tracking-widest mt-2">
-              Configure 3-layer authentication
+              Configure authentication
             </p>
           </div>
 
           <div className="w-full space-y-4 mt-4">
-            <div className={`border rounded-lg p-4 text-left ${setupStatus?.layers.webauthn ? "border-green-500/50 bg-green-500/5" : "border-border/50"}`}>
-              <div className="flex items-center gap-3 mb-2">
-                <Fingerprint className={`w-5 h-5 ${setupStatus?.layers.webauthn ? "text-green-500" : "text-primary"}`} />
-                <span className="font-mono text-xs uppercase tracking-wider">Layer 1: Biometric</span>
-                {setupStatus?.layers.webauthn && <CheckCircle2 className="w-4 h-4 text-green-500 ml-auto" />}
+            {webauthnAvailable && (
+              <div className={`border rounded-lg p-4 text-left ${setupStatus?.layers.webauthn ? "border-green-500/50 bg-green-500/5" : "border-border/50"}`}>
+                <div className="flex items-center gap-3 mb-2">
+                  <Fingerprint className={`w-5 h-5 ${setupStatus?.layers.webauthn ? "text-green-500" : "text-primary"}`} />
+                  <span className="font-mono text-xs uppercase tracking-wider">Biometric (Optional)</span>
+                  {setupStatus?.layers.webauthn && <CheckCircle2 className="w-4 h-4 text-green-500 ml-auto" />}
+                </div>
+                {!setupStatus?.layers.webauthn && (
+                  <button
+                    onClick={handleSetupWebAuthn}
+                    disabled={isProcessing}
+                    className="w-full mt-2 bg-primary/20 hover:bg-primary/30 text-primary font-mono text-xs py-2 rounded border border-primary/30 disabled:opacity-50 transition-colors"
+                    data-testid="button-setup-webauthn"
+                  >
+                    {isProcessing ? "Processing..." : "Register Fingerprint / Face ID"}
+                  </button>
+                )}
               </div>
-              {!setupStatus?.layers.webauthn && (
-                <button
-                  onClick={handleSetupWebAuthn}
-                  disabled={isProcessing}
-                  className="w-full mt-2 bg-primary/20 hover:bg-primary/30 text-primary font-mono text-xs py-2 rounded border border-primary/30 disabled:opacity-50 transition-colors"
-                  data-testid="button-setup-webauthn"
-                >
-                  {isProcessing ? "Processing..." : "Register Fingerprint / Face ID"}
-                </button>
-              )}
-            </div>
+            )}
+
+            {!webauthnAvailable && (
+              <div className="border border-yellow-500/30 rounded-lg p-4 text-left bg-yellow-500/5">
+                <div className="flex items-center gap-3">
+                  <AlertTriangle className="w-5 h-5 text-yellow-500" />
+                  <span className="font-mono text-xs uppercase tracking-wider text-yellow-500">Biometric Not Available</span>
+                </div>
+                <p className="font-mono text-[9px] text-muted-foreground/60 mt-2">
+                  Your device does not support fingerprint or Face ID via browser. Passphrase and device signature will secure your session.
+                </p>
+              </div>
+            )}
 
             <div className={`border rounded-lg p-4 text-left ${setupStatus?.layers.passphrase ? "border-green-500/50 bg-green-500/5" : "border-border/50"}`}>
               <div className="flex items-center gap-3 mb-2">
                 <KeyRound className={`w-5 h-5 ${setupStatus?.layers.passphrase ? "text-green-500" : "text-primary"}`} />
-                <span className="font-mono text-xs uppercase tracking-wider">Layer 2: Passphrase</span>
+                <span className="font-mono text-xs uppercase tracking-wider">Passphrase (Required)</span>
                 {setupStatus?.layers.passphrase && <CheckCircle2 className="w-4 h-4 text-green-500 ml-auto" />}
               </div>
               {!setupStatus?.layers.passphrase && (
@@ -354,6 +380,7 @@ export function SecurityGate({ children }: SecurityGateProps) {
                     type="password"
                     value={passphrase}
                     onChange={(e) => { setPassphrase(e.target.value); setPassphraseError(""); }}
+                    onKeyDown={(e) => { if (e.key === "Enter" && passphrase.length >= 8) handleSetupPassphrase(); }}
                     placeholder="Set your passphrase (min 8 characters)"
                     className="w-full bg-background border border-border/50 rounded px-3 py-2 font-mono text-xs text-white placeholder:text-muted-foreground/50 focus:outline-none focus:border-primary/50"
                     data-testid="input-setup-passphrase"
@@ -374,7 +401,7 @@ export function SecurityGate({ children }: SecurityGateProps) {
             <div className={`border rounded-lg p-4 text-left ${setupStatus?.layers.fingerprint ? "border-green-500/50 bg-green-500/5" : "border-border/50"}`}>
               <div className="flex items-center gap-3">
                 <Scan className={`w-5 h-5 ${setupStatus?.layers.fingerprint ? "text-green-500" : "text-primary"}`} />
-                <span className="font-mono text-xs uppercase tracking-wider">Layer 3: Device Signature</span>
+                <span className="font-mono text-xs uppercase tracking-wider">Device Signature</span>
                 {setupStatus?.layers.fingerprint && <CheckCircle2 className="w-4 h-4 text-green-500 ml-auto" />}
               </div>
               <p className="font-mono text-[9px] text-muted-foreground/60 mt-1">Auto-captured from your device</p>
@@ -385,7 +412,17 @@ export function SecurityGate({ children }: SecurityGateProps) {
 
           {setupReady && (
             <button
-              onClick={() => { createSession().then(() => setPhase("layer1")); }}
+              onClick={() => {
+                const skip = !webauthnAvailable || !setupStatus?.layers.webauthn;
+                setWebauthnSkipped(skip);
+                createSession(skip).then(() => {
+                  if (!skip && setupStatus?.layers.webauthn) {
+                    setPhase("layer1");
+                  } else {
+                    setPhase("layer2");
+                  }
+                });
+              }}
               className="w-full bg-green-500/20 hover:bg-green-500/30 text-green-500 font-mono text-xs py-3 rounded border border-green-500/30 transition-colors mt-2"
               data-testid="button-begin-auth"
             >
@@ -398,6 +435,17 @@ export function SecurityGate({ children }: SecurityGateProps) {
   }
 
   if (phase === "layer1" || phase === "layer2" || phase === "layer3") {
+    const activeLayers = webauthnSkipped
+      ? [
+          { label: "PASSPHRASE", done: layerStatus.passphrase, active: phase === "layer2" },
+          { label: "DEVICE", done: layerStatus.fingerprint, active: phase === "layer3" },
+        ]
+      : [
+          { label: "BIOMETRIC", done: layerStatus.webauthn, active: phase === "layer1" },
+          { label: "PASSPHRASE", done: layerStatus.passphrase, active: phase === "layer2" },
+          { label: "DEVICE", done: layerStatus.fingerprint, active: phase === "layer3" },
+        ];
+
     return (
       <div className="h-screen bg-background flex items-center justify-center" data-testid="security-auth">
         <div className="flex flex-col items-center gap-6 max-w-md text-center px-6">
@@ -405,11 +453,7 @@ export function SecurityGate({ children }: SecurityGateProps) {
           <p className="font-display text-sm tracking-widest uppercase text-primary">AUTHENTICATION</p>
 
           <div className="w-full flex items-center gap-2 mt-2">
-            {[
-              { label: "BIOMETRIC", done: layerStatus.webauthn, active: phase === "layer1" },
-              { label: "PASSPHRASE", done: layerStatus.passphrase, active: phase === "layer2" },
-              { label: "DEVICE", done: layerStatus.fingerprint, active: phase === "layer3" },
-            ].map((l, i) => (
+            {activeLayers.map((l, i) => (
               <div key={i} className="flex-1">
                 <div className={`h-1 rounded-full mb-1 transition-all duration-500 ${l.done ? "bg-green-500" : l.active ? "bg-primary animate-pulse" : "bg-border/30"}`} />
                 <p className={`font-mono text-[7px] uppercase tracking-widest ${l.done ? "text-green-500" : l.active ? "text-primary" : "text-muted-foreground/40"}`}>
@@ -419,7 +463,7 @@ export function SecurityGate({ children }: SecurityGateProps) {
             ))}
           </div>
 
-          {phase === "layer1" && (
+          {phase === "layer1" && !webauthnSkipped && (
             <div className="w-full mt-4">
               <Fingerprint className="w-12 h-12 text-primary mx-auto mb-4" />
               <p className="font-mono text-[10px] text-muted-foreground mb-4">

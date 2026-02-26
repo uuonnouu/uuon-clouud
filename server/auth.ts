@@ -297,7 +297,7 @@ export function registerAuthRoutes(app: any) {
 
   app.post("/api/auth/session/create", async (req: Request, res: Response) => {
     try {
-      const { fingerprintHash } = req.body;
+      const { fingerprintHash, webauthnSkipped } = req.body;
       if (!fingerprintHash) {
         return res.status(400).json({ error: "Fingerprint hash required" });
       }
@@ -309,6 +309,7 @@ export function registerAuthRoutes(app: any) {
         token,
         fingerprintHash,
         layersCompleted: 0,
+        webauthnSkipped: !!webauthnSkipped,
         expiresAt,
       });
 
@@ -342,10 +343,11 @@ export function registerAuthRoutes(app: any) {
         return res.status(403).json({ error: "Device signature changed. Session locked.", locked: true });
       }
 
+      const webauthnDone = session.webauthnVerified || session.webauthnSkipped;
       await db.update(authSessions)
         .set({
           fingerprintVerified: true,
-          layersCompleted: (session.webauthnVerified ? 1 : 0) + (session.passphraseVerified ? 1 : 0) + 1,
+          layersCompleted: (webauthnDone ? 1 : 0) + (session.passphraseVerified ? 1 : 0) + 1,
         })
         .where(eq(authSessions.token, sessionToken));
 
@@ -367,11 +369,13 @@ export function registerAuthRoutes(app: any) {
         return res.json({ authenticated: false, layers: { webauthn: false, passphrase: false, fingerprint: false } });
       }
 
-      const allVerified = session.webauthnVerified && session.passphraseVerified && session.fingerprintVerified;
+      const webauthnOk = session.webauthnVerified || session.webauthnSkipped;
+      const allVerified = webauthnOk && session.passphraseVerified && session.fingerprintVerified;
       res.json({
         authenticated: allVerified,
         layers: {
           webauthn: session.webauthnVerified,
+          webauthnSkipped: session.webauthnSkipped,
           passphrase: session.passphraseVerified,
           fingerprint: session.fingerprintVerified,
         },

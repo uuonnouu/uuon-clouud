@@ -63,11 +63,14 @@ async function enforceFullAuth(req: Request, res: Response, next: NextFunction) 
 
   if (sessionToken) {
     const session = await getValidSession(sessionToken);
-    if (session && session.webauthnVerified && session.passphraseVerified && session.fingerprintVerified) {
-      await storage.updateFingerprintLastSeen(fpHash);
-      await storage.logAccess(fpHash, req.path, true, req.ip, req.headers["user-agent"]);
-      (req as any).isOwner = true;
-      return next();
+    if (session) {
+      const webauthnOk = session.webauthnVerified || session.webauthnSkipped;
+      if (webauthnOk && session.passphraseVerified && session.fingerprintVerified) {
+        await storage.updateFingerprintLastSeen(fpHash);
+        await storage.logAccess(fpHash, req.path, true, req.ip, req.headers["user-agent"]);
+        (req as any).isOwner = true;
+        return next();
+      }
     }
   }
 
