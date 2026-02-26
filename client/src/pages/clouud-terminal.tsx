@@ -62,6 +62,7 @@ export default function ClouudTerminal() {
   const [linkUrl, setLinkUrl] = useState("");
   const [isUploading, setIsUploading] = useState(false);
   const [isScraping, setIsScraping] = useState(false);
+  const [msgAssessments, setMsgAssessments] = useState<Record<number, { score: number; missionAlignment: number; responseQuality: number; formatCompliance: number; identityIntegrity: number; flags: string[]; wordCount: number }>>({});
   const scrollRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -228,6 +229,21 @@ export default function ClouudTerminal() {
         const withoutTemp = prev.filter(m => m.id !== tempUserMsg.id);
         return [...withoutTemp, data.userMessage, data.assistantMessage];
       });
+
+      if (data.selfAssessment) {
+        setMsgAssessments(prev => ({
+          ...prev,
+          [data.assistantMessage.id]: {
+            score: data.selfAssessment.score,
+            missionAlignment: data.selfAssessment.missionAlignment,
+            responseQuality: data.selfAssessment.responseQuality,
+            formatCompliance: data.selfAssessment.formatCompliance,
+            identityIntegrity: data.selfAssessment.identityIntegrity,
+            flags: data.selfAssessment.flags,
+            wordCount: data.selfAssessment.wordCount,
+          }
+        }));
+      }
 
       setTimeout(() => setAiState("idle"), 2000);
     } catch (err: any) {
@@ -720,12 +736,33 @@ export default function ClouudTerminal() {
                           ))}
                           
                           {msg.hash && (
-                            <div className="mt-3 pt-2 border-t border-muted">
+                            <div className="mt-3 pt-2 border-t border-muted space-y-1">
                               <div className="flex items-center gap-1.5 font-mono text-[8px] text-muted-foreground">
                                 <Binary className="w-2.5 h-2.5 text-secondary" />
                                 <span className="text-secondary/70 mr-1">UUON·TOKEN</span>
                                 <span className="truncate uppercase tracking-widest">{msg.hash}</span>
                               </div>
+                              {msgAssessments[msg.id] && (
+                                <div className="space-y-1">
+                                  <div className="flex items-center gap-1.5 font-mono text-[8px]">
+                                    <Scale className="w-2.5 h-2.5" style={{ color: msgAssessments[msg.id].score >= 90 ? '#22c55e' : msgAssessments[msg.id].score >= 70 ? '#f0b93b' : '#ef4444' }} />
+                                    <span style={{ color: msgAssessments[msg.id].score >= 90 ? '#22c55e' : msgAssessments[msg.id].score >= 70 ? '#f0b93b' : '#ef4444' }}>
+                                      {msgAssessments[msg.id].score}/100
+                                    </span>
+                                    <span className="text-muted-foreground/50">
+                                      M:{msgAssessments[msg.id].missionAlignment} Q:{msgAssessments[msg.id].responseQuality} F:{msgAssessments[msg.id].formatCompliance} I:{msgAssessments[msg.id].identityIntegrity}
+                                    </span>
+                                    <span className="text-muted-foreground">{msgAssessments[msg.id].wordCount}w</span>
+                                  </div>
+                                  {msgAssessments[msg.id].flags.length > 0 && (
+                                    <div className="font-mono text-[7px] text-yellow-500/60 space-y-0.5">
+                                      {msgAssessments[msg.id].flags.slice(0, 3).map((flag, fi) => (
+                                        <div key={fi} className="truncate">{flag}</div>
+                                      ))}
+                                    </div>
+                                  )}
+                                </div>
+                              )}
                             </div>
                           )}
                         </motion.div>

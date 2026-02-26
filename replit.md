@@ -56,7 +56,7 @@ UUON Clouud is the intelligence interface for the G°centric Lattice System, bui
 19. **File Upload:** Paperclip button, multer handler, text extraction
 20. **Link Scraper:** SSRF-protected URL scraper with DNS resolution check
 21. **Voice Input:** Web Speech API continuous recognition
-22. **Self-Assessment Engine (4-Metric, backend-only):** Every response scored on 4 independent metrics internally. Scores NOT exposed to user in chat. Available in metrics panel aggregate only.
+22. **Self-Assessment Engine (4-Metric, transparent):** Every response scored on 4 independent metrics. Scores shown per-message with sanitized flags (detection ruleset stays internal, observations are public). G°centric principle: show the fault lines.
     - **Mission Alignment** (0-100): Waste detection, hedging, filler, gatekeeping
     - **Response Quality** (0-100): Word count, readability, repetition
     - **Format Compliance** (0-100): Bullets, headers, markdown formatting

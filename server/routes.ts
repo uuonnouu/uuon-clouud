@@ -538,9 +538,27 @@ export async function registerRoutes(
         flags: JSON.stringify(selfAssessment.flags),
       });
 
+      const safeFlags = selfAssessment.flags.map((flag: string) => {
+        const category = flag.split(":")[0].trim();
+        const description = flag.split(":").slice(1).join(":").trim()
+          .replace(/"[^"]+"/g, "")
+          .trim();
+        return `${category}: ${description}`.replace(/\s+/g, " ").trim();
+      });
+
       res.json({
         userMessage: userMsg,
         assistantMessage: assistantMsg,
+        selfAssessment: {
+          score: selfAssessment.score,
+          missionAlignment: selfAssessment.missionAlignment,
+          responseQuality: selfAssessment.responseQuality,
+          formatCompliance: selfAssessment.formatCompliance,
+          identityIntegrity: selfAssessment.identityIntegrity,
+          wordCount: selfAssessment.wordCount,
+          pass: selfAssessment.pass,
+          flags: safeFlags,
+        },
       });
     } catch (error: any) {
       const responseTimeMs = Date.now() - startTime;
