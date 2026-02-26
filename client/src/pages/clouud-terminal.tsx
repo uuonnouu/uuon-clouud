@@ -1002,22 +1002,57 @@ export default function ClouudTerminal() {
                         >
                           {holoActive && <div className="holo-scanline-overlay" style={{ animationDuration: '1s', animationIterationCount: 5 }} />}
                           {holoActive && <div className="holo-beam-line" style={{ animationDelay: '0.3s' }} />}
-                          {msg.content.split('\n\n').map((paragraph, i) => (
-                            <motion.span
-                              key={i}
-                              initial={holoActive ? { opacity: 0, y: 6, filter: "blur(2px)" } : { opacity: 0 }}
-                              animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-                              transition={{
-                                duration: holoActive ? 0.6 : 0.5,
-                                delay: (msg.toolCall ? 0.5 : 0.3) + i * (holoActive ? 0.06 : 0.08),
-                                ease: "easeOut",
-                              }}
-                              className={`inline relative z-10 ${holoActive ? 'holo-text' : ''}`}
-                            >
-                              {i > 0 && <><br /><br /></>}
-                              {paragraph}
-                            </motion.span>
-                          ))}
+                          {(() => {
+                            const quickLinkRegex = /\[>>(.*?)>>\]/g;
+                            const quickLinks: string[] = [];
+                            let match;
+                            while ((match = quickLinkRegex.exec(msg.content)) !== null) {
+                              quickLinks.push(match[1]);
+                            }
+                            const cleanContent = msg.content.replace(/\[>>.*?>>\]/g, '').trimEnd();
+                            
+                            return (
+                              <>
+                                {cleanContent.split('\n\n').map((paragraph, i) => (
+                                  <motion.span
+                                    key={i}
+                                    initial={holoActive ? { opacity: 0, y: 6, filter: "blur(2px)" } : { opacity: 0 }}
+                                    animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+                                    transition={{
+                                      duration: holoActive ? 0.6 : 0.5,
+                                      delay: (msg.toolCall ? 0.5 : 0.3) + i * (holoActive ? 0.06 : 0.08),
+                                      ease: "easeOut",
+                                    }}
+                                    className={`inline relative z-10 ${holoActive ? 'holo-text' : ''}`}
+                                  >
+                                    {i > 0 && <><br /><br /></>}
+                                    {paragraph}
+                                  </motion.span>
+                                ))}
+                                
+                                {quickLinks.length > 0 && msg.role === 'assistant' && (
+                                  <motion.div
+                                    initial={{ opacity: 0, y: 6 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    transition={{ delay: 0.8, duration: 0.4 }}
+                                    className="flex flex-wrap gap-1.5 mt-3 pt-2 border-t border-border/30"
+                                  >
+                                    {quickLinks.map((link, li) => (
+                                      <button
+                                        key={li}
+                                        onClick={() => sendMessage(link)}
+                                        className="flex items-center gap-1 px-2.5 py-1 text-[10px] font-mono tracking-wider text-primary/80 hover:text-white bg-primary/5 hover:bg-primary/15 border border-primary/15 hover:border-primary/40 rounded-sm transition-all"
+                                        data-testid={`quick-link-${msg.id}-${li}`}
+                                      >
+                                        <ChevronRight className="w-2.5 h-2.5" />
+                                        {link}
+                                      </button>
+                                    ))}
+                                  </motion.div>
+                                )}
+                              </>
+                            );
+                          })()}
                           
                           {msg.role === 'assistant' && (
                             <div className="mt-2 flex items-center gap-1">
