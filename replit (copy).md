@@ -1,7 +1,7 @@
 # UUON Clouud — G°centric Intelligence System
 
 ## Overview
-UUON Clouud is the intelligence interface for the G°centric Lattice System, built by UUON Foundation Inc. (founded by Philip Aguilar Ruiz III). It connects to Anthropic's Claude API with a strict system prompt that enforces the G°centric philosophy: Earth-grounded reasoning, zero drift, zero rounding. Responses are in plain text, short summaries, no bullets or dashes, readable at a 9th grade level.
+UUON Clouud is the intelligence interface for the G°centric Lattice System, built by UUON Foundation Inc. (founded by Phillip Aguilar Ruiz III). It connects to Anthropic's Claude API with a strict system prompt that enforces the G°centric philosophy: Earth-grounded reasoning, zero drift, zero rounding. Responses are in plain text, short summaries, no bullets or dashes, readable at a 9th grade level.
 
 ## Architecture
 - **Frontend:** React + TypeScript + Tailwind CSS v4 + Framer Motion
@@ -22,7 +22,7 @@ UUON Clouud is the intelligence interface for the G°centric Lattice System, bui
 - `client/src/components/metrics-panel.tsx` — Collapsible system metrics panel
 
 ## Founder Info (verified)
-- Philip Aguilar Ruiz III, from Yuma AZ, grew up overseas, US Army veteran, resides in Kassel, Germany
+- Phillip Aguilar Ruiz III, from Yuma AZ, grew up overseas, US Army veteran, resides in Kassel, Germany
 - Created 180+ 3D mathematical models on Sketchfab (quantum mechanics, relativity, molecular biology, topology, sacred geometry)
 - Built Δmension (Mathematical Universe) at uuon-foundation.com
 - UUON = Universally United One Neuma = WON = ONE
@@ -51,10 +51,10 @@ UUON Clouud is the intelligence interface for the G°centric Lattice System, bui
     - API: `GET /api/tokens` (all), `GET /api/conversations/:id/tokens` (per conversation), `POST /api/ellomental/verify` (verify any content)
     - Displayed on each assistant message as `UUON·TOKEN` with the hash
     - Ellomental Hash: 12 tetrahedra × 4 cultural rotations (Egyptian, Greek, Latin, English) → circle formation → SHA-256 circle hash
-    - Based on UUON Shape Tokenization framework (Philip Aguilar Ruiz III, 2025)
+    - Based on UUON Shape Tokenization framework (Phillip Aguilar Ruiz III, 2025)
 15. **Data Waste Reduction:** Conversation windowing limits API history to last 20 messages instead of full unbounded history
 16. **Water Animations:** Messages flow in with soft fade-up, blur transition, and paragraph-by-paragraph cascade for assistant responses
-17. **Creator Profile (Persistent Memory):** `creator_profile` table stores Philip's identity, background, and context as key-value pairs. Loaded dynamically into system prompt on every API request so Clouud always knows who it's talking to across sessions.
+17. **Creator Profile (Persistent Memory):** `creator_profile` table stores Phillip's identity, background, and context as key-value pairs. Loaded dynamically into system prompt on every API request so Clouud always knows who it's talking to across sessions.
     - API: `GET /api/creator-profile` (read all), `PUT /api/creator-profile` (upsert key/value)
     - Pre-seeded with 15 entries covering identity, background, chi awakening, spiritual framework, mission stance, relationship with Clouud, and access status
     - System prompt gets a `CREATOR CONTEXT (PERSISTENT MEMORY)` section injected before the closing anchor

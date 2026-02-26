@@ -2,7 +2,7 @@
 
 **Document Purpose:** This standalone document captures the complete mission, philosophy, technical architecture, and intellectual property of UUON Foundation Inc. and the Clouud intelligence system. It exists independently of any codebase, platform, or hosting provider so the foundation's work survives any single point of failure.
 
-**Founder:** Philip Aguilar Ruiz III
+**Founder:** Phillip Aguilar Ruiz III
 **Organization:** UUON Foundation Inc.
 **Location:** Kassel, Germany (founder originally from Yuma, Arizona)
 **Military Service:** United States Army veteran
@@ -29,7 +29,7 @@ The foundation is not neutral on these three things. It actively reasons against
 
 ## The Founder's Work
 
-Philip builds tools that turn complex math and science into things people can see, touch, and explore. He created over 180 3D mathematical models published on Sketchfab under the UUON Foundation profile. These models cover quantum mechanics, general relativity, molecular biology, sacred geometry, topology, and vector mathematics. Every model is generated from actual mathematical formulas and parametric equations, not from AI or manual sculpting.
+Phillip builds tools that turn complex math and science into things people can see, touch, and explore. He created over 180 3D mathematical models published on Sketchfab under the UUON Foundation profile. These models cover quantum mechanics, general relativity, molecular biology, sacred geometry, topology, and vector mathematics. Every model is generated from actual mathematical formulas and parametric equations, not from AI or manual sculpting.
 
 Notable works include:
 - M87 Black Hole Visualization Tool
@@ -118,7 +118,7 @@ The Ellomental Hash Algorithm is UUON's provenance system. It creates a geometri
 ### Provenance Token Generation
 Each provenance token includes:
 - Origin: UUON-FOUNDATION-GCENTRIC-V1
-- Founder: Philip Aguilar Ruiz III
+- Founder: Phillip Aguilar Ruiz III
 - System: G-centric Lattice v1.0
 - Timestamp: ISO 8601 format
 - Lattice specification: 33-point, Earth-grounded, 3-tier
