@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from "react";
-import { Cpu, Binary, Menu, X, Globe, Zap, Network, ChevronRight, Plus, Trash2, MessageCircle, Loader2, Activity, HelpCircle } from "lucide-react";
+import { Cpu, Binary, Menu, X, Globe, Zap, Network, ChevronRight, Plus, Trash2, MessageCircle, Loader2, Activity, HelpCircle, Undo2, Scale } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useLocation } from "wouter";
 import ClouudAvatar from "@/components/clouud-avatar";
 import Tutorial from "@/components/tutorial";
 import uuonLogo from "@assets/A7950814-2592-4E7D-858F-3AEB1D632F98_1772064571557.png";
@@ -40,6 +41,7 @@ const QUICK_ACTIONS = [
 ];
 
 export default function ClouudTerminal() {
+  const [, setLocation] = useLocation();
   const [input, setInput] = useState("");
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([]);
@@ -134,7 +136,8 @@ export default function ClouudTerminal() {
   }
 
   function handleQuickAction(label: string) {
-    setInput(label);
+    sendMessage(label);
+    setIsSidebarOpen(false);
   }
 
   function completeTutorial() {
@@ -228,6 +231,20 @@ export default function ClouudTerminal() {
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     sendMessage(input);
+  }
+
+  async function handleUndo() {
+    if (!activeConvo || isTyping || messages.length < 2) return;
+    try {
+      const res = await fetch(`/api/conversations/${activeConvo}/messages/last`, {
+        method: "DELETE",
+      });
+      if (res.ok) {
+        const data = await res.json();
+        setMessages(prev => prev.slice(0, -2));
+        setInput(data.lastUserContent || "");
+      }
+    } catch {}
   }
 
   if (isLoading) {
@@ -397,6 +414,14 @@ export default function ClouudTerminal() {
                   <HelpCircle className="w-3.5 h-3.5 shrink-0" />
                   Interactive Tutorial
                 </button>
+                <button
+                  onClick={() => setLocation("/legal")}
+                  className="w-full flex items-center gap-2 px-2 py-2 text-[11px] text-muted-foreground hover:text-white bg-background hover:bg-muted/60 border border-border hover:border-border/60 rounded-sm transition-all"
+                  data-testid="button-legal"
+                >
+                  <Scale className="w-3.5 h-3.5 shrink-0" />
+                  Legal · Terms · Privacy
+                </button>
               </div>
             </div>
           </motion.div>
@@ -520,26 +545,39 @@ export default function ClouudTerminal() {
         )}
 
         <div className="p-3 md:p-4 bg-card border-t border-border z-10">
-          <form onSubmit={handleSubmit} className="relative max-w-4xl mx-auto flex items-center">
-            <div className="absolute left-3 text-primary font-bold font-mono text-sm">{">"}</div>
-            <input 
-              type="text"
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              placeholder="Ask Clouud..."
-              disabled={isTyping}
-              className="w-full bg-background border border-border text-white pl-8 pr-24 py-3 focus:outline-none focus:border-primary transition-all rounded-sm text-sm placeholder:text-muted-foreground disabled:opacity-50"
-              style={{ boxShadow: '4px 4px 0px 0px var(--color-border)' }}
-              data-testid="input-clouud"
-            />
-            <button 
-              type="submit" 
-              disabled={!input.trim() || isTyping}
-              className="absolute right-2 px-3 py-1.5 bg-primary hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed text-black font-display text-xs tracking-wider font-bold uppercase rounded-sm transition-colors"
-              data-testid="button-submit"
-            >
-              {isTyping ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : "Send"}
-            </button>
+          <form onSubmit={handleSubmit} className="relative max-w-4xl mx-auto flex items-center gap-2">
+            {messages.length >= 2 && !isTyping && (
+              <button
+                type="button"
+                onClick={handleUndo}
+                className="shrink-0 p-2.5 text-muted-foreground hover:text-primary bg-background border border-border hover:border-primary/30 rounded-sm transition-all"
+                title="Undo last exchange"
+                data-testid="button-undo"
+              >
+                <Undo2 className="w-4 h-4" />
+              </button>
+            )}
+            <div className="relative flex-1">
+              <div className="absolute left-3 top-1/2 -translate-y-1/2 text-primary font-bold font-mono text-sm">{">"}</div>
+              <input 
+                type="text"
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                placeholder="Ask Clouud..."
+                disabled={isTyping}
+                className="w-full bg-background border border-border text-white pl-8 pr-24 py-3 focus:outline-none focus:border-primary transition-all rounded-sm text-sm placeholder:text-muted-foreground disabled:opacity-50"
+                style={{ boxShadow: '4px 4px 0px 0px var(--color-border)' }}
+                data-testid="input-clouud"
+              />
+              <button 
+                type="submit" 
+                disabled={!input.trim() || isTyping}
+                className="absolute right-2 top-1/2 -translate-y-1/2 px-3 py-1.5 bg-primary hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed text-black font-display text-xs tracking-wider font-bold uppercase rounded-sm transition-colors"
+                data-testid="button-submit"
+              >
+                {isTyping ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : "Send"}
+              </button>
+            </div>
           </form>
         </div>
       </div>

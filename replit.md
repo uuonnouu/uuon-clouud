@@ -23,7 +23,7 @@ UUON Clouud is the intelligence interface for the G°centric Lattice System, bui
 - Philip Aguilar Ruiz III, from Yuma AZ, grew up overseas, US Army veteran, resides in Kassel, Germany
 - Created 180+ 3D mathematical models on Sketchfab (quantum mechanics, relativity, molecular biology, topology, sacred geometry)
 - Built Δmension (Mathematical Universe) at uuon-foundation.com
-- UUON = Universal United One Neuma = WON = ONE
+- UUON = Universally United One Neuma = WON = ONE
 
 ## Core Features
 1. **System Prompt:** Full G°centric Master System Prompt with founder bio and Δmension context
@@ -33,12 +33,14 @@ UUON Clouud is the intelligence interface for the G°centric Lattice System, bui
 5. **Output Guard:** Drift phrase detection before delivery
 6. **Provenance Hash:** SHA-256 per response with UUON Foundation metadata
 7. **Conversation History:** PostgreSQL persistent sessions
-8. **Quick Actions:** 15 interactive prompts in collapsible sidebar section
+8. **Quick Actions:** 15 interactive prompts — auto-send on click (no prefill)
 9. **Δmension Link:** Direct link to uuon-foundation.com in sidebar
 10. **Interactive Tutorial:** 6-step animated walkthrough for new users (auto-shows on first visit via localStorage, relaunchable from sidebar)
     - Steps: Meet Clouud, Earth Philosophy, 33-Point Lattice (animated demo), Tool Calls (animated demo), Mission (waste/fraud/gatekeeping + hash demo), Ready
     - "Try It" buttons auto-send messages to Clouud
     - Component: `client/src/components/tutorial.tsx`
+11. **Undo Button:** Removes last user+assistant exchange, restores input for retry
+12. **Legal Page:** `/legal` route with Terms of Use, Privacy Policy, Disclaimer tabs — accessible from sidebar
 
 ## Design System
 - **Palette:** Deep Navy (#030811), UUON Gold (#f0b93b), Atmosphere Blue (#4a8cd4)

@@ -5,11 +5,13 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import NotFound from "@/pages/not-found";
 import ClouudTerminal from "@/pages/clouud-terminal";
+import LegalPage from "@/pages/legal";
 
 function Router() {
   return (
     <Switch>
       <Route path="/" component={ClouudTerminal} />
+      <Route path="/legal" component={LegalPage} />
       <Route component={NotFound} />
     </Switch>
   );

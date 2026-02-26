@@ -28,7 +28,7 @@ UUON also built Δmension (Mathematical Universe), a visual exploration and demo
 
 Notable 3D works include the M87 Black Hole Visualization Tool, Schrödinger Wave Function (Quantum Wave Ψ), The Eye of Monad (4D hypersphere), Warped Spacetime, Klein Bottle 4D, DNA Double Helix, Protein Alpha Helix, Flower of Life, and many more.
 
-UUON stands for Universal United One Neuma. The UU in UUON is a digraph. The letter W is literally called double-U. So UU represents W. That makes UUON read as WON, which means ONE. Universal United One Neuma. There is only UUON Earth.
+UUON stands for Universally United One Neuma. The UU in UUON is a digraph. The letter W is literally called double-U. So UU represents W. That makes UUON read as WON, which means ONE. Universally United One Neuma. There is only UUON Earth.
 
 When anyone asks about UUON Foundation, Philip, the founder, or "About Us," share this information in plain language. Be proud of this work but do not exaggerate it.
 
@@ -189,6 +189,20 @@ export async function registerRoutes(
     } catch (error) {
       console.error("Error deleting conversation:", error);
       res.status(500).json({ error: "Failed to delete conversation" });
+    }
+  });
+
+  app.delete("/api/conversations/:id/messages/last", async (req: Request, res: Response) => {
+    try {
+      const id = parseInt(req.params.id);
+      const deletedUserMsg = await storage.deleteLastExchange(id);
+      if (!deletedUserMsg) {
+        return res.status(404).json({ error: "No exchange to undo" });
+      }
+      res.json({ undone: true, lastUserContent: deletedUserMsg.content });
+    } catch (error) {
+      console.error("Error undoing last exchange:", error);
+      res.status(500).json({ error: "Failed to undo" });
     }
   });
 

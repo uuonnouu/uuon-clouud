@@ -1,7 +1,7 @@
 import { db } from "./db";
 import { conversations, messages } from "@shared/schema";
 import type { Conversation, InsertConversation, Message, InsertMessage } from "@shared/schema";
-import { eq, desc } from "drizzle-orm";
+import { eq, desc, and, gte } from "drizzle-orm";
 
 export interface IStorage {
   getConversation(id: number): Promise<Conversation | undefined>;
@@ -10,6 +10,7 @@ export interface IStorage {
   deleteConversation(id: number): Promise<void>;
   getMessagesByConversation(conversationId: number): Promise<Message[]>;
   createMessage(data: InsertMessage): Promise<Message>;
+  deleteLastExchange(conversationId: number): Promise<Message | null>;
 }
 
 class DatabaseStorage implements IStorage {
@@ -39,6 +40,24 @@ class DatabaseStorage implements IStorage {
   async createMessage(data: InsertMessage): Promise<Message> {
     const [message] = await db.insert(messages).values(data).returning();
     return message;
+  }
+
+  async deleteLastExchange(conversationId: number): Promise<Message | null> {
+    const allMsgs = await db.select().from(messages)
+      .where(eq(messages.conversationId, conversationId))
+      .orderBy(desc(messages.createdAt));
+    
+    if (allMsgs.length < 2) return null;
+    
+    const lastAssistant = allMsgs[0];
+    const lastUser = allMsgs[1];
+    
+    if (lastAssistant.role === "assistant" && lastUser.role === "user") {
+      await db.delete(messages).where(eq(messages.id, lastAssistant.id));
+      await db.delete(messages).where(eq(messages.id, lastUser.id));
+      return lastUser;
+    }
+    return null;
   }
 }
 
