@@ -66,6 +66,17 @@ export const uploads = pgTable("uploads", {
   createdAt: timestamp("created_at").default(sql`CURRENT_TIMESTAMP`).notNull(),
 });
 
+export const selfAssessments = pgTable("self_assessments", {
+  id: serial("id").primaryKey(),
+  messageId: integer("message_id").notNull().references(() => messages.id, { onDelete: "cascade" }),
+  conversationId: integer("conversation_id").notNull().references(() => conversations.id, { onDelete: "cascade" }),
+  score: integer("score").notNull(),
+  wordCount: integer("word_count").notNull(),
+  pass: boolean("pass").notNull(),
+  flags: text("flags").notNull().default("[]"),
+  createdAt: timestamp("created_at").default(sql`CURRENT_TIMESTAMP`).notNull(),
+});
+
 export const insertConversationSchema = createInsertSchema(conversations).omit({
   id: true,
   createdAt: true,
@@ -91,3 +102,4 @@ export type CreatorProfileEntry = typeof creatorProfile.$inferSelect;
 export type Fingerprint = typeof fingerprints.$inferSelect;
 export type AccessLogEntry = typeof accessLog.$inferSelect;
 export type Upload = typeof uploads.$inferSelect;
+export type SelfAssessment = typeof selfAssessments.$inferSelect;

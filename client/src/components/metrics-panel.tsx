@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Activity, Clock, Cpu, Zap, Binary, ChevronDown, ChevronUp, Shield, Gauge, Database, Hash } from "lucide-react";
+import { Activity, Clock, Cpu, Zap, Binary, ChevronDown, ChevronUp, Shield, Gauge, Database, Hash, Brain, AlertTriangle } from "lucide-react";
 
 type Metrics = {
   totalRequests: number;
@@ -20,6 +20,15 @@ type Metrics = {
   latticePoints: number;
   savedTokens: number;
   historyWindow: number;
+};
+
+type SelfAssessmentReport = {
+  avgScore: number;
+  totalAssessments: number;
+  totalFlags: number;
+  recentFlags: string[];
+  scoreHistory: number[];
+  gapAnalysis: { category: string; count: number; severity: string }[];
 };
 
 function Sparkline({ data, width = 120, height = 24 }: { data: number[]; width?: number; height?: number }) {
@@ -58,14 +67,17 @@ function StatusDot({ active }: { active: boolean }) {
 
 export default function MetricsPanel() {
   const [metrics, setMetrics] = useState<Metrics | null>(null);
+  const [assessment, setAssessment] = useState<SelfAssessmentReport | null>(null);
   const [isOpen, setIsOpen] = useState(false);
   const [tick, setTick] = useState(0);
   const prevMetrics = useRef<Metrics | null>(null);
 
   useEffect(() => {
     fetchMetrics();
+    fetchAssessment();
     const interval = setInterval(() => {
       fetchMetrics();
+      fetchAssessment();
       setTick(t => t + 1);
     }, 5000);
     return () => clearInterval(interval);
@@ -78,6 +90,16 @@ export default function MetricsPanel() {
         const data = await res.json();
         prevMetrics.current = metrics;
         setMetrics(data);
+      }
+    } catch {}
+  }
+
+  async function fetchAssessment() {
+    try {
+      const res = await fetch("/api/self-assessment");
+      if (res.ok) {
+        const data = await res.json();
+        setAssessment(data);
       }
     } catch {}
   }
@@ -113,6 +135,14 @@ export default function MetricsPanel() {
           <span className="text-muted-foreground">{metrics.totalRequests} req</span>
           <span className="text-muted-foreground/50">·</span>
           <span className="text-secondary/70">{metrics.savedTokens} tokens</span>
+          {assessment && assessment.totalAssessments > 0 && (
+            <>
+              <span className="text-muted-foreground/50">·</span>
+              <span style={{ color: assessment.avgScore >= 90 ? '#22c55e' : assessment.avgScore >= 70 ? '#f0b93b' : '#ef4444' }}>
+                SA:{assessment.avgScore}
+              </span>
+            </>
+          )}
         </div>
         <div className="flex items-center gap-2">
           <span className="text-muted-foreground/50">{metrics.uptime}</span>
@@ -166,6 +196,72 @@ export default function MetricsPanel() {
                 <StatusRow icon={<Database className="w-3 h-3" />} label="UUON Tokens" value={metrics.savedTokens.toString()} accent />
                 <StatusRow icon={<Shield className="w-3 h-3" />} label="Drift Guard" value={metrics.totalDriftFlags > 0 ? `${metrics.totalDriftFlags} flagged` : "Clean"} warn={metrics.totalDriftFlags > 0} />
               </div>
+
+              {assessment && assessment.totalAssessments > 0 && (
+                <div className="border-t border-border/30 pt-2">
+                  <div className="flex items-center gap-1.5 mb-2">
+                    <Brain className="w-3 h-3 text-primary/70" />
+                    <span className="font-mono text-[7px] uppercase tracking-[0.15em] font-bold text-primary/70">Self-Assessment</span>
+                    <span className="ml-auto font-mono text-[9px] font-bold" style={{ color: assessment.avgScore >= 90 ? '#22c55e' : assessment.avgScore >= 70 ? '#f0b93b' : '#ef4444' }}>
+                      {assessment.avgScore}/100
+                    </span>
+                  </div>
+
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-2 mb-2">
+                    <MetricCard
+                      icon={<Brain className="w-3 h-3" />}
+                      label="Avg Score"
+                      value={`${assessment.avgScore}/100`}
+                      sub={`${assessment.totalAssessments} responses assessed`}
+                      sparkline={assessment.scoreHistory.length >= 2 ? <Sparkline data={assessment.scoreHistory} /> : undefined}
+                    />
+                    <MetricCard
+                      icon={<AlertTriangle className="w-3 h-3" />}
+                      label="Total Flags"
+                      value={assessment.totalFlags.toString()}
+                      sub={assessment.totalFlags === 0 ? "No issues detected" : `Across ${assessment.totalAssessments} responses`}
+                    />
+                    <MetricCard
+                      icon={<Shield className="w-3 h-3" />}
+                      label="Clean Rate"
+                      value={`${Math.round(((assessment.totalAssessments - assessment.gapAnalysis.reduce((s, g) => s + g.count, 0) / Math.max(assessment.totalAssessments, 1)) / Math.max(assessment.totalAssessments, 1)) * 100)}%`}
+                      sub="Responses with no flags"
+                    />
+                    <MetricCard
+                      icon={<Gauge className="w-3 h-3" />}
+                      label="Top Gap"
+                      value={assessment.gapAnalysis.length > 0 ? assessment.gapAnalysis[0].category : "None"}
+                      sub={assessment.gapAnalysis.length > 0 ? `${assessment.gapAnalysis[0].count}x · ${assessment.gapAnalysis[0].severity}` : "No patterns detected"}
+                    />
+                  </div>
+
+                  {assessment.gapAnalysis.length > 0 && (
+                    <div className="space-y-1">
+                      <span className="font-mono text-[7px] uppercase tracking-[0.12em] text-muted-foreground/50">Gap Analysis</span>
+                      {assessment.gapAnalysis.map((gap, i) => (
+                        <div key={i} className="flex items-center gap-2 bg-[#060e1a] border border-border/30 rounded px-2 py-1">
+                          <span className={`font-mono text-[8px] font-bold px-1 py-0.5 rounded ${gap.severity === "CRITICAL" ? "bg-red-500/20 text-red-400" : gap.severity === "HIGH" ? "bg-orange-500/20 text-orange-400" : gap.severity === "MODERATE" ? "bg-yellow-500/20 text-yellow-400" : "bg-blue-500/20 text-blue-400"}`}>
+                            {gap.severity}
+                          </span>
+                          <span className="font-mono text-[9px] text-white/80 flex-1">{gap.category}</span>
+                          <span className="font-mono text-[8px] text-muted-foreground">{gap.count}x</span>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+
+                  {assessment.recentFlags.length > 0 && (
+                    <div className="mt-2 space-y-0.5">
+                      <span className="font-mono text-[7px] uppercase tracking-[0.12em] text-muted-foreground/50">Recent Flags</span>
+                      {assessment.recentFlags.slice(0, 5).map((flag, i) => (
+                        <div key={i} className="font-mono text-[8px] text-yellow-500/70 truncate" data-testid={`text-flag-${i}`}>
+                          {flag}
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              )}
 
               <div className="flex items-center justify-between text-[8px] font-mono text-muted-foreground/40 pt-1 border-t border-border/30">
                 <span className="tracking-[0.15em] uppercase">Lattice: {metrics.latticePoints}-pt · 3-tier</span>

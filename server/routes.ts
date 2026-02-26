@@ -202,11 +202,11 @@ function checkDrift(text: string): { clean: boolean; flagged: string[] } {
   return { clean: flagged.length === 0, flagged };
 }
 
-function assessResponse(text: string): { pass: boolean; flags: string[]; score: number } {
+function assessResponse(text: string): { pass: boolean; flags: string[]; score: number; wordCount: number } {
   const flags: string[] = [];
   let score = 100;
 
-  const wordCount = text.split(/\s+/).length;
+  const wordCount = text.split(/\s+/).filter(w => w.length > 0).length;
   if (wordCount > 300) {
     flags.push(`WASTE: Response is ${wordCount} words — exceeds 150-word target significantly`);
     score -= 15;
@@ -250,8 +250,47 @@ function assessResponse(text: string): { pass: boolean; flags: string[]; score: 
     }
   }
 
+  const sentences = text.split(/[.!?]+/).filter(s => s.trim().length > 0);
+  const avgSentenceLen = sentences.length > 0 ? sentences.reduce((sum, s) => sum + s.trim().split(/\s+/).length, 0) / sentences.length : 0;
+  if (avgSentenceLen > 35) {
+    flags.push(`READABILITY: Average sentence length ${Math.round(avgSentenceLen)} words — too complex for 9th grade`);
+    score -= 5;
+  }
+
+  const filler = ["basically", "essentially", "fundamentally", "in other words", "to put it simply", "simply put"];
+  for (const phrase of filler) {
+    if (lower.includes(phrase)) {
+      flags.push(`WASTE: Filler phrase "${phrase}"`);
+      score -= 3;
+      break;
+    }
+  }
+
+  if (text.trim().length === 0) {
+    flags.push("EMPTY: Response has no content");
+    score = 0;
+  }
+
+  const repeatedPhrases = findRepeatedPhrases(lower);
+  if (repeatedPhrases.length > 0) {
+    flags.push(`REPETITION: Repeated phrases — ${repeatedPhrases.join(", ")}`);
+    score -= 5;
+  }
+
   score = Math.max(0, score);
-  return { pass: flags.length === 0, flags, score };
+  return { pass: flags.length === 0, flags, score, wordCount };
+}
+
+function findRepeatedPhrases(text: string): string[] {
+  const words = text.split(/\s+/);
+  const trigrams: Record<string, number> = {};
+  for (let i = 0; i < words.length - 2; i++) {
+    const gram = `${words[i]} ${words[i + 1]} ${words[i + 2]}`;
+    trigrams[gram] = (trigrams[gram] || 0) + 1;
+  }
+  return Object.entries(trigrams)
+    .filter(([, count]) => count >= 3)
+    .map(([phrase]) => phrase);
 }
 
 const MAX_HISTORY_MESSAGES = 20;
@@ -435,13 +474,12 @@ export async function registerRoutes(
 
       const selfAssessment = assessResponse(finalResponse);
       if (!selfAssessment.pass) {
-        console.warn(`[SELF-ASSESSMENT] Flags: ${selfAssessment.flags.join(", ")}`);
+        console.warn(`[SELF-ASSESSMENT] Score: ${selfAssessment.score}/100 | Flags: ${selfAssessment.flags.join(", ")}`);
       }
 
       const responseTimeMs = Date.now() - startTime;
       recordMetrics(responseTimeMs, totalInputTokens, totalOutputTokens, toolCallCount, !driftCheck.clean);
 
-      // Generate provenance hash
       const hash = generateProvenanceHash(finalResponse);
 
       const assistantMsg = await storage.createMessage({
@@ -459,11 +497,20 @@ export async function registerRoutes(
         origin: "UUON-FOUNDATION-GCENTRIC-V1",
       });
 
+      await storage.saveSelfAssessment({
+        messageId: assistantMsg.id,
+        conversationId,
+        score: selfAssessment.score,
+        wordCount: selfAssessment.wordCount,
+        pass: selfAssessment.pass,
+        flags: JSON.stringify(selfAssessment.flags),
+      });
+
       res.json({
         userMessage: userMsg,
         assistantMessage: assistantMsg,
         driftCheck: driftCheck.clean ? null : driftCheck.flagged,
-        selfAssessment: selfAssessment.pass ? null : selfAssessment,
+        selfAssessment,
       });
     } catch (error: any) {
       const responseTimeMs = Date.now() - startTime;
@@ -542,6 +589,15 @@ export async function registerRoutes(
       savedTokens,
       historyWindow: MAX_HISTORY_MESSAGES,
     });
+  });
+
+  app.get("/api/self-assessment", async (_req: Request, res: Response) => {
+    try {
+      const report = await storage.getSelfAssessmentReport();
+      res.json(report);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch self-assessment report" });
+    }
   });
 
   app.get("/api/creator-profile", async (_req: Request, res: Response) => {

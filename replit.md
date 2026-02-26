@@ -66,7 +66,12 @@ UUON Clouud is the intelligence interface for the G°centric Lattice System, bui
     - Backend: `server/scraper.ts` — SSRF-protected (blocks private IPs, internal hostnames, DNS resolution check), 15s timeout
     - API: `POST /api/scrape`
 21. **Voice Input:** Mic button toggles Web Speech API continuous recognition, transcribes speech into input field, cleanup on unmount
-22. **Self-Assessment System:** Every Clouud response is scored 0-100 against mission criteria (word count, format violations, gatekeeping language, hedging, identity drift). Flags logged server-side. Clouud's system prompt includes awareness of self-assessment
+22. **Self-Assessment System:** Every Clouud response is scored 0-100 against mission criteria. Persistent DB tracking with gap analysis.
+    - Checks: word count (150-word target), format violations (bullets/markdown/headers), gatekeeping language, hedging, identity drift, readability (sentence length), filler phrases, repetition (trigram detection), empty responses
+    - DB table: `self_assessments` stores per-message score, word count, pass/fail, flags JSON
+    - API: `GET /api/self-assessment` returns full report (avg score, total flags, score history sparkline, gap analysis with severity levels)
+    - UI: Per-message SA score shown inline below UUON token (green/gold/red color-coded); SYS bar shows live SA score; expanded metrics panel shows full Self-Assessment section with gap analysis cards, severity badges (CRITICAL/HIGH/MODERATE/LOW), recent flags list
+    - System prompt includes self-assessment awareness — Clouud knows it's being scored and aims for 100
 
 ## Design System
 - **Palette:** Deep Navy (#030811), UUON Gold (#f0b93b), Atmosphere Blue (#4a8cd4)

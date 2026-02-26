@@ -1,7 +1,7 @@
 import { db } from "./db";
-import { conversations, messages, uuonTokens, creatorProfile, fingerprints, accessLog, uploads } from "@shared/schema";
-import type { Conversation, InsertConversation, Message, InsertMessage, UuonToken, InsertUuonToken, CreatorProfileEntry, Fingerprint, AccessLogEntry, Upload } from "@shared/schema";
-import { eq, desc, and, gte, count, sql } from "drizzle-orm";
+import { conversations, messages, uuonTokens, creatorProfile, fingerprints, accessLog, uploads, selfAssessments } from "@shared/schema";
+import type { Conversation, InsertConversation, Message, InsertMessage, UuonToken, InsertUuonToken, CreatorProfileEntry, Fingerprint, AccessLogEntry, Upload, SelfAssessment } from "@shared/schema";
+import { eq, desc, and, gte, count, sql, avg } from "drizzle-orm";
 
 export interface IStorage {
   getConversation(id: number): Promise<Conversation | undefined>;
@@ -28,6 +28,8 @@ export interface IStorage {
   saveUpload(data: { filename: string; originalName: string; mimeType: string; size: number; conversationId?: number; extractedText?: string }): Promise<Upload>;
   getUpload(id: number): Promise<Upload | undefined>;
   getUploadsByConversation(conversationId: number): Promise<Upload[]>;
+  saveSelfAssessment(data: { messageId: number; conversationId: number; score: number; wordCount: number; pass: boolean; flags: string }): Promise<SelfAssessment>;
+  getSelfAssessmentReport(): Promise<{ avgScore: number; totalAssessments: number; totalFlags: number; recentFlags: string[]; scoreHistory: number[]; gapAnalysis: { category: string; count: number; severity: string }[] }>;
 }
 
 class DatabaseStorage implements IStorage {
@@ -171,6 +173,58 @@ class DatabaseStorage implements IStorage {
 
   async getUploadsByConversation(conversationId: number): Promise<Upload[]> {
     return db.select().from(uploads).where(eq(uploads.conversationId, conversationId)).orderBy(desc(uploads.createdAt));
+  }
+
+  async saveSelfAssessment(data: { messageId: number; conversationId: number; score: number; wordCount: number; pass: boolean; flags: string }): Promise<SelfAssessment> {
+    const [assessment] = await db.insert(selfAssessments).values(data).returning();
+    return assessment;
+  }
+
+  async getSelfAssessmentReport(): Promise<{ avgScore: number; totalAssessments: number; totalFlags: number; recentFlags: string[]; scoreHistory: number[]; gapAnalysis: { category: string; count: number; severity: string }[] }> {
+    const allAssessments = await db.select().from(selfAssessments).orderBy(desc(selfAssessments.createdAt));
+
+    if (allAssessments.length === 0) {
+      return { avgScore: 100, totalAssessments: 0, totalFlags: 0, recentFlags: [], scoreHistory: [], gapAnalysis: [] };
+    }
+
+    const totalAssessments = allAssessments.length;
+    const avgScore = Math.round(allAssessments.reduce((sum, a) => sum + a.score, 0) / totalAssessments);
+    const scoreHistory = allAssessments.slice(0, 50).reverse().map(a => a.score);
+
+    const flagCounts: Record<string, number> = {};
+    let totalFlags = 0;
+    const recentFlagsSet: string[] = [];
+
+    for (const a of allAssessments) {
+      try {
+        const flags: string[] = JSON.parse(a.flags);
+        totalFlags += flags.length;
+        for (const flag of flags) {
+          const category = flag.split(":")[0].trim();
+          flagCounts[category] = (flagCounts[category] || 0) + 1;
+        }
+        if (recentFlagsSet.length < 10) {
+          recentFlagsSet.push(...flags);
+        }
+      } catch {}
+    }
+
+    const gapAnalysis = Object.entries(flagCounts)
+      .sort(([, a], [, b]) => b - a)
+      .map(([category, cnt]) => ({
+        category,
+        count: cnt,
+        severity: cnt > totalAssessments * 0.5 ? "CRITICAL" : cnt > totalAssessments * 0.2 ? "HIGH" : cnt > totalAssessments * 0.1 ? "MODERATE" : "LOW",
+      }));
+
+    return {
+      avgScore,
+      totalAssessments,
+      totalFlags,
+      recentFlags: recentFlagsSet.slice(0, 10),
+      scoreHistory,
+      gapAnalysis,
+    };
   }
 }
 

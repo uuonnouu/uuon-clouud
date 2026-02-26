@@ -62,6 +62,7 @@ export default function ClouudTerminal() {
   const [linkUrl, setLinkUrl] = useState("");
   const [isUploading, setIsUploading] = useState(false);
   const [isScraping, setIsScraping] = useState(false);
+  const [msgAssessments, setMsgAssessments] = useState<Record<number, { score: number; flags: string[]; wordCount: number }>>({});
   const scrollRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -228,6 +229,17 @@ export default function ClouudTerminal() {
         const withoutTemp = prev.filter(m => m.id !== tempUserMsg.id);
         return [...withoutTemp, data.userMessage, data.assistantMessage];
       });
+
+      if (data.selfAssessment) {
+        setMsgAssessments(prev => ({
+          ...prev,
+          [data.assistantMessage.id]: {
+            score: data.selfAssessment.score,
+            flags: data.selfAssessment.flags,
+            wordCount: data.selfAssessment.wordCount,
+          }
+        }));
+      }
 
       setTimeout(() => setAiState("idle"), 2000);
     } catch (err: any) {
@@ -667,10 +679,24 @@ export default function ClouudTerminal() {
                           ))}
                           
                           {msg.hash && (
-                            <div className="mt-3 pt-2 border-t border-muted flex items-center gap-1.5 font-mono text-[8px] text-muted-foreground">
-                              <Binary className="w-2.5 h-2.5 text-secondary" />
-                              <span className="text-secondary/70 mr-1">UUON·TOKEN</span>
-                              <span className="truncate uppercase tracking-widest">{msg.hash}</span>
+                            <div className="mt-3 pt-2 border-t border-muted space-y-1">
+                              <div className="flex items-center gap-1.5 font-mono text-[8px] text-muted-foreground">
+                                <Binary className="w-2.5 h-2.5 text-secondary" />
+                                <span className="text-secondary/70 mr-1">UUON·TOKEN</span>
+                                <span className="truncate uppercase tracking-widest">{msg.hash}</span>
+                              </div>
+                              {msgAssessments[msg.id] && (
+                                <div className="flex items-center gap-1.5 font-mono text-[8px]">
+                                  <Scale className="w-2.5 h-2.5" style={{ color: msgAssessments[msg.id].score >= 90 ? '#22c55e' : msgAssessments[msg.id].score >= 70 ? '#f0b93b' : '#ef4444' }} />
+                                  <span style={{ color: msgAssessments[msg.id].score >= 90 ? '#22c55e' : msgAssessments[msg.id].score >= 70 ? '#f0b93b' : '#ef4444' }}>
+                                    SA:{msgAssessments[msg.id].score}/100
+                                  </span>
+                                  <span className="text-muted-foreground">{msgAssessments[msg.id].wordCount}w</span>
+                                  {msgAssessments[msg.id].flags.length > 0 && (
+                                    <span className="text-yellow-500/70 truncate">{msgAssessments[msg.id].flags[0]}</span>
+                                  )}
+                                </div>
+                              )}
                             </div>
                           )}
                         </motion.div>
@@ -746,49 +772,8 @@ export default function ClouudTerminal() {
             </div>
           )}
 
-          <form onSubmit={handleSubmit} className="relative max-w-4xl mx-auto flex items-end gap-2">
-            <div className="flex flex-col gap-1 shrink-0 mb-1">
-              {messages.length >= 2 && !isTyping && (
-                <button
-                  type="button"
-                  onClick={handleUndo}
-                  className="p-2 text-muted-foreground hover:text-primary bg-background border border-border hover:border-primary/30 rounded-sm transition-all"
-                  title="Undo last exchange"
-                  data-testid="button-undo"
-                >
-                  <Undo2 className="w-3.5 h-3.5" />
-                </button>
-              )}
-              <button
-                type="button"
-                onClick={() => fileInputRef.current?.click()}
-                disabled={isUploading}
-                className="p-2 text-muted-foreground hover:text-primary bg-background border border-border hover:border-primary/30 rounded-sm transition-all"
-                title="Upload file or image"
-                data-testid="button-upload"
-              >
-                {isUploading ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Paperclip className="w-3.5 h-3.5" />}
-              </button>
-              <button
-                type="button"
-                onClick={() => setShowLinkInput(!showLinkInput)}
-                className="p-2 text-muted-foreground hover:text-primary bg-background border border-border hover:border-primary/30 rounded-sm transition-all"
-                title="Scrape a URL"
-                data-testid="button-link"
-              >
-                <Link2 className="w-3.5 h-3.5" />
-              </button>
-              <button
-                type="button"
-                onClick={toggleVoiceInput}
-                className={`p-2 bg-background border rounded-sm transition-all ${isListening ? "text-red-500 border-red-500/50 animate-pulse" : "text-muted-foreground hover:text-primary border-border hover:border-primary/30"}`}
-                title={isListening ? "Stop listening" : "Voice input"}
-                data-testid="button-voice"
-              >
-                {isListening ? <MicOff className="w-3.5 h-3.5" /> : <Mic className="w-3.5 h-3.5" />}
-              </button>
-            </div>
-            <div className="relative flex-1">
+          <form onSubmit={handleSubmit} className="max-w-4xl mx-auto">
+            <div className="relative">
               <div className="absolute left-3 top-3 text-primary font-bold font-mono text-sm">{">"}</div>
               <textarea
                 ref={textareaRef}
@@ -822,6 +807,49 @@ export default function ClouudTerminal() {
               >
                 {isTyping ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : "Send"}
               </button>
+            </div>
+            <div className="flex items-center gap-1 mt-1.5">
+              <button
+                type="button"
+                onClick={() => fileInputRef.current?.click()}
+                disabled={isUploading}
+                className="p-1.5 text-muted-foreground hover:text-primary transition-colors rounded-sm"
+                title="Upload file or image"
+                data-testid="button-upload"
+              >
+                {isUploading ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Paperclip className="w-3.5 h-3.5" />}
+              </button>
+              <button
+                type="button"
+                onClick={() => setShowLinkInput(!showLinkInput)}
+                className="p-1.5 text-muted-foreground hover:text-primary transition-colors rounded-sm"
+                title="Scrape a URL"
+                data-testid="button-link"
+              >
+                <Link2 className="w-3.5 h-3.5" />
+              </button>
+              <button
+                type="button"
+                onClick={toggleVoiceInput}
+                className={`p-1.5 rounded-sm transition-colors ${isListening ? "text-red-500 animate-pulse" : "text-muted-foreground hover:text-primary"}`}
+                title={isListening ? "Stop listening" : "Voice input"}
+                data-testid="button-voice"
+              >
+                {isListening ? <MicOff className="w-3.5 h-3.5" /> : <Mic className="w-3.5 h-3.5" />}
+              </button>
+              <div className="h-3 w-px bg-border/50 mx-1" />
+              {messages.length >= 2 && !isTyping && (
+                <button
+                  type="button"
+                  onClick={handleUndo}
+                  className="p-1.5 text-muted-foreground hover:text-primary transition-colors rounded-sm"
+                  title="Undo last exchange"
+                  data-testid="button-undo"
+                >
+                  <Undo2 className="w-3.5 h-3.5" />
+                </button>
+              )}
+              <span className="ml-auto text-[8px] font-mono text-muted-foreground/40 tracking-wider">ENTER send · SHIFT+ENTER newline</span>
             </div>
           </form>
         </div>
