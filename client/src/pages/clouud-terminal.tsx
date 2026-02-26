@@ -74,6 +74,7 @@ export default function ClouudTerminal() {
   const [isUploading, setIsUploading] = useState(false);
   const [isScraping, setIsScraping] = useState(false);
   const [msgAssessments, setMsgAssessments] = useState<Record<number, { score: number; flags: string[]; wordCount: number }>>({});
+  const [generatedImages, setGeneratedImages] = useState<Record<string, { url: string; concept: string; status: string }>>({});
   const [visualSummary, setVisualSummary] = useState<{ concept: string; shapeType: string; parameters: any } | null>(null);
   const [hashingIntensity, setHashingIntensity] = useState(0);
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -262,6 +263,16 @@ export default function ClouudTerminal() {
         }));
       }
 
+      if (data.pendingImages && data.pendingImages.length > 0) {
+        for (const img of data.pendingImages) {
+          setGeneratedImages(prev => ({
+            ...prev,
+            [img.id]: { url: "", concept: img.concept, status: "generating" }
+          }));
+          triggerImageGeneration(img.id, img.concept);
+        }
+      }
+
       if (autoSpeak && data.assistantMessage?.content) {
         setTimeout(() => speakMessage(data.assistantMessage.id, data.assistantMessage.content), 300);
       }
@@ -401,6 +412,39 @@ export default function ClouudTerminal() {
     recognitionRef.current = recognition;
     recognition.start();
     setIsListening(true);
+  }
+
+  async function triggerImageGeneration(imageId: string, concept: string) {
+    try {
+      await fetch(`/api/images/generate/${imageId}`, { method: "POST" });
+      
+      const pollInterval = setInterval(async () => {
+        try {
+          const res = await fetch(`/api/images/status/${imageId}`);
+          const data = await res.json();
+          
+          if (data.status === "complete" && data.url) {
+            clearInterval(pollInterval);
+            setGeneratedImages(prev => ({
+              ...prev,
+              [imageId]: { url: data.url, concept, status: "complete" }
+            }));
+          } else if (data.status === "failed") {
+            clearInterval(pollInterval);
+            setGeneratedImages(prev => ({
+              ...prev,
+              [imageId]: { url: "", concept, status: "failed" }
+            }));
+          }
+        } catch {
+          clearInterval(pollInterval);
+        }
+      }, 2000);
+      
+      setTimeout(() => clearInterval(pollInterval), 120000);
+    } catch (err) {
+      console.error("Image generation trigger failed:", err);
+    }
   }
 
   function stopSpeaking() {
@@ -1030,6 +1074,48 @@ export default function ClouudTerminal() {
                                   </motion.span>
                                 ))}
                                 
+                                {msg.role === 'assistant' && msg.toolCall && (() => {
+                                  try {
+                                    const tc = typeof msg.toolCall === 'string' ? JSON.parse(msg.toolCall) : msg.toolCall;
+                                    if (tc?.name === 'generate_image' && tc?.result?.imageId) {
+                                      const imgData = generatedImages[tc.result.imageId];
+                                      return (
+                                        <motion.div
+                                          initial={{ opacity: 0, scale: 0.95 }}
+                                          animate={{ opacity: 1, scale: 1 }}
+                                          transition={{ delay: 0.5, duration: 0.6 }}
+                                          className="mt-3 rounded-sm overflow-hidden border border-primary/20"
+                                          data-testid={`generated-image-${tc.result.imageId}`}
+                                        >
+                                          {imgData?.status === "complete" && imgData.url ? (
+                                            <div className="relative group">
+                                              <img
+                                                src={imgData.url}
+                                                alt={imgData.concept}
+                                                className="w-full max-w-md rounded-sm"
+                                                loading="lazy"
+                                              />
+                                              <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-2">
+                                                <span className="font-mono text-[9px] text-white/80 tracking-wider uppercase">{imgData.concept}</span>
+                                              </div>
+                                            </div>
+                                          ) : imgData?.status === "failed" ? (
+                                            <div className="p-3 bg-red-500/10 text-red-400 text-xs font-mono">
+                                              Image generation failed for "{tc.result.imageId}"
+                                            </div>
+                                          ) : (
+                                            <div className="p-4 flex items-center gap-2 bg-primary/5">
+                                              <Loader2 className="w-4 h-4 text-primary animate-spin" />
+                                              <span className="font-mono text-[10px] text-primary/70 tracking-wider">Generating: {tc.args?.concept || "image"}...</span>
+                                            </div>
+                                          )}
+                                        </motion.div>
+                                      );
+                                    }
+                                  } catch {}
+                                  return null;
+                                })()}
+
                                 {quickLinks.length > 0 && msg.role === 'assistant' && (
                                   <motion.div
                                     initial={{ opacity: 0, y: 6 }}
