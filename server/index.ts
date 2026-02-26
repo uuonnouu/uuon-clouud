@@ -2,34 +2,7 @@ import express, { type Request, Response, NextFunction } from "express";
 import { registerRoutes } from "./routes";
 import { serveStatic } from "./static";
 import { createServer } from "http";
-
-process.on("unhandledRejection", (reason, promise) => {
-  console.error("Unhandled Rejection at:", promise, "reason:", reason);
-});
-process.on("uncaughtException", (err) => {
-  console.error("Uncaught Exception:", err);
-});
-
-// Global error handlers for process-level stability
-process.on('SIGTERM', () => {
-  console.info('SIGTERM signal received.');
-  process.exit(0);
-});
-process.on('SIGINT', () => {
-  console.info('SIGINT signal received.');
-  process.exit(0);
-});
-
-if (process.env.NODE_ENV !== "production") {
-  const originalExit = process.exit.bind(process);
-  (process as any).exit = (code?: number) => {
-    if (code === 1) {
-      console.error("Prevented process.exit(1) — likely a Vite error. Server continues.");
-      return undefined as never;
-    }
-    return originalExit(code);
-  };
-}
+import { securityGate } from "./security";
 
 const app = express();
 const httpServer = createServer(app);
@@ -49,6 +22,8 @@ app.use(
 );
 
 app.use(express.urlencoded({ extended: false }));
+
+app.use(securityGate);
 
 export function log(message: string, source = "express") {
   const formattedTime = new Date().toLocaleTimeString("en-US", {

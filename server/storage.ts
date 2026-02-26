@@ -1,6 +1,6 @@
 import { db } from "./db";
-import { conversations, messages, uuonTokens, creatorProfile, uploads, selfAssessments, whistleblowerClaims } from "@shared/schema";
-import type { Conversation, InsertConversation, Message, InsertMessage, UuonToken, InsertUuonToken, CreatorProfileEntry, Upload, SelfAssessment, WhistleblowerClaim, InsertWhistleblowerClaim } from "@shared/schema";
+import { conversations, messages, uuonTokens, creatorProfile, fingerprints, accessLog, uploads, selfAssessments } from "@shared/schema";
+import type { Conversation, InsertConversation, Message, InsertMessage, UuonToken, InsertUuonToken, CreatorProfileEntry, Fingerprint, AccessLogEntry, Upload, SelfAssessment } from "@shared/schema";
 import { eq, desc, and, gte, count, sql, avg } from "drizzle-orm";
 
 export interface IStorage {
@@ -17,12 +17,20 @@ export interface IStorage {
   getUuonTokenCount(): Promise<number>;
   getCreatorProfile(): Promise<Record<string, string>>;
   setCreatorProfileEntry(key: string, value: string): Promise<void>;
+  getAllCreatorProfileEntries(): Promise<CreatorProfileEntry[]>;
+  getFingerprint(hash: string): Promise<Fingerprint | undefined>;
+  getOwnerFingerprint(): Promise<Fingerprint | undefined>;
+  registerFingerprint(hash: string, components: string, isOwner: boolean): Promise<Fingerprint>;
+  updateFingerprintLastSeen(hash: string): Promise<void>;
+  blockFingerprint(hash: string): Promise<void>;
+  logAccess(fingerprintHash: string, action: string, granted: boolean, ip?: string, userAgent?: string): Promise<void>;
+  getAccessLog(limit?: number): Promise<AccessLogEntry[]>;
+  saveUpload(data: { filename: string; originalName: string; mimeType: string; size: number; conversationId?: number; extractedText?: string }): Promise<Upload>;
+  getUpload(id: number): Promise<Upload | undefined>;
+  getUploadsByConversation(conversationId: number): Promise<Upload[]>;
   addMemoryAnchor(key: string, value: string, relevanceScore?: number): Promise<{ replaced?: string }>;
   saveSelfAssessment(data: { messageId: number; conversationId: number; score: number; missionAlignment: number; responseQuality: number; formatCompliance: number; identityIntegrity: number; wordCount: number; pass: boolean; flags: string }): Promise<SelfAssessment>;
   getSelfAssessmentReport(): Promise<{ avgScore: number; avgMission: number; avgQuality: number; avgFormat: number; avgIdentity: number; totalAssessments: number; totalFlags: number; recentFlags: string[]; scoreHistory: number[]; subScoreHistory: { mission: number; quality: number; format: number; identity: number }[]; gapAnalysis: { category: string; count: number; severity: string }[] }>;
-  createWhistleblowerClaim(data: InsertWhistleblowerClaim): Promise<WhistleblowerClaim>;
-  getAllWhistleblowerClaims(): Promise<WhistleblowerClaim[]>;
-  registerFingerprint(hash: string, components: string, isOwner: boolean): Promise<void>;
 }
 
 class DatabaseStorage implements IStorage {
@@ -134,6 +142,48 @@ class DatabaseStorage implements IStorage {
     return db.select().from(creatorProfile).orderBy(desc(creatorProfile.relevanceScore));
   }
 
+  async getFingerprint(hash: string): Promise<Fingerprint | undefined> {
+    const [fp] = await db.select().from(fingerprints).where(eq(fingerprints.hash, hash));
+    return fp;
+  }
+
+  async getOwnerFingerprint(): Promise<Fingerprint | undefined> {
+    const [fp] = await db.select().from(fingerprints).where(eq(fingerprints.isOwner, true));
+    return fp;
+  }
+
+  async registerFingerprint(hash: string, components: string, isOwner: boolean): Promise<Fingerprint> {
+    const existing = await this.getFingerprint(hash);
+    if (existing) {
+      await db.update(fingerprints)
+        .set({ lastSeen: sql`CURRENT_TIMESTAMP`, isOwner: isOwner || existing.isOwner })
+        .where(eq(fingerprints.hash, hash));
+      return { ...existing, isOwner: isOwner || existing.isOwner };
+    }
+    const [fp] = await db.insert(fingerprints).values({ hash, components, isOwner }).returning();
+    return fp;
+  }
+
+  async updateFingerprintLastSeen(hash: string): Promise<void> {
+    await db.update(fingerprints)
+      .set({ lastSeen: sql`CURRENT_TIMESTAMP` })
+      .where(eq(fingerprints.hash, hash));
+  }
+
+  async blockFingerprint(hash: string): Promise<void> {
+    await db.update(fingerprints)
+      .set({ blocked: true })
+      .where(eq(fingerprints.hash, hash));
+  }
+
+  async logAccess(fingerprintHash: string, action: string, granted: boolean, ip?: string, userAgent?: string): Promise<void> {
+    await db.insert(accessLog).values({ fingerprintHash, action, granted, ip, userAgent });
+  }
+
+  async getAccessLog(limit: number = 50): Promise<AccessLogEntry[]> {
+    return db.select().from(accessLog).orderBy(desc(accessLog.createdAt)).limit(limit);
+  }
+
   async saveUpload(data: { filename: string; originalName: string; mimeType: string; size: number; conversationId?: number; extractedText?: string }): Promise<Upload> {
     const [upload] = await db.insert(uploads).values(data).returning();
     return upload;
@@ -213,19 +263,6 @@ class DatabaseStorage implements IStorage {
       subScoreHistory,
       gapAnalysis,
     };
-  }
-
-  async createWhistleblowerClaim(data: InsertWhistleblowerClaim): Promise<WhistleblowerClaim> {
-    const [claim] = await db.insert(whistleblowerClaims).values(data).returning();
-    return claim;
-  }
-
-  async getAllWhistleblowerClaims(): Promise<WhistleblowerClaim[]> {
-    return db.select().from(whistleblowerClaims).orderBy(desc(whistleblowerClaims.createdAt));
-  }
-
-  async registerFingerprint(hash: string, components: string, isOwner: boolean): Promise<void> {
-    // Minimal implementation for open system
   }
 }
 

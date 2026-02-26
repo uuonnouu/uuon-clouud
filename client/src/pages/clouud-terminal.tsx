@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import { Cpu, Binary, Menu, X, Globe, Zap, Network, ChevronRight, Plus, Trash2, MessageCircle, Loader2, Activity, HelpCircle, Undo2, Scale, Paperclip, Link2, Mic, MicOff, ShieldAlert } from "lucide-react";
+import { Cpu, Binary, Menu, X, Globe, Zap, Network, ChevronRight, Plus, Trash2, MessageCircle, Loader2, Activity, HelpCircle, Undo2, Scale, Paperclip, Link2, Mic, MicOff } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useLocation } from "wouter";
 import ClouudAvatar from "@/components/clouud-avatar";
@@ -39,8 +39,6 @@ const QUICK_ACTIONS = [
   "Why does rounding matter?",
   "Tell me about the 3D models",
   "What does UUON mean?",
-  "Prepare whistleblower report",
-  "Check antitrust patterns",
 ];
 
 export default function ClouudTerminal() {
@@ -360,7 +358,7 @@ export default function ClouudTerminal() {
         }
       }
       setInput(prev => {
-        const base = prev.replace(/\[listening\.\.\.\].*$/, "").trimEnd();
+        const base = prev.replace(/\[listening\.\.\.\].*$/s, "").trimEnd();
         const voiceText = (finalTranscript + interim).trim();
         return base ? `${base} ${voiceText}` : voiceText;
       });
@@ -542,14 +540,6 @@ export default function ClouudTerminal() {
                   Interactive Tutorial
                 </button>
                 <button
-                  onClick={() => setLocation("/whistleblower")}
-                  className="w-full flex items-center gap-2 px-2 py-2 text-[11px] text-primary hover:text-white bg-background hover:bg-muted/60 border border-border hover:border-primary/30 rounded-sm transition-all"
-                  data-testid="button-whistleblower"
-                >
-                  <ShieldAlert className="w-3.5 h-3.5 shrink-0" />
-                  Whistleblower Portal
-                </button>
-                <button
                   onClick={() => setLocation("/legal")}
                   className="w-full flex items-center gap-2 px-2 py-2 text-[11px] text-muted-foreground hover:text-white bg-background hover:bg-muted/60 border border-border hover:border-border/60 rounded-sm transition-all"
                   data-testid="button-legal"
@@ -598,9 +588,8 @@ export default function ClouudTerminal() {
         {messages.length > 0 && (
           <div 
             ref={scrollRef}
-            className="flex-1 overflow-y-auto p-4 md:p-6"
+            className="flex-1 overflow-y-auto p-4 md:p-6 space-y-5"
           >
-            <div className="max-w-4xl mx-auto space-y-5">
             <AnimatePresence initial={false}>
               {messages.map((msg, msgIndex) => {
                 const isNewest = msgIndex >= messages.length - 2;
@@ -798,7 +787,6 @@ export default function ClouudTerminal() {
                 </motion.div>
               )}
             </AnimatePresence>
-            </div>
           </div>
         )}
 

@@ -36,6 +36,26 @@ export const creatorProfile = pgTable("creator_profile", {
   updatedAt: timestamp("updated_at").default(sql`CURRENT_TIMESTAMP`).notNull(),
 });
 
+export const fingerprints = pgTable("fingerprints", {
+  id: serial("id").primaryKey(),
+  hash: text("hash").notNull(),
+  components: text("components").notNull(),
+  isOwner: boolean("is_owner").notNull().default(false),
+  blocked: boolean("blocked").notNull().default(false),
+  lastSeen: timestamp("last_seen").default(sql`CURRENT_TIMESTAMP`).notNull(),
+  createdAt: timestamp("created_at").default(sql`CURRENT_TIMESTAMP`).notNull(),
+});
+
+export const accessLog = pgTable("access_log", {
+  id: serial("id").primaryKey(),
+  fingerprintHash: text("fingerprint_hash").notNull(),
+  action: text("action").notNull(),
+  granted: boolean("granted").notNull(),
+  ip: text("ip"),
+  userAgent: text("user_agent"),
+  createdAt: timestamp("created_at").default(sql`CURRENT_TIMESTAMP`).notNull(),
+});
+
 export const uploads = pgTable("uploads", {
   id: serial("id").primaryKey(),
   filename: text("filename").notNull(),
@@ -62,18 +82,6 @@ export const selfAssessments = pgTable("self_assessments", {
   createdAt: timestamp("created_at").default(sql`CURRENT_TIMESTAMP`).notNull(),
 });
 
-export const whistleblowerClaims = pgTable("whistleblower_claims", {
-  id: serial("id").primaryKey(),
-  targetCompany: text("target_company").notNull(),
-  misconductType: text("misconduct_type").notNull(),
-  description: text("description").notNull(),
-  evidenceSummary: text("evidence_summary").notNull(),
-  systemAnalysis: text("system_analysis").notNull(),
-  potentialForfeiture: text("potential_forfeiture"),
-  status: text("status").notNull().default("prepared"),
-  createdAt: timestamp("created_at").default(sql`CURRENT_TIMESTAMP`).notNull(),
-});
-
 export const insertConversationSchema = createInsertSchema(conversations).omit({
   id: true,
   createdAt: true,
@@ -89,11 +97,6 @@ export const insertUuonTokenSchema = createInsertSchema(uuonTokens).omit({
   createdAt: true,
 });
 
-export const insertWhistleblowerClaimSchema = createInsertSchema(whistleblowerClaims).omit({
-  id: true,
-  createdAt: true,
-});
-
 export type Conversation = typeof conversations.$inferSelect;
 export type InsertConversation = z.infer<typeof insertConversationSchema>;
 export type Message = typeof messages.$inferSelect;
@@ -101,7 +104,7 @@ export type InsertMessage = z.infer<typeof insertMessageSchema>;
 export type UuonToken = typeof uuonTokens.$inferSelect;
 export type InsertUuonToken = z.infer<typeof insertUuonTokenSchema>;
 export type CreatorProfileEntry = typeof creatorProfile.$inferSelect;
+export type Fingerprint = typeof fingerprints.$inferSelect;
+export type AccessLogEntry = typeof accessLog.$inferSelect;
 export type Upload = typeof uploads.$inferSelect;
 export type SelfAssessment = typeof selfAssessments.$inferSelect;
-export type WhistleblowerClaim = typeof whistleblowerClaims.$inferSelect;
-export type InsertWhistleblowerClaim = z.infer<typeof insertWhistleblowerClaimSchema>;

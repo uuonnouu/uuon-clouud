@@ -68,7 +68,7 @@ export async function scrapeUrl(req: Request, res: Response) {
     let title = "";
 
     if (contentType.includes("text/html")) {
-      title = rawText.match(/<title[^>]*>([\s\S]*?)<\/title>/i)?.[1]?.trim() || "";
+      title = rawText.match(/<title[^>]*>(.*?)<\/title>/is)?.[1]?.trim() || "";
       extractedText = rawText
         .replace(/<script[^>]*>[\s\S]*?<\/script>/gi, "")
         .replace(/<style[^>]*>[\s\S]*?<\/style>/gi, "")

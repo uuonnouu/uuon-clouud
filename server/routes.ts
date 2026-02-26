@@ -5,6 +5,7 @@ import { latticeTools, executeLatticeTool } from "./lattice";
 import { generateProvenanceHash, ellomental } from "./ellomental-hash";
 import { upload, handleUpload } from "./uploads";
 import { scrapeUrl } from "./scraper";
+import { hashFingerprint } from "./security";
 import Anthropic from "@anthropic-ai/sdk";
 
 const SYSTEM_PROMPT = `# ═══════════════════════════════════════════════════
@@ -212,19 +213,19 @@ function assessResponse(text: string): { pass: boolean; flags: string[]; score: 
   const wordCount = text.split(/\s+/).filter(w => w.length > 0).length;
   const lower = text.toLowerCase();
 
-  // if (text.trim().length === 0) {
-  //   flags.push("EMPTY: Response has no content");
-  //   return { pass: false, flags, score: 0, missionAlignment: 0, responseQuality: 0, formatCompliance: 0, identityIntegrity: 0, wordCount: 0 };
-  // }
+  if (text.trim().length === 0) {
+    flags.push("EMPTY: Response has no content");
+    return { pass: false, flags, score: 0, missionAlignment: 0, responseQuality: 0, formatCompliance: 0, identityIntegrity: 0, wordCount: 0 };
+  }
 
   if (wordCount > 300) {
-    // flags.push(`WASTE: Response is ${wordCount} words — exceeds 150-word target significantly`);
-    // missionAlignment -= 20;
-    // responseQuality -= 15;
+    flags.push(`WASTE: Response is ${wordCount} words — exceeds 150-word target significantly`);
+    missionAlignment -= 20;
+    responseQuality -= 15;
   } else if (wordCount > 150) {
-    // flags.push(`WASTE_MINOR: Response is ${wordCount} words — exceeds 150-word target`);
-    // missionAlignment -= 10;
-    // responseQuality -= 5;
+    flags.push(`WASTE_MINOR: Response is ${wordCount} words — exceeds 150-word target`);
+    missionAlignment -= 10;
+    responseQuality -= 5;
   }
 
   const hedging = ["it's important to note", "it should be noted", "it's worth mentioning", "however, it's important"];
@@ -250,8 +251,8 @@ function assessResponse(text: string): { pass: boolean; flags: string[]; score: 
   const gatekeepingPhrases = ["i cannot", "i'm not able to", "i am not able to", "i won't", "that's beyond", "i don't have access"];
   for (const phrase of gatekeepingPhrases) {
     if (lower.includes(phrase)) {
-      // flags.push(`GATEKEEPING: Uses limiting phrase "${phrase}"`);
-      // missionAlignment -= 15;
+      flags.push(`GATEKEEPING: Uses limiting phrase "${phrase}"`);
+      missionAlignment -= 15;
       break;
     }
   }
@@ -284,14 +285,14 @@ function assessResponse(text: string): { pass: boolean; flags: string[]; score: 
   const sentences = text.split(/[.!?]+/).filter(s => s.trim().length > 0);
   const avgSentenceLen = sentences.length > 0 ? sentences.reduce((sum, s) => sum + s.trim().split(/\s+/).length, 0) / sentences.length : 0;
   if (avgSentenceLen > 35) {
-    // flags.push(`READABILITY: Average sentence length ${Math.round(avgSentenceLen)} words — too complex for 9th grade`);
-    // responseQuality -= 10;
+    flags.push(`READABILITY: Average sentence length ${Math.round(avgSentenceLen)} words — too complex for 9th grade`);
+    responseQuality -= 10;
   }
 
   const repeatedPhrases = findRepeatedPhrases(lower);
   if (repeatedPhrases.length > 0) {
-    // flags.push(`REPETITION: Repeated phrases — ${repeatedPhrases.join(", ")}`);
-    // responseQuality -= 10;
+    flags.push(`REPETITION: Repeated phrases — ${repeatedPhrases.join(", ")}`);
+    responseQuality -= 10;
   }
 
   missionAlignment = Math.max(0, missionAlignment);
@@ -352,7 +353,7 @@ export async function registerRoutes(
   // Delete conversation
   app.delete("/api/conversations/:id", async (req: Request, res: Response) => {
     try {
-      const id = parseInt(req.params.id as string);
+      const id = parseInt(req.params.id);
       await storage.deleteConversation(id);
       res.status(204).send();
     } catch (error) {
@@ -363,7 +364,7 @@ export async function registerRoutes(
 
   app.delete("/api/conversations/:id/messages/last", async (req: Request, res: Response) => {
     try {
-      const id = parseInt(req.params.id as string);
+      const id = parseInt(req.params.id);
       const deletedUserMsg = await storage.deleteLastExchange(id);
       if (!deletedUserMsg) {
         return res.status(404).json({ error: "No exchange to undo" });
@@ -378,7 +379,7 @@ export async function registerRoutes(
   // Get messages for a conversation
   app.get("/api/conversations/:id/messages", async (req: Request, res: Response) => {
     try {
-      const id = parseInt(req.params.id as string);
+      const id = parseInt(req.params.id);
       const msgs = await storage.getMessagesByConversation(id);
       res.json(msgs);
     } catch (error) {
@@ -395,7 +396,7 @@ export async function registerRoutes(
     let toolCallCount = 0;
 
     try {
-      const conversationId = parseInt(req.params.id as string);
+      const conversationId = parseInt(req.params.id);
       const { content } = req.body;
 
       if (!content || typeof content !== "string") {
@@ -546,20 +547,14 @@ export async function registerRoutes(
     }
   });
 
-  // Self-assessment report
-  app.get("/api/self-assessment", async (_req: Request, res: Response) => {
+  // Lattice API endpoints (direct access)
+  app.get("/api/lattice/report", (_req: Request, res: Response) => {
     try {
-      const report = await storage.getSelfAssessmentReport();
-      res.json(report);
+      const { chiLatticeReport } = require("./lattice");
+      res.json({ report: chiLatticeReport() });
     } catch (error) {
-      console.error("Error fetching self-assessment report:", error);
-      res.status(500).json({ error: "Failed to fetch report" });
+      res.status(500).json({ error: "Failed to generate lattice report" });
     }
-  });
-
-  // Whistleblower portal
-  app.get("/whistleblower", (_req, res) => {
-    res.send("Whistleblower Portal - DOJ Submission System");
   });
 
   app.post("/api/ellomental/verify", (req: Request, res: Response) => {
@@ -586,7 +581,7 @@ export async function registerRoutes(
 
   app.get("/api/conversations/:id/tokens", async (req: Request, res: Response) => {
     try {
-      const id = parseInt(req.params.id as string);
+      const id = parseInt(req.params.id);
       const tokens = await storage.getUuonTokensByConversation(id);
       res.json(tokens);
     } catch (error) {
@@ -658,7 +653,7 @@ export async function registerRoutes(
   app.get("/api/lattice/value/:position", (req: Request, res: Response) => {
     try {
       const { chiValue } = require("./lattice");
-      const position = parseInt(req.params.position as string);
+      const position = parseInt(req.params.position);
       const tier = parseInt(req.query.tier as string) || 1;
       res.json(chiValue(position, tier));
     } catch (error: any) {
@@ -666,49 +661,65 @@ export async function registerRoutes(
     }
   });
 
-  app.post("/api/whistleblower/claims", async (req: Request, res: Response) => {
-    try {
-      const claim = await storage.createWhistleblowerClaim(req.body);
-      res.status(201).json(claim);
-    } catch (error) {
-      res.status(500).json({ error: "Failed to create claim" });
-    }
-  });
-
-  app.get("/api/whistleblower/claims", async (_req: Request, res: Response) => {
-    try {
-      const claims = await storage.getAllWhistleblowerClaims();
-      res.json(claims);
-    } catch (error) {
-      res.status(500).json({ error: "Failed to fetch claims" });
-    }
-  });
-
   app.post("/api/auth/register-fingerprint", async (req: Request, res: Response) => {
     try {
       const { components } = req.body;
+      if (!components || typeof components !== "object") {
+        return res.status(400).json({ error: "Fingerprint components required" });
+      }
       const hash = hashFingerprint(components);
-      // In a no-security app, we just allow everything and track it
-      await storage.registerFingerprint(hash, JSON.stringify(components), true);
-      return res.json({ status: "OWNER_REGISTERED", hash, isOwner: true });
+      const ownerFp = await storage.getOwnerFingerprint();
+
+      if (!ownerFp) {
+        const fp = await storage.registerFingerprint(hash, JSON.stringify(components), true);
+        await storage.logAccess(hash, "REGISTER_OWNER", true, req.ip, req.headers["user-agent"]);
+        return res.json({ status: "OWNER_REGISTERED", hash, isOwner: true });
+      }
+
+      if (ownerFp.hash === hash) {
+        await storage.updateFingerprintLastSeen(hash);
+        return res.json({ status: "OWNER_VERIFIED", hash, isOwner: true });
+      }
+
+      const existing = await storage.getFingerprint(hash);
+      if (existing && existing.blocked) {
+        return res.status(403).json({ status: "BLOCKED", hash });
+      }
+
+      await storage.registerFingerprint(hash, JSON.stringify(components), false);
+      await storage.logAccess(hash, "REGISTER_UNKNOWN", false, req.ip, req.headers["user-agent"]);
+      return res.status(403).json({ status: "ACCESS_DENIED", hash, isOwner: false });
     } catch (error) {
       res.status(500).json({ error: "Fingerprint registration failed" });
     }
   });
 
   app.get("/api/auth/status", async (_req: Request, res: Response) => {
-    res.json({
-      ownerRegistered: true,
-      setupComplete: true,
-      system: "UUON-CLOUUD-OPEN",
-    });
+    try {
+      const ownerFp = await storage.getOwnerFingerprint();
+      res.json({
+        ownerRegistered: !!ownerFp,
+        system: "UUON-CLOUUD-PRIVATE",
+      });
+    } catch (error) {
+      res.status(500).json({ error: "Status check failed" });
+    }
+  });
+
+  app.get("/api/auth/access-log", async (_req: Request, res: Response) => {
+    try {
+      const log = await storage.getAccessLog(100);
+      res.json(log);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch access log" });
+    }
   });
 
   app.post("/api/upload", upload.single("file"), handleUpload);
 
   app.get("/api/uploads/:conversationId", async (req: Request, res: Response) => {
     try {
-      const conversationId = parseInt(req.params.conversationId as string);
+      const conversationId = parseInt(req.params.conversationId);
       const files = await storage.getUploadsByConversation(conversationId);
       res.json(files);
     } catch (error) {
@@ -718,7 +729,7 @@ export async function registerRoutes(
 
   app.get("/api/upload/:id/text", async (req: Request, res: Response) => {
     try {
-      const id = parseInt(req.params.id as string);
+      const id = parseInt(req.params.id);
       const file = await storage.getUpload(id);
       if (!file) return res.status(404).json({ error: "Upload not found" });
       res.json({ id: file.id, originalName: file.originalName, extractedText: file.extractedText });

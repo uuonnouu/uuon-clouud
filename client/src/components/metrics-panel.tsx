@@ -119,7 +119,7 @@ export default function MetricsPanel() {
   }
 
   const isActive = metrics.lastRequestAt > 0 && (Date.now() - metrics.lastRequestAt) < 30000;
-  const changed = !!(prevMetrics.current && prevMetrics.current.totalRequests !== metrics.totalRequests);
+  const changed = prevMetrics.current && prevMetrics.current.totalRequests !== metrics.totalRequests;
 
   return (
     <div className="border-t border-border/50 bg-[#020810]">
