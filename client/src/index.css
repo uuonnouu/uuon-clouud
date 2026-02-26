@@ -82,12 +82,19 @@
   }
 
   .clouud-ambient {
-    background: radial-gradient(
-      ellipse at 50% 40%,
-      rgba(74, 140, 212, 0.08) 0%,
-      rgba(240, 185, 59, 0.03) 40%,
-      transparent 70%
-    );
+    background: 
+      radial-gradient(ellipse at 50% 40%, rgba(74, 140, 212, 0.08) 0%, rgba(240, 185, 59, 0.03) 40%, transparent 70%),
+      repeating-linear-gradient(175deg, transparent 0px, transparent 60px, rgba(146,64,14,0.015) 60px, rgba(146,64,14,0.015) 61px),
+      repeating-linear-gradient(172deg, transparent 0px, transparent 45px, rgba(6,95,70,0.012) 45px, rgba(6,95,70,0.012) 46px),
+      repeating-linear-gradient(178deg, transparent 0px, transparent 80px, rgba(217,119,6,0.01) 80px, rgba(217,119,6,0.01) 81px);
+  }
+
+  .geo-contour-bg {
+    background:
+      repeating-linear-gradient(176deg, transparent 0px, transparent 35px, rgba(146,64,14,0.025) 35px, rgba(146,64,14,0.025) 36px),
+      repeating-linear-gradient(171deg, transparent 0px, transparent 50px, rgba(6,95,70,0.018) 50px, rgba(6,95,70,0.018) 51px),
+      repeating-linear-gradient(180deg, transparent 0px, transparent 25px, rgba(217,119,6,0.015) 25px, rgba(217,119,6,0.015) 26px),
+      repeating-linear-gradient(174deg, transparent 0px, transparent 70px, rgba(74,140,212,0.012) 70px, rgba(74,140,212,0.012) 71px);
   }
 
   .glass-panel {
