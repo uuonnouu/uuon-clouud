@@ -83,6 +83,19 @@ const SHAPE_NODES: ShapeNode[] = [
     orbitSpeed: 0.0003,
     orbitOffset: Math.PI * 1.6,
   },
+  {
+    id: "geomorphology",
+    label: "Geomorphology",
+    description: "Earth's living shapes and structures",
+    prompt: "How does geomorphology shape the way we understand Earth's systems?",
+    icon: "wave",
+    color: "#92400e",
+    x: 50, y: 30,
+    scale: 1.1,
+    orbitRadius: 35,
+    orbitSpeed: 0.0002,
+    orbitOffset: Math.PI * 1.8,
+  },
 ];
 
 function WaveShape({ color, size }: { color: string; size: number }) {
@@ -207,6 +220,7 @@ export default function ExplorationEngine({ onExplore }: ExplorationEngineProps)
     { name: "Entropy Reduction", color: "#f0b93b", particles: 10, speed: 0.4 },
     { name: "Wave Interference", color: "#8b5cf6", particles: 15, speed: 1.8 },
     { name: "Tensor Fields", color: "#22c55e", particles: 12, speed: 0.8 },
+    { name: "Geomorphology", color: "#92400e", particles: 18, speed: 0.6 },
   ];
 
   useEffect(() => {
