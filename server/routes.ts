@@ -436,6 +436,7 @@ export async function registerRoutes(
       totalDriftFlags: systemMetrics.totalDriftFlags,
       avgResponseTime: systemMetrics.avgResponseTime,
       lastResponseTime: systemMetrics.lastResponseTime,
+      responseTimeHistory: systemMetrics.responseTimes.slice(-20),
       uptime: `${uptimeHours}h ${uptimeMinutes}m`,
       uptimeMs,
       lastRequestAt: systemMetrics.lastRequestAt,
@@ -444,6 +445,7 @@ export async function registerRoutes(
       maxTokens: 1024,
       latticePoints: 33,
       savedTokens,
+      historyWindow: MAX_HISTORY_MESSAGES,
     });
   });
 
