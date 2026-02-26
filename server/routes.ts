@@ -515,11 +515,29 @@ export async function registerRoutes(
           return res.json({ userMessage: userMsg, assistantMessage: assistantMsg });
         }
       }
+
+      // Δmension Context Injector
+      let injectedContext = "";
+      if (content.toLowerCase().includes("dmension") || content.toLowerCase().includes("dimension")) {
+        const dmStatus = await dmensionBridge.getStatus();
+        injectedContext = `\n\n[SYSTEM NOTE: Δmension Bridge is ${dmStatus.status}. Latency: ${dmStatus.latency}ms. Active Shapes: ${dmStatus.activeShapes}. AI is fully plugged in to Δmension metrics. If issues persist, suggest lattice recalibration or use visualize_concept to test geometric integrity.]`;
+      }
+
+      const history = await storage.getMessagesByConversation(conversationId);
+      const filteredHistory = history.filter(m => m.role === "user" || m.role === "assistant");
       const windowedHistory = filteredHistory.slice(-MAX_HISTORY_MESSAGES);
       const apiMessages: Anthropic.MessageParam[] = windowedHistory.map(m => ({
         role: m.role as "user" | "assistant",
         content: m.content,
       }));
+
+      // Append context to the last message if needed
+      if (injectedContext && apiMessages.length > 0) {
+        const lastMsg = apiMessages[apiMessages.length - 1];
+        if (typeof lastMsg.content === 'string') {
+          lastMsg.content += injectedContext;
+        }
+      }
 
       let finalResponse = "";
       let toolCallData: any = null;

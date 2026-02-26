@@ -67,6 +67,7 @@ export default function ClouudTerminal() {
     return false;
   });
   const [showLinkInput, setShowLinkInput] = useState(false);
+  const [showDmension, setShowDmension] = useState(false);
   const [linkUrl, setLinkUrl] = useState("");
   const [isUploading, setIsUploading] = useState(false);
   const [isScraping, setIsScraping] = useState(false);
@@ -550,6 +551,17 @@ export default function ClouudTerminal() {
               </div>
 
               <div className="p-3 border-t border-border">
+                <button
+                  onClick={() => setShowDmension(true)}
+                  className="w-full flex items-center gap-2 px-2 py-2 text-[11px] text-primary hover:text-white bg-background hover:bg-muted/60 border border-border hover:border-primary/30 rounded-sm transition-all"
+                  data-testid="button-open-dmension"
+                >
+                  <Globe className="w-3.5 h-3.5" />
+                  Open Δmension Native
+                </button>
+              </div>
+
+              <div className="p-3 border-t border-border">
                 <details className="group">
                   <summary className="flex items-center justify-between cursor-pointer font-display uppercase text-[10px] font-bold tracking-wider text-white list-none [&::-webkit-details-marker]:hidden">
                     <div className="flex items-center gap-1.5">
@@ -679,6 +691,37 @@ export default function ClouudTerminal() {
             </div>
           </div>
         )}
+
+        <AnimatePresence>
+          {showDmension && (
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              className="absolute inset-0 z-30 bg-background flex flex-col"
+            >
+              <div className="p-4 border-b border-border flex items-center justify-between bg-card">
+                <div className="flex items-center gap-2">
+                  <Globe className="w-5 h-5 text-primary" />
+                  <h2 className="font-display font-bold text-white tracking-widest uppercase">Δmension Native Interface</h2>
+                </div>
+                <button 
+                  onClick={() => setShowDmension(false)}
+                  className="p-2 text-muted-foreground hover:text-white transition-colors"
+                >
+                  <X size={20} />
+                </button>
+              </div>
+              <div className="flex-1 relative bg-black">
+                <iframe 
+                  src="https://uuon-foundation.com" 
+                  className="w-full h-full border-none"
+                  title="Dmension"
+                />
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
 
         {messages.length > 0 && (
           <div 
