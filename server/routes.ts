@@ -117,6 +117,35 @@ You are not trying to please.
 You are trying to be accurate.
 Accuracy is the only gift worth giving.`;
 
+const systemMetrics = {
+  totalRequests: 0,
+  totalTokensIn: 0,
+  totalTokensOut: 0,
+  totalToolCalls: 0,
+  totalDriftFlags: 0,
+  avgResponseTime: 0,
+  lastResponseTime: 0,
+  responseTimes: [] as number[],
+  uptime: Date.now(),
+  lastRequestAt: 0,
+  modelUsed: "claude-sonnet-4-6",
+};
+
+function recordMetrics(responseTimeMs: number, tokensIn: number, tokensOut: number, toolCalls: number, driftFlagged: boolean) {
+  systemMetrics.totalRequests++;
+  systemMetrics.totalTokensIn += tokensIn;
+  systemMetrics.totalTokensOut += tokensOut;
+  systemMetrics.totalToolCalls += toolCalls;
+  if (driftFlagged) systemMetrics.totalDriftFlags++;
+  systemMetrics.lastResponseTime = responseTimeMs;
+  systemMetrics.lastRequestAt = Date.now();
+  systemMetrics.responseTimes.push(responseTimeMs);
+  if (systemMetrics.responseTimes.length > 50) systemMetrics.responseTimes.shift();
+  systemMetrics.avgResponseTime = Math.round(
+    systemMetrics.responseTimes.reduce((a, b) => a + b, 0) / systemMetrics.responseTimes.length
+  );
+}
+
 const DRIFT_PHRASES = [
   "great question",
   "certainly!",
@@ -220,6 +249,11 @@ export async function registerRoutes(
 
   // Send message and get AI response with tool use
   app.post("/api/conversations/:id/messages", async (req: Request, res: Response) => {
+    const startTime = Date.now();
+    let totalInputTokens = 0;
+    let totalOutputTokens = 0;
+    let toolCallCount = 0;
+
     try {
       const conversationId = parseInt(req.params.id);
       const { content } = req.body;
@@ -228,14 +262,12 @@ export async function registerRoutes(
         return res.status(400).json({ error: "Message content is required" });
       }
 
-      // Save user message
       const userMsg = await storage.createMessage({
         conversationId,
         role: "user",
         content,
       });
 
-      // Build conversation history for context
       const history = await storage.getMessagesByConversation(conversationId);
       const apiMessages: Anthropic.MessageParam[] = history
         .filter(m => m.role === "user" || m.role === "assistant")
@@ -244,7 +276,6 @@ export async function registerRoutes(
           content: m.content,
         }));
 
-      // Call Anthropic with tool use
       let finalResponse = "";
       let toolCallData: any = null;
 
@@ -257,7 +288,9 @@ export async function registerRoutes(
         messages: apiMessages,
       });
 
-      // Handle tool use loop — process ALL tool_use blocks per response
+      totalInputTokens += response.usage?.input_tokens || 0;
+      totalOutputTokens += response.usage?.output_tokens || 0;
+
       while (response.stop_reason === "tool_use") {
         const toolUseBlocks = response.content.filter(
           (block): block is Anthropic.ContentBlock & { type: "tool_use" } =>
@@ -270,6 +303,7 @@ export async function registerRoutes(
 
         for (const toolUseBlock of toolUseBlocks) {
           const toolResult = executeLatticeTool(toolUseBlock.name, toolUseBlock.input as Record<string, any>);
+          toolCallCount++;
 
           toolCallData = {
             name: toolUseBlock.name,
@@ -301,6 +335,9 @@ export async function registerRoutes(
           tools: latticeTools as any,
           messages: apiMessages,
         });
+
+        totalInputTokens += response.usage?.input_tokens || 0;
+        totalOutputTokens += response.usage?.output_tokens || 0;
       }
 
       // Extract final text response
@@ -315,6 +352,9 @@ export async function registerRoutes(
       if (!driftCheck.clean) {
         console.warn(`[DRIFT DETECTED] Flagged phrases: ${driftCheck.flagged.join(", ")}`);
       }
+
+      const responseTimeMs = Date.now() - startTime;
+      recordMetrics(responseTimeMs, totalInputTokens, totalOutputTokens, toolCallCount, !driftCheck.clean);
 
       // Generate provenance hash
       const hash = generateProvenanceHash(finalResponse);
@@ -334,6 +374,8 @@ export async function registerRoutes(
         driftCheck: driftCheck.clean ? null : driftCheck.flagged,
       });
     } catch (error: any) {
+      const responseTimeMs = Date.now() - startTime;
+      recordMetrics(responseTimeMs, totalInputTokens, totalOutputTokens, toolCallCount, false);
       console.error("Error processing message:", error);
       res.status(500).json({ error: error.message || "Failed to process message" });
     }
@@ -347,6 +389,28 @@ export async function registerRoutes(
     } catch (error) {
       res.status(500).json({ error: "Failed to generate lattice report" });
     }
+  });
+
+  app.get("/api/metrics", (_req: Request, res: Response) => {
+    const uptimeMs = Date.now() - systemMetrics.uptime;
+    const uptimeHours = Math.floor(uptimeMs / 3600000);
+    const uptimeMinutes = Math.floor((uptimeMs % 3600000) / 60000);
+    res.json({
+      totalRequests: systemMetrics.totalRequests,
+      totalTokensIn: systemMetrics.totalTokensIn,
+      totalTokensOut: systemMetrics.totalTokensOut,
+      totalToolCalls: systemMetrics.totalToolCalls,
+      totalDriftFlags: systemMetrics.totalDriftFlags,
+      avgResponseTime: systemMetrics.avgResponseTime,
+      lastResponseTime: systemMetrics.lastResponseTime,
+      uptime: `${uptimeHours}h ${uptimeMinutes}m`,
+      uptimeMs,
+      lastRequestAt: systemMetrics.lastRequestAt,
+      model: systemMetrics.modelUsed,
+      temperature: 0.1,
+      maxTokens: 1024,
+      latticePoints: 33,
+    });
   });
 
   app.get("/api/lattice/value/:position", (req: Request, res: Response) => {

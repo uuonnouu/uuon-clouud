@@ -41,6 +41,10 @@ UUON Clouud is the intelligence interface for the G°centric Lattice System, bui
     - Component: `client/src/components/tutorial.tsx`
 11. **Undo Button:** Removes last user+assistant exchange, restores input for retry
 12. **Legal Page:** `/legal` route with Terms of Use, Privacy Policy, Disclaimer tabs — accessible from sidebar
+13. **Real-time Metrics Panel:** Collapsible panel below input bar showing live API response times, token usage, tool calls, model info, uptime, drift flags — auto-refreshes every 5 seconds
+    - Server tracks: response times (rolling avg of last 50), input/output tokens, tool call count, drift detection flags
+    - Component: `client/src/components/metrics-panel.tsx`
+14. **Water Animations:** Messages flow in with soft fade-up, blur transition, and paragraph-by-paragraph cascade for assistant responses
 
 ## Design System
 - **Palette:** Deep Navy (#030811), UUON Gold (#f0b93b), Atmosphere Blue (#4a8cd4)

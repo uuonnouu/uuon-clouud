@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useLocation } from "wouter";
 import ClouudAvatar from "@/components/clouud-avatar";
 import Tutorial from "@/components/tutorial";
+import MetricsPanel from "@/components/metrics-panel";
 import uuonLogo from "@assets/A7950814-2592-4E7D-858F-3AEB1D632F98_1772064571557.png";
 
 type Message = {
@@ -466,32 +467,62 @@ export default function ClouudTerminal() {
             className="flex-1 overflow-y-auto p-4 md:p-6 space-y-5"
           >
             <AnimatePresence initial={false}>
-              {messages.map((msg) => (
+              {messages.map((msg, msgIndex) => (
                 <motion.div 
                   key={msg.id}
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
+                  initial={{ opacity: 0, y: 20, filter: "blur(4px)" }}
+                  animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+                  transition={{ duration: 0.6, ease: [0.25, 0.1, 0.25, 1], delay: msgIndex === messages.length - 1 ? 0.1 : 0 }}
                   className={`flex w-full ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
                 >
                   {msg.role === 'user' && (
-                    <div className="max-w-[85%] md:max-w-[70%] bg-card border border-border p-3 rounded-sm text-foreground text-sm" style={{ boxShadow: '4px 4px 0px 0px var(--color-border)' }}>
+                    <motion.div
+                      initial={{ opacity: 0, x: 12 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ duration: 0.5, ease: [0.25, 0.1, 0.25, 1] }}
+                      className="max-w-[85%] md:max-w-[70%] bg-card border border-border p-3 rounded-sm text-foreground text-sm"
+                      style={{ boxShadow: '4px 4px 0px 0px var(--color-border)' }}
+                    >
                       {msg.content}
-                    </div>
+                    </motion.div>
                   )}
 
                   {msg.role === 'assistant' && (
-                    <div className="max-w-[95%] md:max-w-[80%] flex gap-3">
-                      <div className="shrink-0 pt-1">
+                    <motion.div
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      transition={{ duration: 0.4 }}
+                      className="max-w-[95%] md:max-w-[80%] flex gap-3"
+                    >
+                      <motion.div
+                        initial={{ opacity: 0, scale: 0.8 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        transition={{ duration: 0.5, ease: [0.25, 0.1, 0.25, 1] }}
+                        className="shrink-0 pt-1"
+                      >
                         <ClouudAvatar state={msg.id === messages[messages.length - 1]?.id && aiState === "speaking" ? "speaking" : "idle"} size="sm" />
-                      </div>
+                      </motion.div>
                       <div className="flex-1 space-y-2">
-                        <div className="font-mono text-[9px] text-primary tracking-widest uppercase">Clouud</div>
+                        <motion.div
+                          initial={{ opacity: 0, x: -8 }}
+                          animate={{ opacity: 1, x: 0 }}
+                          transition={{ duration: 0.4, delay: 0.1 }}
+                          className="font-mono text-[9px] text-primary tracking-widest uppercase"
+                        >
+                          Clouud
+                        </motion.div>
                         
                         {msg.toolCall && (() => {
                           try {
                             const tc = JSON.parse(msg.toolCall);
                             return (
-                              <div className="w-full bg-card border border-border p-2.5 rounded-sm" style={{ boxShadow: '4px 4px 0px 0px rgba(240,185,59,0.15)' }}>
+                              <motion.div
+                                initial={{ opacity: 0, y: 10 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ duration: 0.5, delay: 0.2, ease: [0.25, 0.1, 0.25, 1] }}
+                                className="w-full bg-card border border-border p-2.5 rounded-sm"
+                                style={{ boxShadow: '4px 4px 0px 0px rgba(240,185,59,0.15)' }}
+                              >
                                 <div className="flex items-center gap-1.5 text-primary font-display text-[10px] tracking-widest mb-2 uppercase font-bold">
                                   <Cpu className="w-3 h-3" />
                                   Tool: {tc.name}
@@ -502,13 +533,30 @@ export default function ClouudTerminal() {
                                   <span className="text-muted-foreground">Output:</span>
                                   <span className="text-secondary font-bold whitespace-pre-wrap">{typeof tc.result === 'string' ? tc.result : JSON.stringify(tc.result)}</span>
                                 </div>
-                              </div>
+                              </motion.div>
                             );
                           } catch { return null; }
                         })()}
                         
-                        <div className="bg-card border border-border p-3 rounded-sm text-white text-sm leading-relaxed whitespace-pre-wrap" style={{ boxShadow: '4px 4px 0px 0px rgba(20,42,69,1)' }}>
-                          {msg.content}
+                        <motion.div
+                          initial={{ opacity: 0, y: 12 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{ duration: 0.6, delay: msg.toolCall ? 0.4 : 0.2, ease: [0.25, 0.1, 0.25, 1] }}
+                          className="bg-card border border-border p-3 rounded-sm text-white text-sm leading-relaxed whitespace-pre-wrap"
+                          style={{ boxShadow: '4px 4px 0px 0px rgba(20,42,69,1)' }}
+                        >
+                          {msg.content.split('\n\n').map((paragraph, i) => (
+                            <motion.span
+                              key={i}
+                              initial={{ opacity: 0 }}
+                              animate={{ opacity: 1 }}
+                              transition={{ duration: 0.5, delay: (msg.toolCall ? 0.5 : 0.3) + i * 0.08, ease: "easeOut" }}
+                              className="inline"
+                            >
+                              {i > 0 && <><br /><br /></>}
+                              {paragraph}
+                            </motion.span>
+                          ))}
                           
                           {msg.hash && (
                             <div className="mt-3 pt-2 border-t border-muted flex items-center gap-1.5 font-mono text-[8px] text-muted-foreground">
@@ -516,9 +564,9 @@ export default function ClouudTerminal() {
                               <span className="truncate uppercase tracking-widest">{msg.hash}</span>
                             </div>
                           )}
-                        </div>
+                        </motion.div>
                       </div>
-                    </div>
+                    </motion.div>
                   )}
                 </motion.div>
               ))}
@@ -580,6 +628,7 @@ export default function ClouudTerminal() {
             </div>
           </form>
         </div>
+        <MetricsPanel />
       </div>
 
       <AnimatePresence>
