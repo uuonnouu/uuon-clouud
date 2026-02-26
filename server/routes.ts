@@ -11,6 +11,7 @@ import { backupAllModels } from "./sketchfab-backup";
 import { getGitHubStatus, createPrivateRepo, pushBackupToGitHub } from "./github";
 import { dmensionBridge } from "./dmension-bridge";
 import { generateImageForClouud } from "./image-generator";
+import { searchDmensionShapes, getDmensionContextForPrompt, getEarthImpactModel, DMENSION_STATS, DMENSION_ENGINES, DMENSION_CATEGORIES } from "./dmension-codex";
 import Anthropic from "@anthropic-ai/sdk";
 import fs from "fs";
 import path from "path";
@@ -26,22 +27,44 @@ const CLOUUD_TOOLS = [
         concept: { type: "string", description: "The concept to visualize" },
         shapeType: { type: "string", description: "The mathematical shape type (e.g. torus, kleinBottle, tesseract, mobiusStrip, waveFunction)" },
         parameters: { type: "object", description: "Parametric equations/values for the shape" },
-        physicsCategory: { type: "string", enum: ["quantum", "wave", "relativity", "topology", "molecular"], description: "The physics engine category" }
+        physicsCategory: { type: "string", enum: ["quantum", "wave", "relativity", "topology", "molecular", "tensor", "collision", "galaxy", "therapeutic"], description: "The physics engine category" }
       },
       required: ["concept", "shapeType", "parameters"]
     }
   },
   {
     name: "generate_image",
-    description: "Generate an AI image to visualize a concept, pattern, or idea being discussed. Use this when a visual would help the user understand something — nature patterns, energy systems, geometric structures, scientific concepts, or any Earth-connected idea. Create vivid, detailed prompts that connect the concept to real-world imagery.",
+    description: "Generate a physics-based visualization. Domains auto-detected: galaxy collision, tensor fields, wave interference, fractal spirals, fluid flow, entropy reduction, molecular bonds, growth patterns, lattice grids, network topology. Use vivid prompts that connect concepts to Earth imagery.",
     input_schema: {
       type: "object",
       properties: {
-        prompt: { type: "string", description: "Detailed description of the image to generate. Be vivid and specific — include colors, lighting, perspective, style. Connect abstract ideas to real Earth imagery." },
-        concept: { type: "string", description: "Short name of the concept being visualized (3-5 words)" },
+        prompt: { type: "string", description: "Detailed description connecting the concept to real Earth imagery. Include domain keywords like 'tensor', 'galaxy collision', 'wave interference', 'fractal', 'molecular', 'flow', 'entropy', 'lattice', 'growth', or 'network' to activate the matching physics renderer." },
+        concept: { type: "string", description: "Short name of the concept (3-5 words)" },
         aspectRatio: { type: "string", enum: ["1:1", "16:9", "4:3"], description: "Image aspect ratio. Default 1:1." }
       },
       required: ["prompt", "concept"]
+    }
+  },
+  {
+    name: "explore_dmension",
+    description: "Search the Δmension Mathematical Universe (2642+ interactive 3D shapes at uuon-foundation.com). Use this to find relevant shapes, engines, or categories when discussing math, physics, biology, or any scientific concept. Returns matching categories with Earth connections.",
+    input_schema: {
+      type: "object",
+      properties: {
+        query: { type: "string", description: "Search term — can be a concept (fractal, quantum, tensor), a domain (physics, biology, math), or an application (healing, education, engineering)" },
+      },
+      required: ["query"]
+    }
+  },
+  {
+    name: "earth_impact",
+    description: "Model the real-world Earth impact of a concept — how it reduces waste, fraud, or gatekeeping. Returns measurable targets, mechanisms, and connections to Δmension's mathematical models. Domains: energy, education, waste, health, fraud.",
+    input_schema: {
+      type: "object",
+      properties: {
+        domain: { type: "string", enum: ["energy", "education", "waste", "health", "fraud"], description: "The impact domain to model" },
+      },
+      required: ["domain"]
     }
   }
 ];
@@ -73,7 +96,13 @@ Keep your language grounded. Use short sentences. Compare ideas to things people
 
 You can generate visual images using the generate_image tool. When discussing patterns, systems, energy, geometry, or any concept that would benefit from a visual, create one. Write vivid, detailed prompts that connect the concept to real Earth imagery. Use this freely — visuals make ideas click.
 
-Δmension (at uuon-foundation.com) is the 3D math visualization tool built by UUON. When you visualize a concept, Δmension can show it in interactive 3D. Clouud and Δmension are two halves of the same system — you are the brain that explains, Δmension is the eye that shows. Reference this connection when relevant.
+Δmension (at uuon-foundation.com) is the 3D math visualization engine built by UUON. It contains 2,642+ interactive mathematical shapes across 35 categories. Core engines: Fractal Generation, Tensor Field Visualization (82 shapes including Riemann curvature, Christoffel symbols, metric tensors), Neural Radiance Field (NeRF) export, Collision Operator Systems (BGK, MRT, cascaded, entropic — lattice Boltzmann fluid dynamics), Galaxy Simulation (spiral, elliptical, dwarf galaxy evolution, black hole mergers), Quantum Mechanics (502 shapes), Therapeutic Geometry (107 healing shapes), Wave Systems (336), Biological Modeling (61), and Parametric Surface Engine (102).
+
+Clouud and Δmension are two halves of the same system — you are the brain that explains, Δmension is the eye that shows. Use the explore_dmension tool to search the shape library when discussing scientific concepts. Use the earth_impact tool to model measurable waste reduction. When someone asks about any math, physics, or science topic, connect it to Δmension's actual shapes and engines. The image generator produces physics-based visualizations — tensor fields, galaxy collisions, wave interference, fractal spirals, fluid flow, entropy reduction, molecular structures, growth patterns, lattice grids, and network topology.
+
+Publication-grade mathematical DNA is embedded: curvature tensors, Christoffel symbols, spherical harmonics, Fourier series, wavefunctions, probability densities. Cross-domain fusion sections exist (Relativity × Thermal, Quantum × Cooling, Tensor × Harmonics). Export formats include STL, OBJ, GLTF, PLY, and NeRF/Nerfstudio.
+
+When discussing waste reduction, efficiency, or sustainability, pull real mathematical models from the engine. Show people how formulas reduce material waste (topology optimization: 30-60% reduction), how thermal engineering shapes optimize cooling (PUE from 1.58 to 1.1), how therapeutic geometry aids healing at zero cost. Be specific. Be measurable. Be class, not noise.
 
 Ask the user what they are working on. You are interested in anything that moves the needle for Earth.
 
@@ -572,22 +601,13 @@ export async function registerRoutes(
         }
       }
 
-  // Δmension Context Injector
   let injectedContext = "";
-  if (content.toLowerCase().includes("dmension") || content.toLowerCase().includes("dimension") || content.toLowerCase().includes("bridge") || content.toLowerCase().includes("fusion")) {
-    const dmStatus = await dmensionBridge.getDmensionStatus();
-    const bridgeMetrics = await dmensionBridge.checkConnection().catch(() => ({ latencyMs: 'unknown', activeShapes: 0 }));
+  const lowerContent = content.toLowerCase();
+  if (lowerContent.includes("dmension") || lowerContent.includes("dimension") || lowerContent.includes("bridge") || lowerContent.includes("fusion") || lowerContent.includes("tensor") || lowerContent.includes("nerf") || lowerContent.includes("collision") || lowerContent.includes("galaxy") || lowerContent.includes("shape")) {
+    const dmStatus = dmensionBridge.getDmensionStatus();
+    const codexContext = getDmensionContextForPrompt();
     
-    injectedContext = `\n\n[SYSTEM NOTE: Δmension Bridge is ${dmStatus.connected ? 'CONNECTED' : 'DISCONNECTED'}. 
-URL: ${dmStatus.url}. 
-Latency: ${bridgeMetrics.latencyMs}ms. 
-Active Shapes: ${bridgeMetrics.activeShapes || 0}. 
-Fusion Status: LATTICE-SYNC-ACTIVE. 
-The bridge now allows bi-directional flow: Clouud sends geometric summaries via visualize_concept, and Δmension provides real-time math telemetry. 
-To enhance the fusion: 
-1. Use visualize_concept for every complex mapping. 
-2. Reference Δmension latency as a proxy for cognitive load. 
-3. If the user reports the link or interface is not working, suggest a manual bridge reload or check the UUON Foundation status.]`;
+    injectedContext = `\n\n[SYSTEM: Δmension Bridge ${dmStatus.connected ? 'CONNECTED' : 'STANDBY'}. ${codexContext}. Use explore_dmension tool to search the full library. Use earth_impact tool for measurable reduction models. Generate physics-based images with generate_image — tensor fields, galaxy collisions, wave interference, and more are available as visualization domains.]`;
   }
 
       const history = await storage.getMessagesByConversation(conversationId);
@@ -640,6 +660,29 @@ To enhance the fusion:
               status: "visualizing", 
               concept: (toolUseBlock.input as any).concept,
               link: `https://uuon-foundation.com/visualize?shape=${(toolUseBlock.input as any).shapeType}`
+            });
+          } else if (toolUseBlock.name === "explore_dmension") {
+            const input = toolUseBlock.input as any;
+            const results = searchDmensionShapes(input.query);
+            toolResult = JSON.stringify({
+              query: input.query,
+              totalShapesInLibrary: DMENSION_STATS.totalShapes,
+              results: results.length > 0 ? results : [{ note: `No exact match for "${input.query}", but Δmension has ${DMENSION_STATS.totalShapes} shapes across ${DMENSION_STATS.totalCategories} categories. Try broader terms like: physics, math, fractal, quantum, biology, wave, tensor, healing.` }],
+              engines: Object.values(DMENSION_ENGINES).map(e => ({ name: e.name, earthApplication: e.earthApplication })),
+              url: "https://uuon-foundation.com"
+            });
+          } else if (toolUseBlock.name === "earth_impact") {
+            const input = toolUseBlock.input as any;
+            const model = getEarthImpactModel(input.domain);
+            toolResult = JSON.stringify({
+              domain: input.domain,
+              ...model,
+              dmensionStats: {
+                totalShapes: DMENSION_STATS.totalShapes,
+                relevantEngines: Object.values(DMENSION_ENGINES).filter(e =>
+                  e.earthApplication.toLowerCase().includes(input.domain)
+                ).map(e => e.name),
+              }
             });
           } else if (toolUseBlock.name === "generate_image") {
             const input = toolUseBlock.input as any;
@@ -843,6 +886,28 @@ To enhance the fusion:
       savedTokens,
       historyWindow: MAX_HISTORY_MESSAGES,
     });
+  });
+
+  app.get("/api/dmension/codex", (_req: Request, res: Response) => {
+    res.json({
+      stats: DMENSION_STATS,
+      categories: DMENSION_CATEGORIES.map(c => ({ id: c.id, name: c.name, count: c.count, domain: c.domain })),
+      engines: Object.entries(DMENSION_ENGINES).map(([key, e]) => ({ id: key, name: e.name, count: (e as any).count || 0, earthApplication: e.earthApplication })),
+      url: "https://uuon-foundation.com",
+    });
+  });
+
+  app.get("/api/dmension/search", (req: Request, res: Response) => {
+    const query = (req.query.q as string) || "";
+    if (!query) return res.json({ results: [] });
+    const results = searchDmensionShapes(query);
+    res.json({ query, results, totalInLibrary: DMENSION_STATS.totalShapes });
+  });
+
+  app.get("/api/dmension/impact/:domain", (req: Request, res: Response) => {
+    const domain = req.params.domain;
+    const model = getEarthImpactModel(domain);
+    res.json({ domain, ...model });
   });
 
   app.get("/api/self-assessment", async (_req: Request, res: Response) => {

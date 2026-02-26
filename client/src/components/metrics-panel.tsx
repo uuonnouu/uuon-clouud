@@ -265,8 +265,8 @@ export default function MetricsPanel() {
 
               <div className="flex items-center justify-between text-[8px] font-mono text-muted-foreground/40 pt-1 border-t border-border/30">
                 <span className="tracking-[0.15em] uppercase">Lattice: {metrics.latticePoints}-pt · 3-tier</span>
+                <span className="tracking-[0.15em] uppercase">Δmension: 2642 shapes · 10 engines</span>
                 <span className="tracking-[0.15em] uppercase">Window: {metrics.historyWindow} msg</span>
-                <span className="tracking-[0.15em] uppercase">Origin: UUON-GCENTRIC-V1</span>
               </div>
             </div>
           </motion.div>
