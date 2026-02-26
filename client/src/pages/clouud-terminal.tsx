@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import { Cpu, Binary, Menu, X, Globe, Zap, Network, ChevronRight, Plus, Trash2, MessageCircle, Loader2, Activity, HelpCircle, Undo2, Scale, Paperclip, Link2, Mic, MicOff, Brain } from "lucide-react";
+import { Cpu, Binary, Menu, X, Globe, Zap, Network, ChevronRight, Plus, Trash2, MessageCircle, Loader2, Activity, HelpCircle, Undo2, Scale, Paperclip, Link2, Mic, MicOff, Brain, Volume2, VolumeX } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useLocation } from "wouter";
 import ClouudAvatar from "@/components/clouud-avatar";
@@ -58,6 +58,8 @@ export default function ClouudTerminal() {
     return false;
   });
   const [isListening, setIsListening] = useState(false);
+  const [isSpeaking, setIsSpeaking] = useState(false);
+  const [speakingMsgId, setSpeakingMsgId] = useState<number | null>(null);
   const [showLinkInput, setShowLinkInput] = useState(false);
   const [linkUrl, setLinkUrl] = useState("");
   const [isUploading, setIsUploading] = useState(false);
@@ -367,6 +369,49 @@ export default function ClouudTerminal() {
     recognition.start();
     setIsListening(true);
   }
+
+  function speakMessage(msgId: number, text: string) {
+    if (isSpeaking && speakingMsgId === msgId) {
+      window.speechSynthesis.cancel();
+      setIsSpeaking(false);
+      setSpeakingMsgId(null);
+      return;
+    }
+
+    window.speechSynthesis.cancel();
+
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.rate = 0.95;
+    utterance.pitch = 0.9;
+    utterance.volume = 1;
+
+    const voices = window.speechSynthesis.getVoices();
+    const preferred = voices.find(v =>
+      v.name.includes("Google") && v.name.includes("US") && v.lang === "en-US"
+    ) || voices.find(v => v.lang === "en-US") || voices[0];
+    if (preferred) utterance.voice = preferred;
+
+    utterance.onstart = () => {
+      setIsSpeaking(true);
+      setSpeakingMsgId(msgId);
+    };
+    utterance.onend = () => {
+      setIsSpeaking(false);
+      setSpeakingMsgId(null);
+    };
+    utterance.onerror = () => {
+      setIsSpeaking(false);
+      setSpeakingMsgId(null);
+    };
+
+    window.speechSynthesis.speak(utterance);
+  }
+
+  useEffect(() => {
+    return () => {
+      window.speechSynthesis.cancel();
+    };
+  }, []);
 
   if (isLoading) {
     return (
@@ -739,8 +784,28 @@ export default function ClouudTerminal() {
                             </motion.span>
                           ))}
                           
+                          {msg.role === 'assistant' && (
+                            <div className="mt-2 flex items-center gap-1">
+                              <button
+                                onClick={() => speakMessage(msg.id, msg.content)}
+                                className={`p-1 rounded-sm transition-colors ${
+                                  isSpeaking && speakingMsgId === msg.id
+                                    ? "text-[#f0b93b] bg-[#f0b93b]/10"
+                                    : "text-muted-foreground/50 hover:text-[#f0b93b]"
+                                }`}
+                                title={isSpeaking && speakingMsgId === msg.id ? "Stop speaking" : "Read aloud"}
+                                data-testid={`btn-speak-${msg.id}`}
+                              >
+                                {isSpeaking && speakingMsgId === msg.id
+                                  ? <VolumeX className="w-3.5 h-3.5" />
+                                  : <Volume2 className="w-3.5 h-3.5" />
+                                }
+                              </button>
+                            </div>
+                          )}
+                          
                           {msg.hash && (
-                            <div className="mt-3 pt-2 border-t border-muted space-y-1">
+                            <div className="mt-1 pt-2 border-t border-muted space-y-1">
                               <div className="flex items-center gap-1.5 font-mono text-[8px] text-muted-foreground">
                                 <Binary className="w-2.5 h-2.5 text-secondary" />
                                 <span className="text-secondary/70 mr-1">UUON·TOKEN</span>
@@ -899,6 +964,17 @@ export default function ClouudTerminal() {
               >
                 {isListening ? <MicOff className="w-3.5 h-3.5" /> : <Mic className="w-3.5 h-3.5" />}
               </button>
+              {isSpeaking && (
+                <button
+                  type="button"
+                  onClick={() => { window.speechSynthesis.cancel(); setIsSpeaking(false); setSpeakingMsgId(null); }}
+                  className="p-1.5 rounded-sm text-[#f0b93b] animate-pulse transition-colors"
+                  title="Stop speaking"
+                  data-testid="button-stop-speak"
+                >
+                  <VolumeX className="w-3.5 h-3.5" />
+                </button>
+              )}
               <div className="h-3 w-px bg-border/50 mx-1" />
               {messages.length >= 2 && !isTyping && (
                 <button

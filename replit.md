@@ -66,12 +66,18 @@ UUON Clouud is the intelligence interface for the G°centric Lattice System, bui
     - Backend: `server/scraper.ts` — SSRF-protected (blocks private IPs, internal hostnames, DNS resolution check), 15s timeout
     - API: `POST /api/scrape`
 21. **Voice Input:** Mic button toggles Web Speech API continuous recognition, transcribes speech into input field, cleanup on unmount
-22. **Self-Assessment System:** Every Clouud response is scored 0-100 against mission criteria. Persistent DB tracking with gap analysis.
-    - Checks: word count (150-word target), format violations (bullets/markdown/headers), gatekeeping language, hedging, identity drift, readability (sentence length), filler phrases, repetition (trigram detection), empty responses
+22. **Speaker (Text-to-Speech):** Volume button on each assistant message reads the response aloud using Web Speech Synthesis API. Toggle on/off per message. Stop button appears in input bar while speaking. Cleanup on unmount.
+23. **Self-Assessment System:** Every Clouud response is scored 0-100 against mission criteria. Persistent DB tracking with gap analysis.
+    - Checks: word count (150-word target), format violations (bullets/markdown/headers), gatekeeping language, hedging, identity drift, readability (sentence length), filler phrases, repetition (trigram detection), empty responses, liability gatekeeping ("consult a professional"), hallucination risk (unverifiable citation patterns)
     - DB table: `self_assessments` stores per-message score, word count, pass/fail, flags JSON
     - API: `GET /api/self-assessment` returns full report (avg score, total flags, score history sparkline, gap analysis with severity levels)
     - UI: Per-message SA score shown inline below UUON token (green/gold/red color-coded); SYS bar shows live SA score; expanded metrics panel shows full Self-Assessment section with gap analysis cards, severity badges (CRITICAL/HIGH/MODERATE/LOW), recent flags list
     - System prompt includes self-assessment awareness — Clouud knows it's being scored and aims for 100
+24. **Hardened System Prompt Protocols:**
+    - Anti-Hallucination Protocol: No manufactured facts, no invented citations, speculation labeled as speculation
+    - Anti-Bias Protocol: Acknowledges training data bias, reasons from observed patterns not inherited assumptions
+    - Transparency Mandate: Discloses private build, no data harvesting, no engagement optimization, no ads
+    - Anti-Gatekeeping in Practice: No unnecessary disclaimers, no liability language, answers the question directly
 
 23. **UInVerse — Idea Extraction Engine:** Functional tool at `/uinverse` for ingesting ChatGPT and Claude chat histories. Clouud analyzes the conversations to extract actionable ideas for the system.
     - Accepts: ChatGPT JSON export (`conversations.json`), Claude JSON export, or plain text paste
