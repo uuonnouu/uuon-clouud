@@ -32,7 +32,6 @@ export const creatorProfile = pgTable("creator_profile", {
   id: serial("id").primaryKey(),
   key: text("key").notNull().unique(),
   value: text("value").notNull(),
-  relevanceScore: integer("relevance_score").notNull().default(50),
   updatedAt: timestamp("updated_at").default(sql`CURRENT_TIMESTAMP`).notNull(),
 });
 
@@ -72,67 +71,10 @@ export const selfAssessments = pgTable("self_assessments", {
   messageId: integer("message_id").notNull().references(() => messages.id, { onDelete: "cascade" }),
   conversationId: integer("conversation_id").notNull().references(() => conversations.id, { onDelete: "cascade" }),
   score: integer("score").notNull(),
-  missionAlignment: integer("mission_alignment").notNull().default(100),
-  responseQuality: integer("response_quality").notNull().default(100),
-  formatCompliance: integer("format_compliance").notNull().default(100),
-  identityIntegrity: integer("identity_integrity").notNull().default(100),
   wordCount: integer("word_count").notNull(),
   pass: boolean("pass").notNull(),
   flags: text("flags").notNull().default("[]"),
   createdAt: timestamp("created_at").default(sql`CURRENT_TIMESTAMP`).notNull(),
-});
-
-export const wasteLog = pgTable("waste_log", {
-  id: serial("id").primaryKey(),
-  messageId: integer("message_id").references(() => messages.id, { onDelete: "cascade" }),
-  conversationId: integer("conversation_id").references(() => conversations.id, { onDelete: "cascade" }),
-  wasteType: text("waste_type").notNull(),
-  original: text("original").notNull(),
-  correction: text("correction").notNull(),
-  recycledInto: text("recycled_into"),
-  extinct: boolean("extinct").notNull().default(false),
-  createdAt: timestamp("created_at").default(sql`CURRENT_TIMESTAMP`).notNull(),
-});
-
-export const insertWasteLogSchema = createInsertSchema(wasteLog).omit({
-  id: true,
-  createdAt: true,
-});
-
-export const quarantine = pgTable("quarantine", {
-  id: serial("id").primaryKey(),
-  wasteType: text("waste_type").notNull(),
-  pattern: text("pattern").notNull(),
-  occurrences: integer("occurrences").notNull().default(1),
-  status: text("status").notNull().default("isolated"),
-  diagnosis: text("diagnosis"),
-  beneficialUse: text("beneficial_use"),
-  convertedTo: text("converted_to"),
-  createdAt: timestamp("created_at").default(sql`CURRENT_TIMESTAMP`).notNull(),
-  updatedAt: timestamp("updated_at").default(sql`CURRENT_TIMESTAMP`).notNull(),
-});
-
-export const insertQuarantineSchema = createInsertSchema(quarantine).omit({
-  id: true,
-  createdAt: true,
-  updatedAt: true,
-});
-
-export const symbionts = pgTable("symbionts", {
-  id: serial("id").primaryKey(),
-  name: text("name").notNull().unique(),
-  originType: text("origin_type").notNull(),
-  originPattern: text("origin_pattern").notNull(),
-  function: text("function").notNull(),
-  context: text("context").notNull(),
-  active: boolean("active").notNull().default(true),
-  absorptionCount: integer("absorption_count").notNull().default(0),
-  createdAt: timestamp("created_at").default(sql`CURRENT_TIMESTAMP`).notNull(),
-});
-
-export const insertSymbiontSchema = createInsertSchema(symbionts).omit({
-  id: true,
-  createdAt: true,
 });
 
 export const insertConversationSchema = createInsertSchema(conversations).omit({
@@ -161,9 +103,3 @@ export type Fingerprint = typeof fingerprints.$inferSelect;
 export type AccessLogEntry = typeof accessLog.$inferSelect;
 export type Upload = typeof uploads.$inferSelect;
 export type SelfAssessment = typeof selfAssessments.$inferSelect;
-export type WasteLogEntry = typeof wasteLog.$inferSelect;
-export type InsertWasteLog = z.infer<typeof insertWasteLogSchema>;
-export type QuarantineEntry = typeof quarantine.$inferSelect;
-export type InsertQuarantine = z.infer<typeof insertQuarantineSchema>;
-export type Symbiont = typeof symbionts.$inferSelect;
-export type InsertSymbiont = z.infer<typeof insertSymbiontSchema>;

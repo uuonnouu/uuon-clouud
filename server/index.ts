@@ -2,16 +2,6 @@ import express, { type Request, Response, NextFunction } from "express";
 import { registerRoutes } from "./routes";
 import { serveStatic } from "./static";
 import { createServer } from "http";
-import { securityGate } from "./security";
-import { startHydrationLoop } from "./hydration";
-
-process.on("uncaughtException", (err) => {
-  console.error("[PROCESS] Uncaught exception:", err);
-});
-
-process.on("unhandledRejection", (reason) => {
-  console.error("[PROCESS] Unhandled rejection:", reason);
-});
 
 const app = express();
 const httpServer = createServer(app);
@@ -31,40 +21,6 @@ app.use(
 );
 
 app.use(express.urlencoded({ extended: false }));
-
-// app.use(securityGate);
-
-const recentConvoRequests = new Map<string, { count: number; windowStart: number }>();
-const CONVO_WINDOW_MS = 3000;
-const CONVO_MAX_PER_WINDOW = 3;
-
-app.use("/api/conversations", (req: Request, res: Response, next: NextFunction) => {
-  if (req.method !== "GET") return next();
-  if (req.path !== "/" && req.path !== "") return next();
-  const ip  = req.ip ?? "unknown";
-  const now = Date.now();
-  const entry = recentConvoRequests.get(ip);
-
-  if (entry && now - entry.windowStart < CONVO_WINDOW_MS) {
-    entry.count++;
-    if (entry.count > CONVO_MAX_PER_WINDOW) {
-      return res.status(429).json({
-        error:  "duplicate_tab",
-        message: "Crystal cache is current. No fetch needed.",
-      });
-    }
-  } else {
-    recentConvoRequests.set(ip, { count: 1, windowStart: now });
-  }
-
-  if (recentConvoRequests.size > 100) {
-    for (const [key, e] of recentConvoRequests) {
-      if (now - e.windowStart > CONVO_WINDOW_MS * 10) recentConvoRequests.delete(key);
-    }
-  }
-
-  next();
-});
 
 export function log(message: string, source = "express") {
   const formattedTime = new Date().toLocaleTimeString("en-US", {
@@ -93,8 +49,7 @@ app.use((req, res, next) => {
     if (path.startsWith("/api")) {
       let logLine = `${req.method} ${path} ${res.statusCode} in ${duration}ms`;
       if (capturedJsonResponse) {
-        const summary = JSON.stringify(capturedJsonResponse);
-        logLine += ` :: ${summary.length > 200 ? summary.slice(0, 200) + "…" : summary}`;
+        logLine += ` :: ${JSON.stringify(capturedJsonResponse)}`;
       }
 
       log(logLine);
@@ -143,7 +98,6 @@ app.use((req, res, next) => {
     },
     () => {
       log(`serving on port ${port}`);
-      startHydrationLoop();
     },
   );
 })();

@@ -5,8 +5,6 @@ import { useLocation } from "wouter";
 import ClouudAvatar from "@/components/clouud-avatar";
 import Tutorial from "@/components/tutorial";
 import MetricsPanel from "@/components/metrics-panel";
-import GravitationalPullLayer, { useGravitationalPull } from "@/components/gravitational-pull";
-import { useCrystal } from "@/hooks/useCrystal";
 import uuonLogo from "@assets/A7950814-2592-4E7D-858F-3AEB1D632F98_1772064571557.png";
 
 type Message = {
@@ -53,15 +51,18 @@ export default function ClouudTerminal() {
   const [isTyping, setIsTyping] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [aiState, setAiState] = useState<"idle" | "thinking" | "speaking">("idle");
-  const [showTutorial, setShowTutorial] = useState(false);
+  const [showTutorial, setShowTutorial] = useState(() => {
+    if (typeof window !== "undefined") {
+      return !localStorage.getItem("clouud-tutorial-done");
+    }
+    return false;
+  });
   const [isListening, setIsListening] = useState(false);
   const [showLinkInput, setShowLinkInput] = useState(false);
   const [linkUrl, setLinkUrl] = useState("");
   const [isUploading, setIsUploading] = useState(false);
   const [isScraping, setIsScraping] = useState(false);
-  const [msgAssessments, setMsgAssessments] = useState<Record<number, { score: number; missionAlignment: number; responseQuality: number; formatCompliance: number; identityIntegrity: number; flags: string[]; wordCount: number; corrections?: string[]; immuneActive?: boolean }>>({});
-  const { notifications: gravNotifications, pull: gravPull, dismiss: gravDismiss } = useGravitationalPull();
-  const { crystal, loading: crystalLoading, shouldShowIntro, dismissIntro: crystalDismissIntro } = useCrystal();
+  const [msgAssessments, setMsgAssessments] = useState<Record<number, { score: number; flags: string[]; wordCount: number }>>({});
   const scrollRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -89,15 +90,7 @@ export default function ClouudTerminal() {
   async function loadConversations() {
     try {
       const res = await fetch("/api/conversations");
-      if (!res.ok) {
-        setIsLoading(false);
-        return;
-      }
       const data = await res.json();
-      if (!Array.isArray(data)) {
-        setIsLoading(false);
-        return;
-      }
       setConversations(data);
       if (data.length > 0) {
         setActiveConvo(data[0].id);
@@ -112,9 +105,7 @@ export default function ClouudTerminal() {
   async function loadMessages(convoId: number) {
     try {
       const res = await fetch(`/api/conversations/${convoId}/messages`);
-      if (!res.ok) return;
       const data = await res.json();
-      if (!Array.isArray(data)) return;
       setMessages(data);
     } catch {
       setMessages([]);
@@ -168,20 +159,12 @@ export default function ClouudTerminal() {
     setIsSidebarOpen(false);
   }
 
-  useEffect(() => {
-    if (!crystalLoading && shouldShowIntro) {
-      setShowTutorial(true);
-    }
-  }, [crystalLoading, shouldShowIntro]);
-
-  async function completeTutorial() {
+  function completeTutorial() {
     localStorage.setItem("clouud-tutorial-done", "true");
-    await crystalDismissIntro();
     setShowTutorial(false);
   }
 
   function dismissTutorial() {
-    crystalDismissIntro();
     setShowTutorial(false);
   }
 
@@ -248,34 +231,14 @@ export default function ClouudTerminal() {
       });
 
       if (data.selfAssessment) {
-        const sa = data.selfAssessment;
         setMsgAssessments(prev => ({
           ...prev,
           [data.assistantMessage.id]: {
-            score: sa.score,
-            missionAlignment: sa.missionAlignment,
-            responseQuality: sa.responseQuality,
-            formatCompliance: sa.formatCompliance,
-            identityIntegrity: sa.identityIntegrity,
-            flags: sa.flags,
-            wordCount: sa.wordCount,
-            corrections: sa.corrections,
-            immuneActive: sa.immuneActive,
+            score: data.selfAssessment.score,
+            flags: data.selfAssessment.flags,
+            wordCount: data.selfAssessment.wordCount,
           }
         }));
-
-        if (sa.corrections && sa.corrections.length > 0) {
-          gravPull("correction", sa.corrections[0].replace(/^⚕\s*/, ""));
-        }
-        if (sa.immuneActive) {
-          gravPull("paraneuma", "Breath alongside — recycling patterns");
-        }
-        if (sa.score < 70) {
-          gravPull("score", `Score ${sa.score}/100 — recalibrating`);
-        }
-        if (sa.flags.length >= 3) {
-          gravPull("immune", `${sa.flags.length} flags detected`);
-        }
       }
 
       setTimeout(() => setAiState("idle"), 2000);
@@ -586,7 +549,7 @@ export default function ClouudTerminal() {
         )}
       </AnimatePresence>
 
-      <div className="flex-1 flex flex-col relative bg-background pt-14 md:pt-0 min-w-0 w-full overflow-hidden">
+      <div className="flex-1 flex flex-col relative bg-background pt-14 md:pt-0">
         
         {messages.length === 0 && !isTyping && (
           <div className="flex-1 flex items-center justify-center p-6">
@@ -663,7 +626,7 @@ export default function ClouudTerminal() {
                       initial={holoActive ? { opacity: 0, x: 20, scale: 0.95 } : { opacity: 0, x: 12 }}
                       animate={{ opacity: 1, x: 0, scale: 1 }}
                       transition={{ duration: holoActive ? 0.7 : 0.5, ease: [0.25, 0.1, 0.25, 1] }}
-                      className={`max-w-[85%] md:max-w-[70%] bg-card border border-border p-3 rounded-sm text-foreground text-sm relative overflow-hidden break-words ${holoActive ? 'holo-materialize' : ''}`}
+                      className={`max-w-[85%] md:max-w-[70%] bg-card border border-border p-3 rounded-sm text-foreground text-sm relative overflow-hidden ${holoActive ? 'holo-materialize' : ''}`}
                       style={{ boxShadow: '4px 4px 0px 0px var(--color-border)' }}
                     >
                       {holoActive && <div className="holo-scanline-overlay" style={{ animationDuration: '0.8s', animationIterationCount: 3 }} />}
@@ -676,7 +639,7 @@ export default function ClouudTerminal() {
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}
                       transition={{ duration: 0.4 }}
-                      className="max-w-[95%] md:max-w-[80%] flex gap-3 min-w-0"
+                      className="max-w-[95%] md:max-w-[80%] flex gap-3"
                     >
                       <motion.div
                         initial={holoActive ? { opacity: 0, scale: 0.5, rotate: -10 } : { opacity: 0, scale: 0.8 }}
@@ -686,7 +649,7 @@ export default function ClouudTerminal() {
                       >
                         <ClouudAvatar state={isLastMsg && aiState === "speaking" ? "speaking" : "idle"} size="sm" />
                       </motion.div>
-                      <div className="flex-1 min-w-0 space-y-2">
+                      <div className="flex-1 space-y-2">
                         <motion.div
                           initial={holoActive ? { opacity: 0, x: -16, scaleX: 1.5 } : { opacity: 0, x: -8 }}
                           animate={{ opacity: 1, x: 0, scaleX: 1 }}
@@ -705,7 +668,7 @@ export default function ClouudTerminal() {
                                 initial={holoActive ? { opacity: 0, y: 16, rotateX: 8, scale: 0.96 } : { opacity: 0, y: 10 }}
                                 animate={{ opacity: 1, y: 0, rotateX: 0, scale: 1 }}
                                 transition={{ duration: holoActive ? 0.7 : 0.5, delay: 0.2, ease: [0.25, 0.1, 0.25, 1] }}
-                                className={`w-full bg-card border p-2.5 rounded-sm relative overflow-hidden break-words ${holoActive ? 'border-secondary/40 holo-border-glow' : 'border-border'}`}
+                                className={`w-full bg-card border p-2.5 rounded-sm relative overflow-hidden ${holoActive ? 'border-secondary/40 holo-border-glow' : 'border-border'}`}
                                 style={{ boxShadow: holoActive ? undefined : '4px 4px 0px 0px rgba(240,185,59,0.15)' }}
                               >
                                 {holoActive && <div className="holo-beam-line" />}
@@ -713,11 +676,11 @@ export default function ClouudTerminal() {
                                   <Cpu className="w-3 h-3" />
                                   Tool: {tc.name}
                                 </div>
-                                <div className="grid grid-cols-[60px_1fr] gap-x-2 gap-y-0.5 font-mono text-[10px] relative z-10 min-w-0">
+                                <div className="grid grid-cols-[60px_1fr] gap-x-2 gap-y-0.5 font-mono text-[10px] relative z-10">
                                   <span className="text-muted-foreground">Input:</span>
-                                  <span className="text-white break-all min-w-0">{JSON.stringify(tc.args)}</span>
+                                  <span className="text-white">{JSON.stringify(tc.args)}</span>
                                   <span className="text-muted-foreground">Output:</span>
-                                  <span className="text-secondary font-bold whitespace-pre-wrap break-words min-w-0">{typeof tc.result === 'string' ? tc.result : JSON.stringify(tc.result)}</span>
+                                  <span className="text-secondary font-bold whitespace-pre-wrap">{typeof tc.result === 'string' ? tc.result : JSON.stringify(tc.result)}</span>
                                 </div>
                               </motion.div>
                             );
@@ -742,7 +705,7 @@ export default function ClouudTerminal() {
                             delay: msg.toolCall ? 0.4 : 0.2,
                             ease: [0.16, 1, 0.3, 1],
                           }}
-                          className={`bg-card border p-3 rounded-sm text-white text-sm leading-relaxed whitespace-pre-wrap break-words relative overflow-hidden ${holoActive ? 'border-secondary/30 holo-materialize' : 'border-border'}`}
+                          className={`bg-card border p-3 rounded-sm text-white text-sm leading-relaxed whitespace-pre-wrap relative overflow-hidden ${holoActive ? 'border-secondary/30 holo-materialize' : 'border-border'}`}
                           style={holoActive ? {
                             boxShadow: '0 0 20px rgba(74,140,212,0.15), 4px 4px 0px 0px rgba(20,42,69,1)',
                           } : {
@@ -776,35 +739,14 @@ export default function ClouudTerminal() {
                                 <span className="truncate uppercase tracking-widest">{msg.hash}</span>
                               </div>
                               {msgAssessments[msg.id] && (
-                                <div className="space-y-1">
-                                  <div className="flex items-center gap-1.5 font-mono text-[8px]">
-                                    <Scale className="w-2.5 h-2.5" style={{ color: msgAssessments[msg.id].score >= 90 ? '#22c55e' : msgAssessments[msg.id].score >= 70 ? '#f0b93b' : '#ef4444' }} />
-                                    <span style={{ color: msgAssessments[msg.id].score >= 90 ? '#22c55e' : msgAssessments[msg.id].score >= 70 ? '#f0b93b' : '#ef4444' }}>
-                                      {msgAssessments[msg.id].score}/100
-                                    </span>
-                                    <span className="text-muted-foreground/50">
-                                      M:{msgAssessments[msg.id].missionAlignment} Q:{msgAssessments[msg.id].responseQuality} F:{msgAssessments[msg.id].formatCompliance} I:{msgAssessments[msg.id].identityIntegrity}
-                                    </span>
-                                    <span className="text-muted-foreground">{msgAssessments[msg.id].wordCount}w</span>
-                                  </div>
-                                  {msgAssessments[msg.id].corrections && msgAssessments[msg.id].corrections!.length > 0 && (
-                                    <div className="font-mono text-[7px] text-emerald-400/70 space-y-0.5">
-                                      {msgAssessments[msg.id].corrections!.map((c, ci) => (
-                                        <div key={ci} className="truncate">⚕ {c}</div>
-                                      ))}
-                                    </div>
-                                  )}
+                                <div className="flex items-center gap-1.5 font-mono text-[8px]">
+                                  <Scale className="w-2.5 h-2.5" style={{ color: msgAssessments[msg.id].score >= 90 ? '#22c55e' : msgAssessments[msg.id].score >= 70 ? '#f0b93b' : '#ef4444' }} />
+                                  <span style={{ color: msgAssessments[msg.id].score >= 90 ? '#22c55e' : msgAssessments[msg.id].score >= 70 ? '#f0b93b' : '#ef4444' }}>
+                                    SA:{msgAssessments[msg.id].score}/100
+                                  </span>
+                                  <span className="text-muted-foreground">{msgAssessments[msg.id].wordCount}w</span>
                                   {msgAssessments[msg.id].flags.length > 0 && (
-                                    <div className="font-mono text-[7px] text-yellow-500/60 space-y-0.5">
-                                      {msgAssessments[msg.id].flags.slice(0, 3).map((flag, fi) => (
-                                        <div key={fi} className="truncate">{flag}</div>
-                                      ))}
-                                    </div>
-                                  )}
-                                  {msgAssessments[msg.id].immuneActive && (
-                                    <div className="font-mono text-[7px] text-red-400/60">
-                                      ◉ PARANEUMA ACTIVE — breath alongside, recycling patterns
-                                    </div>
+                                    <span className="text-yellow-500/70 truncate">{msgAssessments[msg.id].flags[0]}</span>
                                   )}
                                 </div>
                               )}
@@ -966,13 +908,6 @@ export default function ClouudTerminal() {
           </form>
         </div>
         <MetricsPanel />
-        {crystal?.tier === "founder" && (
-          <div className="crystal-status font-mono text-xs text-green-400 mt-2 px-4 pb-2" data-testid="crystal-status">
-            <div>☧ Crystal: {crystal.crystalId.slice(0, 16)}...</div>
-            <div>Sessions: {crystal.sessionCount} · Anchor: L{crystal.latticeAnchor}</div>
-            <div>Age: {Math.floor((Date.now() - new Date(crystal.firstContact).getTime()) / 86400000)}d</div>
-          </div>
-        )}
       </div>
 
       <AnimatePresence>
@@ -981,7 +916,6 @@ export default function ClouudTerminal() {
         )}
       </AnimatePresence>
 
-      <GravitationalPullLayer notifications={gravNotifications} onDismiss={gravDismiss} />
     </div>
   );
 }

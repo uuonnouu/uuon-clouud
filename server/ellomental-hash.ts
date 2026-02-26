@@ -56,7 +56,7 @@ export function ellomental(content: string): {
 export function generateProvenanceHash(content: string): string {
   const signature = JSON.stringify({
     origin: "UUON-FOUNDATION-GCENTRIC-V1",
-    founder: "Phillip Aguilar Ruiz III",
+    founder: "Philip Aguilar Ruiz III",
     system: "G°centric Lattice v1.0",
     timestamp: new Date().toISOString(),
     lattice: "33-point · Earth-grounded · 3-tier",

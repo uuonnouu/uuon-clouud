@@ -24,15 +24,10 @@ type Metrics = {
 
 type SelfAssessmentReport = {
   avgScore: number;
-  avgMission: number;
-  avgQuality: number;
-  avgFormat: number;
-  avgIdentity: number;
   totalAssessments: number;
   totalFlags: number;
   recentFlags: string[];
   scoreHistory: number[];
-  subScoreHistory: { mission: number; quality: number; format: number; identity: number }[];
   gapAnalysis: { category: string; count: number; severity: string }[];
 };
 
@@ -84,7 +79,7 @@ export default function MetricsPanel() {
       fetchMetrics();
       fetchAssessment();
       setTick(t => t + 1);
-    }, 15000);
+    }, 5000);
     return () => clearInterval(interval);
   }, []);
 
@@ -145,9 +140,6 @@ export default function MetricsPanel() {
               <span className="text-muted-foreground/50">·</span>
               <span style={{ color: assessment.avgScore >= 90 ? '#22c55e' : assessment.avgScore >= 70 ? '#f0b93b' : '#ef4444' }}>
                 SA:{assessment.avgScore}
-              </span>
-              <span className="text-muted-foreground/30 text-[8px]">
-                M{assessment.avgMission} Q{assessment.avgQuality} F{assessment.avgFormat} I{assessment.avgIdentity}
               </span>
             </>
           )}
@@ -216,16 +208,9 @@ export default function MetricsPanel() {
                   </div>
 
                   <div className="grid grid-cols-2 md:grid-cols-4 gap-2 mb-2">
-                    <SubScoreCard label="Mission" score={assessment.avgMission} />
-                    <SubScoreCard label="Quality" score={assessment.avgQuality} />
-                    <SubScoreCard label="Format" score={assessment.avgFormat} />
-                    <SubScoreCard label="Identity" score={assessment.avgIdentity} />
-                  </div>
-
-                  <div className="grid grid-cols-2 md:grid-cols-4 gap-2 mb-2">
                     <MetricCard
                       icon={<Brain className="w-3 h-3" />}
-                      label="Composite"
+                      label="Avg Score"
                       value={`${assessment.avgScore}/100`}
                       sub={`${assessment.totalAssessments} responses assessed`}
                       sparkline={assessment.scoreHistory.length >= 2 ? <Sparkline data={assessment.scoreHistory} /> : undefined}
@@ -335,22 +320,6 @@ function StatusRow({ icon, label, value, accent, warn }: {
       <div className="flex-1 min-w-0">
         <div className="font-mono text-[7px] text-muted-foreground/50 uppercase tracking-[0.12em]">{label}</div>
         <div className={`font-mono text-[9px] font-bold truncate ${accent ? "text-secondary" : warn ? "text-yellow-500" : "text-white/80"}`}>{value}</div>
-      </div>
-    </div>
-  );
-}
-
-function SubScoreCard({ label, score }: { label: string; score: number }) {
-  const color = score >= 90 ? '#22c55e' : score >= 70 ? '#f0b93b' : '#ef4444';
-  const barWidth = Math.max(4, score);
-  return (
-    <div className="bg-[#060e1a] border border-border/40 rounded p-2">
-      <div className="flex items-center justify-between mb-1">
-        <span className="font-mono text-[7px] uppercase tracking-[0.12em] text-muted-foreground/70">{label}</span>
-        <span className="font-mono text-[9px] font-bold" style={{ color }}>{score}</span>
-      </div>
-      <div className="w-full h-1 bg-border/30 rounded-full overflow-hidden">
-        <div className="h-full rounded-full transition-all duration-500" style={{ width: `${barWidth}%`, backgroundColor: color }} />
       </div>
     </div>
   );
