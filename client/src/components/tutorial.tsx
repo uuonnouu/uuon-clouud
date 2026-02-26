@@ -22,9 +22,10 @@ const STEPS: Step[] = [
     id: "intro",
     title: "Meet Clouud",
     content: [
-      "Clouud is an intelligence system built by UUON Foundation.",
-      "It was created by Philip Aguilar Ruiz III, a US Army veteran and founder of UUON.",
-      "Clouud does not guess. It does not flatter. It speaks plainly and stays grounded.",
+      "Most AI systems tell you what you want to hear. Clouud tells you what is true.",
+      "Every answer is grounded in exact math, traceable logic, and Earth-first reasoning. No rounding. No guessing. No filler.",
+      "Clouud speaks plainly so anyone can understand it. It works for you, not around you.",
+      "This is intelligence you can actually trust.",
     ],
     animation: "intro",
   },
