@@ -546,14 +546,20 @@ export async function registerRoutes(
     }
   });
 
-  // Lattice API endpoints (direct access)
-  app.get("/api/lattice/report", (_req: Request, res: Response) => {
+  // Self-assessment report
+  app.get("/api/self-assessment", async (_req: Request, res: Response) => {
     try {
-      const { chiLatticeReport } = require("./lattice");
-      res.json({ report: chiLatticeReport() });
+      const report = await storage.getSelfAssessmentReport();
+      res.json(report);
     } catch (error) {
-      res.status(500).json({ error: "Failed to generate lattice report" });
+      console.error("Error fetching self-assessment report:", error);
+      res.status(500).json({ error: "Failed to fetch report" });
     }
+  });
+
+  // Whistleblower portal
+  app.get("/whistleblower", (_req, res) => {
+    res.send("Whistleblower Portal - DOJ Submission System");
   });
 
   app.post("/api/ellomental/verify", (req: Request, res: Response) => {
