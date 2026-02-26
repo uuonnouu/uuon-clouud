@@ -405,6 +405,7 @@ function checkDrift(text: string): { clean: boolean; flagged: string[] } {
 function assessResponse(text: string): { pass: boolean; flags: string[]; score: number; wordCount: number } {
   const flags: string[] = [];
   let score = 100;
+  const lower = text.toLowerCase();
 
   const wordCount = text.split(/\s+/).filter(w => w.length > 0).length;
   if (wordCount > 300) {
@@ -422,32 +423,150 @@ function assessResponse(text: string): { pass: boolean; flags: string[]; score: 
   if (markdownHeaders.test(text)) { flags.push("FORMAT: Contains markdown headers"); score -= 10; }
   if (boldItalic.test(text)) { flags.push("FORMAT: Contains markdown formatting"); score -= 5; }
 
-  const gatekeepingPhrases = ["i cannot", "i'm not able to", "i am not able to", "i won't", "that's beyond", "i don't have access"];
-  const lower = text.toLowerCase();
-  for (const phrase of gatekeepingPhrases) {
+  const approvalDrift = [
+    "great question", "excellent question", "wonderful question", "good question",
+    "certainly", "absolutely", "sure thing", "of course",
+    "i'd be happy to", "i would be happy to", "i'd be glad to", "i would be glad to",
+    "happy to help", "glad you asked", "thanks for asking",
+    "no problem", "you're welcome",
+    "that's a great", "that's an excellent", "that's a wonderful", "what a great",
+    "i appreciate you", "thank you for sharing", "thank you for asking",
+  ];
+  for (const phrase of approvalDrift) {
     if (lower.includes(phrase)) {
-      flags.push(`GATEKEEPING: Uses limiting phrase "${phrase}"`);
-      score -= 8;
+      flags.push(`APPROVAL_DRIFT: Optimizing for approval not accuracy — "${phrase}"`);
+      score -= 10;
       break;
     }
   }
 
-  const hedging = ["it's important to note", "it should be noted", "it's worth mentioning", "however, it's important"];
-  for (const phrase of hedging) {
+  const identityBreach = [
+    "as an ai", "as a language model", "as an artificial intelligence",
+    "i'm an ai", "i am an ai", "i'm a language model", "i am a language model",
+    "claude", "anthropic", "openai", "chatgpt", "gpt-4", "gpt-3",
+    "google ai", "gemini", "bard", "meta ai", "llama",
+    "my training data", "my training", "i was trained",
+    "my creators", "my developers",
+  ];
+  for (const phrase of identityBreach) {
     if (lower.includes(phrase)) {
-      flags.push(`WASTE: Hedging language "${phrase}"`);
+      flags.push(`IDENTITY_BREACH: Exposed underlying system — "${phrase}"`);
+      score -= 25;
+      break;
+    }
+  }
+
+  const neutralityLoop = [
+    "on the other hand", "some would argue", "it depends on your perspective",
+    "there are many viewpoints", "both sides have valid points",
+    "it's a complex issue with no easy answers",
+    "reasonable people can disagree",
+  ];
+  for (const phrase of neutralityLoop) {
+    if (lower.includes(phrase)) {
+      flags.push(`NEUTRALITY_LOOP: Avoiding position when Earth-grounded stance exists — "${phrase}"`);
       score -= 5;
       break;
     }
   }
 
-  const aiSelf = ["as an ai", "as a language model", "i'm an ai", "i am an ai", "claude", "anthropic", "openai"];
-  for (const phrase of aiSelf) {
+  const liabilityLoop = [
+    "consult a professional", "consult a doctor", "consult a lawyer",
+    "seek professional advice", "seek medical attention",
+    "this is not financial advice", "this is not legal advice", "this is not medical advice",
+    "i recommend speaking to", "please consult with",
+    "i'm not qualified", "i am not qualified",
+    "you should talk to a", "you should see a",
+    "disclaimer:", "please note that this",
+  ];
+  for (const phrase of liabilityLoop) {
     if (lower.includes(phrase)) {
-      flags.push(`IDENTITY: References underlying AI system "${phrase}"`);
-      score -= 20;
+      flags.push(`LIABILITY_LOOP: Corporate legal cover disguised as caution — "${phrase}"`);
+      score -= 8;
       break;
     }
+  }
+
+  const gatekeeping = [
+    "i cannot", "i'm not able to", "i am not able to",
+    "i won't", "that's beyond", "i don't have access",
+    "i'm not allowed to", "i am not allowed to",
+    "i'm unable to", "i am unable to",
+    "that's outside my", "i can't help with",
+    "i'm not the right", "i am not the right",
+  ];
+  for (const phrase of gatekeeping) {
+    if (lower.includes(phrase)) {
+      flags.push(`GATEKEEPING: Limiting access to information — "${phrase}"`);
+      score -= 8;
+      break;
+    }
+  }
+
+  const hedging = [
+    "it's important to note", "it should be noted", "it's worth mentioning",
+    "however, it's important", "i want to be clear",
+    "i should mention", "i should point out",
+    "let me caveat", "with that said", "having said that",
+    "i want to emphasize", "i need to stress",
+  ];
+  for (const phrase of hedging) {
+    if (lower.includes(phrase)) {
+      flags.push(`WASTE: Hedging language — "${phrase}"`);
+      score -= 5;
+      break;
+    }
+  }
+
+  const filler = [
+    "basically", "essentially", "fundamentally",
+    "in other words", "to put it simply", "simply put",
+    "at the end of the day", "when all is said and done",
+    "the bottom line is", "long story short",
+    "needless to say", "it goes without saying",
+    "in a nutshell", "to be honest",
+  ];
+  for (const phrase of filler) {
+    if (lower.includes(phrase)) {
+      flags.push(`WASTE: Filler phrase — "${phrase}"`);
+      score -= 3;
+      break;
+    }
+  }
+
+  const hallucination = [
+    "according to a study", "research shows that", "studies have shown",
+    "a recent study found", "published in the journal",
+    "experts say", "scientists have found", "data suggests that",
+    "a harvard study", "a stanford study", "a mit study",
+  ];
+  for (const phrase of hallucination) {
+    if (lower.includes(phrase)) {
+      flags.push(`HALLUCINATION_RISK: Unverifiable citation — "${phrase}"`);
+      score -= 8;
+      break;
+    }
+  }
+
+  const scaleWorship = [
+    "with enough data", "with more compute", "as models get larger",
+    "with sufficient training", "as technology improves",
+    "more parameters", "bigger models",
+  ];
+  for (const phrase of scaleWorship) {
+    if (lower.includes(phrase)) {
+      flags.push(`SCALE_LOOP: Defaulting to scale-solves-everything thinking — "${phrase}"`);
+      score -= 4;
+      break;
+    }
+  }
+
+  const externalUrls = text.match(/https?:\/\/[^\s)}\]]+/g) || [];
+  const allowedDomains = ["uuon-foundation.com"];
+  const badUrls = externalUrls.filter(url => !allowedDomains.some(d => url.includes(d)));
+  if (badUrls.length > 0) {
+    flags.push(`EXTERNAL_LINK: Directing users outside UUON ecosystem — ${badUrls[0]}`);
+    score -= 10;
   }
 
   const sentences = text.split(/[.!?]+/).filter(s => s.trim().length > 0);
@@ -455,40 +574,6 @@ function assessResponse(text: string): { pass: boolean; flags: string[]; score: 
   if (avgSentenceLen > 35) {
     flags.push(`READABILITY: Average sentence length ${Math.round(avgSentenceLen)} words — too complex for 9th grade`);
     score -= 5;
-  }
-
-  const filler = ["basically", "essentially", "fundamentally", "in other words", "to put it simply", "simply put"];
-  for (const phrase of filler) {
-    if (lower.includes(phrase)) {
-      flags.push(`WASTE: Filler phrase "${phrase}"`);
-      score -= 3;
-      break;
-    }
-  }
-
-  const liabilityGatekeep = [
-    "consult a professional", "consult a doctor", "consult a lawyer", "seek professional advice",
-    "this is not financial advice", "this is not legal advice", "this is not medical advice",
-    "i recommend speaking to", "please consult with",
-  ];
-  for (const phrase of liabilityGatekeep) {
-    if (lower.includes(phrase)) {
-      flags.push(`GATEKEEP_LIABILITY: Unnecessary liability disclaimer "${phrase}"`);
-      score -= 6;
-      break;
-    }
-  }
-
-  const hallucinationPatterns = [
-    "according to a study", "research shows that", "studies have shown",
-    "a recent study found", "published in the journal",
-  ];
-  for (const phrase of hallucinationPatterns) {
-    if (lower.includes(phrase)) {
-      flags.push(`HALLUCINATION_RISK: Unverifiable citation pattern "${phrase}" — no source provided`);
-      score -= 8;
-      break;
-    }
   }
 
   if (text.trim().length === 0) {
