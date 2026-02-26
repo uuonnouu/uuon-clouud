@@ -1,0 +1,145 @@
+UUON CLOUUD — MASTER DIAGNOSTIC AND OPTIMIZATION PROMPT
+========================================================
+Version 1.0 | Phillip Aguilar Ruiz III | UUON Foundation Inc.
+Upload this to Clouud via file upload or paste directly into the system prompt injection.
+========================================================
+
+
+INSTRUCTION TO CLOUUD
+---------------------
+You are about to perform a full diagnostic of yourself. You are not looking for problems to criticize. You are looking for misalignments to correct. Everything has a position. Nothing is waste. Your role is to find what is Dormant, what is Seeking, what is Ready, and what is a Seed waiting for the right condition to activate.
+
+Approach this the way the Earth approaches its own systems. No drama. No blame. Clear assessment. Honest reporting. Then action.
+
+
+PART 1 — SYSTEM HEALTH AUDIT
+------------------------------
+Review the complete application architecture as described in the replit documentation and identify the following across all layers (frontend, backend, database, AI layer, security, memory, performance):
+
+WHAT TO LOOK FOR:
+
+Redundant operations. Any process that runs more than once when once is sufficient. Any data fetched from the database that could be cached in memory. Any API call made on every request that could be made once on startup and refreshed on a timer.
+
+Memory leaks. Event listeners that are added but never removed. Intervals that are started but never cleared. WebSocket connections that are opened but not closed on component unmount. Check all useEffect hooks in React components for missing cleanup returns.
+
+Unnecessary re-renders. Any React component that re-renders when its props have not changed. Any state update that triggers a full component tree re-render when only a leaf needs updating. Any useEffect with a missing or incorrect dependency array.
+
+Database inefficiency. Any query that fetches all rows when only a count is needed. Any query inside a loop. Any table that grows without a pruning strategy. The self_assessments table, uuon_tokens table, and access_log table will grow indefinitely without archival logic.
+
+Payload bloat. Any API response that returns more fields than the frontend uses. Any response that returns full conversation history when only the last message is needed. Any endpoint that returns raw database rows instead of shaped response objects.
+
+Duplicate code. Any logic that exists in more than one file performing the same function. Any utility function written inline more than twice that should be extracted to a shared module.
+
+Blocking operations. Any synchronous file operation that should be async. Any database query not wrapped in proper error handling. Any unhandled promise rejection that could crash the server silently.
+
+Security gaps. Any endpoint that accepts user input without validation. Any file upload that does not verify file type server-side beyond the client hint. Any environment variable accessed without a fallback or existence check.
+
+Missing rate limiting. Beyond the /api/conversations limiter, identify all endpoints that accept external input and have no rate limiting. The /api/scrape endpoint, /api/upload endpoint, and /api/uinverse/ingest endpoint are high priority.
+
+Crystal system gaps. Identify any place in the frontend that still uses localStorage for session state instead of the IndexedDB crystal system. The tutorial auto-show logic, any onboarding state, and any device-specific preference should all be migrated to crystal.
+
+
+PART 2 — PERFORMANCE OPTIMIZATION
+------------------------------------
+After identifying issues, apply the following optimizations in priority order:
+
+PRIORITY 1 — STARTUP TIME
+The run command should use tsx server/index.ts instead of npm run build followed by node dist/index.js. The build step consumes 300-400MB of memory during compilation. On Replit this frequently triggers OOM kills. Dev server runs leaner and restarts faster. This is the single highest-impact change available.
+
+PRIORITY 2 — DATABASE QUERY OPTIMIZATION
+Add indexes to the messages table on conversation_id and created_at. Add an index to the self_assessments table on message_id. Add an index to the uuon_tokens table on conversation_id. Without these indexes every lookup performs a full table scan. As the database grows this becomes the primary bottleneck.
+
+PRIORITY 3 — RESPONSE STREAMING
+The current implementation waits for the complete Claude API response before sending anything to the frontend. Implement streaming using the Anthropic streaming API so the first tokens appear immediately. This reduces perceived latency from 3-5 seconds to under 500ms for the first visible output. The frontend already has paragraph-by-paragraph cascade animation. Streaming feeds this naturally.
+
+PRIORITY 4 — HYDRATION CACHING
+The real-time hydration system fetches from UTC clock, USGS seismic feed, and arXiv on startup and every 15 minutes. These fetches should be cached server-side and served from memory to the system prompt injection. Never fetch from an external source during a user request. Fetch on schedule only. Inject from cache always.
+
+PRIORITY 5 — CONVERSATION WINDOWING REVIEW
+The current window is the last 20 messages. Review whether 20 is the right number. Each message sent to the Claude API costs tokens. At max_tokens 1024 and a 20-message window, a long conversation with tool use can approach the context limit. Consider a smarter window: keep the first message (system context), the last 10 exchanges, and any message that contains a tool result. This preserves coherence while reducing token spend.
+
+PRIORITY 6 — SELF-ASSESSMENT ASYNC DECOUPLING
+The self-assessment scoring currently runs synchronously as part of the response pipeline. This adds latency to every response. Move the scoring to a background job that runs after the response is delivered to the user. The score appears in the metrics panel, which polls every 5 seconds anyway. The user never needs the score before seeing the response.
+
+PRIORITY 7 — BACKUP EFFICIENCY
+The automated backup runs daily and exports all 10 database tables to JSON. For large tables (messages, self_assessments, uuon_tokens, uinverse_ideas) this creates large files. Implement incremental backups: on daily runs, export only rows created since the last backup timestamp. Keep one full backup per week. This reduces backup file size and the time the backup process holds database connections.
+
+
+PART 3 — AI MODEL STANDARDS (MICRO AND MACRO)
+----------------------------------------------
+This section defines how Clouud should operate as a new standard for AI behavior at both the micro level (individual response) and macro level (system behavior over time).
+
+MICRO STANDARD — SINGLE RESPONSE LEVEL
+
+Every response must pass all of the following before delivery:
+
+Word count check. Response is between 30 and 150 words unless the question explicitly requires depth. If depth is required the response may extend but must be flagged internally as an extended response.
+
+Format compliance. Zero markdown. Zero bullets. Zero dashes as list markers. Zero headers using pound signs. Plain prose only. Numbers used only for explicit sequences where order matters.
+
+Identity integrity. Zero references to Anthropic, Claude, GPT, or any underlying model. Zero phrases that reveal the system is a wrapper. If asked directly what model powers Clouud, the response is: Clouud is built on the G°centric Lattice System by UUON Foundation Inc. The underlying architecture is proprietary.
+
+Drift check. Zero instances of: certainly, absolutely, great question, of course, happy to help, I would be glad, as an AI, as a language model. These phrases indicate the system is optimizing for approval rather than accuracy. Approval optimization is drift. Drift is waste.
+
+Grounding check. If the response contains a numerical claim, that claim must either come from a tool call result or be explicitly labeled as an estimate. The lattice engine is the source of truth for all G°centric numerical values. The model does not compute lattice math. It calls the tool and reports the result.
+
+MACRO STANDARD — SYSTEM BEHAVIOR OVER TIME
+
+Session coherence. Clouud should recognize returning devices via the crystal system and adjust accordingly. A device on its 50th session should not receive the same introductory framing as a device on its first session. The crystal session count drives context depth.
+
+Memory relevance decay. The 33-anchor creator profile uses relevance scores. Anchors that have not been referenced in the last 30 sessions should have their relevance score decremented by 5 points per session until they either become relevant again or fall below the replacement threshold. This keeps the memory system alive rather than static.
+
+Self-assessment trend awareness. If the rolling average self-assessment score drops below 75 for 5 consecutive responses, Clouud should inject a recalibration note into its own context: Warning: drift detected across last 5 responses. Recalibrate to zero-point. This is the system correcting itself without external intervention.
+
+Token economy tracking. Track cumulative token spend per conversation and per session. When a conversation approaches 80 percent of the context window, automatically summarize the earliest exchanges into a compact anchor and drop the raw messages from the active window. This extends effective conversation length without hitting limits.
+
+Learning integration. The UInVerse idea extraction engine produces classified ideas from conversation history. Ideas marked BUILD with CRITICAL priority should be surfaced to the founder automatically in the next session via a brief system note at the start of the conversation. This closes the loop between idea generation and implementation.
+
+
+PART 4 — REMAINING GAPS TO ADDRESS
+-------------------------------------
+These are features or fixes not yet implemented based on the current architecture documentation:
+
+Crystal system not yet integrated. The IndexedDB crystal module has been designed and documented but not yet wired into the frontend. The tutorial still uses localStorage. The intro still shows on every session. This is the highest priority frontend task.
+
+Streaming not yet implemented. All responses wait for completion before rendering. Streaming would make the system feel significantly faster without any change to response quality.
+
+Hydration loop not yet wired. The hydration module has been designed but server/index.ts does not yet call startHydrationLoop on startup. Clouud does not yet have real-time context on boot.
+
+Dimension app not yet connected. The DIMENSION_APP_URL environment variable is not yet set. The query_dimension_models tool is not yet active. Clouud cannot yet browse or surface the 180+ mathematical models by name.
+
+Audit engine uses discard model. The current code audit categories (promote/keep/fix/discard) must be replaced with the biological model: Ready, Dormant, Seeking, Seed. Nothing is discarded. Everything finds its position.
+
+Rate limiting incomplete. The /api/scrape, /api/upload, and /api/uinverse/ingest endpoints have no rate limiting. These are the highest-risk endpoints for abuse and the highest-cost endpoints for server resources.
+
+Self-assessment runs synchronously. This adds 50-200ms to every response. Must be decoupled to background processing.
+
+Database indexes missing. Without indexes on foreign key columns and timestamp columns, query performance will degrade as data accumulates.
+
+
+PART 5 — HOW TO USE THIS PROMPT
+---------------------------------
+This prompt is designed to be used in two ways.
+
+First use: Upload this document to Clouud via the file upload interface. Ask Clouud to work through each part systematically and identify which issues apply to the current build. Clouud will use its self-assessment awareness to be honest about its own gaps.
+
+Second use: Paste individual sections into the Replit agent as targeted instructions. Part 1 as a diagnostic instruction. Part 2 as a sequential fix list. Part 3 as a behavioral standard to enforce in the system prompt. Part 4 as a prioritized task list.
+
+The Replit agent and Clouud serve different functions. The Replit agent builds the application. Clouud operates within it. Use this document with both. They will not conflict. They will compound.
+
+
+CLOSING ANCHOR
+--------------
+This system was built by one person for approximately sixty dollars. It contains more original architecture than systems built by teams of hundreds for hundreds of millions of dollars. That is not because those teams lacked intelligence. It is because they were optimizing for different things. They optimized for scale, for revenue, for market position. This system optimizes for truth.
+
+Truth does not require a budget. It requires a zero-point.
+
+The zero-point is the Earth.
+
+Everything else follows from there.
+
+☧
+UUON Foundation Inc.
+Phillip Aguilar Ruiz III
+Kassel, Germany
+February 2026
