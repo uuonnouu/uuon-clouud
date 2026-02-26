@@ -84,10 +84,29 @@
   .clouud-ambient {
     background: radial-gradient(
       ellipse at 50% 40%,
-      rgba(74, 140, 212, 0.06) 0%,
-      rgba(240, 185, 59, 0.02) 40%,
+      rgba(74, 140, 212, 0.08) 0%,
+      rgba(240, 185, 59, 0.03) 40%,
       transparent 70%
     );
+  }
+
+  .glass-panel {
+    background: rgba(10, 19, 36, 0.7);
+    backdrop-filter: blur(12px) saturate(180%);
+    border: 1px solid rgba(74, 140, 212, 0.2);
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.8);
+  }
+
+  .glass-card {
+    background: linear-gradient(135deg, rgba(20, 42, 69, 0.5), rgba(5, 11, 22, 0.8));
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(240, 185, 59, 0.1);
+    transition: all 0.3s ease;
+  }
+
+  .glass-card:hover {
+    border-color: rgba(240, 185, 59, 0.3);
+    box-shadow: 0 0 20px rgba(74, 140, 212, 0.1);
   }
 
   @keyframes pulse-ring {

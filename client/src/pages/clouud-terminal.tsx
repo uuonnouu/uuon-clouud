@@ -24,21 +24,24 @@ type Conversation = {
 };
 
 const QUICK_ACTIONS = [
-  "About Us",
-  "Tell me about the founder",
+  "Who is Clouud?",
+  "What is Clouud?",
+  "Teach me about your interests",
+  "How can we enhance Earth?",
   "What is waste, fraud, and abuse?",
   "What is Δmension?",
   "How does the lattice work?",
   "What is position 21?",
   "Show the full lattice",
   "What makes UUON different?",
-  "How can I help improve Earth?",
   "Explain the 33-point system",
   "What problems are you solving?",
   "What is IEEE 754?",
   "Why does rounding matter?",
   "Tell me about the 3D models",
   "What does UUON mean?",
+  "About Us",
+  "Tell me about the founder",
 ];
 
 export default function ClouudTerminal() {
@@ -549,7 +552,8 @@ export default function ClouudTerminal() {
               </div>
             </div>
 
-            <div className="flex-1 overflow-y-auto">
+            <div className="flex-1 overflow-y-auto lattice-grid-deep relative">
+              <div className="absolute inset-0 bg-gradient-to-b from-transparent via-background/20 to-background pointer-events-none" />
               <div className="p-3 border-b border-border">
                 <button 
                   onClick={createConversation}
@@ -566,9 +570,9 @@ export default function ClouudTerminal() {
                 {conversations.map(convo => (
                   <div 
                     key={convo.id}
-                    className={`group flex items-center gap-2 px-2 py-2 rounded-sm cursor-pointer transition-all border text-xs ${
+                    className={`group flex items-center gap-2 px-2 py-2 rounded-sm cursor-pointer transition-all border text-xs glass-card ${
                       activeConvo === convo.id 
-                        ? 'bg-muted border-primary/30' 
+                        ? 'bg-muted/80 border-primary/40 shadow-[0_0_15px_rgba(240,185,59,0.1)]' 
                         : 'border-transparent hover:bg-muted/50 hover:border-border'
                     }`}
                     onClick={() => selectConversation(convo.id)}
@@ -651,7 +655,7 @@ export default function ClouudTerminal() {
                       <button
                         key={i}
                         onClick={() => handleQuickAction(label)}
-                        className="w-full text-left px-2 py-1.5 text-[11px] text-muted-foreground hover:text-white bg-background hover:bg-muted/60 border border-transparent hover:border-border rounded-sm transition-all leading-tight"
+                        className="w-full text-left px-2 py-1.5 text-[11px] text-muted-foreground hover:text-white bg-background hover:bg-muted/60 border border-transparent hover:border-border glass-card rounded-sm transition-all leading-tight"
                         data-testid={`button-quick-${i}`}
                       >
                         {label}
