@@ -60,6 +60,12 @@ export default function ClouudTerminal() {
   const [isListening, setIsListening] = useState(false);
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [speakingMsgId, setSpeakingMsgId] = useState<number | null>(null);
+  const [autoSpeak, setAutoSpeak] = useState(() => {
+    if (typeof window !== "undefined") {
+      return localStorage.getItem("clouud-auto-speak") === "true";
+    }
+    return false;
+  });
   const [showLinkInput, setShowLinkInput] = useState(false);
   const [linkUrl, setLinkUrl] = useState("");
   const [isUploading, setIsUploading] = useState(false);
@@ -243,6 +249,9 @@ export default function ClouudTerminal() {
         }));
       }
 
+      if (autoSpeak && data.assistantMessage?.content) {
+        setTimeout(() => speakMessage(data.assistantMessage.id, data.assistantMessage.content), 300);
+      }
       setTimeout(() => setAiState("idle"), 2000);
     } catch (err: any) {
       setMessages(prev => [
@@ -340,19 +349,25 @@ export default function ClouudTerminal() {
     }
 
     const recognition = new SpeechRecognition();
-    recognition.continuous = true;
+    recognition.continuous = false;
     recognition.interimResults = true;
     recognition.lang = "en-US";
 
     let finalTranscript = "";
+    const MIN_CONFIDENCE = 0.6;
 
     recognition.onresult = (event: any) => {
       let interim = "";
       for (let i = event.resultIndex; i < event.results.length; i++) {
-        if (event.results[i].isFinal) {
-          finalTranscript += event.results[i][0].transcript + " ";
+        const result = event.results[i];
+        if (result.isFinal) {
+          if (result[0].confidence >= MIN_CONFIDENCE) {
+            finalTranscript += result[0].transcript + " ";
+          }
         } else {
-          interim += event.results[i][0].transcript;
+          if (result[0].confidence >= MIN_CONFIDENCE || result[0].confidence === 0) {
+            interim += result[0].transcript;
+          }
         }
       }
       setInput(prev => {
@@ -363,7 +378,12 @@ export default function ClouudTerminal() {
     };
 
     recognition.onend = () => setIsListening(false);
-    recognition.onerror = () => setIsListening(false);
+    recognition.onerror = (event: any) => {
+      if (event.error !== "no-speech") {
+        console.error("Speech recognition error:", event.error);
+      }
+      setIsListening(false);
+    };
 
     recognitionRef.current = recognition;
     recognition.start();
@@ -380,36 +400,61 @@ export default function ClouudTerminal() {
 
     window.speechSynthesis.cancel();
 
-    const utterance = new SpeechSynthesisUtterance(text);
-    utterance.rate = 0.95;
-    utterance.pitch = 0.9;
-    utterance.volume = 1;
+    const startSpeaking = () => {
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.rate = 0.95;
+      utterance.pitch = 0.9;
+      utterance.volume = 1;
+
+      const voices = window.speechSynthesis.getVoices();
+      const preferred = voices.find(v =>
+        v.name.includes("Google") && v.name.includes("US") && v.lang === "en-US"
+      ) || voices.find(v =>
+        v.lang === "en-US" && !v.localService
+      ) || voices.find(v => v.lang === "en-US") || voices.find(v =>
+        v.lang.startsWith("en")
+      ) || voices[0];
+      if (preferred) utterance.voice = preferred;
+
+      utterance.onstart = () => {
+        setIsSpeaking(true);
+        setSpeakingMsgId(msgId);
+      };
+      utterance.onend = () => {
+        setIsSpeaking(false);
+        setSpeakingMsgId(null);
+      };
+      utterance.onerror = (e) => {
+        console.error("Speech synthesis error:", e);
+        setIsSpeaking(false);
+        setSpeakingMsgId(null);
+      };
+
+      window.speechSynthesis.speak(utterance);
+    };
 
     const voices = window.speechSynthesis.getVoices();
-    const preferred = voices.find(v =>
-      v.name.includes("Google") && v.name.includes("US") && v.lang === "en-US"
-    ) || voices.find(v => v.lang === "en-US") || voices[0];
-    if (preferred) utterance.voice = preferred;
-
-    utterance.onstart = () => {
-      setIsSpeaking(true);
-      setSpeakingMsgId(msgId);
-    };
-    utterance.onend = () => {
-      setIsSpeaking(false);
-      setSpeakingMsgId(null);
-    };
-    utterance.onerror = () => {
-      setIsSpeaking(false);
-      setSpeakingMsgId(null);
-    };
-
-    window.speechSynthesis.speak(utterance);
+    if (voices.length === 0) {
+      window.speechSynthesis.onvoiceschanged = () => {
+        startSpeaking();
+        window.speechSynthesis.onvoiceschanged = null;
+      };
+      setTimeout(() => {
+        if (!isSpeaking) startSpeaking();
+      }, 500);
+    } else {
+      startSpeaking();
+    }
   }
 
   useEffect(() => {
+    if (typeof window !== "undefined" && window.speechSynthesis) {
+      window.speechSynthesis.getVoices();
+    }
     return () => {
-      window.speechSynthesis.cancel();
+      if (typeof window !== "undefined" && window.speechSynthesis) {
+        window.speechSynthesis.cancel();
+      }
     };
   }, []);
 
@@ -964,11 +1009,24 @@ export default function ClouudTerminal() {
               >
                 {isListening ? <MicOff className="w-3.5 h-3.5" /> : <Mic className="w-3.5 h-3.5" />}
               </button>
+              <button
+                type="button"
+                onClick={() => {
+                  const next = !autoSpeak;
+                  setAutoSpeak(next);
+                  localStorage.setItem("clouud-auto-speak", String(next));
+                }}
+                className={`p-1.5 rounded-sm transition-colors ${autoSpeak ? "text-[#f0b93b]" : "text-muted-foreground hover:text-primary"}`}
+                title={autoSpeak ? "Auto-speak ON (click to disable)" : "Auto-speak OFF (click to enable)"}
+                data-testid="button-auto-speak"
+              >
+                {autoSpeak ? <Volume2 className="w-3.5 h-3.5" /> : <VolumeX className="w-3.5 h-3.5" />}
+              </button>
               {isSpeaking && (
                 <button
                   type="button"
                   onClick={() => { window.speechSynthesis.cancel(); setIsSpeaking(false); setSpeakingMsgId(null); }}
-                  className="p-1.5 rounded-sm text-[#f0b93b] animate-pulse transition-colors"
+                  className="p-1.5 rounded-sm text-red-500 animate-pulse transition-colors"
                   title="Stop speaking"
                   data-testid="button-stop-speak"
                 >
