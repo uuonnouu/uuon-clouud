@@ -104,8 +104,17 @@ UUON Clouud is the intelligence interface for the G°centric Lattice System, bui
 29. **Content Protection:** Client-side protections preventing right-click, text selection, copy/paste, keyboard shortcuts (Ctrl+U, Ctrl+S, F12, etc.), and drag operations. Input fields remain functional.
 30. **Principles Page:** Legal page includes "Principles" tab documenting 10 patterns UUON does not allow or promote (complexity without purpose, revolving door, manufactured urgency, free product trap, single solution, charity as branding, preemptive disclaimer, manufactured consensus, buried correction, poverty as a product).
 
+31. **GitHub Automated Backup:** Private repo `UUONdmON/uuon-clouud` on GitHub. Push database backups via `POST /api/github/push-backup`. Status check via `GET /api/github/status`.
+    - Backend: `server/github.ts`
+32. **Δmension Bridge:** Two-way connection to Δmension Mathematical Universe app (`https://dmension-mathematical-universe.replit.app`). Bridge handles shapes, ML data, full sync.
+    - Backend: `server/dmension-bridge.ts` — Bridge module with safeFetch, 15s timeout, graceful error handling
+    - API: `GET /api/dmension/status` (connection check), `GET /api/dmension/shapes` (pull shapes), `GET /api/dmension/ml-updates` (pull ML), `POST /api/dmension/send-shape` (push shape), `POST /api/dmension/send-ml` (push ML embeddings), `POST /api/dmension/sync` (full two-way sync), `GET /api/dmension/log` (sent log)
+    - Health check includes Δmension connection status and latency
+
 ## Environment Variables
 - `DATABASE_URL` — PostgreSQL connection string (auto-set)
 - `AI_INTEGRATIONS_ANTHROPIC_API_KEY` — Anthropic API key (via Replit integration)
 - `AI_INTEGRATIONS_ANTHROPIC_BASE_URL` — Anthropic base URL (via Replit integration)
+- `DMENSION_API_URL` — Δmension Mathematical Universe URL (https://dmension-mathematical-universe.replit.app)
+- `UUON_BRIDGE_SECRET` — Shared secret for Δmension bridge authentication
 - `SKETCHFAB_API_TOKEN` — (optional) Sketchfab API token for 3D model backup
