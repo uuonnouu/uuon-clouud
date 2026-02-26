@@ -10,11 +10,13 @@ import LegalPage from "@/pages/legal";
 
 function Router() {
   return (
-    <Switch>
-      <Route path="/" component={ClouudTerminal} />
-      <Route path="/legal" component={LegalPage} />
-      <Route component={NotFound} />
-    </Switch>
+    <SecurityGate>
+      <Switch>
+        <Route path="/" component={ClouudTerminal} />
+        <Route path="/legal" component={LegalPage} />
+        <Route component={NotFound} />
+      </Switch>
+    </SecurityGate>
   );
 }
 
@@ -23,9 +25,7 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
         <Toaster />
-        <SecurityGate>
-          <Router />
-        </SecurityGate>
+        <Router />
       </TooltipProvider>
     </QueryClientProvider>
   );
