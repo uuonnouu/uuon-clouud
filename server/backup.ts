@@ -17,6 +17,7 @@ const TABLES = [
   "self_assessments",
   "uinverse_imports",
   "uinverse_ideas",
+  "discoveries",
 ];
 
 const LARGE_TABLES = ["messages", "self_assessments", "uuon_tokens", "uinverse_ideas", "access_log"];

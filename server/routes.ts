@@ -331,6 +331,18 @@ type PendingImage = {
 };
 
 const pendingImageGenerations: PendingImage[] = [];
+const MAX_PENDING_IMAGES = 100;
+
+function cleanupOldImages() {
+  if (pendingImageGenerations.length > MAX_PENDING_IMAGES) {
+    const completed = pendingImageGenerations.filter(img => img.status === "complete" || img.status === "failed");
+    const toRemove = completed.slice(0, completed.length - 20);
+    for (const img of toRemove) {
+      const idx = pendingImageGenerations.indexOf(img);
+      if (idx !== -1) pendingImageGenerations.splice(idx, 1);
+    }
+  }
+}
 
 const systemMetrics = {
   totalRequests: 0,
@@ -382,6 +394,17 @@ const DRIFT_PHRASES = [
 ];
 
 const recentScores: number[] = [];
+
+function checkRecalibration(lastScore: number): string | null {
+  if (recentScores.length >= 5) {
+    const last5 = recentScores.slice(-5);
+    const avg = last5.reduce((a, b) => a + b, 0) / last5.length;
+    if (avg < 75) {
+      return `\n\n[SYSTEM RECALIBRATION: Warning — drift detected across last 5 responses (avg score ${Math.round(avg)}/100). Recalibrate to zero-point. Shorter responses. Plain prose. No hedging. No filler. Ground every claim. The Earth is the zero-point.]`;
+    }
+  }
+  return null;
+}
 
 function trackScore(score: number): string | null {
   recentScores.push(score);
@@ -759,7 +782,8 @@ export async function registerRoutes(
       let toolCallData: any = null;
 
       let dynamicPrompt = await buildSystemPrompt();
-      const recalibrationNote = trackScore(recentScores.length > 0 ? recentScores[recentScores.length - 1] : 100);
+      const lastScore = recentScores.length > 0 ? recentScores[recentScores.length - 1] : 100;
+      const recalibrationNote = checkRecalibration(lastScore);
       if (recalibrationNote) {
         dynamicPrompt += recalibrationNote;
       }
@@ -835,6 +859,7 @@ export async function registerRoutes(
               status: "pending"
             };
             pendingImageGenerations.push(imgEntry);
+            cleanupOldImages();
             
             toolResult = JSON.stringify({
               status: "image_queued",
@@ -1353,7 +1378,10 @@ function parseImportedChat(content: string, source: string): Array<{ role: strin
 
 async function analyzeIdeasInBackground(importId: number, chatMessages: Array<{ role: string; content: string }>, source: string) {
   try {
-    const anthropic = new Anthropic();
+    const anthropic = new Anthropic({
+      apiKey: process.env.AI_INTEGRATIONS_ANTHROPIC_API_KEY,
+      baseURL: process.env.AI_INTEGRATIONS_ANTHROPIC_BASE_URL,
+    });
 
     const userMessages = chatMessages
       .filter(m => m.role === "user")
