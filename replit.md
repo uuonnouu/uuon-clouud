@@ -174,8 +174,16 @@ UUON Clouud Æye is the intelligence interface for the G°centric Lattice System
 - Built Δmension (Mathematical Universe) at uuon-foundation.com
 - UUON = Universally United One Neuma = WON = ONE (only explain when asked)
 
+## Database Indexes
+- messages_conversation_id_idx on messages(conversation_id)
+- uuon_tokens_conversation_id_idx on uuon_tokens(conversation_id)
+- uploads_conversation_id_idx on uploads(conversation_id)
+- self_assessments_conversation_id_idx on self_assessments(conversation_id)
+- founder_messages_conversation_id_idx on founder_messages(conversation_id)
+- fingerprints_hash_unique on fingerprints(hash)
+
 ## Security
-- Device fingerprinting with SHA-256 hash
+- Device fingerprinting with SHA-256 hash (unique constraint on hash)
 - Access logging per request
 - SSRF protection on URL scraping
 - Rate limiting on chat (15/min), uploads (10/min), scraping (5/min), ingestion (3/min)

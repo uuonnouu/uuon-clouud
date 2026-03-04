@@ -89,21 +89,24 @@ class DatabaseStorage implements IStorage {
   }
 
   async deleteLastExchange(conversationId: number): Promise<Message | null> {
-    const allMsgs = await db.select().from(messages)
+    const recentMsgs = await db.select().from(messages)
       .where(eq(messages.conversationId, conversationId))
-      .orderBy(desc(messages.createdAt));
+      .orderBy(desc(messages.createdAt))
+      .limit(10);
     
-    if (allMsgs.length < 2) return null;
+    if (recentMsgs.length < 2) return null;
     
-    const lastAssistant = allMsgs[0];
-    const lastUser = allMsgs[1];
-    
-    if (lastAssistant.role === "assistant" && lastUser.role === "user") {
-      await db.delete(messages).where(eq(messages.id, lastAssistant.id));
-      await db.delete(messages).where(eq(messages.id, lastUser.id));
-      return lastUser;
+    const lastAssistantIdx = recentMsgs.findIndex(m => m.role === "assistant");
+    if (lastAssistantIdx === -1) return null;
+
+    const lastUserIdx = recentMsgs.findIndex((m, i) => i > lastAssistantIdx && m.role === "user");
+    if (lastUserIdx === -1) return null;
+
+    const idsToDelete = recentMsgs.slice(0, lastUserIdx + 1).map(m => m.id);
+    for (const id of idsToDelete) {
+      await db.delete(messages).where(eq(messages.id, id));
     }
-    return null;
+    return recentMsgs[lastUserIdx];
   }
 
   async saveUuonToken(data: InsertUuonToken): Promise<UuonToken> {
@@ -212,21 +215,29 @@ class DatabaseStorage implements IStorage {
   }
 
   async getSelfAssessmentReport(): Promise<{ avgScore: number; totalAssessments: number; totalFlags: number; recentFlags: string[]; scoreHistory: number[]; gapAnalysis: { category: string; count: number; severity: string }[] }> {
-    const allAssessments = await db.select().from(selfAssessments).orderBy(desc(selfAssessments.createdAt));
+    const [stats] = await db.select({
+      avgScore: avg(selfAssessments.score),
+      totalCount: count(),
+    }).from(selfAssessments);
 
-    if (allAssessments.length === 0) {
+    const totalAssessments = stats?.totalCount ?? 0;
+    if (totalAssessments === 0) {
       return { avgScore: 100, totalAssessments: 0, totalFlags: 0, recentFlags: [], scoreHistory: [], gapAnalysis: [] };
     }
 
-    const totalAssessments = allAssessments.length;
-    const avgScore = Math.round(allAssessments.reduce((sum, a) => sum + a.score, 0) / totalAssessments);
-    const scoreHistory = allAssessments.slice(0, 50).reverse().map(a => a.score);
+    const avgScore = Math.round(Number(stats.avgScore) || 100);
+
+    const recentAssessments = await db.select().from(selfAssessments)
+      .orderBy(desc(selfAssessments.createdAt))
+      .limit(50);
+
+    const scoreHistory = recentAssessments.slice().reverse().map(a => a.score);
 
     const flagCounts: Record<string, number> = {};
     let totalFlags = 0;
     const recentFlagsSet: string[] = [];
 
-    for (const a of allAssessments) {
+    for (const a of recentAssessments) {
       try {
         const flags: string[] = JSON.parse(a.flags);
         totalFlags += flags.length;

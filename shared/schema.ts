@@ -1,5 +1,5 @@
 import { sql } from "drizzle-orm";
-import { pgTable, serial, text, timestamp, integer, boolean } from "drizzle-orm/pg-core";
+import { pgTable, serial, text, timestamp, integer, boolean, index } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 
@@ -17,7 +17,9 @@ export const messages = pgTable("messages", {
   toolCall: text("tool_call"),
   hash: text("hash"),
   createdAt: timestamp("created_at").default(sql`CURRENT_TIMESTAMP`).notNull(),
-});
+}, (table) => [
+  index("messages_conversation_id_idx").on(table.conversationId),
+]);
 
 export const uuonTokens = pgTable("uuon_tokens", {
   id: serial("id").primaryKey(),
@@ -26,7 +28,9 @@ export const uuonTokens = pgTable("uuon_tokens", {
   conversationId: integer("conversation_id").notNull().references(() => conversations.id, { onDelete: "cascade" }),
   origin: text("origin").notNull().default("UUON-FOUNDATION-GCENTRIC-V1"),
   createdAt: timestamp("created_at").default(sql`CURRENT_TIMESTAMP`).notNull(),
-});
+}, (table) => [
+  index("uuon_tokens_conversation_id_idx").on(table.conversationId),
+]);
 
 export const creatorProfile = pgTable("creator_profile", {
   id: serial("id").primaryKey(),
@@ -37,7 +41,7 @@ export const creatorProfile = pgTable("creator_profile", {
 
 export const fingerprints = pgTable("fingerprints", {
   id: serial("id").primaryKey(),
-  hash: text("hash").notNull(),
+  hash: text("hash").notNull().unique(),
   components: text("components").notNull(),
   isOwner: boolean("is_owner").notNull().default(false),
   blocked: boolean("blocked").notNull().default(false),
@@ -64,7 +68,9 @@ export const uploads = pgTable("uploads", {
   conversationId: integer("conversation_id").references(() => conversations.id, { onDelete: "cascade" }),
   extractedText: text("extracted_text"),
   createdAt: timestamp("created_at").default(sql`CURRENT_TIMESTAMP`).notNull(),
-});
+}, (table) => [
+  index("uploads_conversation_id_idx").on(table.conversationId),
+]);
 
 export const selfAssessments = pgTable("self_assessments", {
   id: serial("id").primaryKey(),
@@ -75,7 +81,9 @@ export const selfAssessments = pgTable("self_assessments", {
   pass: boolean("pass").notNull(),
   flags: text("flags").notNull().default("[]"),
   createdAt: timestamp("created_at").default(sql`CURRENT_TIMESTAMP`).notNull(),
-});
+}, (table) => [
+  index("self_assessments_conversation_id_idx").on(table.conversationId),
+]);
 
 export const uinverseImports = pgTable("uinverse_imports", {
   id: serial("id").primaryKey(),
@@ -156,7 +164,9 @@ export const founderMessages = pgTable("founder_messages", {
   topicTags: text("topic_tags"),
   originalCreatedAt: timestamp("original_created_at").notNull(),
   importedAt: timestamp("imported_at").default(sql`CURRENT_TIMESTAMP`).notNull(),
-});
+}, (table) => [
+  index("founder_messages_conversation_id_idx").on(table.conversationId),
+]);
 
 export const founderCorrections = pgTable("founder_corrections", {
   id: serial("id").primaryKey(),
