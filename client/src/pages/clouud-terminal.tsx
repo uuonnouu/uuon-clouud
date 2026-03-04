@@ -6,6 +6,7 @@ import ClouudAvatar from "@/components/clouud-avatar";
 import Tutorial from "@/components/tutorial";
 import MetricsPanel from "@/components/metrics-panel";
 import ExplorationEngine from "@/components/exploration-engine";
+import DynamicBackground from "@/components/dynamic-background";
 import { crystalGet, crystalSet, crystalGetSync, crystalSetSync, crystalIncrement } from "@/lib/crystal";
 import uuonLogo from "@assets/A7950814-2592-4E7D-858F-3AEB1D632F98_1772064571557.png";
 
@@ -628,6 +629,7 @@ export default function ClouudTerminal() {
 
   return (
     <div className="h-screen bg-background text-foreground flex overflow-hidden font-sans">
+      <DynamicBackground aiState={aiState} hashingIntensity={hashingIntensity} isTyping={isTyping} />
       
       <div className="md:hidden fixed top-0 left-0 right-0 h-14 bg-card/90 backdrop-blur-md border-b border-border z-50 flex items-center justify-between px-4">
         <div className="flex items-center gap-3">
