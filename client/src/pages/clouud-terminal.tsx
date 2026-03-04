@@ -147,9 +147,9 @@ export default function ClouudTerminal() {
   async function deleteConversation(id: number) {
     try {
       await fetch(`/api/conversations/${id}`, { method: "DELETE" });
-      setConversations(prev => prev.filter(c => c.id !== id));
+      const remaining = conversations.filter(c => c.id !== id);
+      setConversations(remaining);
       if (activeConvo === id) {
-        const remaining = conversations.filter(c => c.id !== id);
         if (remaining.length > 0) {
           setActiveConvo(remaining[0].id);
           await loadMessages(remaining[0].id);

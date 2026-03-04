@@ -94,6 +94,10 @@ class DatabaseStorage implements IStorage {
 
   async saveUuonToken(data: InsertUuonToken): Promise<UuonToken> {
     const [token] = await db.insert(uuonTokens).values(data).onConflictDoNothing().returning();
+    if (!token) {
+      const [existing] = await db.select().from(uuonTokens).where(eq(uuonTokens.hash, data.hash));
+      return existing;
+    }
     return token;
   }
 
