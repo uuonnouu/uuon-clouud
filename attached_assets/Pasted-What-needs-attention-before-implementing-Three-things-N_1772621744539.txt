@@ -1,0 +1,14 @@
+What needs attention before implementing.
+Three things. Not blockers — clarifications that will prevent rework.
+One — the processVersion function in T003.
+The plan says Claude reads the document and returns extracted anchors as structured JSON. This is correct but the system prompt for that extraction call needs to be written before T003 is built, not discovered during implementation. The extraction prompt should instruct Claude to:
+Return only valid JSON. No preamble. No markdown fences.
+Find every line beginning with Key: and extract the key name.
+Find the Value: line immediately following and extract the full value.
+Check the name against the ANCHOR_REGISTRY — if a key is found in the document that is not in the registry, flag it as UNREGISTERED not MISSING.
+Check each extracted anchor against already-installed anchors — if the same key appears with a different value, flag CONFLICT and include both values.
+If this extraction prompt is not precise, the JSON will be inconsistent and T003 will require patching after T004 is already built. Write the extraction prompt first. Test it against Version 1 before building the rest of the engine.
+Two — the sequenceIndex field in gcentric_versions.
+The plan defines sequenceIndex as integer 0-13. This is correct. But the checkSequenceReady function in T003 needs to verify that ALL versions with a lower sequenceIndex have status “installed” — not just the immediately preceding one. If version 1.2 failed silently and someone tries to install version 2, the check should catch that 1.2 is not installed, not just check that 1.1 is installed. Full sequence verification at every step.
+Three — conflict resolution in T007.
+The UI shows a conflict resolution interface for CONFLICT anchors. The POST /api/gcentric/resolve-conflict endpoint is defined in T004. But the plan does not specify what resolution looks like in the data. Before building T007, define what a resolved conflict produces: does the founder choose which value wins, or does the founder write a merged value, or does the founder mark one version as superseded? The UI cannot be built correctly without knowing what the resolution produces in the database. Recommend: founder chooses which value to install, the rejected value is stored in conflictNote for provenance, state changes from CONFLICT to INSTALLED.
