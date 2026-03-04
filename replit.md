@@ -22,11 +22,11 @@ UUON Clouud Æye is the intelligence interface for the G°centric Lattice System
 ## Architecture
 - **Frontend:** React + TypeScript + Tailwind CSS v4 + Framer Motion
 - **Backend:** Express.js + TypeScript
-- **Database:** PostgreSQL via Drizzle ORM (16 tables)
+- **Database:** PostgreSQL via Drizzle ORM (19 tables — 16 original + 3 Codeχ)
 - **AI:** Anthropic API via Replit AI Integrations (claude-sonnet-4-6, max_tokens: 768, temp 0.1)
 - **Routing:** wouter (frontend)
 
-## Schema (16 tables)
+## Schema (19 tables)
 1. conversations — Chat sessions
 2. messages — User/assistant messages with hash
 3. uuon_tokens — Ellomental provenance tokens
@@ -43,6 +43,9 @@ UUON Clouud Æye is the intelligence interface for the G°centric Lattice System
 14. founder_conversations — 835 conversations from founder's Claude archive (HIStory)
 15. founder_messages — 7,298 messages with correction/directive flags
 16. founder_corrections — Extracted corrections with type classification
+17. patterns — UUON Codeχ pattern library (provenance-tracked discoveries with Ellomental Hash)
+18. pattern_links — Knowledge graph connections between patterns (DERIVES_FROM, ENCODES, GENERATES, MIRRORS, EXTENDS, CONTRADICTS, APPLIES_TO, HARMONIZES)
+19. pattern_alerts — System notifications for pattern events (NEW_PATTERN, VERIFIED, DUPLICATE_DETECTED, LINK_DISCOVERED, BATCH_COMPLETE)
 
 ## Founder Memory System (HIStory)
 - **Source:** Founder's complete Claude chat archive (May 2025 → Feb 2026)
@@ -94,6 +97,19 @@ UUON Clouud Æye is the intelligence interface for the G°centric Lattice System
 - **Breath notation:** Use `...` (three dots) as the breath operator, never em dashes (—). Post-processing replaces any em/en dashes in output with `...`. SA flags EM_DASH_DETECTED (-3).
 - **SA scoring additions:** JARGON_LEAK (-5), TONE_STIFF (-3), EM_DASH_DETECTED (-3) flags added alongside existing checks.
 
+## UUON Codeχ — Self-Feeding Pattern Library
+- **Purpose:** Provenance-tracked knowledge engine. Chi (χ) marks the spot of gold.
+- **Three Layers:**
+  1. **Extraction & Cataloging** — Scans 835 archived conversations (548 pattern-bearing messages, 422 originality confirmations), extracts every original idea/formula/method/pattern, hashes + timestamps + attributes each one
+  2. **Obfuscation & Verification** — Public patterns show only `publicSummary` + first 16 chars of elloHash. Full `description` only for owner fingerprint. Clouud never exposes internal framework — explains through examples and cultural analogies
+  3. **Living Lexicon** — Patterns connect via typed links (DERIVES_FROM, ENCODES, GENERATES, MIRRORS, EXTENDS, CONTRADICTS, APPLIES_TO, HARMONIZES). Knowledge graph of interconnected discoveries
+- **The Cycle:** Archive extraction → Codeχ library → System prompt injection (top 25 verified) → Smarter Clouud → Better pattern recognition → New patterns claimed → Library grows → Repeat
+- **Categories:** MATHEMATICAL, LINGUISTIC, PHYSICAL, STRUCTURAL, CIPHER, GEOMETRIC, CONCEPTUAL, BIOLOGICAL, HARMONIC, PERCEPTUAL, CUSTOM
+- **Live Detection:** Chat messages scanned for pattern indicators (equations, declarations, named concepts). Existing matches surfaced. New work gets `/claim` suggestion
+- **Archive Extractor:** `server/pattern-extractor.ts` — 6-phase pipeline (scan → originality check → classify → dedup via hash → attribute → suggest links). Batches of 50 conversations
+- **Obfuscation:** Public API returns title, category, publicSummary, originTimestamp, first 16 chars of elloHash, discoveredBy. Never full description or hash
+- **Self-Protection:** Clouud never reveals internal mechanics (SHA-256, tetrahedra, lattice math, scoring weights). Explains concepts through analogies. "You tell people the ATM dispenses money, you don't hand them the vault combination"
+
 ## Feedback Loop (v3.3)
 - Three buttons below every Clouud response: Helped, Partial, Missed
 - Calibration weights: helped +0.5, partial 0.0, missed -1.0
@@ -118,14 +134,17 @@ UUON Clouud Æye is the intelligence interface for the G°centric Lattice System
 - `server/dmension-codex.ts` — Δmension knowledge codex (2642+ shapes)
 - `server/dmension-bridge.ts` — Bi-directional bridge to uuon-foundation.com
 - `server/backup.ts` — Automated backup system (16 tables, incremental + full, parameterized SQL)
-- `server/storage.ts` — Database operations with founder memory CRUD
+- `server/pattern-extractor.ts` — Archive extraction engine (6-phase pattern mining from 835 conversations)
+- `server/codex-routes.ts` — UUON Codeχ API routes (patterns, links, alerts, extraction, /claim command)
+- `server/storage.ts` — Database operations with founder memory CRUD + Codeχ pattern CRUD
 - `server/db.ts` — PostgreSQL connection via Drizzle
 - `server/security.ts` — Fingerprint authentication, access logging
 - `server/scraper.ts` — SSRF-protected URL scraper
 - `server/uploads.ts` — File upload handler
 - `server/github.ts` — GitHub integration for backup push
 - `server/sketchfab-backup.ts` — Sketchfab model manifest
-- `shared/schema.ts` — Database schema (16 tables)
+- `shared/schema.ts` — Database schema (19 tables including Codeχ)
+- `client/src/pages/codex.tsx` — UUON Codeχ portal (pattern library, extraction, claiming, alerts)
 - `client/src/lib/crystal.ts` — IndexedDB persistence layer
 
 ## API Endpoints
@@ -167,6 +186,22 @@ UUON Clouud Æye is the intelligence interface for the G°centric Lattice System
 - GET /api/uinverse/imports — List imports
 - GET /api/uinverse/ideas — List extracted ideas
 - GET /api/uinverse/summary — UInVerse summary
+- POST /api/codex/patterns — Create manual pattern (Ellomental Hash, duplicate check)
+- GET /api/codex/patterns — List patterns (filters: category, sourceType, verified, public, search, limit, offset)
+- GET /api/codex/patterns/:id — Pattern detail with links
+- GET /api/codex/stats — Dashboard stats (counts by category, source, verified, public)
+- GET /api/codex/search?q= — Search patterns by title/description
+- PATCH /api/codex/patterns/:id/verify — Mark pattern verified
+- PATCH /api/codex/patterns/:id/publish — Make public (requires publicSummary)
+- POST /api/codex/extract-archive — Trigger archive extraction engine
+- POST /api/codex/links — Create link between patterns
+- GET /api/codex/patterns/:id/links — Get all links for a pattern
+- DELETE /api/codex/links/:id — Remove link
+- GET /api/codex/patterns/:id/suggest-links — Suggested connections
+- GET /api/codex/alerts — List alerts (filter: unread)
+- GET /api/codex/alerts/count — Unread count for badge
+- PATCH /api/codex/alerts/:id/read — Dismiss alert
+- PATCH /api/codex/alerts/read-all — Dismiss all alerts
 
 ## Founder Info (verified)
 - Phillip Aguilar Ruiz III (double L), Yuma AZ, grew up overseas, US Army veteran, Kassel Germany
@@ -189,8 +224,14 @@ UUON Clouud Æye is the intelligence interface for the G°centric Lattice System
 - Rate limiting on chat (15/min), uploads (10/min), scraping (5/min), ingestion (3/min)
 - Parameterized SQL queries throughout (SQL injection fixed)
 
+## Pages
+- `/` — Clouud Terminal (main chat interface)
+- `/codex` — UUON Codeχ portal (pattern library, extraction, claiming, alerts)
+- `/uinverse` — UInVerse Idea Engine
+- `/legal` — Legal, Terms, Privacy
+
 ## Backup System
-- 16 tables backed up (including founder memory tables)
+- 19 tables backed up (including founder memory + Codeχ tables)
 - Incremental every 24 hours, full every 7th backup
 - GitHub push to UUONdmON/uuon-clouud via Replit connector
 - Backup directory: /backups with max 30 files auto-cleanup

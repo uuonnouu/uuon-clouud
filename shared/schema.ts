@@ -1,5 +1,5 @@
 import { sql } from "drizzle-orm";
-import { pgTable, serial, text, timestamp, integer, boolean, index } from "drizzle-orm/pg-core";
+import { pgTable, serial, text, timestamp, integer, boolean, index, unique } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 
@@ -180,6 +180,54 @@ export const founderCorrections = pgTable("founder_corrections", {
   createdAt: timestamp("created_at").default(sql`CURRENT_TIMESTAMP`).notNull(),
 });
 
+export const patterns = pgTable("patterns", {
+  id: serial("id").primaryKey(),
+  title: text("title").notNull(),
+  description: text("description").notNull(),
+  publicSummary: text("public_summary"),
+  category: text("category").notNull(),
+  sourceType: text("source_type").notNull(),
+  sourceReference: text("source_reference"),
+  discoveredBy: text("discovered_by").notNull().default("Phillip Aguilar Ruiz III"),
+  fingerprintId: integer("fingerprint_id").references(() => fingerprints.id),
+  elloHash: text("ello_hash").notNull().unique(),
+  originTimestamp: timestamp("origin_timestamp").notNull(),
+  verified: boolean("verified").notNull().default(false),
+  active: boolean("active").notNull().default(true),
+  public: boolean("public").notNull().default(false),
+  metadata: text("metadata"),
+  createdAt: timestamp("created_at").default(sql`CURRENT_TIMESTAMP`).notNull(),
+}, (table) => [
+  index("patterns_category_idx").on(table.category),
+  index("patterns_source_type_idx").on(table.sourceType),
+  index("patterns_discovered_by_idx").on(table.discoveredBy),
+]);
+
+export const patternLinks = pgTable("pattern_links", {
+  id: serial("id").primaryKey(),
+  fromPatternId: integer("from_pattern_id").notNull().references(() => patterns.id, { onDelete: "cascade" }),
+  toPatternId: integer("to_pattern_id").notNull().references(() => patterns.id, { onDelete: "cascade" }),
+  linkType: text("link_type").notNull(),
+  description: text("description"),
+  strength: integer("strength").notNull().default(5),
+  createdAt: timestamp("created_at").default(sql`CURRENT_TIMESTAMP`).notNull(),
+}, (table) => [
+  unique("pattern_links_unique").on(table.fromPatternId, table.toPatternId, table.linkType),
+  index("pattern_links_from_idx").on(table.fromPatternId),
+  index("pattern_links_to_idx").on(table.toPatternId),
+]);
+
+export const patternAlerts = pgTable("pattern_alerts", {
+  id: serial("id").primaryKey(),
+  patternId: integer("pattern_id").references(() => patterns.id, { onDelete: "cascade" }),
+  alertType: text("alert_type").notNull(),
+  message: text("message").notNull(),
+  read: boolean("read").notNull().default(false),
+  createdAt: timestamp("created_at").default(sql`CURRENT_TIMESTAMP`).notNull(),
+}, (table) => [
+  index("pattern_alerts_read_idx").on(table.read),
+]);
+
 export const insertConversationSchema = createInsertSchema(conversations).omit({
   id: true,
   createdAt: true,
@@ -249,3 +297,23 @@ export type FounderMessage = typeof founderMessages.$inferSelect;
 export type InsertFounderMessage = z.infer<typeof insertFounderMessageSchema>;
 export type FounderCorrection = typeof founderCorrections.$inferSelect;
 export type InsertFounderCorrection = z.infer<typeof insertFounderCorrectionSchema>;
+
+export const insertPatternSchema = createInsertSchema(patterns).omit({
+  id: true,
+  createdAt: true,
+});
+export const insertPatternLinkSchema = createInsertSchema(patternLinks).omit({
+  id: true,
+  createdAt: true,
+});
+export const insertPatternAlertSchema = createInsertSchema(patternAlerts).omit({
+  id: true,
+  createdAt: true,
+});
+
+export type Pattern = typeof patterns.$inferSelect;
+export type InsertPattern = z.infer<typeof insertPatternSchema>;
+export type PatternLink = typeof patternLinks.$inferSelect;
+export type InsertPatternLink = z.infer<typeof insertPatternLinkSchema>;
+export type PatternAlert = typeof patternAlerts.$inferSelect;
+export type InsertPatternAlert = z.infer<typeof insertPatternAlertSchema>;

@@ -1,5 +1,6 @@
 import express, { type Request, Response, NextFunction } from "express";
 import { registerRoutes, registerSystemRoutes } from "./routes";
+import { codexRouter } from "./codex-routes";
 import { serveStatic } from "./static";
 import { createServer } from "http";
 import { dmensionBridge } from "./dmension-bridge";
@@ -58,6 +59,7 @@ app.use((req, res, next) => {
 
 (async () => {
   await registerRoutes(httpServer, app);
+  app.use("/api/codex", codexRouter);
   registerSystemRoutes(app);
 
   app.use((err: any, _req: Request, res: Response, next: NextFunction) => {
