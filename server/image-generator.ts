@@ -784,7 +784,11 @@ export async function generateImageForClouud(img: {
       await mkdir("generated_images", { recursive: true });
     }
     
-    const svg = generateSvgVisualization(img.concept, img.prompt, img.aspectRatio);
+    let svg = generateSvgVisualization(img.concept, img.prompt, img.aspectRatio);
+    const closingIdx = svg.lastIndexOf("</svg>");
+    if (closingIdx !== -1) {
+      svg = svg.substring(0, closingIdx + 6);
+    }
     const svgPath = img.outputPath.replace(".png", ".svg");
     await writeFile(svgPath, svg);
     
