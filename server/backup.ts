@@ -18,6 +18,8 @@ const TABLES = [
   "uinverse_imports",
   "uinverse_ideas",
   "discoveries",
+  "feedback",
+  "gcentric_versions",
 ];
 
 const LARGE_TABLES = ["messages", "self_assessments", "uuon_tokens", "uinverse_ideas", "access_log"];

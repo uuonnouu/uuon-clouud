@@ -1,6 +1,6 @@
 import { db } from "./db";
-import { conversations, messages, uuonTokens, creatorProfile, fingerprints, accessLog, uploads, selfAssessments, uinverseImports, uinverseIdeas, discoveries } from "@shared/schema";
-import type { Conversation, InsertConversation, Message, InsertMessage, UuonToken, InsertUuonToken, CreatorProfileEntry, Fingerprint, AccessLogEntry, Upload, SelfAssessment, UinverseImport, UinverseIdea, Discovery, InsertDiscovery } from "@shared/schema";
+import { conversations, messages, uuonTokens, creatorProfile, fingerprints, accessLog, uploads, selfAssessments, uinverseImports, uinverseIdeas, discoveries, feedback, gcentricVersions } from "@shared/schema";
+import type { Conversation, InsertConversation, Message, InsertMessage, UuonToken, InsertUuonToken, CreatorProfileEntry, Fingerprint, AccessLogEntry, Upload, SelfAssessment, UinverseImport, UinverseIdea, Discovery, InsertDiscovery, Feedback, InsertFeedback, GcentricVersion, InsertGcentricVersion } from "@shared/schema";
 import { eq, desc, and, gte, count, sql, avg } from "drizzle-orm";
 
 export interface IStorage {
@@ -43,6 +43,12 @@ export interface IStorage {
   getAllDiscoveries(): Promise<Discovery[]>;
   toggleDiscovery(id: number, active: boolean): Promise<void>;
   deleteDiscovery(id: number): Promise<void>;
+  saveFeedback(data: InsertFeedback): Promise<Feedback>;
+  getFeedbackByConversation(conversationId: number): Promise<Feedback[]>;
+  getFeedbackSummary(): Promise<{ helped: number; partial: number; missed: number; calibrationWeight: number; recent: Feedback[] }>;
+  getInstalledVersions(): Promise<GcentricVersion[]>;
+  installVersion(data: InsertGcentricVersion): Promise<GcentricVersion>;
+  getVersion(versionNumber: string): Promise<GcentricVersion | undefined>;
 }
 
 class DatabaseStorage implements IStorage {
@@ -309,6 +315,44 @@ class DatabaseStorage implements IStorage {
 
   async deleteDiscovery(id: number): Promise<void> {
     await db.delete(discoveries).where(eq(discoveries.id, id));
+  }
+
+  async saveFeedback(data: InsertFeedback): Promise<Feedback> {
+    const [entry] = await db.insert(feedback).values(data).returning();
+    return entry;
+  }
+
+  async getFeedbackByConversation(conversationId: number): Promise<Feedback[]> {
+    return db.select().from(feedback).where(eq(feedback.conversationId, conversationId)).orderBy(desc(feedback.createdAt));
+  }
+
+  async getFeedbackSummary(): Promise<{ helped: number; partial: number; missed: number; calibrationWeight: number; recent: Feedback[] }> {
+    const all = await db.select().from(feedback).orderBy(desc(feedback.createdAt));
+    const helped = all.filter(f => f.response === "helped").length;
+    const partial = all.filter(f => f.response === "partial").length;
+    const missed = all.filter(f => f.response === "missed").length;
+    const calibrationWeight = (helped * 0.5) + (partial * 0.0) + (missed * -1.0);
+    return { helped, partial, missed, calibrationWeight, recent: all.slice(0, 20) };
+  }
+
+  async getInstalledVersions(): Promise<GcentricVersion[]> {
+    return db.select().from(gcentricVersions).orderBy(gcentricVersions.sequenceIndex);
+  }
+
+  async installVersion(data: InsertGcentricVersion): Promise<GcentricVersion> {
+    const [version] = await db.insert(gcentricVersions)
+      .values(data)
+      .onConflictDoUpdate({
+        target: gcentricVersions.versionNumber,
+        set: { title: data.title, status: data.status, sequenceIndex: data.sequenceIndex, installedAt: sql`CURRENT_TIMESTAMP` },
+      })
+      .returning();
+    return version;
+  }
+
+  async getVersion(versionNumber: string): Promise<GcentricVersion | undefined> {
+    const [v] = await db.select().from(gcentricVersions).where(eq(gcentricVersions.versionNumber, versionNumber));
+    return v;
   }
 }
 

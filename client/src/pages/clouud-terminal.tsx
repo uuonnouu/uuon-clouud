@@ -72,6 +72,7 @@ export default function ClouudTerminal() {
   const [generatedImages, setGeneratedImages] = useState<Record<string, { url: string; concept: string; status: string }>>({});
   const [visualSummary, setVisualSummary] = useState<{ concept: string; shapeType: string; parameters: any } | null>(null);
   const [hashingIntensity, setHashingIntensity] = useState(0);
+  const [feedbackSubmitted, setFeedbackSubmitted] = useState<Record<number, string>>({});
   const scrollRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -463,6 +464,28 @@ export default function ClouudTerminal() {
     isSpeakingRef.current = false;
     setIsSpeaking(false);
     setSpeakingMsgId(null);
+  }
+
+  async function submitFeedback(msgId: number, response: "helped" | "partial" | "missed") {
+    if (feedbackSubmitted[msgId]) return;
+    try {
+      const msg = messages.find(m => m.id === msgId);
+      const assessment = msgAssessments[msgId];
+      await fetch("/api/feedback", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          messageId: msgId,
+          conversationId: msg?.conversationId || activeConvo,
+          response,
+          saScore: assessment?.score ?? null,
+          hash: msg?.hash ?? null,
+        }),
+      });
+      setFeedbackSubmitted(prev => ({ ...prev, [msgId]: response }));
+    } catch (err) {
+      console.error("Failed to submit feedback:", err);
+    }
   }
 
   function speakMessage(msgId: number, text: string) {
@@ -1165,6 +1188,43 @@ export default function ClouudTerminal() {
                                   : <Volume2 className="w-3.5 h-3.5" />
                                 }
                               </button>
+                              <div className="ml-2 flex items-center gap-1">
+                                {feedbackSubmitted[msg.id] ? (
+                                  <span className="font-mono text-[10px]" style={{ color: "rgba(255,255,255,0.3)" }}>
+                                    {feedbackSubmitted[msg.id] === "helped" ? "✓" : feedbackSubmitted[msg.id] === "partial" ? "◐" : "○"}
+                                  </span>
+                                ) : (
+                                  <>
+                                    <button
+                                      onClick={() => submitFeedback(msg.id, "helped")}
+                                      className="px-1.5 py-0.5 rounded-sm text-[10px] font-mono transition-colors bg-transparent hover:bg-[#4CAF50]/10"
+                                      style={{ border: "1px solid #4CAF50", color: "#4CAF50" }}
+                                      title="This response helped"
+                                      data-testid="feedback-helped"
+                                    >
+                                      Helped
+                                    </button>
+                                    <button
+                                      onClick={() => submitFeedback(msg.id, "partial")}
+                                      className="px-1.5 py-0.5 rounded-sm text-[10px] font-mono transition-colors bg-transparent hover:bg-[#C9A84C]/10"
+                                      style={{ border: "1px solid #C9A84C", color: "#C9A84C" }}
+                                      title="Partially helpful"
+                                      data-testid="feedback-partial"
+                                    >
+                                      Partial
+                                    </button>
+                                    <button
+                                      onClick={() => submitFeedback(msg.id, "missed")}
+                                      className="px-1.5 py-0.5 rounded-sm text-[10px] font-mono transition-colors bg-transparent hover:bg-[#EF5350]/10"
+                                      style={{ border: "1px solid #EF5350", color: "#EF5350" }}
+                                      title="Missed the mark"
+                                      data-testid="feedback-missed"
+                                    >
+                                      Missed
+                                    </button>
+                                  </>
+                                )}
+                              </div>
                             </div>
                           )}
                           
