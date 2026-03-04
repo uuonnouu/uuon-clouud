@@ -1,6 +1,7 @@
 import fs from "fs";
 import { writeFile, mkdir } from "fs/promises";
 import path from "path";
+import { embedWatermark } from "./stego-watermark";
 
 function hashStr(str: string): number {
   let hash = 0;
@@ -837,6 +838,18 @@ export async function generateImageForClouud(img: {
     }
     
     let svg = generateSvgVisualization(img.concept, img.prompt, img.aspectRatio);
+    
+    // Watermark before saving
+    try {
+      svg = embedWatermark(svg, {
+        sessionId: "SESSION_" + img.id, // Using img.id as part of session identifier for now
+        founderId: "FOUNDER_SYSTEM",
+        timestamp: Date.now()
+      });
+    } catch (e) {
+      console.error("[IMAGE] Watermarking failed", e);
+    }
+
     const closingIdx = svg.lastIndexOf("</svg>");
     if (closingIdx !== -1) {
       svg = svg.substring(0, closingIdx + 6);
