@@ -113,6 +113,26 @@ export const discoveries = pgTable("discoveries", {
   createdAt: timestamp("created_at").default(sql`CURRENT_TIMESTAMP`).notNull(),
 });
 
+export const feedback = pgTable("feedback", {
+  id: serial("id").primaryKey(),
+  messageId: integer("message_id").notNull().references(() => messages.id, { onDelete: "cascade" }),
+  conversationId: integer("conversation_id").notNull().references(() => conversations.id, { onDelete: "cascade" }),
+  response: text("response").notNull(), // helped/partial/missed
+  saScore: integer("sa_score"),
+  hash: text("hash"),
+  version: text("version").notNull().default("3.3"),
+  createdAt: timestamp("created_at").default(sql`CURRENT_TIMESTAMP`).notNull(),
+});
+
+export const gcentricVersions = pgTable("gcentric_versions", {
+  id: serial("id").primaryKey(),
+  versionNumber: text("version_number").notNull().unique(),
+  title: text("title").notNull(),
+  status: text("status").notNull().default("installed"),
+  sequenceIndex: integer("sequence_index").notNull(),
+  installedAt: timestamp("installed_at").default(sql`CURRENT_TIMESTAMP`).notNull(),
+});
+
 export const insertConversationSchema = createInsertSchema(conversations).omit({
   id: true,
   createdAt: true,
@@ -126,6 +146,16 @@ export const insertMessageSchema = createInsertSchema(messages).omit({
 export const insertUuonTokenSchema = createInsertSchema(uuonTokens).omit({
   id: true,
   createdAt: true,
+});
+
+export const insertFeedbackSchema = createInsertSchema(feedback).omit({
+  id: true,
+  createdAt: true,
+});
+
+export const insertGcentricVersionSchema = createInsertSchema(gcentricVersions).omit({
+  id: true,
+  installedAt: true,
 });
 
 export type Conversation = typeof conversations.$inferSelect;
@@ -142,6 +172,10 @@ export type SelfAssessment = typeof selfAssessments.$inferSelect;
 export type UinverseImport = typeof uinverseImports.$inferSelect;
 export type UinverseIdea = typeof uinverseIdeas.$inferSelect;
 export type Discovery = typeof discoveries.$inferSelect;
+export type Feedback = typeof feedback.$inferSelect;
+export type InsertFeedback = z.infer<typeof insertFeedbackSchema>;
+export type GcentricVersion = typeof gcentricVersions.$inferSelect;
+export type InsertGcentricVersion = z.infer<typeof insertGcentricVersionSchema>;
 
 export const insertDiscoverySchema = createInsertSchema(discoveries).omit({
   id: true,
