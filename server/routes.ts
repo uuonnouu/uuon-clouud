@@ -14,6 +14,7 @@ import { backupAllModels } from "./sketchfab-backup";
 import { getGitHubStatus, createPrivateRepo, pushBackupToGitHub } from "./github";
 import { dmensionBridge } from "./dmension-bridge";
 import { generateImageForClouud } from "./image-generator";
+import { decodeFingerprint } from "./zwc-fingerprint";
 import { searchDmensionShapes, getDmensionContextForPrompt, getEarthImpactModel, DMENSION_STATS, DMENSION_ENGINES, DMENSION_CATEGORIES } from "./dmension-codex";
 import { matchTopicToShape } from "./dmension-routes";
 import { ingestFounderArchive, getIngestionProgress } from "./founder-memory";
@@ -2487,5 +2488,15 @@ export function registerSystemRoutes(app: Express) {
     } catch (error: any) {
       res.status(500).json({ error: error.message });
     }
+  });
+
+  app.post("/api/provenance/decode-zwc", (req, res) => {
+    const { text } = req.body;
+    if (!text || typeof text !== "string") {
+      return res.status(400).json({ error: "Text content is required" });
+    }
+
+    const decoded = decodeFingerprint(text);
+    res.json(decoded);
   });
 }

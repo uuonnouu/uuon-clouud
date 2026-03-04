@@ -1,4 +1,5 @@
-import { useEffect, useRef, useMemo } from "react";
+import { useEffect, useRef, useMemo, useState } from "react";
+import { generateProvenancePattern } from "@/lib/perceptual-hash-pattern";
 
 type SystemState = "idle" | "thinking" | "speaking";
 
@@ -37,6 +38,16 @@ export default function DynamicBackground({ aiState, hashingIntensity, isTyping,
   const stateRef = useRef({ aiState, hashingIntensity, isTyping, notificationPulse });
   const pulseRef = useRef(0);
   const transitionRef = useRef({ fromH: 215, fromS: 60, fromL: 45, progress: 1 });
+
+  const [provenancePattern, setProvenancePattern] = useState<string>("");
+
+  useEffect(() => {
+    // Generate new pattern on mount or when session-relevant data would change
+    // Since we don't have a direct session ID here, we use a stable mock or derive from window
+    const pseudoSessionId = window.crypto.randomUUID?.() || Math.random().toString(36).substring(7);
+    const timestamp = Date.now();
+    setProvenancePattern(generateProvenancePattern(pseudoSessionId, timestamp));
+  }, []);
 
   useEffect(() => {
     const prev = stateRef.current;
@@ -248,11 +259,22 @@ export default function DynamicBackground({ aiState, hashingIntensity, isTyping,
   }, []);
 
   return (
-    <canvas
-      ref={canvasRef}
-      className="fixed inset-0 pointer-events-none"
-      style={{ zIndex: 0 }}
-      data-testid="dynamic-background"
-    />
+    <>
+      <canvas
+        ref={canvasRef}
+        className="fixed inset-0 pointer-events-none"
+        style={{ zIndex: 0 }}
+        data-testid="dynamic-background"
+      />
+      <div 
+        className="fixed inset-0 pointer-events-none" 
+        style={{ 
+          zIndex: 1, 
+          backgroundImage: provenancePattern,
+          mixBlendMode: 'overlay'
+        }}
+        data-testid="provenance-hash-layer"
+      />
+    </>
   );
 }
