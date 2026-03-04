@@ -123,6 +123,27 @@ export default function ClouudTerminal() {
       const res = await fetch(`/api/conversations/${convoId}/messages`);
       const data = await res.json();
       setMessages(data);
+      
+      for (const msg of data) {
+        if (msg.role === 'assistant' && msg.toolCall) {
+          try {
+            const tc = typeof msg.toolCall === 'string' ? JSON.parse(msg.toolCall) : msg.toolCall;
+            if (tc?.name === 'generate_image' && tc?.result?.imageId) {
+              const imageId = tc.result.imageId;
+              const statusRes = await fetch(`/api/images/status/${imageId}`);
+              if (statusRes.ok) {
+                const statusData = await statusRes.json();
+                if (statusData.status === "complete" && statusData.url) {
+                  setGeneratedImages(prev => ({
+                    ...prev,
+                    [imageId]: { url: statusData.url, concept: statusData.concept || tc.args?.concept || imageId, status: "complete" }
+                  }));
+                }
+              }
+            }
+          } catch {}
+        }
+      }
     } catch {
       setMessages([]);
     }
@@ -1120,12 +1141,23 @@ export default function ClouudTerminal() {
                                         >
                                           {imgData?.status === "complete" && imgData.url ? (
                                             <div className="relative group">
-                                              <img
-                                                src={imgData.url}
-                                                alt={imgData.concept}
-                                                className="w-full max-w-md rounded-sm"
-                                                loading="lazy"
-                                              />
+                                              {imgData.url.endsWith('.svg') ? (
+                                                <object
+                                                  data={imgData.url}
+                                                  type="image/svg+xml"
+                                                  className="w-full max-w-md rounded-sm"
+                                                  aria-label={imgData.concept}
+                                                >
+                                                  <img src={imgData.url} alt={imgData.concept} className="w-full max-w-md rounded-sm" />
+                                                </object>
+                                              ) : (
+                                                <img
+                                                  src={imgData.url}
+                                                  alt={imgData.concept}
+                                                  className="w-full max-w-md rounded-sm"
+                                                  loading="lazy"
+                                                />
+                                              )}
                                               <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-2">
                                                 <span className="font-mono text-[9px] text-white/80 tracking-wider uppercase">{imgData.concept}</span>
                                               </div>
