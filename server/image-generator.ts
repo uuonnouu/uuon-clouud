@@ -704,6 +704,59 @@ function renderUuonStamp(w: number, h: number, primary: string): string {
   return stamp;
 }
 
+const DOMAIN_LABELS: Record<string, string> = {
+  galaxy: "Galaxy Collision Simulation",
+  tensor: "Tensor Field Visualization",
+  wave: "Wave Interference Pattern",
+  fractal: "Fractal Spiral Structure",
+  molecular: "Molecular Bond Network",
+  flow: "Fluid Flow Dynamics",
+  entropy: "Entropy Reduction Model",
+  lattice: "Lattice Grid Structure",
+  growth: "Organic Growth Pattern",
+  geomorphology: "Terrain Topology Map",
+  network: "Network Graph Topology",
+  universal: "Concept Visualization",
+};
+
+function renderBrandedPlaceholder(cx: number, cy: number, w: number, h: number, rand: () => number, primary: string, light: string, accent: string): string {
+  let svg = "";
+
+  for (let ring = 1; ring <= 12; ring++) {
+    const r = ring * Math.min(w, h) * 0.035;
+    const dashLen = 2 + ring * 1.5;
+    const gapLen = 4 + ring * 2;
+    svg += `<circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="${ring % 3 === 0 ? accent : (ring % 2 === 0 ? light : primary)}" stroke-width="${0.4 + (12 - ring) * 0.08}" opacity="${0.05 + (12 - ring) * 0.025}" stroke-dasharray="${dashLen} ${gapLen}"/>`;
+  }
+
+  for (let i = 0; i < 6; i++) {
+    const angle = (i * 60) * Math.PI / 180;
+    const innerR = Math.min(w, h) * 0.08;
+    const outerR = Math.min(w, h) * 0.38;
+    svg += `<line x1="${cx + Math.cos(angle) * innerR}" y1="${cy + Math.sin(angle) * innerR}" x2="${cx + Math.cos(angle) * outerR}" y2="${cy + Math.sin(angle) * outerR}" stroke="${primary}" stroke-width="0.3" opacity="0.06"/>`;
+  }
+
+  svg += `<circle cx="${cx}" cy="${cy}" r="20" fill="${accent}" opacity="0.06" filter="url(#blur12)"/>`;
+  svg += `<circle cx="${cx}" cy="${cy}" r="6" fill="${accent}" opacity="0.3" filter="url(#softGlow)"/>`;
+  svg += `<circle cx="${cx}" cy="${cy}" r="2" fill="#ffffff" opacity="0.7"/>`;
+
+  svg += `<text x="${cx}" y="${cy + Math.min(w,h) * 0.28}" text-anchor="middle" fill="${light}" opacity="0.3" font-family="monospace" font-size="11" letter-spacing="3">UUON CLOUUD ÆYE</text>`;
+
+  return svg;
+}
+
+function renderTitle(cx: number, w: number, concept: string, domain: string, primary: string, light: string): string {
+  let svg = "";
+  const domainLabel = DOMAIN_LABELS[domain] || DOMAIN_LABELS.universal;
+  const title = concept.length > 40 ? concept.slice(0, 37) + "..." : concept;
+
+  svg += `<text x="${cx}" y="36" text-anchor="middle" fill="${light}" opacity="0.5" font-family="monospace" font-size="14" font-weight="bold" letter-spacing="2">${title.toUpperCase()}</text>`;
+  svg += `<text x="${cx}" y="54" text-anchor="middle" fill="${primary}" opacity="0.3" font-family="monospace" font-size="9" letter-spacing="3">${domainLabel.toUpperCase()}</text>`;
+  svg += `<line x1="${cx - 80}" y1="62" x2="${cx + 80}" y2="62" stroke="${primary}" stroke-width="0.4" opacity="0.15"/>`;
+
+  return svg;
+}
+
 export function generateSvgVisualization(concept: string, prompt: string, aspectRatio: string = "1:1"): string {
   const seed = hashStr(concept + prompt);
   const rand = seededRandom(seed);
@@ -757,13 +810,12 @@ export function generateSvgVisualization(concept: string, prompt: string, aspect
       svg += renderGeomorphology(cx, cy, width, height, rand, primary, light, accent, seed);
       break;
     default:
-      svg += renderGeomorphology(cx, cy, width, height, rand, primary, light, accent, seed);
-      svg += renderFlowField(cx, cy, width, height, rand, primary, light, accent, seed);
+      svg += renderBrandedPlaceholder(cx, cy, width, height, rand, primary, light, accent);
       break;
   }
 
+  svg += renderTitle(cx, width, concept, domain, primary, light);
   svg += renderUuonStamp(width, height, primary);
-  svg += `<text x="${cx}" y="${height - 20}" text-anchor="middle" fill="${primary}" opacity="0.25" font-family="monospace" font-size="10" letter-spacing="4">${concept.toUpperCase().slice(0, 50)}</text>`;
   svg += `</svg>@VERIFIED-IRREPLACEABLE`;
 
   return svg;
