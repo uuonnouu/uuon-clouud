@@ -45,11 +45,12 @@ export async function runBackup(incremental: boolean = true): Promise<{
 
     for (const table of TABLES) {
       try {
-        let query = `SELECT * FROM "${table}"`;
+        let result;
         if (incremental && lastBackupTimestamp && LARGE_TABLES.includes(table)) {
-          query = `SELECT * FROM "${table}" WHERE created_at > '${lastBackupTimestamp}'`;
+          result = await pool.query(`SELECT * FROM "${table}" WHERE created_at > $1`, [lastBackupTimestamp]);
+        } else {
+          result = await pool.query(`SELECT * FROM "${table}"`);
         }
-        const result = await pool.query(query);
         backup[table] = result.rows;
         tableSummary.push({ name: table, rowCount: result.rows.length });
       } catch (err: any) {

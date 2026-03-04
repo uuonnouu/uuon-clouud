@@ -241,7 +241,10 @@ export default function ClouudTerminal() {
       setAiState("speaking");
       const data = await res.json();
       
-      // Real-time Providence Orb verification sequence (12 tetrahedra)
+      if (convoId !== activeConvo && activeConvo !== null) {
+        return;
+      }
+
       for (let i = 1; i <= 12; i++) {
         setTimeout(() => setHashingIntensity(i / 12), i * 100);
       }
@@ -562,6 +565,7 @@ export default function ClouudTerminal() {
     return () => {
       if (keepAliveRef.current) clearInterval(keepAliveRef.current);
       if (typeof window !== "undefined" && window.speechSynthesis) {
+        window.speechSynthesis.onvoiceschanged = null;
         window.speechSynthesis.cancel();
       }
     };
