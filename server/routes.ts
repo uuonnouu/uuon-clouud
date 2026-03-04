@@ -1703,8 +1703,25 @@ export function registerSystemRoutes(app: Express) {
   });
 
   app.get("/api/images/status/:id", (req: Request, res: Response) => {
-    const img = pendingImageGenerations.find(i => i.id === req.params.id);
-    if (!img) return res.status(404).json({ error: "Image not found" });
+    const imageId = req.params.id;
+    const img = pendingImageGenerations.find(i => i.id === imageId);
+    
+    if (!img) {
+      const pngPath = path.join(process.cwd(), "generated_images", `${imageId}.png`);
+      const svgPath = path.join(process.cwd(), "generated_images", `${imageId}.svg`);
+      const svgExists = fs.existsSync(svgPath);
+      const pngExists = fs.existsSync(pngPath);
+      if (svgExists || pngExists) {
+        const ext = svgExists ? "svg" : "png";
+        return res.json({
+          id: imageId,
+          status: "complete",
+          url: `/generated_images/${imageId}.${ext}`,
+          concept: imageId.replace("clouud-", ""),
+        });
+      }
+      return res.status(404).json({ error: "Image not found" });
+    }
     
     const svgPath = img.outputPath.replace(".png", ".svg");
     const pngExists = fs.existsSync(img.outputPath);
