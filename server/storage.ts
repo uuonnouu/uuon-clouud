@@ -1,6 +1,6 @@
 import { db } from "./db";
-import { conversations, messages, uuonTokens, creatorProfile, fingerprints, accessLog, uploads, selfAssessments, uinverseImports, uinverseIdeas, discoveries, feedback, gcentricVersions, founderConversations, founderMessages, founderCorrections, patterns, patternLinks, patternAlerts } from "@shared/schema";
-import type { Conversation, InsertConversation, Message, InsertMessage, UuonToken, InsertUuonToken, CreatorProfileEntry, Fingerprint, AccessLogEntry, Upload, SelfAssessment, UinverseImport, UinverseIdea, Discovery, InsertDiscovery, Feedback, InsertFeedback, GcentricVersion, InsertGcentricVersion, FounderConversation, InsertFounderConversation, FounderMessage, InsertFounderMessage, FounderCorrection, InsertFounderCorrection, Pattern, InsertPattern, PatternLink, InsertPatternLink, PatternAlert, InsertPatternAlert } from "@shared/schema";
+import { conversations, messages, uuonTokens, creatorProfile, fingerprints, accessLog, uploads, selfAssessments, uinverseImports, uinverseIdeas, discoveries, feedback, gcentricVersions, founderConversations, founderMessages, founderCorrections, patterns, patternLinks, patternAlerts, dmensionShapes } from "@shared/schema";
+import type { Conversation, InsertConversation, Message, InsertMessage, UuonToken, InsertUuonToken, CreatorProfileEntry, Fingerprint, AccessLogEntry, Upload, SelfAssessment, UinverseImport, UinverseIdea, Discovery, InsertDiscovery, Feedback, InsertFeedback, GcentricVersion, InsertGcentricVersion, FounderConversation, InsertFounderConversation, FounderMessage, InsertFounderMessage, FounderCorrection, InsertFounderCorrection, Pattern, InsertPattern, PatternLink, InsertPatternLink, PatternAlert, InsertPatternAlert, DmensionShape, InsertDmensionShape } from "@shared/schema";
 import { eq, desc, and, gte, count, sql, avg, ilike, or, ne } from "drizzle-orm";
 
 export interface IStorage {
@@ -79,6 +79,12 @@ export interface IStorage {
   markAlertRead(id: number): Promise<void>;
   markAllAlertsRead(): Promise<void>;
   getUnreadAlertCount(): Promise<number>;
+
+  saveDmensionShape(data: InsertDmensionShape): Promise<DmensionShape>;
+  saveDmensionShapes(data: InsertDmensionShape[]): Promise<number>;
+  searchDmensionShapes(query: string, limit?: number): Promise<DmensionShape[]>;
+  getDmensionShapeCount(): Promise<number>;
+  getDmensionShapesByCategory(category: string): Promise<DmensionShape[]>;
 }
 
 class DatabaseStorage implements IStorage {
@@ -658,6 +664,53 @@ class DatabaseStorage implements IStorage {
   async getUnreadAlertCount(): Promise<number> {
     const [result] = await db.select({ value: count() }).from(patternAlerts).where(eq(patternAlerts.read, false));
     return result?.value ?? 0;
+  }
+
+  async saveDmensionShape(data: InsertDmensionShape): Promise<DmensionShape> {
+    const [shape] = await db.insert(dmensionShapes).values(data).onConflictDoUpdate({
+      target: dmensionShapes.shapeId,
+      set: { name: data.name, category: data.category, domain: data.domain, description: data.description, formula: data.formula, parameters: data.parameters, earthLink: data.earthLink, sketchfabUrl: data.sketchfabUrl, tags: data.tags, engineName: data.engineName, metadata: data.metadata },
+    }).returning();
+    return shape;
+  }
+
+  async saveDmensionShapes(data: InsertDmensionShape[]): Promise<number> {
+    if (data.length === 0) return 0;
+    let saved = 0;
+    for (let i = 0; i < data.length; i += 50) {
+      const batch = data.slice(i, i + 50);
+      for (const item of batch) {
+        try {
+          await this.saveDmensionShape(item);
+          saved++;
+        } catch (e) {
+          // skip duplicates
+        }
+      }
+    }
+    return saved;
+  }
+
+  async searchDmensionShapes(query: string, limit: number = 20): Promise<DmensionShape[]> {
+    return await db.select().from(dmensionShapes).where(
+      or(
+        ilike(dmensionShapes.name, `%${query}%`),
+        ilike(dmensionShapes.category, `%${query}%`),
+        ilike(dmensionShapes.domain, `%${query}%`),
+        ilike(dmensionShapes.description, `%${query}%`),
+        ilike(dmensionShapes.tags, `%${query}%`),
+        ilike(dmensionShapes.earthLink, `%${query}%`)
+      )
+    ).limit(limit);
+  }
+
+  async getDmensionShapeCount(): Promise<number> {
+    const [result] = await db.select({ value: count() }).from(dmensionShapes);
+    return result?.value ?? 0;
+  }
+
+  async getDmensionShapesByCategory(category: string): Promise<DmensionShape[]> {
+    return await db.select().from(dmensionShapes).where(eq(dmensionShapes.category, category));
   }
 }
 
