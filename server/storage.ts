@@ -1,7 +1,7 @@
 import { db } from "./db";
-import { conversations, messages, uuonTokens, creatorProfile, fingerprints, accessLog, uploads, selfAssessments, uinverseImports, uinverseIdeas, discoveries, feedback, gcentricVersions, founderConversations, founderMessages, founderCorrections } from "@shared/schema";
-import type { Conversation, InsertConversation, Message, InsertMessage, UuonToken, InsertUuonToken, CreatorProfileEntry, Fingerprint, AccessLogEntry, Upload, SelfAssessment, UinverseImport, UinverseIdea, Discovery, InsertDiscovery, Feedback, InsertFeedback, GcentricVersion, InsertGcentricVersion, FounderConversation, InsertFounderConversation, FounderMessage, InsertFounderMessage, FounderCorrection, InsertFounderCorrection } from "@shared/schema";
-import { eq, desc, and, gte, count, sql, avg, ilike, or } from "drizzle-orm";
+import { conversations, messages, uuonTokens, creatorProfile, fingerprints, accessLog, uploads, selfAssessments, uinverseImports, uinverseIdeas, discoveries, feedback, gcentricVersions, founderConversations, founderMessages, founderCorrections, patterns, patternLinks, patternAlerts } from "@shared/schema";
+import type { Conversation, InsertConversation, Message, InsertMessage, UuonToken, InsertUuonToken, CreatorProfileEntry, Fingerprint, AccessLogEntry, Upload, SelfAssessment, UinverseImport, UinverseIdea, Discovery, InsertDiscovery, Feedback, InsertFeedback, GcentricVersion, InsertGcentricVersion, FounderConversation, InsertFounderConversation, FounderMessage, InsertFounderMessage, FounderCorrection, InsertFounderCorrection, Pattern, InsertPattern, PatternLink, InsertPatternLink, PatternAlert, InsertPatternAlert } from "@shared/schema";
+import { eq, desc, and, gte, count, sql, avg, ilike, or, ne } from "drizzle-orm";
 
 export interface IStorage {
   getConversation(id: number): Promise<Conversation | undefined>;
@@ -57,6 +57,28 @@ export interface IStorage {
   searchFounderMemory(query: string, limit?: number): Promise<FounderMessage[]>;
   getFounderCorrections(options?: { type?: string; limit?: number }): Promise<FounderCorrection[]>;
   getFounderStats(): Promise<{ conversations: number; messages: number; corrections: number; directives: number; dateRange: { earliest: string | null; latest: string | null }; topTopics: { topic: string; count: number }[] }>;
+
+  createPattern(data: InsertPattern): Promise<Pattern>;
+  createPatterns(data: InsertPattern[]): Promise<Pattern[]>;
+  getPatterns(filters?: { category?: string; sourceType?: string; verified?: boolean; public?: boolean; limit?: number; offset?: number }): Promise<Pattern[]>;
+  getPatternById(id: number): Promise<Pattern | undefined>;
+  verifyPattern(id: number): Promise<void>;
+  togglePatternPublic(id: number, publicSummary?: string): Promise<void>;
+  searchPatterns(query: string, limit?: number): Promise<Pattern[]>;
+  checkDuplicateHash(hash: string): Promise<Pattern | undefined>;
+  getPatternStats(): Promise<{ total: number; verified: number; public: number; byCategory: Record<string, number>; bySource: Record<string, number> }>;
+  getActiveVerifiedPatterns(limit?: number): Promise<Pattern[]>;
+
+  createPatternLink(data: InsertPatternLink): Promise<PatternLink>;
+  getPatternLinks(patternId: number): Promise<PatternLink[]>;
+  deletePatternLink(id: number): Promise<void>;
+  suggestLinks(patternId: number): Promise<Pattern[]>;
+
+  createPatternAlert(data: InsertPatternAlert): Promise<PatternAlert>;
+  getPatternAlerts(unreadOnly?: boolean): Promise<PatternAlert[]>;
+  markAlertRead(id: number): Promise<void>;
+  markAllAlertsRead(): Promise<void>;
+  getUnreadAlertCount(): Promise<number>;
 }
 
 class DatabaseStorage implements IStorage {
@@ -469,6 +491,173 @@ class DatabaseStorage implements IStorage {
       dateRange: { earliest, latest },
       topTopics,
     };
+  }
+
+  async createPattern(data: InsertPattern): Promise<Pattern> {
+    const [p] = await db.insert(patterns).values(data).returning();
+    return p;
+  }
+
+  async createPatterns(data: InsertPattern[]): Promise<Pattern[]> {
+    if (data.length === 0) return [];
+    const results: Pattern[] = [];
+    for (const item of data) {
+      try {
+        const [p] = await db.insert(patterns).values(item).onConflictDoNothing().returning();
+        if (p) results.push(p);
+      } catch {}
+    }
+    return results;
+  }
+
+  async getPatterns(filters?: { category?: string; sourceType?: string; verified?: boolean; public?: boolean; limit?: number; offset?: number }): Promise<Pattern[]> {
+    const limit = filters?.limit ?? 50;
+    const offset = filters?.offset ?? 0;
+    const conditions = [eq(patterns.active, true)];
+    if (filters?.category) conditions.push(eq(patterns.category, filters.category));
+    if (filters?.sourceType) conditions.push(eq(patterns.sourceType, filters.sourceType));
+    if (filters?.verified !== undefined) conditions.push(eq(patterns.verified, filters.verified));
+    if (filters?.public !== undefined) conditions.push(eq(patterns.public, filters.public));
+    return db.select().from(patterns)
+      .where(and(...conditions))
+      .orderBy(desc(patterns.originTimestamp))
+      .limit(limit).offset(offset);
+  }
+
+  async getPatternById(id: number): Promise<Pattern | undefined> {
+    const [p] = await db.select().from(patterns).where(eq(patterns.id, id));
+    return p;
+  }
+
+  async verifyPattern(id: number): Promise<void> {
+    await db.update(patterns).set({ verified: true }).where(eq(patterns.id, id));
+  }
+
+  async togglePatternPublic(id: number, publicSummary?: string): Promise<void> {
+    const [p] = await db.select().from(patterns).where(eq(patterns.id, id));
+    if (!p) return;
+    const newPublic = !p.public;
+    const updateData: Record<string, any> = { public: newPublic };
+    if (newPublic && publicSummary) updateData.publicSummary = publicSummary;
+    await db.update(patterns).set(updateData).where(eq(patterns.id, id));
+  }
+
+  async searchPatterns(query: string, limit: number = 20): Promise<Pattern[]> {
+    return db.select().from(patterns)
+      .where(and(
+        eq(patterns.active, true),
+        or(
+          ilike(patterns.title, `%${query}%`),
+          ilike(patterns.description, `%${query}%`)
+        )
+      ))
+      .orderBy(desc(patterns.originTimestamp))
+      .limit(limit);
+  }
+
+  async checkDuplicateHash(hash: string): Promise<Pattern | undefined> {
+    const [p] = await db.select().from(patterns).where(eq(patterns.elloHash, hash));
+    return p;
+  }
+
+  async getPatternStats(): Promise<{ total: number; verified: number; public: number; byCategory: Record<string, number>; bySource: Record<string, number> }> {
+    const all = await db.select({
+      category: patterns.category,
+      sourceType: patterns.sourceType,
+      verified: patterns.verified,
+      isPublic: patterns.public,
+    }).from(patterns).where(eq(patterns.active, true));
+
+    const byCategory: Record<string, number> = {};
+    const bySource: Record<string, number> = {};
+    let verified = 0;
+    let pub = 0;
+    for (const p of all) {
+      byCategory[p.category] = (byCategory[p.category] || 0) + 1;
+      bySource[p.sourceType] = (bySource[p.sourceType] || 0) + 1;
+      if (p.verified) verified++;
+      if (p.isPublic) pub++;
+    }
+    return { total: all.length, verified, public: pub, byCategory, bySource };
+  }
+
+  async getActiveVerifiedPatterns(limit: number = 25): Promise<Pattern[]> {
+    return db.select().from(patterns)
+      .where(and(eq(patterns.active, true), eq(patterns.verified, true)))
+      .orderBy(desc(patterns.originTimestamp))
+      .limit(limit);
+  }
+
+  async createPatternLink(data: InsertPatternLink): Promise<PatternLink> {
+    const [link] = await db.insert(patternLinks).values(data).onConflictDoNothing().returning();
+    if (!link) {
+      const [existing] = await db.select().from(patternLinks)
+        .where(and(
+          eq(patternLinks.fromPatternId, data.fromPatternId),
+          eq(patternLinks.toPatternId, data.toPatternId),
+          eq(patternLinks.linkType, data.linkType)
+        ));
+      return existing;
+    }
+    return link;
+  }
+
+  async getPatternLinks(patternId: number): Promise<PatternLink[]> {
+    return db.select().from(patternLinks)
+      .where(or(
+        eq(patternLinks.fromPatternId, patternId),
+        eq(patternLinks.toPatternId, patternId)
+      ))
+      .orderBy(desc(patternLinks.strength));
+  }
+
+  async deletePatternLink(id: number): Promise<void> {
+    await db.delete(patternLinks).where(eq(patternLinks.id, id));
+  }
+
+  async suggestLinks(patternId: number): Promise<Pattern[]> {
+    const pattern = await this.getPatternById(patternId);
+    if (!pattern) return [];
+    const existingLinks = await this.getPatternLinks(patternId);
+    const linkedIds = new Set(existingLinks.map(l => l.fromPatternId === patternId ? l.toPatternId : l.fromPatternId));
+    linkedIds.add(patternId);
+
+    const candidates = await db.select().from(patterns)
+      .where(and(
+        eq(patterns.active, true),
+        eq(patterns.category, pattern.category)
+      ))
+      .limit(20);
+
+    return candidates.filter(c => !linkedIds.has(c.id));
+  }
+
+  async createPatternAlert(data: InsertPatternAlert): Promise<PatternAlert> {
+    const [alert] = await db.insert(patternAlerts).values(data).returning();
+    return alert;
+  }
+
+  async getPatternAlerts(unreadOnly?: boolean): Promise<PatternAlert[]> {
+    if (unreadOnly) {
+      return db.select().from(patternAlerts)
+        .where(eq(patternAlerts.read, false))
+        .orderBy(desc(patternAlerts.createdAt))
+        .limit(50);
+    }
+    return db.select().from(patternAlerts).orderBy(desc(patternAlerts.createdAt)).limit(50);
+  }
+
+  async markAlertRead(id: number): Promise<void> {
+    await db.update(patternAlerts).set({ read: true }).where(eq(patternAlerts.id, id));
+  }
+
+  async markAllAlertsRead(): Promise<void> {
+    await db.update(patternAlerts).set({ read: true }).where(eq(patternAlerts.read, false));
+  }
+
+  async getUnreadAlertCount(): Promise<number> {
+    const [result] = await db.select({ value: count() }).from(patternAlerts).where(eq(patternAlerts.read, false));
+    return result?.value ?? 0;
   }
 }
 

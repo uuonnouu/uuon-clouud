@@ -7,11 +7,13 @@ import NotFound from "@/pages/not-found";
 import ClouudTerminal from "@/pages/clouud-terminal";
 import LegalPage from "@/pages/legal";
 import UInVerse from "@/pages/uinverse";
+import CodexPage from "@/pages/codex";
 
 function Router() {
   return (
     <Switch>
       <Route path="/" component={ClouudTerminal} />
+      <Route path="/codex" component={CodexPage} />
       <Route path="/uinverse" component={UInVerse} />
       <Route path="/legal" component={LegalPage} />
       <Route component={NotFound} />

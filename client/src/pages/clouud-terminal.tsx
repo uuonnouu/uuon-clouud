@@ -832,6 +832,14 @@ export default function ClouudTerminal() {
                   Interactive Tutorial
                 </button>
                 <button
+                  onClick={() => setLocation("/codex")}
+                  className="w-full flex items-center gap-2 px-2 py-2 text-[11px] text-[#00d4ff] hover:text-white bg-[#00d4ff]/5 hover:bg-[#00d4ff]/15 border border-[#00d4ff]/20 hover:border-[#00d4ff]/40 rounded-sm transition-all"
+                  data-testid="button-codex"
+                >
+                  <Network className="w-3.5 h-3.5 shrink-0" />
+                  UUON Codeχ · Pattern Library
+                </button>
+                <button
                   onClick={() => setLocation("/uinverse")}
                   className="w-full flex items-center gap-2 px-2 py-2 text-[11px] text-[#f0b93b] hover:text-white bg-[#f0b93b]/5 hover:bg-[#f0b93b]/15 border border-[#f0b93b]/20 hover:border-[#f0b93b]/40 rounded-sm transition-all"
                   data-testid="button-uinverse"
