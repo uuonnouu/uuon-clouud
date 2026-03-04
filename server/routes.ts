@@ -23,6 +23,35 @@ function parseId(val: string): number | null {
   return Number.isNaN(n) ? null : n;
 }
 
+const STOP_WORDS = new Set([
+  "the", "a", "an", "is", "it", "in", "on", "at", "to", "for", "of", "and", "or", "but",
+  "was", "were", "be", "been", "being", "have", "has", "had", "do", "does", "did",
+  "will", "would", "could", "should", "may", "might", "can", "shall",
+  "i", "me", "my", "you", "your", "he", "she", "we", "they", "them", "us",
+  "this", "that", "these", "those", "what", "which", "who", "whom", "how", "why", "when", "where",
+  "not", "no", "so", "if", "then", "than", "just", "also", "very", "too", "only",
+  "about", "with", "from", "into", "like", "some", "any", "all", "more", "most",
+  "tell", "know", "think", "said", "say", "get", "got", "make", "made", "much",
+  "up", "out", "there", "here", "are", "am", "its", "as", "by",
+]);
+
+function extractSearchTerms(content: string): string[] {
+  const words = content.toLowerCase()
+    .replace(/[^\w\s'-]/g, " ")
+    .split(/\s+/)
+    .filter(w => w.length > 2 && !STOP_WORDS.has(w));
+
+  const bigrams: string[] = [];
+  for (let i = 0; i < words.length - 1; i++) {
+    if (!STOP_WORDS.has(words[i]) && !STOP_WORDS.has(words[i + 1])) {
+      bigrams.push(`${words[i]} ${words[i + 1]}`);
+    }
+  }
+
+  const terms = [...bigrams.slice(0, 2), ...words.slice(0, 4)];
+  return [...new Set(terms)].slice(0, 5);
+}
+
 const chatLimiter = rateLimit({ windowMs: 60 * 1000, max: 15, message: { error: "Rate limit exceeded. Maximum 15 messages per minute." } });
 const uploadLimiter = rateLimit({ windowMs: 60 * 1000, max: 10, message: { error: "Rate limit exceeded. Maximum 10 uploads per minute." } });
 const scrapeLimiter = rateLimit({ windowMs: 60 * 1000, max: 5, message: { error: "Rate limit exceeded. Maximum 5 scrape requests per minute." } });
@@ -1009,6 +1038,34 @@ export async function registerRoutes(
     const codexContext = getDmensionContextForPrompt();
     
     injectedContext = `\n\n[SYSTEM: Δmension Bridge ${dmStatus.connected ? 'CONNECTED' : 'STANDBY'}. ${codexContext}. Use explore_dmension tool to search the full library. Use earth_impact tool for measurable reduction models.]`;
+  }
+
+  try {
+    const searchTerms = extractSearchTerms(content);
+    if (searchTerms.length > 0) {
+      const founderHits: Array<{ content: string; sender: string; topicTags: string | null }> = [];
+      const seen = new Set<string>();
+      for (const term of searchTerms.slice(0, 3)) {
+        const results = await storage.searchFounderMemory(term, 5);
+        for (const r of results) {
+          const key = r.content.substring(0, 100);
+          if (!seen.has(key)) {
+            seen.add(key);
+            founderHits.push({ content: r.content, sender: r.sender, topicTags: r.topicTags });
+          }
+        }
+      }
+      if (founderHits.length > 0) {
+        const relevantMessages = founderHits.slice(0, 6);
+        const founderContext = relevantMessages.map((m, i) => {
+          const topicLabel = m.topicTags ? ` | ${m.topicTags}` : "";
+          return `[${m.sender === "human" ? "Founder" : "AI"}${topicLabel}]: ${m.content.substring(0, 400)}`;
+        }).join("\n\n");
+        injectedContext += `\n\n[SYSTEM: FOUNDER ARCHIVE RETRIEVAL — The following are relevant excerpts from the founder's 835-conversation history. Use these to inform your response. Draw on this knowledge naturally without announcing that you're reading from an archive. This IS your memory.]\n\n${founderContext}`;
+      }
+    }
+  } catch (err) {
+    // Founder memory search failed silently — continue without it
   }
 
       const history = await storage.getMessagesByConversation(conversationId);

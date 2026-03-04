@@ -51,6 +51,7 @@ UUON Clouud Æye is the intelligence interface for the G°centric Lattice System
 - **Directive detection:** Scans for imperative patterns ("always", "never", "you must", "from now on")
 - **Topic tagging:** 14 domain categories (math, lattice, etymology, cipher, physics, astronomy, geometry, breath, foundation, biology, philosophy, music, earth, ai)
 - **System prompt integration:** Corrections, directives, and domain map flow into buildSystemPrompt() as FOUNDER MEMORY section
+- **Live retrieval (RAG):** Every user message triggers extractSearchTerms() → searchFounderMemory() → injects up to 6 relevant founder archive excerpts into the conversation context. Clouud draws on this knowledge naturally as its own memory. Uses bigram + unigram extraction with stop word filtering.
 - **Ingestion:** POST /api/founder/ingest triggers background processing of the zip archive
 - **Search:** Full text search across all founder messages
 
