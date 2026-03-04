@@ -17,6 +17,11 @@ import rateLimit from "express-rate-limit";
 import fs from "fs";
 import path from "path";
 
+function parseId(val: string): number | null {
+  const n = parseInt(val, 10);
+  return Number.isNaN(n) ? null : n;
+}
+
 const chatLimiter = rateLimit({ windowMs: 60 * 1000, max: 15, message: { error: "Rate limit exceeded. Maximum 15 messages per minute." } });
 const uploadLimiter = rateLimit({ windowMs: 60 * 1000, max: 10, message: { error: "Rate limit exceeded. Maximum 10 uploads per minute." } });
 const scrapeLimiter = rateLimit({ windowMs: 60 * 1000, max: 5, message: { error: "Rate limit exceeded. Maximum 5 scrape requests per minute." } });
@@ -663,7 +668,8 @@ export async function registerRoutes(
   // Delete conversation
   app.delete("/api/conversations/:id", async (req: Request, res: Response) => {
     try {
-      const id = parseInt(req.params.id);
+      const id = parseId(req.params.id);
+      if (id === null) return res.status(400).json({ error: "Invalid conversation ID" });
       await storage.deleteConversation(id);
       res.status(204).send();
     } catch (error) {
@@ -689,7 +695,8 @@ export async function registerRoutes(
   // Get messages for a conversation
   app.get("/api/conversations/:id/messages", async (req: Request, res: Response) => {
     try {
-      const id = parseInt(req.params.id);
+      const id = parseId(req.params.id);
+      if (id === null) return res.status(400).json({ error: "Invalid conversation ID" });
       const msgs = await storage.getMessagesByConversation(id);
       res.json(msgs);
     } catch (error) {
@@ -706,7 +713,8 @@ export async function registerRoutes(
     let toolCallCount = 0;
 
     try {
-      const conversationId = parseInt(req.params.id);
+      const conversationId = parseId(req.params.id);
+      if (conversationId === null) return res.status(400).json({ error: "Invalid conversation ID" });
       const { content } = req.body;
 
       if (!content || typeof content !== "string") {
