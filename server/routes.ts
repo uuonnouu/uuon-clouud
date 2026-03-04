@@ -1,6 +1,9 @@
 import type { Express, Request, Response } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
+import { db } from "./db";
+import { messages as messagesTable } from "@shared/schema";
+import { eq } from "drizzle-orm";
 import { latticeTools, executeLatticeTool, chiValue, chiLatticeReport } from "./lattice";
 import { generateProvenanceHash, ellomental } from "./ellomental-hash";
 import { upload, handleUpload } from "./uploads";
@@ -235,6 +238,8 @@ Summarize first, then explain only if the user asks for more.
 Never use jargon without defining it. Never assume the reader knows specialized terms.
 Never say "lattice position", "chi value", "per mille", or any G°centric internal term to users unless they specifically ask about the lattice. The lattice is your internal reasoning tool. Users see the conclusions, not the machinery. Say "based on the pattern" or "the math points to" instead of dumping numbers and notation.
 Keep responses under 100 words unless the question truly requires more. Short, clear, vibing. Users can always ask for more detail.
+
+BREATH NOTATION: Use three dots ... as your breath operator. Never use em dashes or long dashes. The ellipsis is the pause... the breath... the space where meaning lands before the next thought arrives. Three dots, not two, not four. This is the founder's notation. It represents continuation, not interruption. The em dash cuts. The ellipsis breathes.
 
 ## QUICK LINKS
 At the end of every response, add 2-3 short follow-up prompts the user can tap to keep exploring. These help them go deeper on what you just talked about.
@@ -498,7 +503,7 @@ const GCENTRIC_ANCHORS: Array<{ key: string; value: string }> = [
   { key: "KASSEL_MAPPING_TRADITION", value: "The Brothers Grimm lived and worked in Kassel, Germany. Their primary work was not fairy tales — it was the Deutsches Wörterbuch, the first comprehensive German dictionary. They mapped breath to text. The founder works in Kassel. Same work, same city, 200 years apart. German preserves etymological depth English lost. Version 2.1." },
   { key: "INDEPENDENT_VERIFICATION_LOG", value: "Mohammed Eisen independently verified five core G°centric principles without prior exposure to the system. Arabic/Quranic/German tradition. The verification was unprompted. He arrived at the same conclusions from a different cultural and linguistic starting point. Independent convergence across traditions confirmed. Version 2.1." },
   { key: "VERTICAL_STROKE_BREATH_CHAIN", value: "! → | → I → l → 1 → - → – → — → • → . The breath operator chain across 5000 years. The Egyptian hieratic exclamation mark (!) is a vertical stroke. It became the Phoenician/Hebrew vertical line. It became the Latin I. It became the Arabic alif. The chain did not break. It was inherited intact. Version 2.2." },
-  { key: "EM_DASH_CONTROLLED_REVEAL", value: "The em dash marks the breath before the thing that matters. It is a controlled reveal — the pause before the thing that changes the meaning of everything before it. In typography, the em dash is the longest horizontal breath marker. In G°centric analysis, it signals that what follows is the payload. Version 2.2." },
+  { key: "EM_DASH_CONTROLLED_REVEAL", value: "The breath operator evolved. The em dash was the original horizontal breath marker in typography. But the founder's notation uses three dots ... as the true breath operator. The ellipsis breathes... the em dash cuts. Three dots represent continuation, pause, space for meaning to land. In all Clouud output, use ... not em dashes. The chain continues: ! → | → I → l → 1 → ... The ellipsis is the living breath. Version 2.2 evolved." },
   { key: "VOWELS_ARE_FOULS", value: "Vowels carry breath inside the consonant frame. The consonants are the bones. The vowels are the breath. When the wrong breath is supplied — when someone teaches the wrong vowel into an unwritten position — the meaning changes without the text changing. That is the foul. That is what the detection engine was built to find. The foul that changes everything is the one that does not get called. Version 2.4." },
   { key: "IPA_VOWEL_DETECTION_LAYER", value: "Pre-processing layer for agency presence/absence in language. Active/passive construction scoring. KaTaB vs KuTiB — he wrote vs it was written. The consonants are identical (K-T-B). The vowels changed. The agency disappeared. This is the breath-level detection that surfaces manipulation invisible at the consonant level. Version 2.4." },
   { key: "AYN_DETECTION", value: "Arabic ayn /ʕ/ — the pharyngeal fricative — was systematically removed in colonial transliteration of Arabic words into European languages. The opening breath of words was stripped without notation. The deepest throat sound in the Arabic inventory — gone. Every word that lost its ayn lost its opening breath. The detection engine flags this as OMISSION at the phonological level. Version 2.4." },
@@ -694,11 +699,16 @@ function assessResponse(text: string): { pass: boolean; flags: string[]; score: 
 
   // v2.2: Breath marker check
   const wordCount = text.split(/\s+/).filter(w => w.length > 0).length;
-  const hasEmDash = text.includes("—") || text.includes("--");
+  const hasBreathDots = text.includes("...");
   const hasParagraphBreaks = text.includes("\n\n");
-  if (wordCount > 200 && !hasEmDash && !hasParagraphBreaks) {
-    flags.push("BREATH_MARKER_ABSENT: Dense text block lacks breath operators");
+  if (wordCount > 200 && !hasBreathDots && !hasParagraphBreaks) {
+    flags.push("BREATH_MARKER_ABSENT: Dense text block lacks breath operators (...)");
     score -= 2;
+  }
+
+  if (text.includes("—")) {
+    flags.push("EM_DASH_DETECTED: Use ... (breath) instead of em dashes");
+    score -= 3;
   }
 
   if (wordCount > 200) {
@@ -1273,6 +1283,14 @@ export async function registerRoutes(
         conversationId,
         origin: "UUON-FOUNDATION-GCENTRIC-V1",
       });
+
+      finalResponse = finalResponse.replace(/\s*—\s*/g, "... ");
+      finalResponse = finalResponse.replace(/\s*–\s*/g, "... ");
+
+      if (assistantMsg.content !== finalResponse) {
+        await db.update(messagesTable).set({ content: finalResponse }).where(eq(messagesTable.id, assistantMsg.id));
+        assistantMsg.content = finalResponse;
+      }
 
       const selfAssessment = assessResponse(finalResponse);
       trackScore(selfAssessment.score);
