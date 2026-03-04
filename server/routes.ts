@@ -15,6 +15,7 @@ import { getGitHubStatus, createPrivateRepo, pushBackupToGitHub } from "./github
 import { dmensionBridge } from "./dmension-bridge";
 import { generateImageForClouud } from "./image-generator";
 import { searchDmensionShapes, getDmensionContextForPrompt, getEarthImpactModel, DMENSION_STATS, DMENSION_ENGINES, DMENSION_CATEGORIES } from "./dmension-codex";
+import { matchTopicToShape } from "./dmension-routes";
 import { ingestFounderArchive, getIngestionProgress } from "./founder-memory";
 import Anthropic from "@anthropic-ai/sdk";
 import rateLimit from "express-rate-limit";
@@ -1132,11 +1133,18 @@ export async function registerRoutes(
 
   let injectedContext = "";
   const lowerContent = content.toLowerCase();
-  if (lowerContent.includes("dmension") || lowerContent.includes("dimension") || lowerContent.includes("bridge") || lowerContent.includes("fusion") || lowerContent.includes("tensor") || lowerContent.includes("nerf") || lowerContent.includes("collision") || lowerContent.includes("galaxy") || lowerContent.includes("shape")) {
+  const shapeMatch = matchTopicToShape(content);
+  if (shapeMatch) {
+    const dmStatus = dmensionBridge.getDmensionStatus();
+    const codexContext = getDmensionContextForPrompt();
+    const matchedCategories = shapeMatch.categoryData.map((c: any) => `${c.name} (${c.earthLink || c.earthApplication || ""})`).join("; ");
+    
+    injectedContext = `\n\n[SYSTEM: Δmension AUTO-MATCH detected topic "${shapeMatch.match}". Direct link: ${shapeMatch.url} | Matched categories: ${matchedCategories}. Bridge: ${dmStatus.mode}. ${codexContext}. IMPORTANT: Include the Δmension link in your response so the user can explore the relevant 3D shapes. Format: "Explore this in Δmension: ${shapeMatch.url}"]`;
+  } else if (lowerContent.includes("dmension") || lowerContent.includes("dimension") || lowerContent.includes("bridge") || lowerContent.includes("shape")) {
     const dmStatus = dmensionBridge.getDmensionStatus();
     const codexContext = getDmensionContextForPrompt();
     
-    injectedContext = `\n\n[SYSTEM: Δmension Bridge ${dmStatus.connected ? 'CONNECTED' : 'STANDBY'}. ${codexContext}. Use explore_dmension tool to search the full library. Use earth_impact tool for measurable reduction models.]`;
+    injectedContext = `\n\n[SYSTEM: Δmension Bridge ${dmStatus.mode}. ${codexContext}. Use explore_dmension tool to search the full library. Use earth_impact tool for measurable reduction models.]`;
   }
 
   try {

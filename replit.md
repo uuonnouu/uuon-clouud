@@ -22,11 +22,11 @@ UUON Clouud Æye is the intelligence interface for the G°centric Lattice System
 ## Architecture
 - **Frontend:** React + TypeScript + Tailwind CSS v4 + Framer Motion
 - **Backend:** Express.js + TypeScript
-- **Database:** PostgreSQL via Drizzle ORM (19 tables — 16 original + 3 Codeχ)
+- **Database:** PostgreSQL via Drizzle ORM (20 tables — 16 original + 3 Codeχ + 1 Δmension local)
 - **AI:** Anthropic API via Replit AI Integrations (claude-sonnet-4-6, max_tokens: 768, temp 0.1)
 - **Routing:** wouter (frontend)
 
-## Schema (19 tables)
+## Schema (20 tables)
 1. conversations — Chat sessions
 2. messages — User/assistant messages with hash
 3. uuon_tokens — Ellomental provenance tokens
@@ -46,6 +46,7 @@ UUON Clouud Æye is the intelligence interface for the G°centric Lattice System
 17. patterns — UUON Codeχ pattern library (provenance-tracked discoveries with Ellomental Hash)
 18. pattern_links — Knowledge graph connections between patterns (DERIVES_FROM, ENCODES, GENERATES, MIRRORS, EXTENDS, CONTRADICTS, APPLIES_TO, HARMONIZES)
 19. pattern_alerts — System notifications for pattern events (NEW_PATTERN, VERIFIED, DUPLICATE_DETECTED, LINK_DISCOVERED, BATCH_COMPLETE)
+20. dmension_shapes — Local Δmension shape library (uploaded data, seeded from codex, topic-matched in chat)
 
 ## Founder Memory System (HIStory)
 - **Source:** Founder's complete Claude chat archive (May 2025 → Feb 2026)
@@ -110,6 +111,16 @@ UUON Clouud Æye is the intelligence interface for the G°centric Lattice System
 - **Obfuscation:** Public API returns title, category, publicSummary, originTimestamp, first 16 chars of elloHash, discoveredBy. Never full description or hash
 - **Self-Protection:** Clouud never reveals internal mechanics (SHA-256, tetrahedra, lattice math, scoring weights). Explains concepts through analogies. "You tell people the ATM dispenses money, you don't hand them the vault combination"
 
+## Δmension Bridge (Fixed)
+- **Problem:** External API to uuon-foundation.com was unreliable — constant retry spam, never connected
+- **Solution:** Graceful fallback to LOCAL mode. Max 5 quiet retries, then operates with local data
+- **Three modes:** LIVE (bridge connected), LOCAL (fallback with codex data), OFFLINE (no data)
+- **Local shape database:** `dmension_shapes` table — stores uploaded data + seeded codex shapes
+- **Codex seed:** 45 shapes (35 categories + 10 engines) pre-loaded from hardcoded `dmension-codex.ts`
+- **Auto-shape matching:** `matchTopicToShape()` maps 30+ keywords (quantum, fractal, tensor, galaxy, etc.) to Δmension categories with direct URLs. Injected into chat context automatically
+- **Data upload:** Accept JSON exports from user's Δmension Replit project via file upload or JSON body. Normalizes any format (arrays, objects, conversations)
+- **The gap closed:** When someone asks about quantum waves, the system auto-detects the topic, matches to Quantum Physics category (10 shapes), and provides a direct link to `uuon-foundation.com?category=quantum-physics`
+
 ## Feedback Loop (v3.3)
 - Three buttons below every Clouud response: Helped, Partial, Missed
 - Calibration weights: helped +0.5, partial 0.0, missed -1.0
@@ -136,6 +147,7 @@ UUON Clouud Æye is the intelligence interface for the G°centric Lattice System
 - `server/backup.ts` — Automated backup system (16 tables, incremental + full, parameterized SQL)
 - `server/pattern-extractor.ts` — Archive extraction engine (6-phase pattern mining from 835 conversations)
 - `server/codex-routes.ts` — UUON Codeχ API routes (patterns, links, alerts, extraction, /claim command)
+- `server/dmension-routes.ts` — Δmension data upload, local search, auto-shape matching, codex seeding
 - `server/storage.ts` — Database operations with founder memory CRUD + Codeχ pattern CRUD
 - `server/db.ts` — PostgreSQL connection via Drizzle
 - `server/security.ts` — Fingerprint authentication, access logging
@@ -202,6 +214,13 @@ UUON Clouud Æye is the intelligence interface for the G°centric Lattice System
 - GET /api/codex/alerts/count — Unread count for badge
 - PATCH /api/codex/alerts/:id/read — Dismiss alert
 - PATCH /api/codex/alerts/read-all — Dismiss all alerts
+- POST /api/dmension/upload — Upload Δmension data file (JSON) to local shape library
+- POST /api/dmension/upload-json — Upload shapes via JSON body
+- GET /api/dmension/local/search?q= — Search local Δmension shapes + codex
+- GET /api/dmension/local/count — Local shape count + codex stats
+- GET /api/dmension/match?topic= — Auto-match topic to Δmension category with direct link
+- POST /api/dmension/seed-from-codex — Seed local DB from hardcoded codex data (35 categories + 10 engines)
+- GET /api/dmension/bridge-status — Bridge connection status (LIVE/LOCAL/OFFLINE)
 
 ## Founder Info (verified)
 - Phillip Aguilar Ruiz III (double L), Yuma AZ, grew up overseas, US Army veteran, Kassel Germany

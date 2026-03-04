@@ -1,9 +1,11 @@
 import express, { type Request, Response, NextFunction } from "express";
 import { registerRoutes, registerSystemRoutes } from "./routes";
 import { codexRouter } from "./codex-routes";
+import { registerDmensionRoutes } from "./dmension-routes";
 import { serveStatic } from "./static";
 import { createServer } from "http";
 import { dmensionBridge } from "./dmension-bridge";
+import { storage } from "./storage";
 
 const app = express();
 const httpServer = createServer(app);
@@ -60,6 +62,7 @@ app.use((req, res, next) => {
 (async () => {
   await registerRoutes(httpServer, app);
   app.use("/api/codex", codexRouter);
+  registerDmensionRoutes(app);
   registerSystemRoutes(app);
 
   app.use((err: any, _req: Request, res: Response, next: NextFunction) => {
@@ -98,6 +101,10 @@ app.use((req, res, next) => {
     },
     () => {
       log(`serving on port ${port}`);
+      storage.getDmensionShapeCount().then(count => {
+        dmensionBridge.setLocalShapeCount(count);
+        console.log(`[DMENSION] Local shape database: ${count} shapes`);
+      }).catch(() => {});
       dmensionBridge.startConnectionMonitor();
     },
   );

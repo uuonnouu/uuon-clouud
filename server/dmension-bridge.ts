@@ -73,41 +73,60 @@ export async function viewSentLog() {
 let dmensionConnected = false;
 let lastCheckTime: string | null = null;
 let retryCount = 0;
+let localMode = true;
+let localShapeCount = 0;
 
 export function getDmensionStatus() {
-  return { connected: dmensionConnected, lastCheck: lastCheckTime, retries: retryCount, url: DMENSION_URL };
+  return {
+    connected: dmensionConnected,
+    localMode,
+    localShapeCount,
+    lastCheck: lastCheckTime,
+    retries: retryCount,
+    url: DMENSION_URL,
+    mode: dmensionConnected ? "LIVE" : localMode ? "LOCAL" : "OFFLINE",
+  };
+}
+
+export function setLocalShapeCount(count: number) {
+  localShapeCount = count;
 }
 
 export function startConnectionMonitor() {
-  const RETRY_INTERVAL = 30000;
-  const MAX_RETRIES = 120;
+  const RETRY_INTERVAL = 60000;
+  const MAX_RETRIES = 5;
 
   async function tryConnect() {
-    if (dmensionConnected || retryCount >= MAX_RETRIES) return;
+    if (dmensionConnected || retryCount >= MAX_RETRIES) {
+      if (!dmensionConnected && retryCount >= MAX_RETRIES) {
+        console.log(`[DMENSION] Bridge offline after ${MAX_RETRIES} attempts — operating in LOCAL mode with codex data (${localShapeCount} shapes in DB)`);
+      }
+      return;
+    }
     retryCount++;
     lastCheckTime = new Date().toISOString();
     try {
       const start = Date.now();
       const res = await fetch(`${DMENSION_URL}/api/bridge/status`, {
         headers: HEADERS,
-        signal: AbortSignal.timeout(10000),
+        signal: AbortSignal.timeout(8000),
       });
       const latency = Date.now() - start;
       if (res.ok) {
         dmensionConnected = true;
-        console.log(`[DMENSION] Connected after ${retryCount} attempts (${latency}ms latency)`);
+        localMode = false;
+        console.log(`[DMENSION] Bridge CONNECTED after ${retryCount} attempts (${latency}ms)`);
         return;
       }
-      const text = await res.text();
-      console.log(`[DMENSION] Attempt ${retryCount}: HTTP ${res.status} — ${text.slice(0, 80)}`);
     } catch (e: any) {
-      console.log(`[DMENSION] Attempt ${retryCount}: ${e.message.slice(0, 80)}`);
+      if (retryCount <= 2) {
+        console.log(`[DMENSION] Attempt ${retryCount}/${MAX_RETRIES}: ${e.message.slice(0, 60)}`);
+      }
     }
     setTimeout(tryConnect, RETRY_INTERVAL);
   }
 
-  console.log(`[DMENSION] Starting connection monitor → ${DMENSION_URL}`);
-  console.log(`[DMENSION] Will retry every ${RETRY_INTERVAL / 1000}s for up to ${MAX_RETRIES} attempts`);
+  console.log(`[DMENSION] Bridge check → ${DMENSION_URL} (max ${MAX_RETRIES} attempts, fallback to LOCAL mode)`);
   tryConnect();
 }
 
@@ -120,5 +139,6 @@ export const dmensionBridge = {
   fullSync,
   viewSentLog,
   getDmensionStatus,
+  setLocalShapeCount,
   startConnectionMonitor,
 };

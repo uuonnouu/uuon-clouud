@@ -298,6 +298,26 @@ export type InsertFounderMessage = z.infer<typeof insertFounderMessageSchema>;
 export type FounderCorrection = typeof founderCorrections.$inferSelect;
 export type InsertFounderCorrection = z.infer<typeof insertFounderCorrectionSchema>;
 
+export const dmensionShapes = pgTable("dmension_shapes", {
+  id: serial("id").primaryKey(),
+  shapeId: text("shape_id").unique(),
+  name: text("name").notNull(),
+  category: text("category").notNull(),
+  domain: text("domain").notNull(),
+  description: text("description"),
+  formula: text("formula"),
+  parameters: text("parameters"),
+  earthLink: text("earth_link"),
+  sketchfabUrl: text("sketchfab_url"),
+  tags: text("tags"),
+  engineName: text("engine_name"),
+  metadata: text("metadata"),
+  createdAt: timestamp("created_at").default(sql`CURRENT_TIMESTAMP`).notNull(),
+}, (table) => [
+  index("dmension_shapes_category_idx").on(table.category),
+  index("dmension_shapes_domain_idx").on(table.domain),
+]);
+
 export const insertPatternSchema = createInsertSchema(patterns).omit({
   id: true,
   createdAt: true,
@@ -317,3 +337,10 @@ export type PatternLink = typeof patternLinks.$inferSelect;
 export type InsertPatternLink = z.infer<typeof insertPatternLinkSchema>;
 export type PatternAlert = typeof patternAlerts.$inferSelect;
 export type InsertPatternAlert = z.infer<typeof insertPatternAlertSchema>;
+
+export const insertDmensionShapeSchema = createInsertSchema(dmensionShapes).omit({
+  id: true,
+  createdAt: true,
+});
+export type DmensionShape = typeof dmensionShapes.$inferSelect;
+export type InsertDmensionShape = z.infer<typeof insertDmensionShapeSchema>;
