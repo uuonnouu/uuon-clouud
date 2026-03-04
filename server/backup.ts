@@ -20,6 +20,9 @@ const TABLES = [
   "discoveries",
   "feedback",
   "gcentric_versions",
+  "founder_conversations",
+  "founder_messages",
+  "founder_corrections",
 ];
 
 const LARGE_TABLES = ["messages", "self_assessments", "uuon_tokens", "uinverse_ideas", "access_log"];

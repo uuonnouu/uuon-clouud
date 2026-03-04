@@ -22,11 +22,11 @@ UUON Clouud Æye is the intelligence interface for the G°centric Lattice System
 ## Architecture
 - **Frontend:** React + TypeScript + Tailwind CSS v4 + Framer Motion
 - **Backend:** Express.js + TypeScript
-- **Database:** PostgreSQL via Drizzle ORM (13 tables)
+- **Database:** PostgreSQL via Drizzle ORM (16 tables)
 - **AI:** Anthropic API via Replit AI Integrations (claude-sonnet-4-6, max_tokens: 768, temp 0.1)
 - **Routing:** wouter (frontend)
 
-## Schema (13 tables)
+## Schema (16 tables)
 1. conversations — Chat sessions
 2. messages — User/assistant messages with hash
 3. uuon_tokens — Ellomental provenance tokens
@@ -40,6 +40,19 @@ UUON Clouud Æye is the intelligence interface for the G°centric Lattice System
 11. discoveries — Anchored persistent knowledge
 12. feedback — Helped/Partial/Missed responses with SA calibration (v3.3)
 13. gcentric_versions — 14 version records with sequence tracking
+14. founder_conversations — 835 conversations from founder's Claude archive (HIStory)
+15. founder_messages — 7,298 messages with correction/directive flags
+16. founder_corrections — Extracted corrections with type classification
+
+## Founder Memory System (HIStory)
+- **Source:** Founder's complete Claude chat archive (May 2025 → Feb 2026)
+- **835 conversations**, 7,298 messages (3,674 human / 3,624 assistant)
+- **Correction detection:** Scans for corrective language patterns, classifies as FACTUAL/CONCEPTUAL/NAMING/STRUCTURAL
+- **Directive detection:** Scans for imperative patterns ("always", "never", "you must", "from now on")
+- **Topic tagging:** 14 domain categories (math, lattice, etymology, cipher, physics, astronomy, geometry, breath, foundation, biology, philosophy, music, earth, ai)
+- **System prompt integration:** Corrections, directives, and domain map flow into buildSystemPrompt() as FOUNDER MEMORY section
+- **Ingestion:** POST /api/founder/ingest triggers background processing of the zip archive
+- **Search:** Full text search across all founder messages
 
 ## 28 Creator Profile Anchors (installed on boot)
 - v1: NEUMA_BREATH_PRINCIPLE, LATTICE_PERCENTAGE_ANCHOR, THREE_AHEAD_MINIMUM
@@ -87,21 +100,22 @@ UUON Clouud Æye is the intelligence interface for the G°centric Lattice System
 - `client/src/pages/clouud-terminal.tsx` — Main chat interface with FeedbackBar, sidebar, quick actions
 - `client/src/components/clouud-avatar.tsx` — Clouud avatar
 - `client/src/components/exploration-engine.tsx` — Interactive exploration engine
-- `server/routes.ts` — API routes, system prompt (v3.333), 28 anchors, feedback endpoints, G°centric status
+- `server/routes.ts` — API routes, system prompt (v3.333), 28 anchors, feedback endpoints, founder memory, G°centric status
 - `server/lattice.ts` — G°centric Lattice Engine (infinite extension, «…» notation, zoom layers)
+- `server/founder-memory.ts` — Founder archive ingestion pipeline (correction/directive detection, topic tagging)
 - `server/ellomental-hash.ts` — Ellomental Hash Algorithm (12-tetrahedron circle formation)
 - `server/image-generator.ts` — Physics-based SVG visualization generator (11 domain renderers)
 - `server/dmension-codex.ts` — Δmension knowledge codex (2642+ shapes)
 - `server/dmension-bridge.ts` — Bi-directional bridge to uuon-foundation.com
-- `server/backup.ts` — Automated backup system (13 tables, incremental + full, parameterized SQL)
-- `server/storage.ts` — Database operations with feedback + version CRUD
+- `server/backup.ts` — Automated backup system (16 tables, incremental + full, parameterized SQL)
+- `server/storage.ts` — Database operations with founder memory CRUD
 - `server/db.ts` — PostgreSQL connection via Drizzle
 - `server/security.ts` — Fingerprint authentication, access logging
 - `server/scraper.ts` — SSRF-protected URL scraper
 - `server/uploads.ts` — File upload handler
 - `server/github.ts` — GitHub integration for backup push
 - `server/sketchfab-backup.ts` — Sketchfab model manifest
-- `shared/schema.ts` — Database schema (13 tables)
+- `shared/schema.ts` — Database schema (16 tables)
 - `client/src/lib/crystal.ts` — IndexedDB persistence layer
 
 ## API Endpoints
@@ -113,7 +127,14 @@ UUON Clouud Æye is the intelligence interface for the G°centric Lattice System
 - DELETE /api/conversations/:id/messages/last — Undo last exchange
 - POST /api/feedback — Submit Helped/Partial/Missed feedback
 - GET /api/feedback/summary — Feedback counts + calibration weight
-- GET /api/gcentric/status — Full ingestion confirmation block (28 anchors, 14 versions, 5 layers)
+- GET /api/gcentric/status — Full ingestion confirmation block (28 anchors, 14 versions, 5 layers, founder memory)
+- POST /api/founder/ingest — Trigger founder archive ingestion
+- GET /api/founder/status — Ingestion progress + database stats
+- GET /api/founder/search?q=...&limit=N — Search founder messages by text
+- GET /api/founder/conversations — List founder conversations (topic filter, pagination)
+- GET /api/founder/conversations/:id/messages — Get messages for a founder conversation
+- GET /api/founder/corrections — List identified corrections (type filter)
+- GET /api/founder/topics — Topic frequency map
 - GET /api/system/metrics — System performance metrics
 - GET /api/sa/report — Self-assessment report
 - POST /api/profile — Set creator profile entry
@@ -151,7 +172,7 @@ UUON Clouud Æye is the intelligence interface for the G°centric Lattice System
 - Parameterized SQL queries throughout (SQL injection fixed)
 
 ## Backup System
-- 13 tables backed up (including feedback and gcentric_versions)
+- 16 tables backed up (including founder memory tables)
 - Incremental every 24 hours, full every 7th backup
 - GitHub push to UUONdmON/uuon-clouud via Replit connector
 - Backup directory: /backups with max 30 files auto-cleanup
