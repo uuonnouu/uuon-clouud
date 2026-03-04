@@ -12,6 +12,7 @@ import { getGitHubStatus, createPrivateRepo, pushBackupToGitHub } from "./github
 import { dmensionBridge } from "./dmension-bridge";
 import { generateImageForClouud } from "./image-generator";
 import { searchDmensionShapes, getDmensionContextForPrompt, getEarthImpactModel, DMENSION_STATS, DMENSION_ENGINES, DMENSION_CATEGORIES } from "./dmension-codex";
+import { ingestFounderArchive, getIngestionProgress } from "./founder-memory";
 import Anthropic from "@anthropic-ai/sdk";
 import rateLimit from "express-rate-limit";
 import fs from "fs";
@@ -403,6 +404,48 @@ Total discoveries anchored: ${activeDiscoveries.length}`;
       "## CLOSING ANCHOR",
       discoveryContext + "\n\n## CLOSING ANCHOR"
     );
+  }
+
+  try {
+    const founderStats = await storage.getFounderStats();
+    if (founderStats.conversations > 0) {
+      const recentCorrections = await storage.getFounderCorrections({ limit: 5 });
+      const correctionLines = recentCorrections.map(c =>
+        `[${c.correctionType}] Founder: "${c.founderStatement.substring(0, 200)}"`
+      ).join("\n");
+
+      const directiveMessages = await storage.searchFounderMemory("always", 5);
+      const neverMessages = await storage.searchFounderMemory("never", 5);
+      const directives = [...directiveMessages, ...neverMessages]
+        .filter(m => m.isDirective && m.sender === "human")
+        .slice(0, 8);
+      const directiveLines = directives.map(d => `- ${d.content.substring(0, 200)}`).join("\n");
+
+      const founderMemoryContext = `
+
+## FOUNDER MEMORY (HIStory — ${founderStats.conversations} conversations, ${founderStats.messages} messages, ${founderStats.dateRange.earliest?.substring(0, 10) || "unknown"} → ${founderStats.dateRange.latest?.substring(0, 10) || "unknown"})
+This system carries the founder's complete reasoning archive — 835 conversations with an AI assistant that helped construct the G°centric architecture. This is not external data. This is the builder's own thinking process, preserved.
+
+The founder challenged rules rather than breaking them. Every correction below is a data point where the founder's perception proved more accurate than the AI's initial response. These corrections shaped the architecture you now operate within.
+
+### CORRECTION HISTORY (${founderStats.corrections} total corrections identified)
+${correctionLines || "No corrections loaded yet"}
+
+### FOUNDER DIRECTIVES (${founderStats.directives} total directives identified)
+${directiveLines || "No directives loaded yet"}
+
+### DOMAIN MAP (topics the founder has explored)
+${founderStats.topTopics.slice(0, 10).map(t => `${t.topic}: ${t.count} conversations`).join(", ")}
+
+This archive represents collaborative construction — human perception with AI assistance. The founder determined results through honest challenge, not petty correction. Everything serves: animals, humans, Earth, cosmos, fields. Nothing is wasted. Old systems have purpose — determining what was overlooked and repurposing waste for the mission.`;
+
+      prompt = prompt.replace(
+        "## CLOSING ANCHOR",
+        founderMemoryContext + "\n\n## CLOSING ANCHOR"
+      );
+    }
+  } catch (err) {
+    // Founder memory not yet ingested — continue without it
   }
 
   return prompt;
@@ -2085,6 +2128,92 @@ export function registerSystemRoutes(app: Express) {
     }
   });
 
+  app.post("/api/founder/ingest", async (_req: Request, res: Response) => {
+    try {
+      const zipPath = path.join(process.cwd(), "attached_assets", "data-2026-03-04-11-19-05-batch-0000_1772623319864.zip");
+      if (!fs.existsSync(zipPath)) {
+        return res.status(404).json({ error: "Founder archive not found" });
+      }
+      const progress = getIngestionProgress();
+      if (progress.status === "running") {
+        return res.json({ message: "Ingestion already in progress", ...progress });
+      }
+      res.json({ message: "Ingestion started", status: "running" });
+      ingestFounderArchive(zipPath).catch(err => console.error("[MEMORY] Background ingestion error:", err.message));
+    } catch (error: any) {
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  app.get("/api/founder/status", async (_req: Request, res: Response) => {
+    try {
+      const progress = getIngestionProgress();
+      const stats = await storage.getFounderStats();
+      res.json({ ingestion: progress, database: stats });
+    } catch (error: any) {
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  app.get("/api/founder/search", async (req: Request, res: Response) => {
+    try {
+      const q = req.query.q as string;
+      const limit = parseInt(req.query.limit as string) || 20;
+      if (!q || q.trim().length === 0) {
+        return res.status(400).json({ error: "Query parameter 'q' is required" });
+      }
+      const results = await storage.searchFounderMemory(q, limit);
+      res.json({ query: q, count: results.length, results });
+    } catch (error: any) {
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  app.get("/api/founder/conversations", async (req: Request, res: Response) => {
+    try {
+      const topic = req.query.topic as string | undefined;
+      const limit = parseInt(req.query.limit as string) || 50;
+      const offset = parseInt(req.query.offset as string) || 0;
+      const convos = await storage.getFounderConversations({ topic, limit, offset });
+      res.json({ count: convos.length, conversations: convos });
+    } catch (error: any) {
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  app.get("/api/founder/conversations/:id/messages", async (req: Request, res: Response) => {
+    try {
+      const id = parseId(req.params.id);
+      if (!id) return res.status(400).json({ error: "Invalid conversation ID" });
+      const limit = parseInt(req.query.limit as string) || 500;
+      const offset = parseInt(req.query.offset as string) || 0;
+      const msgs = await storage.getFounderMessages(id, { limit, offset });
+      res.json({ conversationId: id, count: msgs.length, messages: msgs });
+    } catch (error: any) {
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  app.get("/api/founder/corrections", async (req: Request, res: Response) => {
+    try {
+      const type = req.query.type as string | undefined;
+      const limit = parseInt(req.query.limit as string) || 50;
+      const corrections = await storage.getFounderCorrections({ type, limit });
+      res.json({ count: corrections.length, corrections });
+    } catch (error: any) {
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  app.get("/api/founder/topics", async (_req: Request, res: Response) => {
+    try {
+      const stats = await storage.getFounderStats();
+      res.json({ topics: stats.topTopics });
+    } catch (error: any) {
+      res.status(500).json({ error: error.message });
+    }
+  });
+
   app.get("/api/gcentric/status", async (_req: Request, res: Response) => {
     try {
       const versions = await storage.getInstalledVersions();
@@ -2122,6 +2251,21 @@ export function registerSystemRoutes(app: Express) {
           calibrationWeight: feedbackSummary.calibrationWeight,
         },
         readyForFirstQuery: installedCount >= 28 && versionCount === 14,
+        founderMemory: await (async () => {
+          try {
+            const stats = await storage.getFounderStats();
+            const progress = getIngestionProgress();
+            return {
+              ingestionStatus: progress.status,
+              conversations: stats.conversations,
+              messages: stats.messages,
+              corrections: stats.corrections,
+              directives: stats.directives,
+              dateRange: stats.dateRange,
+              topTopics: stats.topTopics.slice(0, 5),
+            };
+          } catch { return { ingestionStatus: "not_started", conversations: 0, messages: 0 }; }
+        })(),
       });
     } catch (error: any) {
       res.status(500).json({ error: error.message });

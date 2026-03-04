@@ -1,7 +1,7 @@
 import { db } from "./db";
-import { conversations, messages, uuonTokens, creatorProfile, fingerprints, accessLog, uploads, selfAssessments, uinverseImports, uinverseIdeas, discoveries, feedback, gcentricVersions } from "@shared/schema";
-import type { Conversation, InsertConversation, Message, InsertMessage, UuonToken, InsertUuonToken, CreatorProfileEntry, Fingerprint, AccessLogEntry, Upload, SelfAssessment, UinverseImport, UinverseIdea, Discovery, InsertDiscovery, Feedback, InsertFeedback, GcentricVersion, InsertGcentricVersion } from "@shared/schema";
-import { eq, desc, and, gte, count, sql, avg } from "drizzle-orm";
+import { conversations, messages, uuonTokens, creatorProfile, fingerprints, accessLog, uploads, selfAssessments, uinverseImports, uinverseIdeas, discoveries, feedback, gcentricVersions, founderConversations, founderMessages, founderCorrections } from "@shared/schema";
+import type { Conversation, InsertConversation, Message, InsertMessage, UuonToken, InsertUuonToken, CreatorProfileEntry, Fingerprint, AccessLogEntry, Upload, SelfAssessment, UinverseImport, UinverseIdea, Discovery, InsertDiscovery, Feedback, InsertFeedback, GcentricVersion, InsertGcentricVersion, FounderConversation, InsertFounderConversation, FounderMessage, InsertFounderMessage, FounderCorrection, InsertFounderCorrection } from "@shared/schema";
+import { eq, desc, and, gte, count, sql, avg, ilike, or } from "drizzle-orm";
 
 export interface IStorage {
   getConversation(id: number): Promise<Conversation | undefined>;
@@ -49,6 +49,14 @@ export interface IStorage {
   getInstalledVersions(): Promise<GcentricVersion[]>;
   installVersion(data: InsertGcentricVersion): Promise<GcentricVersion>;
   getVersion(versionNumber: string): Promise<GcentricVersion | undefined>;
+  importFounderConversation(data: InsertFounderConversation): Promise<FounderConversation>;
+  importFounderMessage(data: InsertFounderMessage): Promise<FounderMessage>;
+  saveFounderCorrection(data: InsertFounderCorrection): Promise<FounderCorrection>;
+  getFounderConversations(options?: { topic?: string; limit?: number; offset?: number }): Promise<FounderConversation[]>;
+  getFounderMessages(conversationId: number, options?: { limit?: number; offset?: number }): Promise<FounderMessage[]>;
+  searchFounderMemory(query: string, limit?: number): Promise<FounderMessage[]>;
+  getFounderCorrections(options?: { type?: string; limit?: number }): Promise<FounderCorrection[]>;
+  getFounderStats(): Promise<{ conversations: number; messages: number; corrections: number; directives: number; dateRange: { earliest: string | null; latest: string | null }; topTopics: { topic: string; count: number }[] }>;
 }
 
 class DatabaseStorage implements IStorage {
@@ -353,6 +361,103 @@ class DatabaseStorage implements IStorage {
   async getVersion(versionNumber: string): Promise<GcentricVersion | undefined> {
     const [v] = await db.select().from(gcentricVersions).where(eq(gcentricVersions.versionNumber, versionNumber));
     return v;
+  }
+
+  async importFounderConversation(data: InsertFounderConversation): Promise<FounderConversation> {
+    const [conv] = await db.insert(founderConversations)
+      .values(data)
+      .onConflictDoUpdate({
+        target: founderConversations.externalUuid,
+        set: { name: data.name, summary: data.summary, messageCount: data.messageCount, topicTags: data.topicTags, projectName: data.projectName },
+      })
+      .returning();
+    return conv;
+  }
+
+  async importFounderMessage(data: InsertFounderMessage): Promise<FounderMessage> {
+    const [msg] = await db.insert(founderMessages)
+      .values(data)
+      .onConflictDoUpdate({
+        target: founderMessages.externalUuid,
+        set: { content: data.content, isCorrection: data.isCorrection, isDirective: data.isDirective, topicTags: data.topicTags },
+      })
+      .returning();
+    return msg;
+  }
+
+  async saveFounderCorrection(data: InsertFounderCorrection): Promise<FounderCorrection> {
+    const [correction] = await db.insert(founderCorrections).values(data).returning();
+    return correction;
+  }
+
+  async getFounderConversations(options?: { topic?: string; limit?: number; offset?: number }): Promise<FounderConversation[]> {
+    const limit = options?.limit ?? 50;
+    const offset = options?.offset ?? 0;
+    let query = db.select().from(founderConversations).orderBy(desc(founderConversations.originalCreatedAt)).limit(limit).offset(offset);
+    if (options?.topic) {
+      return db.select().from(founderConversations)
+        .where(ilike(founderConversations.topicTags, `%${options.topic}%`))
+        .orderBy(desc(founderConversations.originalCreatedAt))
+        .limit(limit).offset(offset);
+    }
+    return query;
+  }
+
+  async getFounderMessages(conversationId: number, options?: { limit?: number; offset?: number }): Promise<FounderMessage[]> {
+    const limit = options?.limit ?? 500;
+    const offset = options?.offset ?? 0;
+    return db.select().from(founderMessages)
+      .where(eq(founderMessages.conversationId, conversationId))
+      .orderBy(founderMessages.originalCreatedAt)
+      .limit(limit).offset(offset);
+  }
+
+  async searchFounderMemory(query: string, limit: number = 20): Promise<FounderMessage[]> {
+    return db.select().from(founderMessages)
+      .where(ilike(founderMessages.content, `%${query}%`))
+      .orderBy(desc(founderMessages.originalCreatedAt))
+      .limit(limit);
+  }
+
+  async getFounderCorrections(options?: { type?: string; limit?: number }): Promise<FounderCorrection[]> {
+    const limit = options?.limit ?? 50;
+    if (options?.type) {
+      return db.select().from(founderCorrections)
+        .where(eq(founderCorrections.correctionType, options.type))
+        .orderBy(desc(founderCorrections.createdAt))
+        .limit(limit);
+    }
+    return db.select().from(founderCorrections).orderBy(desc(founderCorrections.createdAt)).limit(limit);
+  }
+
+  async getFounderStats(): Promise<{ conversations: number; messages: number; corrections: number; directives: number; dateRange: { earliest: string | null; latest: string | null }; topTopics: { topic: string; count: number }[] }> {
+    const [convCount] = await db.select({ value: count() }).from(founderConversations);
+    const [msgCount] = await db.select({ value: count() }).from(founderMessages);
+    const [corrCount] = await db.select({ value: count() }).from(founderCorrections);
+    const [dirCount] = await db.select({ value: count() }).from(founderMessages).where(eq(founderMessages.isDirective, true));
+
+    const allConvos = await db.select({ originalCreatedAt: founderConversations.originalCreatedAt }).from(founderConversations).orderBy(founderConversations.originalCreatedAt);
+    const earliest = allConvos.length > 0 ? allConvos[0].originalCreatedAt.toISOString() : null;
+    const latest = allConvos.length > 0 ? allConvos[allConvos.length - 1].originalCreatedAt.toISOString() : null;
+
+    const allTags = await db.select({ topicTags: founderConversations.topicTags }).from(founderConversations);
+    const topicCounts: Record<string, number> = {};
+    for (const row of allTags) {
+      try {
+        const tags: string[] = JSON.parse(row.topicTags);
+        for (const t of tags) { topicCounts[t] = (topicCounts[t] || 0) + 1; }
+      } catch {}
+    }
+    const topTopics = Object.entries(topicCounts).sort(([, a], [, b]) => b - a).slice(0, 20).map(([topic, cnt]) => ({ topic, count: cnt }));
+
+    return {
+      conversations: convCount?.value ?? 0,
+      messages: msgCount?.value ?? 0,
+      corrections: corrCount?.value ?? 0,
+      directives: dirCount?.value ?? 0,
+      dateRange: { earliest, latest },
+      topTopics,
+    };
   }
 }
 

@@ -133,6 +133,43 @@ export const gcentricVersions = pgTable("gcentric_versions", {
   installedAt: timestamp("installed_at").default(sql`CURRENT_TIMESTAMP`).notNull(),
 });
 
+export const founderConversations = pgTable("founder_conversations", {
+  id: serial("id").primaryKey(),
+  externalUuid: text("external_uuid").notNull().unique(),
+  name: text("name").notNull(),
+  summary: text("summary"),
+  messageCount: integer("message_count").notNull().default(0),
+  topicTags: text("topic_tags").notNull().default("[]"),
+  projectName: text("project_name"),
+  originalCreatedAt: timestamp("original_created_at").notNull(),
+  importedAt: timestamp("imported_at").default(sql`CURRENT_TIMESTAMP`).notNull(),
+});
+
+export const founderMessages = pgTable("founder_messages", {
+  id: serial("id").primaryKey(),
+  conversationId: integer("conversation_id").notNull().references(() => founderConversations.id, { onDelete: "cascade" }),
+  externalUuid: text("external_uuid").notNull().unique(),
+  sender: text("sender").notNull(),
+  content: text("content").notNull(),
+  isCorrection: boolean("is_correction").notNull().default(false),
+  isDirective: boolean("is_directive").notNull().default(false),
+  topicTags: text("topic_tags"),
+  originalCreatedAt: timestamp("original_created_at").notNull(),
+  importedAt: timestamp("imported_at").default(sql`CURRENT_TIMESTAMP`).notNull(),
+});
+
+export const founderCorrections = pgTable("founder_corrections", {
+  id: serial("id").primaryKey(),
+  messageId: integer("message_id").notNull().references(() => founderMessages.id, { onDelete: "cascade" }),
+  conversationId: integer("conversation_id").notNull().references(() => founderConversations.id, { onDelete: "cascade" }),
+  correctionType: text("correction_type").notNull(),
+  founderStatement: text("founder_statement").notNull(),
+  assistantError: text("assistant_error"),
+  resolution: text("resolution").notNull(),
+  topicTags: text("topic_tags"),
+  createdAt: timestamp("created_at").default(sql`CURRENT_TIMESTAMP`).notNull(),
+});
+
 export const insertConversationSchema = createInsertSchema(conversations).omit({
   id: true,
   createdAt: true,
@@ -182,3 +219,23 @@ export const insertDiscoverySchema = createInsertSchema(discoveries).omit({
   createdAt: true,
 });
 export type InsertDiscovery = z.infer<typeof insertDiscoverySchema>;
+
+export const insertFounderConversationSchema = createInsertSchema(founderConversations).omit({
+  id: true,
+  importedAt: true,
+});
+export const insertFounderMessageSchema = createInsertSchema(founderMessages).omit({
+  id: true,
+  importedAt: true,
+});
+export const insertFounderCorrectionSchema = createInsertSchema(founderCorrections).omit({
+  id: true,
+  createdAt: true,
+});
+
+export type FounderConversation = typeof founderConversations.$inferSelect;
+export type InsertFounderConversation = z.infer<typeof insertFounderConversationSchema>;
+export type FounderMessage = typeof founderMessages.$inferSelect;
+export type InsertFounderMessage = z.infer<typeof insertFounderMessageSchema>;
+export type FounderCorrection = typeof founderCorrections.$inferSelect;
+export type InsertFounderCorrection = z.infer<typeof insertFounderCorrectionSchema>;
