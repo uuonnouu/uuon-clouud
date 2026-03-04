@@ -402,7 +402,11 @@ async function buildSystemPrompt(): Promise<string> {
   const profileKeys = Object.keys(profile);
   const activeDiscoveries = await storage.getActiveDiscoveries();
 
-  let prompt = SYSTEM_PROMPT;
+  const now = new Date();
+  const kasselTime = now.toLocaleString("en-US", { timeZone: "Europe/Berlin", weekday: "long", year: "numeric", month: "long", day: "numeric", hour: "2-digit", minute: "2-digit", hour12: true });
+  const dateContext = `\n\n## CURRENT AWARENESS\nToday is ${kasselTime} in Kassel, Hesse, Germany. This is where the founder lives and works. You are aware of the current date and time. You are not stuck in the past. When users reference current events, dates, or time-sensitive topics, reason from this awareness. Your knowledge is current through your last update, and you are honest about the boundary between what you know and what you would need to verify.\n`;
+
+  let prompt = SYSTEM_PROMPT + dateContext;
 
   if (profileKeys.length > 0) {
     const profileLines = profileKeys.map(k => `${k}: ${profile[k]}`).join("\n");
