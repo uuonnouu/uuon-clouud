@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import { Cpu, Binary, Menu, X, Globe, Zap, Network, ChevronRight, Plus, Trash2, MessageCircle, Loader2, Activity, HelpCircle, Undo2, Scale, Paperclip, Link2, Mic, MicOff, Brain, Volume2, VolumeX } from "lucide-react";
+import { Cpu, Binary, Menu, X, Globe, Zap, Network, ChevronRight, Plus, Trash2, MessageCircle, Loader2, Activity, HelpCircle, Undo2, Scale, Paperclip, Link2, Mic, MicOff, Brain, Volume2, VolumeX, Copy, Check } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useLocation } from "wouter";
 import ClouudAvatar from "@/components/clouud-avatar";
@@ -7,6 +7,7 @@ import Tutorial from "@/components/tutorial";
 import MetricsPanel from "@/components/metrics-panel";
 import ExplorationEngine from "@/components/exploration-engine";
 import DynamicBackground from "@/components/dynamic-background";
+import { encodeZWC } from "@/lib/zwc-fingerprint";
 import { crystalGet, crystalSet, crystalGetSync, crystalSetSync, crystalIncrement } from "@/lib/crystal";
 import uuonLogo from "@assets/A7950814-2592-4E7D-858F-3AEB1D632F98_1772064571557.png";
 
@@ -74,6 +75,7 @@ export default function ClouudTerminal() {
   const [visualSummary, setVisualSummary] = useState<{ concept: string; shapeType: string; parameters: any } | null>(null);
   const [hashingIntensity, setHashingIntensity] = useState(0);
   const [feedbackSubmitted, setFeedbackSubmitted] = useState<Record<number, string>>({});
+  const [copiedMsgId, setCopiedMsgId] = useState<number | null>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -507,6 +509,25 @@ export default function ClouudTerminal() {
       setFeedbackSubmitted(prev => ({ ...prev, [msgId]: response }));
     } catch (err) {
       console.error("Failed to submit feedback:", err);
+    }
+  }
+
+  async function copyWithFingerprint(msgId: number, content: string) {
+    const zwcPayload = encodeZWC(activeConvo || 0, msgId, Date.now());
+    const fingerprintedText = content + zwcPayload;
+    try {
+      await navigator.clipboard.writeText(fingerprintedText);
+      setCopiedMsgId(msgId);
+      setTimeout(() => setCopiedMsgId(null), 2000);
+    } catch {
+      const ta = document.createElement("textarea");
+      ta.value = fingerprintedText;
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand("copy");
+      document.body.removeChild(ta);
+      setCopiedMsgId(msgId);
+      setTimeout(() => setCopiedMsgId(null), 2000);
     }
   }
 
@@ -1204,6 +1225,21 @@ export default function ClouudTerminal() {
                           
                           {msg.role === 'assistant' && (
                             <div className="mt-2 flex items-center gap-1">
+                              <button
+                                onClick={() => copyWithFingerprint(msg.id, msg.content)}
+                                className={`p-1 rounded-sm transition-colors ${
+                                  copiedMsgId === msg.id
+                                    ? "text-[#4CAF50] bg-[#4CAF50]/10"
+                                    : "text-muted-foreground/50 hover:text-[#f0b93b]"
+                                }`}
+                                title={copiedMsgId === msg.id ? "Copied" : "Copy response"}
+                                data-testid={`btn-copy-${msg.id}`}
+                              >
+                                {copiedMsgId === msg.id
+                                  ? <Check className="w-3.5 h-3.5" />
+                                  : <Copy className="w-3.5 h-3.5" />
+                                }
+                              </button>
                               <button
                                 onClick={() => speakMessage(msg.id, msg.content)}
                                 className={`p-1 rounded-sm transition-colors ${

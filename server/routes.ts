@@ -15,6 +15,8 @@ import { getGitHubStatus, createPrivateRepo, pushBackupToGitHub } from "./github
 import { dmensionBridge } from "./dmension-bridge";
 import { generateImageForClouud } from "./image-generator";
 import { decodeFingerprint } from "./zwc-fingerprint";
+import { extractWatermark } from "./stego-watermark";
+import { verifyText, verifyImage, verifyPattern, verifyAll } from "./provenance-verifier";
 import { searchDmensionShapes, getDmensionContextForPrompt, getEarthImpactModel, DMENSION_STATS, DMENSION_ENGINES, DMENSION_CATEGORIES } from "./dmension-codex";
 import { matchTopicToShape } from "./dmension-routes";
 import { ingestFounderArchive, getIngestionProgress } from "./founder-memory";
@@ -2498,5 +2500,32 @@ export function registerSystemRoutes(app: Express) {
 
     const decoded = decodeFingerprint(text);
     res.json(decoded);
+  });
+
+  app.post("/api/provenance/verify-image", (req, res) => {
+    const { svg } = req.body;
+    if (!svg || typeof svg !== "string") {
+      return res.status(400).json({ error: "SVG content is required" });
+    }
+    const result = verifyImage(svg);
+    res.json(result);
+  });
+
+  app.post("/api/provenance/verify-screenshot", (req, res) => {
+    const { gradient } = req.body;
+    if (!gradient || typeof gradient !== "string") {
+      return res.status(400).json({ error: "CSS gradient string is required" });
+    }
+    const result = verifyPattern(gradient);
+    res.json(result);
+  });
+
+  app.post("/api/provenance/verify", (req, res) => {
+    const { text, image, pattern } = req.body;
+    if (!text && !image && !pattern) {
+      return res.status(400).json({ error: "At least one of text, image, or pattern is required" });
+    }
+    const report = verifyAll({ text, image, pattern });
+    res.json(report);
   });
 }
