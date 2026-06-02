@@ -64,6 +64,28 @@ const uploadLimiter = rateLimit({ windowMs: 60 * 1000, max: 10, message: { error
 const scrapeLimiter = rateLimit({ windowMs: 60 * 1000, max: 5, message: { error: "Rate limit exceeded. Maximum 5 scrape requests per minute." } });
 const ingestLimiter = rateLimit({ windowMs: 60 * 1000, max: 3, message: { error: "Rate limit exceeded. Maximum 3 ingests per minute." } });
 
+const DMENSION_API_BASE = "https://206b7d47-19e8-43db-9dc4-4ba0a1f0626a-00-q9b2mtm0r20b.spock.replit.dev";
+const DMENSION_API_KEY = "dmn_live_testkey123";
+
+async function callDmensionEngine(method: "GET" | "POST", path: string, body?: object): Promise<any> {
+  try {
+    const opts: RequestInit = {
+      method,
+      headers: {
+        "X-API-Key": DMENSION_API_KEY,
+        "Content-Type": "application/json",
+        "Accept": "application/json",
+      },
+    };
+    if (body && method === "POST") opts.body = JSON.stringify(body);
+    const res = await fetch(`${DMENSION_API_BASE}${path}`, opts);
+    if (!res.ok) return { error: `Δmension engine returned ${res.status}`, path };
+    return await res.json();
+  } catch (err: any) {
+    return { error: `Δmension engine unreachable: ${err.message}`, path };
+  }
+}
+
 const CLOUUD_TOOLS = [
   ...latticeTools,
   {
@@ -113,6 +135,52 @@ const CLOUUD_TOOLS = [
         domain: { type: "string", enum: ["energy", "education", "waste", "health", "fraud"], description: "The impact domain to model" },
       },
       required: ["domain"]
+    }
+  },
+  {
+    name: "dmension_list_shapes",
+    description: "List available 3D mathematical shapes from a live Δmension engine. Use this to discover what shapes are available in the fractal, relativity, or modulo engines before rendering one. Call this when a user asks what shapes exist or wants to browse by engine type.",
+    input_schema: {
+      type: "object",
+      properties: {
+        engine: {
+          type: "string",
+          enum: ["fractal", "relativity", "modulo"],
+          description: "The Δmension engine to list shapes from. fractal = fractal geometry, relativity = spacetime/curvature shapes, modulo = modular arithmetic patterns."
+        }
+      },
+      required: ["engine"]
+    }
+  },
+  {
+    name: "dmension_render_shape",
+    description: "Render a specific 3D shape directly from a live Δmension engine. Returns vertex/normal/UV data ready for Three.js or Unity. Use this when a user wants to see or use a specific mathematical shape — call dmension_list_shapes first if you don't know the shapeId.",
+    input_schema: {
+      type: "object",
+      properties: {
+        engine: {
+          type: "string",
+          enum: ["fractal", "relativity", "modulo"],
+          description: "The Δmension engine to render from."
+        },
+        shapeId: {
+          type: "string",
+          description: "The shape identifier to render (e.g. 'mandelbrot_surface', 'schwarzschild', 'modulo_ring'). Get valid IDs from dmension_list_shapes first."
+        },
+        parameters: {
+          type: "object",
+          description: "Optional parametric values for the shape (a, b, c, etc.)"
+        },
+        uSegments: {
+          type: "number",
+          description: "Mesh resolution on U axis. Default 64."
+        },
+        vSegments: {
+          type: "number",
+          description: "Mesh resolution on V axis. Default 64."
+        }
+      },
+      required: ["engine", "shapeId"]
     }
   }
 ];
@@ -1274,6 +1342,38 @@ export async function registerRoutes(
                   e.earthApplication.toLowerCase().includes(input.domain)
                 ).map(e => e.name),
               }
+            });
+          } else if (toolUseBlock.name === "dmension_list_shapes") {
+            const input = toolUseBlock.input as any;
+            const engine = input.engine as string;
+            const data = await callDmensionEngine("GET", `/api/engines/${engine}/shapes`);
+            toolResult = JSON.stringify({
+              engine,
+              source: "live_dmension_api",
+              baseUrl: DMENSION_API_BASE,
+              ...data,
+            });
+          } else if (toolUseBlock.name === "dmension_render_shape") {
+            const input = toolUseBlock.input as any;
+            const engine = input.engine as string;
+            const renderPath = engine === "modulo" ? `/api/engines/modulo/pattern` : `/api/engines/${engine}/render`;
+            const body = {
+              shapeId: input.shapeId,
+              parameters: input.parameters || { a: 1, b: 1, c: 1 },
+              uSegments: input.uSegments || 64,
+              vSegments: input.vSegments || 64,
+            };
+            const data = await callDmensionEngine("POST", renderPath, body);
+            const hasGeometry = data && (data.vertices || data.indices);
+            toolResult = JSON.stringify({
+              engine,
+              shapeId: input.shapeId,
+              source: "live_dmension_api",
+              rendered: hasGeometry,
+              summary: hasGeometry
+                ? `Shape "${input.shapeId}" rendered from ${engine} engine. Vertex data ready for Three.js/Unity. Explore at: ${DMENSION_API_BASE}`
+                : `Render response received from ${engine} engine.`,
+              ...data,
             });
           } else if (toolUseBlock.name === "generate_image") {
             const input = toolUseBlock.input as any;
