@@ -62,6 +62,7 @@ app.use((req, res, next) => {
 
 (async () => {
   await registerRoutes(httpServer, app);
+  registerPublicAPI(app);
   app.use("/api/codex", codexRouter);
   registerDmensionRoutes(app);
   registerSystemRoutes(app);
