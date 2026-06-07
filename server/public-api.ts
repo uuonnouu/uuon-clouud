@@ -1,4 +1,5 @@
 import type { Express, Request, Response } from "express";
+import { requireApiKey } from "./api-auth";
 import { storage } from "./storage";
 import { generateProvenanceHash } from "./ellomental-hash";
 
@@ -19,7 +20,7 @@ export function registerPublicAPI(app: Express) {
   });
 
 
-  app.post("/v1/reason", async (req: Request, res: Response) => {
+  app.post("/v1/reason", requireApiKey, async (req: Request, res: Response) => {
     try {
 
       const { input } = req.body;
