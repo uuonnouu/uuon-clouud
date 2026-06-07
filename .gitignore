@@ -4,3 +4,17 @@ dist
 server/public
 vite.config.ts.*
 *.tar.gzbackups/
+
+# Archives
+*.tar.gz
+
+# Private generated data
+backups/
+uploads/
+generated_images/
+
+# Secrets
+.env
+.env.*
+*.pem
+*.key
