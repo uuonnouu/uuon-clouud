@@ -2,7 +2,7 @@ import Anthropic from "@anthropic-ai/sdk";
 import { generateProvenanceHash } from "./ellomental-hash";
 
 const anthropic = new Anthropic({
-  apiKey: process.env.ANTHROPIC_API_KEY,
+  apiKey: process.env.AI_INTEGRATIONS_ANTHROPIC_API_KEY,
 });
 
 function assessResponse(text: string) {
