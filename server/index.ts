@@ -1,4 +1,5 @@
 import express, { type Request, Response, NextFunction } from "express";
+import { registerPublicAPI } from "./public-api";
 import { registerRoutes, registerSystemRoutes } from "./routes";
 import { codexRouter } from "./codex-routes";
 import { registerDmensionRoutes } from "./dmension-routes";
