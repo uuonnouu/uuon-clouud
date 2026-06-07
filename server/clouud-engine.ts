@@ -4,6 +4,7 @@ import { generateProvenanceHash } from "./ellomental-hash";
 const anthropic = new Anthropic({
   apiKey: process.env.AI_INTEGRATIONS_ANTHROPIC_API_KEY,
   baseURL: process.env.AI_INTEGRATIONS_ANTHROPIC_BASE_URL,
+  baseURL: process.env.AI_INTEGRATIONS_ANTHROPIC_BASE_URL,
 });
 
 function assessResponse(text: string) {
