@@ -1,5 +1,8 @@
 const DMENSION_URL = process.env.DMENSION_API_URL || 'https://uuon-foundation.com';
-const BRIDGE_SECRET = process.env.UUON_BRIDGE_SECRET || '';
+const BRIDGE_SECRET = process.env.UUON_BRIDGE_SECRET;
+if (!BRIDGE_SECRET) {
+  throw new Error('UUON_BRIDGE_SECRET is not set - refusing to start with an empty bridge secret');
+}
 
 const HEADERS: Record<string, string> = {
   'Content-Type': 'application/json',
