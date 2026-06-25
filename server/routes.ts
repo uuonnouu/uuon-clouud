@@ -20,10 +20,39 @@ import { verifyText, verifyImage, verifyPattern, verifyAll } from "./provenance-
 import { searchDmensionShapes, getDmensionContextForPrompt, getEarthImpactModel, DMENSION_STATS, DMENSION_ENGINES, DMENSION_CATEGORIES } from "./dmension-codex";
 import { matchTopicToShape } from "./dmension-routes";
 import { ingestFounderArchive, getIngestionProgress } from "./founder-memory";
-import Anthropic from "@anthropic-ai/sdk";
 import rateLimit from "express-rate-limit";
 import fs from "fs";
 import path from "path";
+
+const OLLAMA_BASE = process.env.OLLAMA_BASE_URL || "http://localhost:11434";
+const OLLAMA_MODEL = process.env.OLLAMA_MODEL || "llama3.1:8b";
+
+async function ollamaChat(messages: any[], system: string, tools?: any[]): Promise<any> {
+  const body: any = {
+    model: OLLAMA_MODEL,
+    messages: [{ role: "system", content: system }, ...messages],
+    stream: false,
+  };
+  if (tools && tools.length > 0) body.tools = tools;
+  const resp = await fetch(`${OLLAMA_BASE}/v1/chat/completions`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(body),
+  });
+  if (!resp.ok) throw new Error(`Ollama error: ${resp.status} ${resp.statusText}`);
+  return resp.json();
+}
+
+function toOAITools(tools: any[]) {
+  return tools.map(t => ({
+    type: "function",
+    function: {
+      name: t.name,
+      description: t.description,
+      parameters: t.input_schema || t.parameters || { type: "object", properties: {} },
+    },
+  }));
+}
 
 function parseId(val: string): number | null {
   const n = parseInt(val, 10);
@@ -710,7 +739,7 @@ const systemMetrics = {
   responseTimes: [] as number[],
   uptime: Date.now(),
   lastRequestAt: 0,
-  modelUsed: "claude-sonnet-4-6",
+  modelUsed: OLLAMA_MODEL,
 };
 
 function recordMetrics(responseTimeMs: number, tokensIn: number, tokensOut: number, toolCalls: number, driftFlagged: boolean) {
@@ -1045,10 +1074,6 @@ export async function registerRoutes(
   app: Express
 ): Promise<Server> {
   app.set("trust proxy", 1);
-  const anthropic = new Anthropic({
-    apiKey: process.env.AI_INTEGRATIONS_ANTHROPIC_API_KEY,
-    baseURL: process.env.AI_INTEGRATIONS_ANTHROPIC_BASE_URL,
-  });
 
   // Get all conversations
   app.get("/api/conversations", async (_req: Request, res: Response) => {
@@ -1267,7 +1292,7 @@ export async function registerRoutes(
         smartWindow.shift();
       }
 
-      const apiMessages: Anthropic.MessageParam[] = smartWindow.map(m => ({
+      const apiMessages: any[] = smartWindow.map(m => ({
         role: m.role as "user" | "assistant",
         content: m.content,
       }));
@@ -1290,62 +1315,57 @@ export async function registerRoutes(
         dynamicPrompt += recalibrationNote;
       }
 
-      let response = await anthropic.messages.create({
-        model: "claude-sonnet-4-6",
-        max_tokens: 768,
-        temperature: 0.1,
-        system: dynamicPrompt,
-        tools: CLOUUD_TOOLS as any,
-        messages: apiMessages,
-      });
+      const oaiTools = toOAITools(CLOUUD_TOOLS);
+      let response = await ollamaChat(apiMessages, dynamicPrompt, oaiTools);
 
-      totalInputTokens += response.usage?.input_tokens || 0;
-      totalOutputTokens += response.usage?.output_tokens || 0;
+      totalInputTokens += response.usage?.prompt_tokens || 0;
+      totalOutputTokens += response.usage?.completion_tokens || 0;
 
-      while (response.stop_reason === "tool_use") {
-        const toolUseBlocks = response.content.filter(
-          (block): block is Anthropic.ContentBlock & { type: "tool_use" } =>
-            block.type === "tool_use"
-        );
+      while (response.choices?.[0]?.finish_reason === "tool_calls") {
+        const toolCalls: any[] = response.choices[0].message.tool_calls || [];
 
-        if (toolUseBlocks.length === 0) break;
+        if (toolCalls.length === 0) break;
 
-        const toolResults: Array<{ type: "tool_result"; tool_use_id: string; content: string }> = [];
+        apiMessages.push({
+          role: "assistant",
+          content: response.choices[0].message.content || "",
+          tool_calls: toolCalls,
+        });
 
-        for (const toolUseBlock of toolUseBlocks) {
+        for (const toolCall of toolCalls) {
+          const toolName = toolCall.function.name;
+          const toolInput = JSON.parse(toolCall.function.arguments || "{}");
           let toolResult: string;
-          if (toolUseBlock.name === "visualize_concept") {
-            toolResult = JSON.stringify({ 
-              status: "visualizing", 
-              concept: (toolUseBlock.input as any).concept,
-              link: `https://uuon-foundation.com/visualize?shape=${(toolUseBlock.input as any).shapeType}`
-            });
-          } else if (toolUseBlock.name === "explore_dmension") {
-            const input = toolUseBlock.input as any;
-            const results = searchDmensionShapes(input.query);
+
+          if (toolName === "visualize_concept") {
             toolResult = JSON.stringify({
-              query: input.query,
+              status: "visualizing",
+              concept: toolInput.concept,
+              link: `https://uuon-foundation.com/visualize?shape=${toolInput.shapeType}`
+            });
+          } else if (toolName === "explore_dmension") {
+            const results = searchDmensionShapes(toolInput.query);
+            toolResult = JSON.stringify({
+              query: toolInput.query,
               totalShapesInLibrary: DMENSION_STATS.totalShapes,
-              results: results.length > 0 ? results : [{ note: `No exact match for "${input.query}", but Δmension has ${DMENSION_STATS.totalShapes} shapes across ${DMENSION_STATS.totalCategories} categories. Try broader terms like: physics, math, fractal, quantum, biology, wave, tensor, healing.` }],
+              results: results.length > 0 ? results : [{ note: `No exact match for "${toolInput.query}", but Δmension has ${DMENSION_STATS.totalShapes} shapes across ${DMENSION_STATS.totalCategories} categories. Try broader terms like: physics, math, fractal, quantum, biology, wave, tensor, healing.` }],
               engines: Object.values(DMENSION_ENGINES).map(e => ({ name: e.name, earthApplication: e.earthApplication })),
               url: "https://uuon-foundation.com"
             });
-          } else if (toolUseBlock.name === "earth_impact") {
-            const input = toolUseBlock.input as any;
-            const model = getEarthImpactModel(input.domain);
+          } else if (toolName === "earth_impact") {
+            const model = getEarthImpactModel(toolInput.domain);
             toolResult = JSON.stringify({
-              domain: input.domain,
+              domain: toolInput.domain,
               ...model,
               dmensionStats: {
                 totalShapes: DMENSION_STATS.totalShapes,
                 relevantEngines: Object.values(DMENSION_ENGINES).filter(e =>
-                  e.earthApplication.toLowerCase().includes(input.domain)
+                  e.earthApplication.toLowerCase().includes(toolInput.domain)
                 ).map(e => e.name),
               }
             });
-          } else if (toolUseBlock.name === "dmension_list_shapes") {
-            const input = toolUseBlock.input as any;
-            const engine = input.engine as string;
+          } else if (toolName === "dmension_list_shapes") {
+            const engine = toolInput.engine as string;
             const data = await callDmensionEngine("GET", `/api/engines/${engine}/shapes`);
             toolResult = JSON.stringify({
               engine,
@@ -1353,56 +1373,54 @@ export async function registerRoutes(
               baseUrl: DMENSION_API_BASE,
               ...data,
             });
-          } else if (toolUseBlock.name === "dmension_render_shape") {
-            const input = toolUseBlock.input as any;
-            const engine = input.engine as string;
+          } else if (toolName === "dmension_render_shape") {
+            const engine = toolInput.engine as string;
             const renderPath = engine === "modulo" ? `/api/engines/modulo/pattern` : `/api/engines/${engine}/render`;
             const body = {
-              shapeId: input.shapeId,
-              parameters: input.parameters || { a: 1, b: 1, c: 1 },
-              uSegments: input.uSegments || 64,
-              vSegments: input.vSegments || 64,
+              shapeId: toolInput.shapeId,
+              parameters: toolInput.parameters || { a: 1, b: 1, c: 1 },
+              uSegments: toolInput.uSegments || 64,
+              vSegments: toolInput.vSegments || 64,
             };
             const data = await callDmensionEngine("POST", renderPath, body);
             const hasGeometry = data && (data.vertices || data.indices);
             toolResult = JSON.stringify({
               engine,
-              shapeId: input.shapeId,
+              shapeId: toolInput.shapeId,
               source: "live_dmension_api",
               rendered: hasGeometry,
               summary: hasGeometry
-                ? `Shape "${input.shapeId}" rendered from ${engine} engine. Vertex data ready for Three.js/Unity. Explore at: ${DMENSION_API_BASE}`
+                ? `Shape "${toolInput.shapeId}" rendered from ${engine} engine. Vertex data ready for Three.js/Unity. Explore at: ${DMENSION_API_BASE}`
                 : `Render response received from ${engine} engine.`,
               ...data,
             });
-          } else if (toolUseBlock.name === "generate_image") {
-            const input = toolUseBlock.input as any;
+          } else if (toolName === "generate_image") {
             const imageId = `clouud-${Date.now()}`;
             const imagePath = path.join("generated_images", `${imageId}.png`);
-            
+
             if (!fs.existsSync("generated_images")) {
               fs.mkdirSync("generated_images", { recursive: true });
             }
-            
+
             const imgEntry: PendingImage = {
               id: imageId,
-              prompt: input.prompt,
-              concept: input.concept,
-              aspectRatio: input.aspectRatio || "1:1",
+              prompt: toolInput.prompt,
+              concept: toolInput.concept,
+              aspectRatio: toolInput.aspectRatio || "1:1",
               outputPath: imagePath,
               status: "pending"
             };
             pendingImageGenerations.push(imgEntry);
             cleanupOldImages();
-            
+
             toolResult = JSON.stringify({
               status: "image_queued",
               imageId,
-              concept: input.concept,
-              message: `Image generation has been queued for "${input.concept}". The image will appear in the conversation once generated. Tell the user you are creating a visual for them and it will appear shortly.`
+              concept: toolInput.concept,
+              message: `Image generation has been queued for "${toolInput.concept}". The image will appear in the conversation once generated. Tell the user you are creating a visual for them and it will appear shortly.`
             });
           } else {
-            toolResult = executeLatticeTool(toolUseBlock.name, toolUseBlock.input as Record<string, any>);
+            toolResult = executeLatticeTool(toolName, toolInput);
           }
           toolCallCount++;
 
@@ -1413,46 +1431,26 @@ export async function registerRoutes(
             parsedResult = { raw: toolResult };
           }
           toolCallData = {
-            name: toolUseBlock.name,
-            args: toolUseBlock.input,
+            name: toolName,
+            args: toolInput,
             result: parsedResult,
           };
 
-          toolResults.push({
-            type: "tool_result",
-            tool_use_id: toolUseBlock.id,
+          apiMessages.push({
+            role: "tool",
+            tool_call_id: toolCall.id,
             content: toolResult,
           });
         }
 
-        apiMessages.push({
-          role: "assistant",
-          content: response.content,
-        });
-        apiMessages.push({
-          role: "user",
-          content: toolResults,
-        });
+        response = await ollamaChat(apiMessages, dynamicPrompt, oaiTools);
 
-        response = await anthropic.messages.create({
-          model: "claude-sonnet-4-6",
-          max_tokens: 768,
-          temperature: 0.1,
-          system: dynamicPrompt,
-          tools: CLOUUD_TOOLS as any,
-          messages: apiMessages,
-        });
-
-        totalInputTokens += response.usage?.input_tokens || 0;
-        totalOutputTokens += response.usage?.output_tokens || 0;
+        totalInputTokens += response.usage?.prompt_tokens || 0;
+        totalOutputTokens += response.usage?.completion_tokens || 0;
       }
 
       // Extract final text response
-      for (const block of response.content) {
-        if (block.type === "text") {
-          finalResponse += block.text;
-        }
-      }
+      finalResponse = response.choices?.[0]?.message?.content || "";
 
     const driftCheck = checkDrift(finalResponse);
     if (!driftCheck.clean) {
@@ -1938,10 +1936,6 @@ function parseImportedChat(content: string, source: string): Array<{ role: strin
 
 async function analyzeIdeasInBackground(importId: number, chatMessages: Array<{ role: string; content: string }>, source: string) {
   try {
-    const anthropic = new Anthropic({
-      apiKey: process.env.AI_INTEGRATIONS_ANTHROPIC_API_KEY,
-      baseURL: process.env.AI_INTEGRATIONS_ANTHROPIC_BASE_URL,
-    });
 
     const userMessages = chatMessages
       .filter(m => m.role === "user")
@@ -1967,11 +1961,9 @@ async function analyzeIdeasInBackground(importId: number, chatMessages: Array<{ 
     for (const chunk of chunks) {
       const chunkText = chunk.map((m, i) => `[MSG ${i + 1}] ${m}`).join("\n\n---\n\n");
 
-      const response = await anthropic.messages.create({
-        model: "claude-sonnet-4-6",
-        max_tokens: 4096,
-        temperature: 0.1,
-        system: `You are UInVerse, the idea extraction engine for UUON Foundation Inc., founded by Phillip Aguilar Ruiz III.
+      const response = await ollamaChat(
+        [{ role: "user", content: `Analyze this ${source} chat history from Phillip and extract functional ideas for the UUON Clouud system:\n\n${chunkText}` }],
+        `You are UInVerse, the idea extraction engine for UUON Foundation Inc., founded by Phillip Aguilar Ruiz III.
 
 You analyze chat histories from other AI systems to find ideas that should become functional tools in the UUON Clouud system.
 
@@ -1994,15 +1986,9 @@ Only extract ideas that Phillip himself expressed or explored. Do not invent ide
 Respond with a JSON array of idea objects. Each object must have: title, description, category, verdict, confidence, reasoning, sourceExcerpt, priority.
 
 If no ideas are found, respond with an empty array [].`,
-        messages: [
-          {
-            role: "user",
-            content: `Analyze this ${source} chat history from Phillip and extract functional ideas for the UUON Clouud system:\n\n${chunkText}`,
-          },
-        ],
-      });
+      );
 
-      const responseText = response.content[0].type === "text" ? response.content[0].text : "";
+      const responseText = response.choices?.[0]?.message?.content || "";
 
       try {
         const jsonMatch = responseText.match(/\[[\s\S]*\]/);
