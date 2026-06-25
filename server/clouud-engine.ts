@@ -1,41 +1,30 @@
-import Anthropic from "@anthropic-ai/sdk";
 import { generateProvenanceHash } from "./ellomental-hash";
 
-const anthropic = new Anthropic({
-  apiKey: process.env.ANTHROPIC_API_KEY,
-});
+const OLLAMA_BASE = process.env.OLLAMA_BASE_URL || "http://localhost:11434";
+const OLLAMA_MODEL = process.env.OLLAMA_MODEL || "llama3.1:8b";
 
 function assessResponse(text: string) {
   const words = text.trim().split(/\s+/).length;
-
-  return {
-    pass: true,
-    flags: [],
-    score: 100,
-    wordCount: words
-  };
+  return { pass: true, flags: [], score: 100, wordCount: words };
 }
 
 export async function processClouud(input: string) {
-
-  const result = await anthropic.messages.create({
-    model: "claude-sonnet-4-20250514",
-    max_tokens: 1024,
-    messages: [
-      {
-        role: "user",
-        content: input
-      }
-    ]
+  const resp = await fetch(`${OLLAMA_BASE}/v1/chat/completions`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      model: OLLAMA_MODEL,
+      messages: [{ role: "user", content: input }],
+      stream: false,
+    }),
   });
 
-  let response = "";
-
-  for (const block of result.content) {
-    if (block.type === "text") {
-      response += block.text;
-    }
+  if (!resp.ok) {
+    throw new Error(`Ollama error: ${resp.status} ${resp.statusText}`);
   }
+
+  const data = await resp.json() as any;
+  const response = data.choices?.[0]?.message?.content || "";
 
   const assessment = assessResponse(response);
   const hash = generateProvenanceHash(response);
@@ -43,9 +32,7 @@ export async function processClouud(input: string) {
   return {
     response,
     assessment,
-    provenance: {
-      hash
-    },
-    status: "complete"
+    provenance: { hash },
+    status: "complete",
   };
 }
