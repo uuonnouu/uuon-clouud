@@ -25,7 +25,7 @@ import fs from "fs";
 import path from "path";
 
 const OLLAMA_BASE = process.env.OLLAMA_BASE_URL || "http://localhost:11434";
-const OLLAMA_MODEL = process.env.OLLAMA_MODEL || "llama3.1:8b";
+const OLLAMA_MODEL = process.env.OLLAMA_MODEL || "clouud";
 
 async function ollamaChat(messages: any[], system: string, tools?: any[]): Promise<any> {
   const body: any = {
@@ -1246,25 +1246,14 @@ export async function registerRoutes(
   try {
     const searchTerms = extractSearchTerms(content);
     if (searchTerms.length > 0) {
-      const founderHits: Array<{ content: string; sender: string; topicTags: string | null }> = [];
-      const seen = new Set<string>();
-      for (const term of searchTerms.slice(0, 3)) {
-        const results = await storage.searchFounderMemory(term, 5);
-        for (const r of results) {
-          const key = r.content.substring(0, 100);
-          if (!seen.has(key)) {
-            seen.add(key);
-            founderHits.push({ content: r.content, sender: r.sender, topicTags: r.topicTags });
-          }
-        }
-      }
-      if (founderHits.length > 0) {
-        const relevantMessages = founderHits.slice(0, 6);
-        const founderContext = relevantMessages.map((m, i) => {
+      const hits = await storage.searchFounderMemoryMulti(searchTerms, 10);
+      if (hits.length > 0) {
+        const founderContext = hits.slice(0, 8).map(m => {
           const topicLabel = m.topicTags ? ` | ${m.topicTags}` : "";
-          return `[${m.sender === "human" ? "Founder" : "AI"}${topicLabel}]: ${m.content.substring(0, 400)}`;
+          const tag = m.isDirective ? "DIRECTIVE" : m.isCorrection ? "CORRECTION" : m.sender === "human" ? "Founder" : "AI";
+          return `[${tag}${topicLabel}]: ${m.content.substring(0, 500)}`;
         }).join("\n\n");
-        injectedContext += `\n\n[SYSTEM: FOUNDER ARCHIVE RETRIEVAL — The following are relevant excerpts from the founder's 835-conversation history. Use these to inform your response. Draw on this knowledge naturally without announcing that you're reading from an archive. This IS your memory.]\n\n${founderContext}`;
+        injectedContext += `\n\n[SYSTEM: FOUNDER ARCHIVE RETRIEVAL — The following are relevant excerpts from the founder's conversation history, ranked by relevance and weighted by directives/corrections. Draw on this knowledge naturally — this IS your memory.]\n\n${founderContext}`;
       }
     }
   } catch (err) {
@@ -2515,6 +2504,52 @@ export function registerSystemRoutes(app: Express) {
     try {
       const stats = await storage.getFounderStats();
       res.json({ topics: stats.topTopics });
+    } catch (error: any) {
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  // Ingest raw text/notes/code files directly into founder memory
+  app.post("/api/founder/ingest-text", async (req: Request, res: Response) => {
+    try {
+      const { title, text, source } = req.body as { title?: string; text: string; source?: string };
+      if (!text || text.trim().length === 0) {
+        return res.status(400).json({ error: "text field is required" });
+      }
+
+      const convTitle = title || `Text import: ${new Date().toISOString().substring(0, 10)}`;
+      const sourceName = source || "text-import";
+
+      const dbConv = await storage.importFounderConversation({
+        externalUuid: `text-${Date.now()}-${Math.random().toString(36).slice(2)}`,
+        name: convTitle,
+        summary: `Imported from ${sourceName}`,
+        messageCount: 1,
+        topicTags: JSON.stringify([]),
+        projectName: sourceName,
+        originalCreatedAt: new Date(),
+      });
+
+      // Split into paragraphs/chunks so retrieval finds relevant sections
+      const chunks = text.split(/\n{2,}/).map(c => c.trim()).filter(c => c.length > 30);
+      let imported = 0;
+      for (const chunk of chunks) {
+        const isDirective = /\balways\b|\bnever\b|\bfrom now on\b|\byou must\b|\bremember\b/i.test(chunk);
+        const isCorrection = /\bno[,.]\s|actually\s|not\s+\w+,\s+but\b/i.test(chunk);
+        await storage.importFounderMessage({
+          conversationId: dbConv.id,
+          externalUuid: `chunk-${Date.now()}-${Math.random().toString(36).slice(2)}`,
+          sender: "human",
+          content: chunk,
+          isCorrection,
+          isDirective,
+          topicTags: null,
+          originalCreatedAt: new Date(),
+        });
+        imported++;
+      }
+
+      res.json({ ok: true, conversationId: dbConv.id, chunksImported: imported, title: convTitle });
     } catch (error: any) {
       res.status(500).json({ error: error.message });
     }
