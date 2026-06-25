@@ -55,6 +55,7 @@ export interface IStorage {
   getFounderConversations(options?: { topic?: string; limit?: number; offset?: number }): Promise<FounderConversation[]>;
   getFounderMessages(conversationId: number, options?: { limit?: number; offset?: number }): Promise<FounderMessage[]>;
   searchFounderMemory(query: string, limit?: number): Promise<FounderMessage[]>;
+  searchFounderMemoryMulti(terms: string[], limit?: number): Promise<FounderMessage[]>;
   getFounderCorrections(options?: { type?: string; limit?: number }): Promise<FounderCorrection[]>;
   getFounderStats(): Promise<{ conversations: number; messages: number; corrections: number; directives: number; dateRange: { earliest: string | null; latest: string | null }; topTopics: { topic: string; count: number }[] }>;
 
@@ -456,6 +457,40 @@ class DatabaseStorage implements IStorage {
       .where(ilike(founderMessages.content, `%${query}%`))
       .orderBy(desc(founderMessages.originalCreatedAt))
       .limit(limit);
+  }
+
+  async searchFounderMemoryMulti(terms: string[], limit: number = 20): Promise<FounderMessage[]> {
+    if (terms.length === 0) return [];
+
+    // Build OR conditions across all terms
+    const conditions = terms.map(t => ilike(founderMessages.content, `%${t}%`));
+    const whereClause = conditions.length === 1 ? conditions[0] : or(...conditions)!;
+
+    const rows = await db.select().from(founderMessages)
+      .where(whereClause)
+      .orderBy(desc(founderMessages.isDirective), desc(founderMessages.isCorrection), desc(founderMessages.originalCreatedAt))
+      .limit(limit * 3);
+
+    // De-duplicate by content prefix and score by term hits
+    const seen = new Set<string>();
+    const scored = rows.map(r => {
+      const key = r.content.substring(0, 80);
+      const hits = terms.filter(t => r.content.toLowerCase().includes(t.toLowerCase())).length;
+      const boost = (r.isDirective ? 3 : 0) + (r.isCorrection ? 2 : 0);
+      return { row: r, key, score: hits + boost };
+    });
+
+    scored.sort((a, b) => b.score - a.score);
+
+    const results: FounderMessage[] = [];
+    for (const { row, key } of scored) {
+      if (!seen.has(key)) {
+        seen.add(key);
+        results.push(row);
+        if (results.length >= limit) break;
+      }
+    }
+    return results;
   }
 
   async getFounderCorrections(options?: { type?: string; limit?: number }): Promise<FounderCorrection[]> {
