@@ -1,11 +1,16 @@
 import type { Express, Request, Response } from "express";
-import Anthropic from "@anthropic-ai/sdk";
+import OpenAI from "openai";
 import { chatStorage } from "./storage";
 
-const anthropic = new Anthropic({
-  apiKey: process.env.AI_INTEGRATIONS_ANTHROPIC_API_KEY,
-  baseURL: process.env.AI_INTEGRATIONS_ANTHROPIC_BASE_URL,
+const openaiClient = new OpenAI({
+  apiKey: process.env.OPENROUTER_API_KEY,
+  baseURL: "https://openrouter.ai/api/v1",
+  defaultHeaders: {
+    "HTTP-Referer": "https://uuon-foundation.com",
+    "X-Title": "UUON Clouud",
+  },
 });
+const CHAT_MODEL = process.env.OPENROUTER_MODEL || "meta-llama/llama-3.1-8b-instruct";
 
 export function registerChatRoutes(app: Express): void {
   // Get all conversations
@@ -80,22 +85,24 @@ export function registerChatRoutes(app: Express): void {
       res.setHeader("Cache-Control", "no-cache");
       res.setHeader("Connection", "keep-alive");
 
-      // Stream response from Anthropic
-      const stream = anthropic.messages.stream({
-        model: "claude-sonnet-4-6",
+      // Stream response via OpenRouter
+      const stream = await openaiClient.chat.completions.create({
+        model: CHAT_MODEL,
         max_tokens: 8192,
-        messages: chatMessages,
+        messages: [
+          { role: "system", content: "You are Clouud, an intelligent AI assistant for UUON Foundation." },
+          ...chatMessages,
+        ],
+        stream: true,
       });
 
       let fullResponse = "";
 
-      for await (const event of stream) {
-        if (event.type === "content_block_delta" && event.delta.type === "text_delta") {
-          const content = event.delta.text;
-          if (content) {
-            fullResponse += content;
-            res.write(`data: ${JSON.stringify({ content })}\n\n`);
-          }
+      for await (const chunk of stream) {
+        const content = chunk.choices[0]?.delta?.content;
+        if (content) {
+          fullResponse += content;
+          res.write(`data: ${JSON.stringify({ content })}\n\n`);
         }
       }
 
