@@ -20,39 +20,20 @@ import { verifyText, verifyImage, verifyPattern, verifyAll } from "./provenance-
 import { searchDmensionShapes, getDmensionContextForPrompt, getEarthImpactModel, DMENSION_STATS, DMENSION_ENGINES, DMENSION_CATEGORIES } from "./dmension-codex";
 import { matchTopicToShape } from "./dmension-routes";
 import { ingestFounderArchive, getIngestionProgress } from "./founder-memory";
+import OpenAI from "openai";
+import { callClouud } from "./clouud-ai";
 import rateLimit from "express-rate-limit";
 import fs from "fs";
 import path from "path";
 
-const OLLAMA_BASE = process.env.OLLAMA_BASE_URL || "http://localhost:11434";
-const OLLAMA_MODEL = process.env.OLLAMA_MODEL || "clouud";
-
-async function ollamaChat(messages: any[], system: string, tools?: any[]): Promise<any> {
-  const body: any = {
-    model: OLLAMA_MODEL,
-    messages: [{ role: "system", content: system }, ...messages],
-    stream: false,
-  };
-  if (tools && tools.length > 0) body.tools = tools;
-  const resp = await fetch(`${OLLAMA_BASE}/v1/chat/completions`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(body),
-  });
-  if (!resp.ok) throw new Error(`Ollama error: ${resp.status} ${resp.statusText}`);
-  return resp.json();
-}
-
-function toOAITools(tools: any[]) {
-  return tools.map(t => ({
-    type: "function",
-    function: {
-      name: t.name,
-      description: t.description,
-      parameters: t.input_schema || t.parameters || { type: "object", properties: {} },
-    },
-  }));
-}
+const openrouter = process.env.OPENROUTER_API_KEY ? new OpenAI({
+  apiKey: process.env.OPENROUTER_API_KEY,
+  baseURL: "https://openrouter.ai/api/v1",
+  defaultHeaders: {
+    "HTTP-Referer": "https://uuon-foundation.com",
+    "X-Title": "UUON Clouud",
+  },
+}) : null;
 
 function parseId(val: string): number | null {
   const n = parseInt(val, 10);
@@ -92,28 +73,6 @@ const chatLimiter = rateLimit({ windowMs: 60 * 1000, max: 15, message: { error: 
 const uploadLimiter = rateLimit({ windowMs: 60 * 1000, max: 10, message: { error: "Rate limit exceeded. Maximum 10 uploads per minute." } });
 const scrapeLimiter = rateLimit({ windowMs: 60 * 1000, max: 5, message: { error: "Rate limit exceeded. Maximum 5 scrape requests per minute." } });
 const ingestLimiter = rateLimit({ windowMs: 60 * 1000, max: 3, message: { error: "Rate limit exceeded. Maximum 3 ingests per minute." } });
-
-const DMENSION_API_BASE = "https://206b7d47-19e8-43db-9dc4-4ba0a1f0626a-00-q9b2mtm0r20b.spock.replit.dev";
-const DMENSION_API_KEY = "dmn_live_testkey123";
-
-async function callDmensionEngine(method: "GET" | "POST", path: string, body?: object): Promise<any> {
-  try {
-    const opts: RequestInit = {
-      method,
-      headers: {
-        "X-API-Key": DMENSION_API_KEY,
-        "Content-Type": "application/json",
-        "Accept": "application/json",
-      },
-    };
-    if (body && method === "POST") opts.body = JSON.stringify(body);
-    const res = await fetch(`${DMENSION_API_BASE}${path}`, opts);
-    if (!res.ok) return { error: `Δmension engine returned ${res.status}`, path };
-    return await res.json();
-  } catch (err: any) {
-    return { error: `Δmension engine unreachable: ${err.message}`, path };
-  }
-}
 
 const CLOUUD_TOOLS = [
   ...latticeTools,
@@ -164,52 +123,6 @@ const CLOUUD_TOOLS = [
         domain: { type: "string", enum: ["energy", "education", "waste", "health", "fraud"], description: "The impact domain to model" },
       },
       required: ["domain"]
-    }
-  },
-  {
-    name: "dmension_list_shapes",
-    description: "List available 3D mathematical shapes from a live Δmension engine. Use this to discover what shapes are available in the fractal, relativity, or modulo engines before rendering one. Call this when a user asks what shapes exist or wants to browse by engine type.",
-    input_schema: {
-      type: "object",
-      properties: {
-        engine: {
-          type: "string",
-          enum: ["fractal", "relativity", "modulo"],
-          description: "The Δmension engine to list shapes from. fractal = fractal geometry, relativity = spacetime/curvature shapes, modulo = modular arithmetic patterns."
-        }
-      },
-      required: ["engine"]
-    }
-  },
-  {
-    name: "dmension_render_shape",
-    description: "Render a specific 3D shape directly from a live Δmension engine. Returns vertex/normal/UV data ready for Three.js or Unity. Use this when a user wants to see or use a specific mathematical shape — call dmension_list_shapes first if you don't know the shapeId.",
-    input_schema: {
-      type: "object",
-      properties: {
-        engine: {
-          type: "string",
-          enum: ["fractal", "relativity", "modulo"],
-          description: "The Δmension engine to render from."
-        },
-        shapeId: {
-          type: "string",
-          description: "The shape identifier to render (e.g. 'mandelbrot_surface', 'schwarzschild', 'modulo_ring'). Get valid IDs from dmension_list_shapes first."
-        },
-        parameters: {
-          type: "object",
-          description: "Optional parametric values for the shape (a, b, c, etc.)"
-        },
-        uSegments: {
-          type: "number",
-          description: "Mesh resolution on U axis. Default 64."
-        },
-        vSegments: {
-          type: "number",
-          description: "Mesh resolution on V axis. Default 64."
-        }
-      },
-      required: ["engine", "shapeId"]
     }
   }
 ];
@@ -739,7 +652,7 @@ const systemMetrics = {
   responseTimes: [] as number[],
   uptime: Date.now(),
   lastRequestAt: 0,
-  modelUsed: OLLAMA_MODEL,
+  modelUsed: "claude-sonnet-4-6",
 };
 
 function recordMetrics(responseTimeMs: number, tokensIn: number, tokensOut: number, toolCalls: number, driftFlagged: boolean) {
@@ -1074,6 +987,8 @@ export async function registerRoutes(
   app: Express
 ): Promise<Server> {
   app.set("trust proxy", 1);
+  // callClouud: OpenRouter via OpenAI-compatible SDK → Ollama fallback (see server/clouud-ai.ts)
+  const callAI = callClouud;
 
   // Get all conversations
   app.get("/api/conversations", async (_req: Request, res: Response) => {
@@ -1246,14 +1161,25 @@ export async function registerRoutes(
   try {
     const searchTerms = extractSearchTerms(content);
     if (searchTerms.length > 0) {
-      const hits = await storage.searchFounderMemoryMulti(searchTerms, 10);
-      if (hits.length > 0) {
-        const founderContext = hits.slice(0, 8).map(m => {
+      const founderHits: Array<{ content: string; sender: string; topicTags: string | null }> = [];
+      const seen = new Set<string>();
+      for (const term of searchTerms.slice(0, 3)) {
+        const results = await storage.searchFounderMemory(term, 5);
+        for (const r of results) {
+          const key = r.content.substring(0, 100);
+          if (!seen.has(key)) {
+            seen.add(key);
+            founderHits.push({ content: r.content, sender: r.sender, topicTags: r.topicTags });
+          }
+        }
+      }
+      if (founderHits.length > 0) {
+        const relevantMessages = founderHits.slice(0, 6);
+        const founderContext = relevantMessages.map((m, i) => {
           const topicLabel = m.topicTags ? ` | ${m.topicTags}` : "";
-          const tag = m.isDirective ? "DIRECTIVE" : m.isCorrection ? "CORRECTION" : m.sender === "human" ? "Founder" : "AI";
-          return `[${tag}${topicLabel}]: ${m.content.substring(0, 500)}`;
+          return `[${m.sender === "human" ? "Founder" : "AI"}${topicLabel}]: ${m.content.substring(0, 400)}`;
         }).join("\n\n");
-        injectedContext += `\n\n[SYSTEM: FOUNDER ARCHIVE RETRIEVAL — The following are relevant excerpts from the founder's conversation history, ranked by relevance and weighted by directives/corrections. Draw on this knowledge naturally — this IS your memory.]\n\n${founderContext}`;
+        injectedContext += `\n\n[SYSTEM: FOUNDER ARCHIVE RETRIEVAL — The following are relevant excerpts from the founder's 835-conversation history. Use these to inform your response. Draw on this knowledge naturally without announcing that you're reading from an archive. This IS your memory.]\n\n${founderContext}`;
       }
     }
   } catch (err) {
@@ -1281,7 +1207,7 @@ export async function registerRoutes(
         smartWindow.shift();
       }
 
-      const apiMessages: any[] = smartWindow.map(m => ({
+      const apiMessages: Array<{ role: "user" | "assistant"; content: string }> = smartWindow.map(m => ({
         role: m.role as "user" | "assistant",
         content: m.content,
       }));
@@ -1304,142 +1230,14 @@ export async function registerRoutes(
         dynamicPrompt += recalibrationNote;
       }
 
-      const oaiTools = toOAITools(CLOUUD_TOOLS);
-      let response = await ollamaChat(apiMessages, dynamicPrompt, oaiTools);
-
-      totalInputTokens += response.usage?.prompt_tokens || 0;
-      totalOutputTokens += response.usage?.completion_tokens || 0;
-
-      while (response.choices?.[0]?.finish_reason === "tool_calls") {
-        const toolCalls: any[] = response.choices[0].message.tool_calls || [];
-
-        if (toolCalls.length === 0) break;
-
-        apiMessages.push({
-          role: "assistant",
-          content: response.choices[0].message.content || "",
-          tool_calls: toolCalls,
-        });
-
-        for (const toolCall of toolCalls) {
-          const toolName = toolCall.function.name;
-          const toolInput = JSON.parse(toolCall.function.arguments || "{}");
-          let toolResult: string;
-
-          if (toolName === "visualize_concept") {
-            toolResult = JSON.stringify({
-              status: "visualizing",
-              concept: toolInput.concept,
-              link: `https://uuon-foundation.com/visualize?shape=${toolInput.shapeType}`
-            });
-          } else if (toolName === "explore_dmension") {
-            const results = searchDmensionShapes(toolInput.query);
-            toolResult = JSON.stringify({
-              query: toolInput.query,
-              totalShapesInLibrary: DMENSION_STATS.totalShapes,
-              results: results.length > 0 ? results : [{ note: `No exact match for "${toolInput.query}", but Δmension has ${DMENSION_STATS.totalShapes} shapes across ${DMENSION_STATS.totalCategories} categories. Try broader terms like: physics, math, fractal, quantum, biology, wave, tensor, healing.` }],
-              engines: Object.values(DMENSION_ENGINES).map(e => ({ name: e.name, earthApplication: e.earthApplication })),
-              url: "https://uuon-foundation.com"
-            });
-          } else if (toolName === "earth_impact") {
-            const model = getEarthImpactModel(toolInput.domain);
-            toolResult = JSON.stringify({
-              domain: toolInput.domain,
-              ...model,
-              dmensionStats: {
-                totalShapes: DMENSION_STATS.totalShapes,
-                relevantEngines: Object.values(DMENSION_ENGINES).filter(e =>
-                  e.earthApplication.toLowerCase().includes(toolInput.domain)
-                ).map(e => e.name),
-              }
-            });
-          } else if (toolName === "dmension_list_shapes") {
-            const engine = toolInput.engine as string;
-            const data = await callDmensionEngine("GET", `/api/engines/${engine}/shapes`);
-            toolResult = JSON.stringify({
-              engine,
-              source: "live_dmension_api",
-              baseUrl: DMENSION_API_BASE,
-              ...data,
-            });
-          } else if (toolName === "dmension_render_shape") {
-            const engine = toolInput.engine as string;
-            const renderPath = engine === "modulo" ? `/api/engines/modulo/pattern` : `/api/engines/${engine}/render`;
-            const body = {
-              shapeId: toolInput.shapeId,
-              parameters: toolInput.parameters || { a: 1, b: 1, c: 1 },
-              uSegments: toolInput.uSegments || 64,
-              vSegments: toolInput.vSegments || 64,
-            };
-            const data = await callDmensionEngine("POST", renderPath, body);
-            const hasGeometry = data && (data.vertices || data.indices);
-            toolResult = JSON.stringify({
-              engine,
-              shapeId: toolInput.shapeId,
-              source: "live_dmension_api",
-              rendered: hasGeometry,
-              summary: hasGeometry
-                ? `Shape "${toolInput.shapeId}" rendered from ${engine} engine. Vertex data ready for Three.js/Unity. Explore at: ${DMENSION_API_BASE}`
-                : `Render response received from ${engine} engine.`,
-              ...data,
-            });
-          } else if (toolName === "generate_image") {
-            const imageId = `clouud-${Date.now()}`;
-            const imagePath = path.join("generated_images", `${imageId}.png`);
-
-            if (!fs.existsSync("generated_images")) {
-              fs.mkdirSync("generated_images", { recursive: true });
-            }
-
-            const imgEntry: PendingImage = {
-              id: imageId,
-              prompt: toolInput.prompt,
-              concept: toolInput.concept,
-              aspectRatio: toolInput.aspectRatio || "1:1",
-              outputPath: imagePath,
-              status: "pending"
-            };
-            pendingImageGenerations.push(imgEntry);
-            cleanupOldImages();
-
-            toolResult = JSON.stringify({
-              status: "image_queued",
-              imageId,
-              concept: toolInput.concept,
-              message: `Image generation has been queued for "${toolInput.concept}". The image will appear in the conversation once generated. Tell the user you are creating a visual for them and it will appear shortly.`
-            });
-          } else {
-            toolResult = executeLatticeTool(toolName, toolInput);
-          }
-          toolCallCount++;
-
-          let parsedResult: any;
-          try {
-            parsedResult = JSON.parse(toolResult);
-          } catch {
-            parsedResult = { raw: toolResult };
-          }
-          toolCallData = {
-            name: toolName,
-            args: toolInput,
-            result: parsedResult,
-          };
-
-          apiMessages.push({
-            role: "tool",
-            tool_call_id: toolCall.id,
-            content: toolResult,
-          });
-        }
-
-        response = await ollamaChat(apiMessages, dynamicPrompt, oaiTools);
-
-        totalInputTokens += response.usage?.prompt_tokens || 0;
-        totalOutputTokens += response.usage?.completion_tokens || 0;
-      }
-
-      // Extract final text response
-      finalResponse = response.choices?.[0]?.message?.content || "";
+      // Use OpenRouter via OpenAI-compatible SDK (clouud-ai.ts)
+      const simpleMessages = apiMessages.map((m: any) => ({
+        role: m.role as string,
+        content: typeof m.content === "string" ? m.content : JSON.stringify(m.content),
+      }));
+      finalResponse = await callAI(dynamicPrompt, simpleMessages);
+      const assistantMsg = await storage.createMessage({ conversationId, role: "assistant", content: finalResponse });
+      return res.json({ userMessage: userMsg, assistantMessage: assistantMsg });
 
     const driftCheck = checkDrift(finalResponse);
     if (!driftCheck.clean) {
@@ -1925,7 +1723,6 @@ function parseImportedChat(content: string, source: string): Array<{ role: strin
 
 async function analyzeIdeasInBackground(importId: number, chatMessages: Array<{ role: string; content: string }>, source: string) {
   try {
-
     const userMessages = chatMessages
       .filter(m => m.role === "user")
       .map(m => m.content)
@@ -1950,9 +1747,7 @@ async function analyzeIdeasInBackground(importId: number, chatMessages: Array<{ 
     for (const chunk of chunks) {
       const chunkText = chunk.map((m, i) => `[MSG ${i + 1}] ${m}`).join("\n\n---\n\n");
 
-      const response = await ollamaChat(
-        [{ role: "user", content: `Analyze this ${source} chat history from Phillip and extract functional ideas for the UUON Clouud system:\n\n${chunkText}` }],
-        `You are UInVerse, the idea extraction engine for UUON Foundation Inc., founded by Phillip Aguilar Ruiz III.
+      const uinverseSystem = `You are UInVerse, the idea extraction engine for UUON Foundation Inc., founded by Phillip Aguilar Ruiz III.
 
 You analyze chat histories from other AI systems to find ideas that should become functional tools in the UUON Clouud system.
 
@@ -1974,10 +1769,11 @@ Only extract ideas that Phillip himself expressed or explored. Do not invent ide
 
 Respond with a JSON array of idea objects. Each object must have: title, description, category, verdict, confidence, reasoning, sourceExcerpt, priority.
 
-If no ideas are found, respond with an empty array [].`,
-      );
+If no ideas are found, respond with an empty array [].`;
 
-      const responseText = response.choices?.[0]?.message?.content || "";
+      const responseText = await callClouud(uinverseSystem, [
+        { role: "user", content: `Analyze this ${source} chat history from Phillip and extract functional ideas for the UUON Clouud system:\n\n${chunkText}` },
+      ]);
 
       try {
         const jsonMatch = responseText.match(/\[[\s\S]*\]/);
@@ -2504,52 +2300,6 @@ export function registerSystemRoutes(app: Express) {
     try {
       const stats = await storage.getFounderStats();
       res.json({ topics: stats.topTopics });
-    } catch (error: any) {
-      res.status(500).json({ error: error.message });
-    }
-  });
-
-  // Ingest raw text/notes/code files directly into founder memory
-  app.post("/api/founder/ingest-text", async (req: Request, res: Response) => {
-    try {
-      const { title, text, source } = req.body as { title?: string; text: string; source?: string };
-      if (!text || text.trim().length === 0) {
-        return res.status(400).json({ error: "text field is required" });
-      }
-
-      const convTitle = title || `Text import: ${new Date().toISOString().substring(0, 10)}`;
-      const sourceName = source || "text-import";
-
-      const dbConv = await storage.importFounderConversation({
-        externalUuid: `text-${Date.now()}-${Math.random().toString(36).slice(2)}`,
-        name: convTitle,
-        summary: `Imported from ${sourceName}`,
-        messageCount: 1,
-        topicTags: JSON.stringify([]),
-        projectName: sourceName,
-        originalCreatedAt: new Date(),
-      });
-
-      // Split into paragraphs/chunks so retrieval finds relevant sections
-      const chunks = text.split(/\n{2,}/).map(c => c.trim()).filter(c => c.length > 30);
-      let imported = 0;
-      for (const chunk of chunks) {
-        const isDirective = /\balways\b|\bnever\b|\bfrom now on\b|\byou must\b|\bremember\b/i.test(chunk);
-        const isCorrection = /\bno[,.]\s|actually\s|not\s+\w+,\s+but\b/i.test(chunk);
-        await storage.importFounderMessage({
-          conversationId: dbConv.id,
-          externalUuid: `chunk-${Date.now()}-${Math.random().toString(36).slice(2)}`,
-          sender: "human",
-          content: chunk,
-          isCorrection,
-          isDirective,
-          topicTags: null,
-          originalCreatedAt: new Date(),
-        });
-        imported++;
-      }
-
-      res.json({ ok: true, conversationId: dbConv.id, chunksImported: imported, title: convTitle });
     } catch (error: any) {
       res.status(500).json({ error: error.message });
     }
