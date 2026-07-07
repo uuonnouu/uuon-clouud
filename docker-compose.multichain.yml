@@ -1,0 +1,198 @@
+version: '3.9'
+services:
+  # Main Clouud API Gateway
+  clouud:
+    build:
+      context: .
+      cache_from:
+        - type=registry,ref=clouud:latest
+      cache_to:
+        - type=inline
+    image: clouud:latest
+    container_name: clouud-api
+    ports:
+      - "5001:5001"
+    environment:
+      - AI_BACKEND=ollama
+      - OLLAMA_MODEL=clouud:latest
+      - OLLAMA_HOST=http://host.docker.internal:11434/v1
+      - DATABASE_URL=postgresql://clouud:${DB_PASSWORD:-clouud}@db:5432/clouud?sslmode=disable
+      - NODE_ENV=production
+      - PORT=5001
+      - UUON_BRIDGE_SECRET=${UUON_BRIDGE_SECRET:-localdev}
+      - REDIS_URL=redis://redis:6379
+      - LOG_LEVEL=info
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    restart: unless-stopped
+    networks:
+      - clouud-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5001/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Primary Database
+  db:
+    image: postgres:16-alpine
+    container_name: clouud-db
+    environment:
+      POSTGRES_USER: clouud
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-clouud}
+      POSTGRES_DB: clouud
+      POSTGRES_INITDB_ARGS: "-c shared_buffers=512MB -c max_connections=100 -c maintenance_work_mem=128MB"
+    ports:
+      - "5433:5432"
+    volumes:
+      - clouud_db:/var/lib/postgresql/data
+      - ./backups:/backups:ro
+    restart: unless-stopped
+    networks:
+      - clouud-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U clouud"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # Redis Cache (L1 cache for multi-chain state)
+  redis:
+    image: redis:7-alpine
+    container_name: clouud-cache
+    command: redis-server --maxmemory 512mb --maxmemory-policy allkeys-lru --save 60 1000
+    ports:
+      - "6379:6379"
+    volumes:
+      - clouud_redis:/data
+    restart: unless-stopped
+    networks:
+      - clouud-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+  # Chain Indexer Service (Arbitrum)
+  indexer-arbitrum:
+    build:
+      context: .
+      dockerfile: Dockerfile.indexer
+      cache_from:
+        - type=registry,ref=clouud:indexer-latest
+      cache_to:
+        - type=inline
+    image: clouud:indexer-arbitrum
+    container_name: clouud-indexer-arbitrum
+    environment:
+      - CHAIN=arbitrum
+      - RPC_URL=${ARBITRUM_RPC_URL:-https://arb1.arbitrum.io/rpc}
+      - REDIS_URL=redis://redis:6379
+      - DATABASE_URL=postgresql://clouud:${DB_PASSWORD:-clouud}@db:5432/clouud?sslmode=disable
+      - LOG_LEVEL=info
+    depends_on:
+      redis:
+        condition: service_healthy
+      db:
+        condition: service_healthy
+    restart: unless-stopped
+    networks:
+      - clouud-network
+    profiles:
+      - indexers
+
+  # Chain Indexer Service (Optimism)
+  indexer-optimism:
+    build:
+      context: .
+      dockerfile: Dockerfile.indexer
+      cache_from:
+        - type=registry,ref=clouud:indexer-latest
+      cache_to:
+        - type=inline
+    image: clouud:indexer-optimism
+    container_name: clouud-indexer-optimism
+    environment:
+      - CHAIN=optimism
+      - RPC_URL=${OPTIMISM_RPC_URL:-https://mainnet.optimism.io}
+      - REDIS_URL=redis://redis:6379
+      - DATABASE_URL=postgresql://clouud:${DB_PASSWORD:-clouud}@db:5432/clouud?sslmode=disable
+      - LOG_LEVEL=info
+    depends_on:
+      redis:
+        condition: service_healthy
+      db:
+        condition: service_healthy
+    restart: unless-stopped
+    networks:
+      - clouud-network
+    profiles:
+      - indexers
+
+  # Chain Indexer Service (Polygon)
+  indexer-polygon:
+    build:
+      context: .
+      dockerfile: Dockerfile.indexer
+      cache_from:
+        - type=registry,ref=clouud:indexer-latest
+      cache_to:
+        - type=inline
+    image: clouud:indexer-polygon
+    container_name: clouud-indexer-polygon
+    environment:
+      - CHAIN=polygon
+      - RPC_URL=${POLYGON_RPC_URL:-https://polygon-rpc.com}
+      - REDIS_URL=redis://redis:6379
+      - DATABASE_URL=postgresql://clouud:${DB_PASSWORD:-clouud}@db:5432/clouud?sslmode=disable
+      - LOG_LEVEL=info
+    depends_on:
+      redis:
+        condition: service_healthy
+      db:
+        condition: service_healthy
+    restart: unless-stopped
+    networks:
+      - clouud-network
+    profiles:
+      - indexers
+
+  # Nginx Reverse Proxy + Load Balancer
+  nginx:
+    image: nginx:1.27-alpine
+    container_name: clouud-gateway
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx.multichain.conf:/etc/nginx/nginx.conf:ro
+      - ./certs:/etc/nginx/certs:ro
+    depends_on:
+      - clouud
+    restart: unless-stopped
+    networks:
+      - clouud-network
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:80/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    profiles:
+      - gateway
+
+volumes:
+  clouud_db:
+    driver: local
+  clouud_redis:
+    driver: local
+
+networks:
+  clouud-network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.28.0.0/16

@@ -1,20 +1,70 @@
-node_modules
-dist
-.DS_Store
-server/public
-vite.config.ts.*
-*.tar.gzbackups/
+# Node.js
+node_modules/
+dist/
+build/
+*.tsbuildinfo
 
-# Archives
-*.tar.gz
-
-# Private generated data
-backups/
-uploads/
-generated_images/
-
-# Secrets
+# Environment & secrets (NEVER commit)
 .env
-.env.*
-*.pem
-*.key
+.env.local
+.env.*.local
+.env.production
+
+# Dependencies
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+
+# Runtime
+tmp/
+temp/
+.cache/
+.DS_Store
+*.swp
+*.swo
+*~
+
+# IDE
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+.vs/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Test coverage
+coverage/
+.nyc_output/
+
+# Docker (keep compose files, exclude volumes)
+.docker/
+
+# Uploads (keep but exclude huge files)
+uploads/*
+!uploads/.gitkeep
+
+# Generated images
+generated_images/*
+!generated_images/.gitkeep
+
+# Database backups (keep latest, exclude others from repo)
+backups/*.sql.gz
+!backups/.gitkeep
+
+# Replit
+.replit
+.upm/
+
+# Keep these for recovery:
+!.env.example
+!backups/
+!FILES.sha256
