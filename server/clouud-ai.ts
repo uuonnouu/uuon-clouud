@@ -1,18 +1,30 @@
 import OpenAI from "openai";
 
-// OpenRouter via OpenAI-compatible SDK (no ESM-only imports — prevents tsx deadlock)
-const client = process.env.OPENROUTER_API_KEY
-  ? new OpenAI({
-      apiKey: process.env.OPENROUTER_API_KEY,
-      baseURL: "https://openrouter.ai/api/v1",
-      defaultHeaders: {
-        "HTTP-Referer": "https://uuon-foundation.com",
-        "X-Title": "UUON Clouud",
-      },
-    })
-  : null;
+// Model routing:
+// 1. OLLAMA_MODEL set → local Ollama (free, no tokens)
+// 2. OPENROUTER_API_KEY set → OpenRouter (paid)
+// 3. Neither → null (system prompt only mode)
+const USE_OLLAMA = !!process.env.OLLAMA_MODEL || process.env.AI_BACKEND === "ollama";
 
-const MODEL = process.env.OPENROUTER_MODEL || "meta-llama/llama-3.1-8b-instruct";
+const client = USE_OLLAMA
+  ? new OpenAI({
+      apiKey: "ollama",                          // Ollama ignores the key
+      baseURL: process.env.OLLAMA_HOST || "http://127.0.0.1:11434/v1",
+    })
+  : process.env.OPENROUTER_API_KEY
+    ? new OpenAI({
+        apiKey: process.env.OPENROUTER_API_KEY,
+        baseURL: "https://openrouter.ai/api/v1",
+        defaultHeaders: {
+          "HTTP-Referer": "https://uuon-foundation.com",
+          "X-Title": "UUON Clouud",
+        },
+      })
+    : null;
+
+const MODEL = USE_OLLAMA
+  ? (process.env.OLLAMA_MODEL || "clouud:latest")
+  : (process.env.OPENROUTER_MODEL || "meta-llama/llama-3.1-8b-instruct");
 
 function getLunarPhase(): Record<string, string> {
   const k = 1 / 29.530588853;
@@ -75,8 +87,7 @@ export async function callClouud(
       model: MODEL,
       max_tokens: 768,
       messages: [{ role: "system", content: systemPrompt }, ...input],
-      tools: TOOLS,
-      tool_choice: "auto",
+      ...(USE_OLLAMA ? {} : { tools: TOOLS, tool_choice: "auto" }),
     });
 
     while (response.choices[0]?.finish_reason === "tool_calls") {
@@ -96,8 +107,7 @@ export async function callClouud(
           response.choices[0].message,
           ...results,
         ],
-        tools: TOOLS,
-        tool_choice: "auto",
+        ...(USE_OLLAMA ? {} : { tools: TOOLS, tool_choice: "auto" }),
       });
     }
 

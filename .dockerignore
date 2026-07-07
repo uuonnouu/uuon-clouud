@@ -1,0 +1,14 @@
+node_modules
+dist
+.git
+.env
+.DS_Store
+uploads
+backups
+*.log
+.next
+.vite
+coverage
+docs
+examples
+generated_images

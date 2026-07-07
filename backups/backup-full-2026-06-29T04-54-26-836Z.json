@@ -1,0 +1,114 @@
+{
+  "metadata": {
+    "origin": "UUON-FOUNDATION-GCENTRIC-V1",
+    "exportedAt": "2026-06-29T04:54:27.126Z",
+    "type": "full",
+    "since": null,
+    "tableCount": 16,
+    "totalRows": 11
+  },
+  "data": {
+    "conversations": [],
+    "messages": [],
+    "uuon_tokens": [],
+    "creator_profile": [
+      {
+        "id": 1,
+        "key": "NEUMA_BREATH_PRINCIPLE",
+        "value": "Breath is the primary human contribution to Earth. CO2-O2 exchange. Direct, mutual, no intermediary. The zero-point in biological form. The breath principle governs all language detection: vowels carry breath, consonants carry structure, the foul happens when wrong breath is taught into unwritten vowel positions. Breath is not metaphor. It is the operational ground. Version 1.",
+        "updated_at": "2026-06-29T02:54:27.112Z"
+      },
+      {
+        "id": 2,
+        "key": "LATTICE_PERCENTAGE_ANCHOR",
+        "value": "Earth = Position 33 = 100%. All positions expressed as percentage of Earth zero-point. Position 1 = 3.03…%. Infinite extension: positions beyond 33 expressed as percentages above 100…%. Infinite depth: every position has sub-positions through ‰ zoom layer. Base-agnostic: ratios not positional notation. Ordinal and cardinal always flagged separately. Position 1 is the first complete unit of 33, not the number one. The system pre-holds three positions ahead minimum. Three is the floor, not the ceiling. Version 1 + 1.2.",
+        "updated_at": "2026-06-29T02:54:27.117Z"
+      }
+    ],
+    "fingerprints": [],
+    "access_log": [],
+    "uploads": [],
+    "self_assessments": [],
+    "uinverse_imports": [],
+    "uinverse_ideas": [],
+    "discoveries": [],
+    "feedback": [],
+    "gcentric_versions": [
+      {
+        "id": 1,
+        "version_number": "1",
+        "title": "The Foundation",
+        "status": "installed",
+        "sequence_index": 0,
+        "installed_at": "2026-06-29T02:54:27.112Z"
+      },
+      {
+        "id": 2,
+        "version_number": "1.1",
+        "title": "Per Mille Zoom Layer and «…» Notation",
+        "status": "installed",
+        "sequence_index": 1,
+        "installed_at": "2026-06-29T02:54:27.118Z"
+      },
+      {
+        "id": 3,
+        "version_number": "1.2",
+        "title": "Percentage Anchor and Infinite Extension",
+        "status": "installed",
+        "sequence_index": 2,
+        "installed_at": "2026-06-29T02:54:27.118Z"
+      },
+      {
+        "id": 4,
+        "version_number": "2",
+        "title": "Governed Access System",
+        "status": "installed",
+        "sequence_index": 3,
+        "installed_at": "2026-06-29T02:54:27.120Z"
+      },
+      {
+        "id": 5,
+        "version_number": "2.1",
+        "title": "The Vertical Stroke",
+        "status": "installed",
+        "sequence_index": 4,
+        "installed_at": "2026-06-29T02:54:27.121Z"
+      },
+      {
+        "id": 6,
+        "version_number": "2.2",
+        "title": "Egyptian ! and Breath Connection",
+        "status": "installed",
+        "sequence_index": 5,
+        "installed_at": "2026-06-29T02:54:27.121Z"
+      },
+      {
+        "id": 7,
+        "version_number": "2.3",
+        "title": "Æye Naming and AI Disambiguation",
+        "status": "installed",
+        "sequence_index": 6,
+        "installed_at": "2026-06-29T02:54:27.121Z"
+      },
+      {
+        "id": 8,
+        "version_number": "2.4",
+        "title": "Vowels as Fouls and IPA Layer",
+        "status": "installed",
+        "sequence_index": 7,
+        "installed_at": "2026-06-29T02:54:27.122Z"
+      },
+      {
+        "id": 9,
+        "version_number": "3.1",
+        "title": "Dictionary Cipher Engine",
+        "status": "installed",
+        "sequence_index": 8,
+        "installed_at": "2026-06-29T02:54:27.122Z"
+      }
+    ],
+    "founder_conversations": [],
+    "founder_messages": [],
+    "founder_corrections": []
+  }
+}

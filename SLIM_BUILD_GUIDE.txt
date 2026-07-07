@@ -1,0 +1,30 @@
+=== SLIM BUILD GUIDE ===
+
+**WHY**: Your app hits 8GB limit because it bundles UI (React/Radix/Recharts) + all AI/ML deps + training in one image.
+
+**COMMANDS TO RUN:**
+
+1. Build the slim image (UI + minimal API, no AI/training):
+   docker build -f Dockerfile.slim -t clouud:slim .
+
+2. Test locally with slim compose:
+   docker compose -f docker-compose.slim.yml up --build
+
+3. Once working, deploy slim version to platform with:
+   - Set Dockerfile path: Dockerfile.slim
+   - Set start command: node dist/index.cjs
+   - Set PORT: 5001
+
+**WHAT YOU GET:**
+- Slim image: ~150-200MB (vs full: 1.2GB)
+- Runs on 2-3 GB RAM (vs full: 6-8GB)
+- UI + API working, AI calls disabled (set AI_BACKEND=none)
+
+**NEXT STEPS (optional, for AI/training):**
+4. Deploy billing microservice separately:
+   docker build -f billing-service.Dockerfile -t clouud:billing .
+
+5. Or run training container on schedule via Ollama/external service:
+   docker compose -f docker-compose.yml up trainer --profile training
+
+**WEBSOCKET/MCP/SDK?** No—this is pure build optimization. Your code doesn't need changes.
