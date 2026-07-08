@@ -1,4 +1,5 @@
 import express, { type Request, Response, NextFunction } from "express";
+import cors from "cors";
 import { registerPublicAPI } from "./public-api";
 import { registerRoutes, registerSystemRoutes } from "./routes";
 import { codexRouter } from "./codex-routes";
@@ -8,6 +9,9 @@ import { serveStatic } from "./static";
 import { createServer } from "http";
 import { dmensionBridge } from "./dmension-bridge";
 import { storage } from "./storage";
+import { globalLimiter, apiLimiter } from "./middleware/rate-limit";
+import { configureSecurityHeaders, corsOptions } from "./middleware/security-headers";
+import { auditLogMiddleware } from "./middleware/audit-log";
 
 const app = express();
 const httpServer = createServer(app);
@@ -17,6 +21,18 @@ declare module "http" {
     rawBody: unknown;
   }
 }
+
+// Security: Configure security headers (first)
+configureSecurityHeaders(app);
+
+// Security: Configure CORS policy
+app.use(cors(corsOptions));
+
+// Audit Logging (log all requests before rate limiting)
+app.use(auditLogMiddleware);
+
+// Security: Global rate limiting
+app.use(globalLimiter);
 
 app.use(
   express.json({
