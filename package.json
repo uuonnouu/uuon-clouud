@@ -9,7 +9,11 @@
     "build": "tsx script/build.ts",
     "start": "NODE_ENV=production node dist/index.cjs",
     "check": "tsc",
-    "db:push": "drizzle-kit push"
+    "db:push": "drizzle-kit push",
+    "test:load": "tsx tests/load-test.ts",
+    "test:postman": "postman collection run UUON-Cloud-Security-Tests.postman_collection.json",
+    "test:chain": "tsx tests/chain-integration-tests.ts",
+    "bench:mustang": "tsx tests/mustang-benchmark.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.78.0",
