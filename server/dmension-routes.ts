@@ -7,39 +7,39 @@ import { upload, extractTextFromFile } from "./uploads";
 import type { InsertDmensionShape } from "@shared/schema";
 
 const TOPIC_TO_SHAPE_MAP: Record<string, { categories: string[]; shapes: string[]; url: string }> = {
-  "quantum": { categories: ["quantum-physics"], shapes: ["waveFunction", "blochSphere", "quantumEntanglement"], url: "https://uuon-foundation.com?category=quantum-physics" },
-  "wave": { categories: ["waveforms_harmonics", "quantum-physics"], shapes: ["waveFunction", "standingWave", "interference"], url: "https://uuon-foundation.com?category=waveforms_harmonics" },
-  "fractal": { categories: ["fractal-iterations"], shapes: ["mandelbrot", "juliaSet", "sierpinski", "barnsleyFern"], url: "https://uuon-foundation.com?category=fractal-iterations" },
-  "tensor": { categories: ["4d-advanced"], shapes: ["metricTensor", "riemannCurvature", "christoffelSymbols"], url: "https://uuon-foundation.com?category=4d-advanced" },
-  "galaxy": { categories: ["modulo-cosmos"], shapes: ["spiralGalaxy", "ellipticalGalaxy", "blackHoleMerger"], url: "https://uuon-foundation.com?category=modulo-cosmos" },
-  "crystal": { categories: ["Nature & Crystals"], shapes: ["snowflake", "quartz", "diamondLattice"], url: "https://uuon-foundation.com?category=Nature%20%26%20Crystals" },
-  "dna": { categories: ["Medical Imaging"], shapes: ["dnaHelix", "proteinFolding", "cellMembrane"], url: "https://uuon-foundation.com?category=Medical%20Imaging" },
-  "biology": { categories: ["Medical Imaging"], shapes: ["dnaHelix", "proteinFolding", "neuralNetwork"], url: "https://uuon-foundation.com?category=Medical%20Imaging" },
-  "healing": { categories: ["optimization"], shapes: ["sacredGeometry", "flowerOfLife", "metatronsCube"], url: "https://uuon-foundation.com?category=optimization" },
-  "topology": { categories: ["parametric-surfaces", "minimal_surfaces"], shapes: ["kleinBottle", "mobiusStrip", "torus"], url: "https://uuon-foundation.com?category=parametric-surfaces" },
-  "modular": { categories: ["modulo-uuon", "modulo-math", "modulo-graphics"], shapes: ["modularCircle", "clockArithmetic"], url: "https://uuon-foundation.com?category=modulo-uuon" },
-  "slinky": { categories: ["slinky-dynamics"], shapes: ["springWave", "helicalSpring", "wavePropagation"], url: "https://uuon-foundation.com?category=slinky-dynamics" },
-  "rubik": { categories: ["rubiks-cube-dynamics"], shapes: ["rubiksCube", "groupTheory", "permutation"], url: "https://uuon-foundation.com?category=rubiks-cube-dynamics" },
-  "lattice": { categories: ["lattice-structures"], shapes: ["bccLattice", "fccLattice", "hexagonalLattice"], url: "https://uuon-foundation.com?category=lattice-structures" },
-  "entropy": { categories: ["entropy", "modulo-chaos"], shapes: ["strangeAttractor", "lorenzAttractor", "entropyFlow"], url: "https://uuon-foundation.com?category=entropy" },
-  "phi": { categories: ["phi_dimension"], shapes: ["goldenSpiral", "fibonacciSurface", "phiLattice"], url: "https://uuon-foundation.com?category=phi_dimension" },
-  "surface": { categories: ["parametric-surfaces", "surfaces_of_revolution"], shapes: ["parametricSurface", "revolutionSurface"], url: "https://uuon-foundation.com?category=parametric-surfaces" },
-  "curve": { categories: ["foundational_curves"], shapes: ["lissajous", "cycloid", "cardioid"], url: "https://uuon-foundation.com?category=foundational_curves" },
-  "metal": { categories: ["metal"], shapes: ["grainBoundary", "alloyMicrostructure", "phaseDiagram"], url: "https://uuon-foundation.com?category=metal" },
-  "ceramic": { categories: ["ceramic"], shapes: ["zirconiaLattice", "piezoelectric", "thermalBarrier"], url: "https://uuon-foundation.com?category=ceramic" },
-  "crypto": { categories: ["modulo-crypto"], shapes: ["ellipticCurve", "hashFunction", "zeroKnowledge"], url: "https://uuon-foundation.com?category=modulo-crypto" },
-  "sound": { categories: ["modulo-audio"], shapes: ["soundWave", "fourierTransform", "harmonicSeries"], url: "https://uuon-foundation.com?category=modulo-audio" },
-  "robot": { categories: ["modulo-robotics"], shapes: ["inverseKinematics", "pidControl", "pathPlanning"], url: "https://uuon-foundation.com?category=modulo-robotics" },
-  "network": { categories: ["modulo-network"], shapes: ["graphTheory", "distributedSystem", "routingAlgorithm"], url: "https://uuon-foundation.com?category=modulo-network" },
-  "linguistic": { categories: ["Linguistic Geometry"], shapes: ["sentenceTree", "grammarTopology", "phoneticSpace"], url: "https://uuon-foundation.com?category=Linguistic%20Geometry" },
-  "collision": { categories: ["slinky-dynamics"], shapes: ["bgkCollision", "mrtCollision", "latticeBoltzmann"], url: "https://uuon-foundation.com?category=slinky-dynamics" },
-  "pattern": { categories: ["modulo-patterns"], shapes: ["wallpaperGroup", "tilingPattern", "symmetryGroup"], url: "https://uuon-foundation.com?category=modulo-patterns" },
-  "chaos": { categories: ["modulo-chaos"], shapes: ["lorenzAttractor", "butterflyEffect", "strangeAttractor"], url: "https://uuon-foundation.com?category=modulo-chaos" },
-  "4d": { categories: ["4d-advanced"], shapes: ["tesseract", "hypercube", "4dProjection"], url: "https://uuon-foundation.com?category=4d-advanced" },
-  "5d": { categories: ["5d-polytopes"], shapes: ["pentachoron", "5dPolytope"], url: "https://uuon-foundation.com?category=5d-polytopes" },
-  "minimal": { categories: ["minimal_surfaces"], shapes: ["soapBubble", "catenoid", "helicoid"], url: "https://uuon-foundation.com?category=minimal_surfaces" },
-  "thermodynamic": { categories: ["thermodynamic_cosmology"], shapes: ["heatEngine", "entropyFlow"], url: "https://uuon-foundation.com?category=thermodynamic_cosmology" },
-  "causal": { categories: ["causal_entropic"], shapes: ["causalEntropy", "futureLight"], url: "https://uuon-foundation.com?category=causal_entropic" },
+  "quantum": { categories: ["quantum-physics"], shapes: ["waveFunction", "blochSphere", "quantumEntanglement"], url: "https://uuon.world/app?category=quantum-physics" },
+  "wave": { categories: ["waveforms_harmonics", "quantum-physics"], shapes: ["waveFunction", "standingWave", "interference"], url: "https://uuon.world/app?category=waveforms_harmonics" },
+  "fractal": { categories: ["fractal-iterations"], shapes: ["mandelbrot", "juliaSet", "sierpinski", "barnsleyFern"], url: "https://uuon.world/app?category=fractal-iterations" },
+  "tensor": { categories: ["4d-advanced"], shapes: ["metricTensor", "riemannCurvature", "christoffelSymbols"], url: "https://uuon.world/app?category=4d-advanced" },
+  "galaxy": { categories: ["modulo-cosmos"], shapes: ["spiralGalaxy", "ellipticalGalaxy", "blackHoleMerger"], url: "https://uuon.world/app?category=modulo-cosmos" },
+  "crystal": { categories: ["Nature & Crystals"], shapes: ["snowflake", "quartz", "diamondLattice"], url: "https://uuon.world/app?category=Nature%20%26%20Crystals" },
+  "dna": { categories: ["Medical Imaging"], shapes: ["dnaHelix", "proteinFolding", "cellMembrane"], url: "https://uuon.world/app?category=Medical%20Imaging" },
+  "biology": { categories: ["Medical Imaging"], shapes: ["dnaHelix", "proteinFolding", "neuralNetwork"], url: "https://uuon.world/app?category=Medical%20Imaging" },
+  "healing": { categories: ["optimization"], shapes: ["sacredGeometry", "flowerOfLife", "metatronsCube"], url: "https://uuon.world/app?category=optimization" },
+  "topology": { categories: ["parametric-surfaces", "minimal_surfaces"], shapes: ["kleinBottle", "mobiusStrip", "torus"], url: "https://uuon.world/app?category=parametric-surfaces" },
+  "modular": { categories: ["modulo-uuon", "modulo-math", "modulo-graphics"], shapes: ["modularCircle", "clockArithmetic"], url: "https://uuon.world/app?category=modulo-uuon" },
+  "slinky": { categories: ["slinky-dynamics"], shapes: ["springWave", "helicalSpring", "wavePropagation"], url: "https://uuon.world/app?category=slinky-dynamics" },
+  "rubik": { categories: ["rubiks-cube-dynamics"], shapes: ["rubiksCube", "groupTheory", "permutation"], url: "https://uuon.world/app?category=rubiks-cube-dynamics" },
+  "lattice": { categories: ["lattice-structures"], shapes: ["bccLattice", "fccLattice", "hexagonalLattice"], url: "https://uuon.world/app?category=lattice-structures" },
+  "entropy": { categories: ["entropy", "modulo-chaos"], shapes: ["strangeAttractor", "lorenzAttractor", "entropyFlow"], url: "https://uuon.world/app?category=entropy" },
+  "phi": { categories: ["phi_dimension"], shapes: ["goldenSpiral", "fibonacciSurface", "phiLattice"], url: "https://uuon.world/app?category=phi_dimension" },
+  "surface": { categories: ["parametric-surfaces", "surfaces_of_revolution"], shapes: ["parametricSurface", "revolutionSurface"], url: "https://uuon.world/app?category=parametric-surfaces" },
+  "curve": { categories: ["foundational_curves"], shapes: ["lissajous", "cycloid", "cardioid"], url: "https://uuon.world/app?category=foundational_curves" },
+  "metal": { categories: ["metal"], shapes: ["grainBoundary", "alloyMicrostructure", "phaseDiagram"], url: "https://uuon.world/app?category=metal" },
+  "ceramic": { categories: ["ceramic"], shapes: ["zirconiaLattice", "piezoelectric", "thermalBarrier"], url: "https://uuon.world/app?category=ceramic" },
+  "crypto": { categories: ["modulo-crypto"], shapes: ["ellipticCurve", "hashFunction", "zeroKnowledge"], url: "https://uuon.world/app?category=modulo-crypto" },
+  "sound": { categories: ["modulo-audio"], shapes: ["soundWave", "fourierTransform", "harmonicSeries"], url: "https://uuon.world/app?category=modulo-audio" },
+  "robot": { categories: ["modulo-robotics"], shapes: ["inverseKinematics", "pidControl", "pathPlanning"], url: "https://uuon.world/app?category=modulo-robotics" },
+  "network": { categories: ["modulo-network"], shapes: ["graphTheory", "distributedSystem", "routingAlgorithm"], url: "https://uuon.world/app?category=modulo-network" },
+  "linguistic": { categories: ["Linguistic Geometry"], shapes: ["sentenceTree", "grammarTopology", "phoneticSpace"], url: "https://uuon.world/app?category=Linguistic%20Geometry" },
+  "collision": { categories: ["slinky-dynamics"], shapes: ["bgkCollision", "mrtCollision", "latticeBoltzmann"], url: "https://uuon.world/app?category=slinky-dynamics" },
+  "pattern": { categories: ["modulo-patterns"], shapes: ["wallpaperGroup", "tilingPattern", "symmetryGroup"], url: "https://uuon.world/app?category=modulo-patterns" },
+  "chaos": { categories: ["modulo-chaos"], shapes: ["lorenzAttractor", "butterflyEffect", "strangeAttractor"], url: "https://uuon.world/app?category=modulo-chaos" },
+  "4d": { categories: ["4d-advanced"], shapes: ["tesseract", "hypercube", "4dProjection"], url: "https://uuon.world/app?category=4d-advanced" },
+  "5d": { categories: ["5d-polytopes"], shapes: ["pentachoron", "5dPolytope"], url: "https://uuon.world/app?category=5d-polytopes" },
+  "minimal": { categories: ["minimal_surfaces"], shapes: ["soapBubble", "catenoid", "helicoid"], url: "https://uuon.world/app?category=minimal_surfaces" },
+  "thermodynamic": { categories: ["thermodynamic_cosmology"], shapes: ["heatEngine", "entropyFlow"], url: "https://uuon.world/app?category=thermodynamic_cosmology" },
+  "causal": { categories: ["causal_entropic"], shapes: ["causalEntropy", "futureLight"], url: "https://uuon.world/app?category=causal_entropic" },
 };
 
 export function matchTopicToShape(text: string): { match: string; categories: string[]; shapes: string[]; url: string; categoryData: any[] } | null {
@@ -61,7 +61,7 @@ export function matchTopicToShape(text: string): { match: string; categories: st
       match: first.name,
       categories: [first.category],
       shapes: [],
-      url: `https://uuon-foundation.com?category=${encodeURIComponent(first.category)}`,
+      url: `https://uuon.world/app?category=${encodeURIComponent(first.category)}`,
       categoryData: [first],
     };
   }
@@ -191,7 +191,7 @@ export function registerDmensionRoutes(app: Express) {
     const topic = (req.query.topic as string) || "";
     if (!topic) return res.json({ match: null });
     const match = matchTopicToShape(topic);
-    res.json({ match, dmensionUrl: "https://uuon-foundation.com" });
+    res.json({ match, dmensionUrl: "https://uuon.world/app" });
   });
 
   app.post("/api/dmension/seed-from-codex", async (_req: Request, res: Response) => {

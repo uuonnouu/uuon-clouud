@@ -16,7 +16,7 @@ const client = USE_OLLAMA
         apiKey: process.env.OPENROUTER_API_KEY,
         baseURL: "https://openrouter.ai/api/v1",
         defaultHeaders: {
-          "HTTP-Referer": "https://uuon-foundation.com",
+          "HTTP-Referer": "https://uuon.world/app",
           "X-Title": "UUON Clouud",
         },
       })
@@ -67,7 +67,7 @@ function executeTool(name: string, args: Record<string, string>): string {
   if (name === "explore_dmension") {
     return JSON.stringify({
       query: args.query,
-      url: `https://uuon-foundation.com/search?q=${encodeURIComponent(args.query || "")}`,
+      url: `https://uuon.world/app/search?q=${encodeURIComponent(args.query || "")}`,
     });
   }
   return JSON.stringify({ error: "unknown tool" });

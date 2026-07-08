@@ -1,4 +1,4 @@
-const DMENSION_URL = process.env.DMENSION_API_URL || 'https://uuon-foundation.com';
+const DMENSION_URL = process.env.DMENSION_API_URL || 'https://uuon.world/app';
 const BRIDGE_SECRET = process.env.UUON_BRIDGE_SECRET;
 if (!BRIDGE_SECRET) {
   throw new Error('UUON_BRIDGE_SECRET is not set - refusing to start with an empty bridge secret');

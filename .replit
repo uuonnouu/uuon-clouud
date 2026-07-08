@@ -55,7 +55,7 @@ integrations = ["javascript_anthropic_ai_integrations:2.0.0", "github:1.0.0"]
 [userenv.shared]
 
 [userenv.development]
-DMENSION_API_URL = "https://uuon-foundation.com"
+DMENSION_API_URL = "https://uuon.world/app"
 
 [userenv.production]
-DMENSION_API_URL = "https://uuon-foundation.com"
+DMENSION_API_URL = "https://uuon.world/app"

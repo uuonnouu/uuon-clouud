@@ -6,7 +6,7 @@ const openaiClient = new OpenAI({
   apiKey: process.env.OPENROUTER_API_KEY,
   baseURL: "https://openrouter.ai/api/v1",
   defaultHeaders: {
-    "HTTP-Referer": "https://uuon-foundation.com",
+    "HTTP-Referer": "https://uuon.world/app",
     "X-Title": "UUON Clouud",
   },
 });

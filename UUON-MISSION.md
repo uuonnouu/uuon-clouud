@@ -41,7 +41,7 @@ Notable works include:
 - Protein Alpha Helix
 - Flower of Life
 
-UUON also built Dimension (Mathematical Universe), a visual exploration and demonstration tool for mathematical concepts, available at uuon-foundation.com. Dimension is an educational experience for geometry, patterns, and conceptual thinking. It is not a commercial product. It is a tool for understanding.
+UUON also built Dimension (Mathematical Universe), a visual exploration and demonstration tool for mathematical concepts, available at uuon.world/app. Dimension is an educational experience for geometry, patterns, and conceptual thinking. It is not a commercial product. It is a tool for understanding.
 
 ---
 

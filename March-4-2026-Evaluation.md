@@ -28,7 +28,7 @@ A full-stack TypeScript application with:
 - Cryptographic provenance hashing for every response
 - Self-assessment scoring engine (0-100)
 - Founder memory archive with correction/directive detection
-- Integration with Dmension (3D mathematical universe at uuon-foundation.com)
+- Integration with Dmension (3D mathematical universe at uuon.world/app)
 - Physics-based image generation
 - Device fingerprint authentication
 - Automated backup system with GitHub integration
@@ -328,7 +328,7 @@ Imperative patterns the founder embedded — "always", "never", "from now on", "
 
 **Self-Assessment Engine.** Scores calculated per response. Flags for WASTE, JARGON_LEAK, DETECTION drift, REPETITION, AGENCY_REMOVED, and EM_DASH_DETECTED. Recalibration triggers when scores drop.
 
-**Dmension Bridge.** Connected to uuon-foundation.com. Connection monitor active with retry logic. Shape search codex functional (2,642+ shapes, 35 categories).
+**Dmension Bridge.** Connected to uuon.world/app. Connection monitor active with retry logic. Shape search codex functional (2,642+ shapes, 35 categories).
 
 **Image Generation.** Physics-based SVG renderer with 11 domain-specific renderers (galaxy, tensor, wave, fractal, fluid, entropy, molecular, growth, lattice, network, default). Generates inline visualizations.
 

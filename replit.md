@@ -112,14 +112,14 @@ UUON Clouud Æye is the intelligence interface for the G°centric Lattice System
 - **Self-Protection:** Clouud never reveals internal mechanics (SHA-256, tetrahedra, lattice math, scoring weights). Explains concepts through analogies. "You tell people the ATM dispenses money, you don't hand them the vault combination"
 
 ## Δmension Bridge (Fixed)
-- **Problem:** External API to uuon-foundation.com was unreliable — constant retry spam, never connected
+- **Problem:** External API to uuon.world/app was unreliable — constant retry spam, never connected
 - **Solution:** Graceful fallback to LOCAL mode. Max 5 quiet retries, then operates with local data
 - **Three modes:** LIVE (bridge connected), LOCAL (fallback with codex data), OFFLINE (no data)
 - **Local shape database:** `dmension_shapes` table — stores uploaded data + seeded codex shapes
 - **Codex seed:** 45 shapes (35 categories + 10 engines) pre-loaded from hardcoded `dmension-codex.ts`
 - **Auto-shape matching:** `matchTopicToShape()` maps 30+ keywords (quantum, fractal, tensor, galaxy, etc.) to Δmension categories with direct URLs. Injected into chat context automatically
 - **Data upload:** Accept JSON exports from user's Δmension Replit project via file upload or JSON body. Normalizes any format (arrays, objects, conversations)
-- **The gap closed:** When someone asks about quantum waves, the system auto-detects the topic, matches to Quantum Physics category (10 shapes), and provides a direct link to `uuon-foundation.com?category=quantum-physics`
+- **The gap closed:** When someone asks about quantum waves, the system auto-detects the topic, matches to Quantum Physics category (10 shapes), and provides a direct link to `uuon.world/app?category=quantum-physics`
 
 ## Feedback Loop (v3.3)
 - Three buttons below every Clouud response: Helped, Partial, Missed
@@ -143,7 +143,7 @@ UUON Clouud Æye is the intelligence interface for the G°centric Lattice System
 - `server/ellomental-hash.ts` — Ellomental Hash Algorithm (12-tetrahedron circle formation)
 - `server/image-generator.ts` — Physics-based SVG visualization generator (11 domain renderers)
 - `server/dmension-codex.ts` — Δmension knowledge codex (2642+ shapes)
-- `server/dmension-bridge.ts` — Bi-directional bridge to uuon-foundation.com
+- `server/dmension-bridge.ts` — Bi-directional bridge to uuon.world/app
 - `server/backup.ts` — Automated backup system (16 tables, incremental + full, parameterized SQL)
 - `server/pattern-extractor.ts` — Archive extraction engine (6-phase pattern mining from 835 conversations)
 - `server/codex-routes.ts` — UUON Codeχ API routes (patterns, links, alerts, extraction, /claim command)
@@ -225,7 +225,7 @@ UUON Clouud Æye is the intelligence interface for the G°centric Lattice System
 ## Founder Info (verified)
 - Phillip Aguilar Ruiz III (double L), Yuma AZ, grew up overseas, US Army veteran, Kassel Germany
 - Created 180+ 3D mathematical models on Sketchfab
-- Built Δmension (Mathematical Universe) at uuon-foundation.com
+- Built Δmension (Mathematical Universe) at uuon.world/app
 - UUON = Universally United One Neuma = WON = ONE (only explain when asked)
 
 ## Database Indexes

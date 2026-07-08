@@ -169,13 +169,13 @@ Generated from [ALGORITHM_NAME] equations.
 Formula: [EQUATION_SHORTHAND]
 
 Part of the UUON Foundation Mathematical Universe series.
-Over 2,642 physics-derived shapes available at uuon-foundation.com.
+Over 2,642 physics-derived shapes available at uuon.world/app.
 
 Built by Phillip Aguilar Ruiz III, UUON Foundation Inc., Kassel, Germany.
 US Army veteran. Building tools that make mathematics visible.
 
 Download the 3D model to use in your project (license info in file header).
-Explore more: uuon-foundation.com
+Explore more: uuon.world/app
 
 TAGS: physics, mathematics, generative, parametric, electromagnetic, UUON, fractal
 

@@ -835,7 +835,7 @@ export default function ClouudTerminal() {
 
               <div className="p-3 border-t border-border space-y-1.5">
                 <a
-                  href="https://uuon-foundation.com"
+                  href="https://uuon.world/app"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex items-center gap-2 px-2 py-2 text-[11px] text-primary hover:text-white bg-background hover:bg-muted/60 border border-border hover:border-primary/30 rounded-sm transition-all"
@@ -911,7 +911,7 @@ export default function ClouudTerminal() {
               <div className="flex-1 relative bg-black overflow-hidden group">
                 <iframe 
                   key={showDmension ? 'active' : 'inactive'}
-                  src="https://uuon-foundation.com" 
+                  src="https://uuon.world/app" 
                   className="w-full h-full border-none"
                   title="Dmension"
                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
@@ -1057,7 +1057,7 @@ export default function ClouudTerminal() {
                                     </div>
                                     <div className="absolute bottom-3 right-3">
                                       <a 
-                                        href={`https://uuon-foundation.com?concept=${encodeURIComponent(tc.args.concept)}&shape=${tc.args.shapeType}`}
+                                        href={`https://uuon.world/app?concept=${encodeURIComponent(tc.args.concept)}&shape=${tc.args.shapeType}`}
                                         target="_blank"
                                         rel="noopener noreferrer"
                                         className="flex items-center gap-1.5 px-2 py-1 bg-primary text-black text-[9px] font-bold uppercase rounded-xs hover:bg-white transition-colors"
