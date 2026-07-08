@@ -25,6 +25,10 @@ import { callClouud } from "./clouud-ai";
 import rateLimit from "express-rate-limit";
 import fs from "fs";
 import path from "path";
+import { validateRequest } from "./middleware/validation";
+import { createMessageSchema, reasonSchema } from "./schemas/api";
+import { apiLimiter, chatLimiter, authLimiter } from "./middleware/rate-limit";
+import { requireAuth, optionalAuth, generateTokens, refreshAccessToken, handleLogout } from "./middleware/auth";
 
 const openrouter = process.env.OPENROUTER_API_KEY ? new OpenAI({
   apiKey: process.env.OPENROUTER_API_KEY,
@@ -1041,20 +1045,26 @@ export async function registerRoutes(
   });
 
   // Get messages for a conversation
-  app.get("/api/conversations/:id/messages", async (req: Request, res: Response) => {
-    try {
-      const id = parseId(req.params.id);
-      if (id === null) return res.status(400).json({ error: "Invalid conversation ID" });
-      const msgs = await storage.getMessagesByConversation(id);
-      res.json(msgs);
-    } catch (error) {
-      console.error("Error fetching messages:", error);
-      res.status(500).json({ error: "Failed to fetch messages" });
+  app.get(
+    "/api/conversations/:id/messages",
+    async (req: Request, res: Response) => {
+      try {
+        const id = parseId(req.params.id);
+        if (id === null) return res.status(400).json({ error: "Invalid conversation ID" });
+        const msgs = await storage.getMessagesByConversation(id);
+        res.json(msgs);
+      } catch (error) {
+        console.error("Error fetching messages:", error);
+        res.status(500).json({ error: "Failed to fetch messages" });
+      }
     }
-  });
+  );
 
   // Send message and get AI response with tool use
-  app.post("/api/conversations/:id/messages", chatLimiter, async (req: Request, res: Response) => {
+  app.post(
+    "/api/conversations/:id/messages",
+    chatLimiter,
+    async (req: Request, res: Response) => {
     const startTime = Date.now();
     let totalInputTokens = 0;
     let totalOutputTokens = 0;
@@ -1800,6 +1810,36 @@ export function registerSystemRoutes(app: Express) {
       console.error(`[IMAGE] Generation failed for ${img.id}:`, err.message);
       img.status = "failed";
     });
+  });
+
+  // JWT Authentication Endpoints
+  app.post("/api/auth/login", authLimiter, async (req: Request, res: Response) => {
+    try {
+      const { email, password } = req.body;
+      if (!email || !password) {
+        return res.status(400).json({ error: "Email and password are required" });
+      }
+      // TODO: Verify credentials against user DB
+      const userId = email;
+      const { accessToken, refreshToken, expiresIn } = generateTokens(userId);
+      res.json({
+        accessToken,
+        refreshToken,
+        expiresIn,
+        userId,
+        message: "Logged in successfully",
+      });
+    } catch (error: any) {
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  app.post("/api/auth/refresh", (req: Request, res: Response) => {
+    refreshAccessToken(req, res);
+  });
+
+  app.post("/api/auth/logout", requireAuth, async (req: Request, res: Response) => {
+    handleLogout(req, res);
   });
 
   app.get("/api/health", async (_req: Request, res: Response) => {
