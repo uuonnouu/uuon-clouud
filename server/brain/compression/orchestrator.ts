@@ -24,7 +24,7 @@ import { CompressionHandler, CompressionResult, BrainFileMetadata, CompressionTe
 
 export class CompressionOrchestrator {
   private handlers: CompressionHandler[] = [];
-  private minCompressionThreshold = 0.1; // Don't store if compression < 10%
+  private minCompressionThreshold = 0.9; // Don't store if compression < 10%
 
   constructor() {
     // Register all 7 compression handlers
