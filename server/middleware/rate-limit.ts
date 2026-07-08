@@ -1,4 +1,4 @@
-import rateLimit from 'express-rate-limit';
+import rateLimit, { ipKeyGenerator } from 'express-rate-limit';
 
 // Global rate limiter: 100 requests per 15 minutes per IP
 export const globalLimiter = rateLimit({
@@ -7,7 +7,7 @@ export const globalLimiter = rateLimit({
   message: { error: 'Too many requests from this IP, please try again later.' },
   standardHeaders: true,
   legacyHeaders: false,
-  keyGenerator: (req) => req.ip || 'unknown',
+  keyGenerator: ipKeyGenerator,
 });
 
 // API rate limiter: 30 requests per minute per IP
@@ -17,7 +17,7 @@ export const apiLimiter = rateLimit({
   message: { error: 'Too many API requests, please try again later.' },
   standardHeaders: true,
   legacyHeaders: false,
-  keyGenerator: (req) => req.ip || 'unknown',
+  keyGenerator: ipKeyGenerator,
 });
 
 // Auth rate limiter: 5 attempts per 15 minutes per IP
@@ -28,7 +28,7 @@ export const authLimiter = rateLimit({
   message: { error: 'Too many authentication attempts, please try again later.' },
   standardHeaders: true,
   legacyHeaders: false,
-  keyGenerator: (req) => req.ip || 'unknown',
+  keyGenerator: ipKeyGenerator,
   skip: (req) => {
     // Skip rate limit on successful auth (marked in response)
     return req.res?.locals?.authSuccess === true;
@@ -42,7 +42,7 @@ export const chatLimiter = rateLimit({
   message: { error: 'Rate limit exceeded. Maximum 15 messages per minute.' },
   standardHeaders: true,
   legacyHeaders: false,
-  keyGenerator: (req) => req.ip || 'unknown',
+  keyGenerator: ipKeyGenerator,
 });
 
 // Upload rate limiter: 10 uploads per minute per IP
@@ -52,7 +52,7 @@ export const uploadLimiter = rateLimit({
   message: { error: 'Rate limit exceeded. Maximum 10 uploads per minute.' },
   standardHeaders: true,
   legacyHeaders: false,
-  keyGenerator: (req) => req.ip || 'unknown',
+  keyGenerator: ipKeyGenerator,
 });
 
 // Scrape rate limiter: 5 scrapes per minute per IP
@@ -62,7 +62,7 @@ export const scrapeLimiter = rateLimit({
   message: { error: 'Rate limit exceeded. Maximum 5 scrape requests per minute.' },
   standardHeaders: true,
   legacyHeaders: false,
-  keyGenerator: (req) => req.ip || 'unknown',
+  keyGenerator: ipKeyGenerator,
 });
 
 // Ingest rate limiter: 3 ingests per minute per IP
@@ -72,5 +72,5 @@ export const ingestLimiter = rateLimit({
   message: { error: 'Rate limit exceeded. Maximum 3 ingests per minute.' },
   standardHeaders: true,
   legacyHeaders: false,
-  keyGenerator: (req) => req.ip || 'unknown',
+  keyGenerator: ipKeyGenerator,
 });

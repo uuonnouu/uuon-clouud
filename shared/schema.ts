@@ -344,3 +344,87 @@ export const insertDmensionShapeSchema = createInsertSchema(dmensionShapes).omit
 });
 export type DmensionShape = typeof dmensionShapes.$inferSelect;
 export type InsertDmensionShape = z.infer<typeof insertDmensionShapeSchema>;
+
+// ════════════════════════════════════════════════════════════════
+// BRAIN COMPRESSION SYSTEM - Schema for rule-based infrastructure
+// ════════════════════════════════════════════════════════════════
+
+export const brainRules = pgTable("brain_rules", {
+  id: serial("id").primaryKey(),
+  ruleId: text("rule_id").notNull().unique(),
+  sourceFile: text("source_file").notNull(),
+  ruleType: text("rule_type").notNull(), // parametric|temporal|relationship|transformation|functional|constraints|deterministic
+  ruleContent: text("rule_content").notNull(), // JSON: {seed, generator, params, metadata}
+  originalSize: integer("original_size").notNull(),
+  compressedSize: integer("compressed_size").notNull(),
+  compressionRatio: text("compression_ratio").notNull(), // decimal string for precision
+  reconstructionTimeMs: integer("reconstruction_time_ms"),
+  contentHash: text("content_hash").notNull(),
+  reconstructionHash: text("reconstruction_hash"),
+  verified: boolean("verified").notNull().default(false),
+  blockchainAnchor: text("blockchain_anchor"),
+  domain: text("domain"),
+  dependencies: text("dependencies"), // JSON array
+  metadata: text("metadata"),
+  createdAt: timestamp("created_at").default(sql`CURRENT_TIMESTAMP`).notNull(),
+  updatedAt: timestamp("updated_at").default(sql`CURRENT_TIMESTAMP`).notNull(),
+}, (table) => [
+  index("brain_rules_rule_type_idx").on(table.ruleType),
+  index("brain_rules_domain_idx").on(table.domain),
+  index("brain_rules_verified_idx").on(table.verified),
+  index("brain_rules_source_file_idx").on(table.sourceFile),
+]);
+
+export const brainInventory = pgTable("brain_inventory", {
+  id: serial("id").primaryKey(),
+  filePath: text("file_path").notNull().unique(),
+  fileName: text("file_name").notNull(),
+  fileSize: integer("file_size").notNull(),
+  contentHash: text("content_hash").notNull().unique(),
+  compressed: boolean("compressed").notNull().default(false),
+  ruleId: integer("rule_id").references(() => brainRules.id),
+  domain: text("domain"),
+  priority: text("priority").notNull().default("MEDIUM"), // HIGH|MEDIUM|LOW
+  accessCount: integer("access_count").notNull().default(0),
+  lastAccessed: timestamp("last_accessed"),
+  scannedAt: timestamp("scanned_at").default(sql`CURRENT_TIMESTAMP`).notNull(),
+  createdAt: timestamp("created_at").default(sql`CURRENT_TIMESTAMP`).notNull(),
+}, (table) => [
+  index("brain_inventory_file_path_idx").on(table.filePath),
+  index("brain_inventory_compressed_idx").on(table.compressed),
+  index("brain_inventory_domain_idx").on(table.domain),
+]);
+
+export const brainCompressionMetrics = pgTable("brain_compression_metrics", {
+  id: serial("id").primaryKey(),
+  ruleType: text("rule_type").notNull(),
+  totalRules: integer("total_rules").notNull(),
+  successCount: integer("success_count").notNull().default(0),
+  failureCount: integer("failure_count").notNull().default(0),
+  avgCompressionRatio: text("avg_compression_ratio").notNull(),
+  minCompressionRatio: text("min_compression_ratio"),
+  maxCompressionRatio: text("max_compression_ratio"),
+  avgReconstructionTimeMs: integer("avg_reconstruction_time_ms"),
+  totalStorageSaved: integer("total_storage_saved").notNull().default(0),
+  updatedAt: timestamp("updated_at").default(sql`CURRENT_TIMESTAMP`).notNull(),
+}, (table) => [
+  index("brain_compression_metrics_rule_type_idx").on(table.ruleType),
+]);
+
+export const insertBrainRuleSchema = createInsertSchema(brainRules).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export const insertBrainInventorySchema = createInsertSchema(brainInventory).omit({
+  id: true,
+  scannedAt: true,
+  createdAt: true,
+});
+
+export type BrainRule = typeof brainRules.$inferSelect;
+export type InsertBrainRule = z.infer<typeof insertBrainRuleSchema>;
+export type BrainInventoryEntry = typeof brainInventory.$inferSelect;
+export type InsertBrainInventoryEntry = z.infer<typeof insertBrainInventorySchema>;
+export type BrainCompressionMetrics = typeof brainCompressionMetrics.$inferSelect;
