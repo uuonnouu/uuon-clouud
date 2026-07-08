@@ -1,4 +1,5 @@
 import { Express, Request, Response } from "express";
+import { requireApiKey } from "../middleware/api-key";
 import { brainService } from "./service";
 import { brainScanner } from "./scanner";
 import { metricsCollector } from "./metrics-collector";
@@ -24,7 +25,7 @@ export async function registerBrainRoutes(app: Express): Promise<void> {
    * POST /api/brain/compress
    * Compress a file and store the rule
    */
-  app.post("/api/brain/compress", async (req: Request, res: Response) => {
+  app.post("/api/brain/compress", requireApiKey, async (req: Request, res: Response) => {
     try {
       const { filePath, content, fileName } = req.body;
 
@@ -259,3 +260,50 @@ export async function registerBrainRoutes(app: Express): Promise<void> {
 
   console.log("[Brain Routes] Registered successfully");
 }
+
+  /**
+   * POST /api/brain/tokenize
+   * Tokenize content into discrete units with frequency analysis
+   */
+  app.post("/api/brain/tokenize", requireApiKey, async (req: Request, res: Response) => {
+    try {
+      const { content, filePath } = req.body;
+
+      if (!content) {
+        return res.status(400).json({ error: "Missing content" });
+      }
+
+      const words = content.split(/\s+/).filter(Boolean);
+      const chars = content.length;
+      const lines = content.split('\n').length;
+
+      const freq: Record<string, number> = {};
+      for (const word of words) {
+        const w = word.toLowerCase().replace(/[^a-z0-9]/g, '');
+        if (w) freq[w] = (freq[w] || 0) + 1;
+      }
+
+      const topTokens = Object.entries(freq)
+        .sort((a, b) => b[1] - a[1])
+        .slice(0, 20)
+        .map(([token, count]) => ({ token, count, freq: +(count / words.length).toFixed(4) }));
+
+      const uniqueTokens = Object.keys(freq).length;
+      const vocabulary = uniqueTokens / words.length;
+
+      return res.json({
+        filePath: filePath || null,
+        stats: {
+          chars,
+          words: words.length,
+          lines,
+          uniqueTokens,
+          vocabularyRatio: +vocabulary.toFixed(4),
+        },
+        topTokens,
+      });
+    } catch (error) {
+      console.error("[Brain API] Tokenize error:", error);
+      return res.status(500).json({ error: "Internal server error" });
+    }
+  });
