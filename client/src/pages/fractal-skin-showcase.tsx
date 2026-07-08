@@ -110,7 +110,7 @@ export default function FractalSkinShowcase() {
             <p>Export OBJ → your mesh, your provenance token embedded in the file header.</p>
             <p>Export PNG → LSB steganographic watermark embedded invisibly in the bottom row of pixels.</p>
             <p>Every export carries a UUON session hash — verifiable at{" "}
-              <span style={{ color: "#00e5cc" }}>uuon-foundation.com/verify</span>
+              <span style={{ color: "#00e5cc" }}>uuon.world/app/verify</span>
             </p>
           </div>
         </div>
@@ -222,7 +222,7 @@ export default function FractalSkinShowcase() {
               PNG exports carry an LSB steganographic watermark: the session hash is encoded
               into the least significant bit of the blue channel in the bottom row of pixels.
               Imperceptible to the eye. Machine-verifiable.<br /><br />
-              Verify any export at: <span style={{ color: "#00e5cc" }}>uuon-foundation.com/verify</span>
+              Verify any export at: <span style={{ color: "#00e5cc" }}>uuon.world/app/verify</span>
             </p>
           </div>
 
@@ -244,7 +244,7 @@ export default function FractalSkinShowcase() {
                 { label: "GitHub", url: "https://github.com/UUON-Foundation" },
                 { label: "Sketchfab", url: "https://sketchfab.com/uuon-foundation" },
                 { label: "CGTrader", url: "https://www.cgtrader.com/uuon-foundation" },
-                { label: "Dmension", url: "https://uuon-foundation.com" },
+                { label: "Dmension", url: "https://uuon.world/app" },
               ].map(link => (
                 <a key={link.label} href={link.url} target="_blank" rel="noopener noreferrer"
                   style={{ fontSize: 11, color: "#00e5cc", border: "1px solid rgba(0,229,204,0.3)", padding: "6px 12px", borderRadius: 4, textDecoration: "none" }}>
