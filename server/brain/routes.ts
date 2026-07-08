@@ -62,7 +62,7 @@ export async function registerBrainRoutes(app: Express): Promise<void> {
    * POST /api/brain/reconstruct
    * Reconstruct content from stored rule
    */
-  app.post("/api/brain/reconstruct", async (req: Request, res: Response) => {
+  app.post("/api/brain/reconstruct", requireApiKey, async (req: Request, res: Response) => {
     try {
       const { ruleId } = req.body;
 
