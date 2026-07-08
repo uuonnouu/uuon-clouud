@@ -258,9 +258,6 @@ export async function registerBrainRoutes(app: Express): Promise<void> {
     }
   });
 
-  console.log("[Brain Routes] Registered successfully");
-}
-
   /**
    * POST /api/brain/tokenize
    * Tokenize content into discrete units with frequency analysis
@@ -307,3 +304,6 @@ export async function registerBrainRoutes(app: Express): Promise<void> {
       return res.status(500).json({ error: "Internal server error" });
     }
   });
+
+  console.log("[Brain Routes] Registered successfully");
+}
