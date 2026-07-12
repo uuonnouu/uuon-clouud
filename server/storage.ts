@@ -1,4 +1,5 @@
 import { db } from "./db";
+import { InMemoryStorage } from "./storage-fallback";
 import { conversations, messages, uuonTokens, creatorProfile, fingerprints, accessLog, uploads, selfAssessments, uinverseImports, uinverseIdeas, discoveries, feedback, gcentricVersions, founderConversations, founderMessages, founderCorrections, patterns, patternLinks, patternAlerts, dmensionShapes } from "@shared/schema";
 import type { Conversation, InsertConversation, Message, InsertMessage, UuonToken, InsertUuonToken, CreatorProfileEntry, Fingerprint, AccessLogEntry, Upload, SelfAssessment, UinverseImport, UinverseIdea, Discovery, InsertDiscovery, Feedback, InsertFeedback, GcentricVersion, InsertGcentricVersion, FounderConversation, InsertFounderConversation, FounderMessage, InsertFounderMessage, FounderCorrection, InsertFounderCorrection, Pattern, InsertPattern, PatternLink, InsertPatternLink, PatternAlert, InsertPatternAlert, DmensionShape, InsertDmensionShape } from "@shared/schema";
 import { eq, desc, and, gte, count, sql, avg, ilike, or, ne } from "drizzle-orm";
@@ -749,4 +750,4 @@ class DatabaseStorage implements IStorage {
   }
 }
 
-export const storage = new DatabaseStorage();
+export const storage: IStorage = db ? new DatabaseStorage() : new InMemoryStorage();

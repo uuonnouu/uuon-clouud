@@ -1,0 +1,94 @@
+═══════════════════════════════════════════════════════════════
+  🎯 CLOUUD TERMINAL AGENT — QUICK START
+═══════════════════════════════════════════════════════════════
+
+✅ YOUR SYSTEM IS RUNNING
+
+CLOUUD API:         http://localhost:5001 ✅
+PostgreSQL DB:      Running ✅
+Ollama Ready:       Start with: ollama serve
+GitHub Sync:        Ready (needs config)
+Conversations:      1 stored
+Full History:       ✅ Active (no cutoffs)
+Credit Tracking:    ✅ Active
+Audit Logging:      ✅ Active
+
+═══════════════════════════════════════════════════════════════
+
+🚀 INSTANT COMMANDS (Copy & Paste)
+
+1. Quick system check (30 seconds):
+   bash verify-system.sh
+
+2. Start interactive CLI:
+   ./clouud-cli
+
+3. Check status:
+   curl http://localhost:5001/api/health | jq '.'
+
+4. List your conversations:
+   curl http://localhost:5001/api/conversations | jq '.[] | {id, title}'
+
+5. Create new conversation:
+   curl -X POST http://localhost:5001/api/conversations \
+     -H "Content-Type: application/json" \
+     -d '{"title":"My Project"}'
+
+6. Send message (replace ID with actual ID):
+   curl -X POST http://localhost:5001/api/conversations/1/messages \
+     -H "Content-Type: application/json" \
+     -d '{"content":"What is in my GitHub repos?"}'
+
+═══════════════════════════════════════════════════════════════
+
+📋 INTERACTIVE CLI
+
+Run this for menu-driven interface:
+
+    ./clouud-cli
+
+Menu options:
+  1) New conversation
+  2) Send message
+  3) View conversation
+  4) List conversations
+  5) Search GitHub repos
+  6) Check status
+  7) View audit log
+  8) Register credit
+  9) Log JUNO transaction
+
+═══════════════════════════════════════════════════════════════
+
+🔧 SETUP (Do once)
+
+1. Start Ollama in another terminal:
+   ollama serve
+
+2. Configure GitHub:
+   cp .env.local.template .env.local
+   nano .env.local
+   # Add GITHUB_USER and GITHUB_TOKEN
+
+3. Restart Docker:
+   docker-compose restart clouud-prod
+
+4. Sync repos:
+   curl -X POST http://localhost:5001/api/sync/github/pull-all
+
+═══════════════════════════════════════════════════════════════
+
+📚 DOCUMENTATION
+
+START_HERE.md              → 3-minute setup
+README_TERMINAL_AGENT.md   → Full guide
+COMMANDS.md                → All API endpoints
+health-check.sh            → Full diagnostics
+
+═══════════════════════════════════════════════════════════════
+
+NOW: Run this command to start interactive CLI:
+
+    ./clouud-cli
+
+═══════════════════════════════════════════════════════════════

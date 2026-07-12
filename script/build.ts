@@ -3,7 +3,6 @@ import { build as viteBuild } from "vite";
 import { rm, readFile } from "fs/promises";
 
 // server deps to bundle to reduce openat(2) syscalls
-// which helps cold start times
 const allowlist = [
   "@anthropic-ai/sdk",
   "@google/generative-ai",
@@ -28,7 +27,6 @@ const allowlist = [
   "p-retry",
   "passport",
   "passport-local",
-  "pg",
   "stripe",
   "uuid",
   "ws",
@@ -36,6 +34,14 @@ const allowlist = [
   "zod",
   "zod-validation-error",
 ];
+
+// Native/C++ modules that cannot be bundled
+const nativeModules = new Set([
+  "pg",
+  "xtend",
+  "bufferutil",
+  "utf-8-validate",
+]);
 
 async function buildAll() {
   await rm("dist", { recursive: true, force: true });
@@ -49,7 +55,11 @@ async function buildAll() {
     ...Object.keys(pkg.dependencies || {}),
     ...Object.keys(pkg.devDependencies || {}),
   ];
-  const externals = allDeps.filter((dep) => !allowlist.includes(dep));
+  
+  // External: not in allowlist OR is a native module
+  const externals = allDeps.filter((dep) => !allowlist.includes(dep) || nativeModules.has(dep));
+
+  console.log(`External modules: ${externals.length}`);
 
   await esbuild({
     entryPoints: ["server/index.ts"],
