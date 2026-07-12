@@ -1,0 +1,7 @@
+#!/bin/bash
+
+# CLOUUD Terminal — Direct Launcher
+# No aliases. No path issues. Just works.
+
+cd "$(dirname "$0")" 2>/dev/null || cd ~/uuon-c1ouud
+exec ./clouud-cli

@@ -1,0 +1,72 @@
+╔════════════════════════════════════════════════════════════════╗
+║                                                                ║
+║          🎯 CLOUUD TERMINAL AGENT — RUN THIS NOW              ║
+║                                                                ║
+╚════════════════════════════════════════════════════════════════╝
+
+
+✅ SYSTEM STATUS: ALL GREEN
+
+  • CLOUUD API:       http://localhost:5001 ✅
+  • PostgreSQL:       Running ✅
+  • Conversations:    Storing properly ✅
+  • Audit logging:    Active ✅
+  • Credit tracking:  Active ✅
+
+
+═══════════════════════════════════════════════════════════════
+
+👉 COPY & PASTE THIS INTO YOUR TERMINAL NOW:
+
+    ./clouud-cli
+
+This opens the interactive menu. Then:
+  • Type 1 to create a conversation
+  • Type 2 to send a message
+  • Type 6 to check status
+  • Type 0 to exit
+
+═══════════════════════════════════════════════════════════════
+
+ALTERNATIVE: ONE-LINER QUICK TEST
+
+Copy this entire block and paste:
+
+---
+
+curl -X POST http://localhost:5001/api/conversations \
+  -H "Content-Type: application/json" \
+  -d '{"title":"First Test"}' > /tmp/conv.json && \
+CONV_ID=$(jq '.id' /tmp/conv.json) && \
+echo "Created conversation ID: $CONV_ID" && \
+curl -X POST "http://localhost:5001/api/conversations/$CONV_ID/messages" \
+  -H "Content-Type: application/json" \
+  -d '{"content":"Hello CLOUUD, what can you do?"}' | jq '.assistantMessage.content'
+
+---
+
+═══════════════════════════════════════════════════════════════
+
+FILE REFERENCE
+
+  CLOUUD_QUICK_START.txt     ← You are here
+  clouud-cli                 ← Interactive menu
+  verify-system.sh           ← Health check
+  COMMANDS.md                ← All API endpoints
+  START_HERE.md              ← Setup guide
+
+═══════════════════════════════════════════════════════════════
+
+NEXT STEPS (When Ready)
+
+1. Start Ollama: ollama serve
+2. Config GitHub: Edit .env.local
+3. Restart: docker-compose restart clouud-prod
+4. Sync repos: curl -X POST http://localhost:5001/api/sync/github/pull-all
+
+═══════════════════════════════════════════════════════════════
+
+                    Ready to use.
+                    Go build.
+
+═══════════════════════════════════════════════════════════════

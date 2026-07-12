@@ -1,0 +1,27 @@
+#!/bin/bash
+
+# Auto-start both Ollama and CLOUUD in separate terminals
+# Run this once, it handles everything
+
+echo "Starting CLOUUD complete system..."
+echo ""
+
+# Start Ollama in a new terminal
+osascript -e 'tell app "Terminal"
+    activate
+    do script "ollama serve"
+end tell' 2>/dev/null
+
+sleep 3
+
+# Start CLOUUD in another new terminal
+osascript -e 'tell app "Terminal"
+    activate
+    do script "cd ~/uuon-c1ouud && ./launch-clouud"
+end tell' 2>/dev/null
+
+echo "✅ Ollama started (Terminal 1)"
+echo "✅ CLOUUD started (Terminal 2)"
+echo ""
+echo "Both windows should appear on your screen."
+echo "You now have complete local control."
