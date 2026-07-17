@@ -1,0 +1,933 @@
+Δmention html file   
+<!DOCTYPE html>  
+<html lang="en">  
+<head>  
+    <meta charset="UTF-8">  
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">  
+    <title>Δmension - Ultra-Dimensional Mathematics</title>  
+    <style>  
+        * {  
+            margin: 0;  
+            padding: 0;  
+            box-sizing: border-box;  
+        }  
+          
+        body {  
+            background: radial-gradient(circle at center, #0a0a0a 0%, #000000 100%);  
+            font-family: 'Courier New', monospace;  
+            color: #00ffff;  
+            overflow: hidden;  
+            height: 100vh;  
+        }  
+          
+        #canvas {  
+            position: absolute;  
+            top: 0;  
+            left: 0;  
+            cursor: crosshair;  
+        }  
+          
+        .control-panel {  
+            position: absolute;  
+            top: 10px;  
+            left: 10px;  
+            background: rgba(0, 0, 0, 0.9);  
+            border: 1px solid #00ffff;  
+            border-radius: 8px;  
+            padding: 15px;  
+            max-height: 90vh;  
+            overflow-y: auto;  
+            width: 280px;  
+            font-size: 11px;  
+        }  
+          
+        .param-group {  
+            margin-bottom: 12px;  
+            border: 1px solid #333;  
+            border-radius: 4px;  
+            padding: 8px;  
+        }  
+          
+        .param-group h3 {  
+            color: #00ff00;  
+            font-size: 10px;  
+            margin-bottom: 6px;  
+            text-transform: uppercase;  
+            letter-spacing: 1px;  
+        }  
+          
+        .param-row {  
+            display: flex;  
+            align-items: center;  
+            margin-bottom: 4px;  
+            gap: 8px;  
+        }  
+          
+        .param-label {  
+            width: 20px;  
+            color: #ffff00;  
+            font-weight: bold;  
+        }  
+          
+        .param-slider {  
+            flex: 1;  
+            height: 18px;  
+            background: #222;  
+            border-radius: 9px;  
+            outline: none;  
+            -webkit-appearance: none;  
+        }  
+          
+        .param-slider::-webkit-slider-thumb {  
+            -webkit-appearance: none;  
+            width: 14px;  
+            height: 14px;  
+            border-radius: 50%;  
+            background: #00ffff;  
+            cursor: pointer;  
+        }  
+          
+        .param-value {  
+            width: 50px;  
+            background: #111;  
+            border: 1px solid #333;  
+            color: #00ffff;  
+            text-align: center;  
+            font-size: 9px;  
+            padding: 2px;  
+        }  
+          
+        .shape-selector {  
+            width: 100%;  
+            background: #111;  
+            border: 1px solid #00ffff;  
+            color: #00ffff;  
+            padding: 6px;  
+            margin-bottom: 10px;  
+            font-family: inherit;  
+            font-size: 10px;  
+        }  
+          
+        .mode-buttons {  
+            display: flex;  
+            gap: 4px;  
+            margin-bottom: 10px;  
+            flex-wrap: wrap;  
+        }  
+          
+        .mode-btn {  
+            background: #222;  
+            border: 1px solid #00ffff;  
+            color: #00ffff;  
+            padding: 4px 8px;  
+            cursor: pointer;  
+            font-size: 9px;  
+            border-radius: 3px;  
+            transition: all 0.2s;  
+        }  
+          
+        .mode-btn.active {  
+            background: #00ffff;  
+            color: #000;  
+        }  
+          
+        .stats {  
+            position: absolute;  
+            top: 10px;  
+            right: 10px;  
+            background: rgba(0, 0, 0, 0.8);  
+            border: 1px solid #00ffff;  
+            border-radius: 4px;  
+            padding: 10px;  
+            font-size: 10px;  
+            min-width: 200px;  
+        }  
+          
+        .dimension-display {  
+            color: #ff00ff;  
+            font-weight: bold;  
+            margin-bottom: 8px;  
+        }  
+          
+        .harmony-display {  
+            color: #ffff00;  
+            margin-bottom: 4px;  
+        }  
+          
+        .fractal-depth {  
+            color: #00ff00;  
+            margin-bottom: 4px;  
+        }  
+    </style>  
+</head>  
+<body>  
+    <canvas id="canvas"></canvas>  
+      
+    <div class="control-panel">  
+        <select id="shapeSelect" class="shape-selector">  
+            <option value="koch_snowflake">❄ Koch Snowflake</option>  
+            <option value="sierpinski_pyramid">△ Sierpinski</option>  
+            <option value="dragon_curve">🐉 Dragon Curve</option>  
+            <option value="mandelbrot_solid">∞ Mandelbrot</option>  
+            <option value="gothic_arch">⛪ Gothic Arch</option>  
+            <option value="roman_arch">🏛 Roman Arch</option>  
+            <option value="ogee_curve">〰 Ogee Curve</option>  
+            <option value="s_curve_flowing">S-Flow</option>  
+            <option value="tesseract_4d">⬛ Tesseract 4D</option>  
+            <option value="simplex_4d">🔺 Simplex 4D</option>  
+            <option value="hypersphere_4d">🌐 Hypersphere 4D</option>  
+            <option value="cell_16">◈ 16-Cell</option>  
+            <option value="cell_120">⬟ 120-Cell</option>  
+            <option value="cell_600">⬢ 600-Cell</option>  
+        </select>  
+          
+        <div class="mode-buttons">  
+            <button class="mode-btn active" data-mode="wireframe">Wire</button>  
+            <button class="mode-btn" data-mode="points">Points</button>  
+            <button class="mode-btn" data-mode="star">Star</button>  
+            <button class="mode-btn" data-mode="quantum">Quantum</button>  
+        </div>  
+          
+        <!-- Primary Dimensions (a-f) -->  
+        <div class="param-group">  
+            <h3>Primary (a-f)</h3>  
+            <div class="param-row">  
+                <span class="param-label">a</span>  
+                <input type="range" class="param-slider" id="a" min="-10" max="10" step="0.00001" value="2">  
+                <input type="number" class="param-value" data-param="a" value="2" step="0.00001">  
+            </div>  
+            <div class="param-row">  
+                <span class="param-label">b</span>  
+                <input type="range" class="param-slider" id="b" min="-10" max="10" step="0.00001" value="1">  
+                <input type="number" class="param-value" data-param="b" value="1" step="0.00001">  
+            </div>  
+            <div class="param-row">  
+                <span class="param-label">c</span>  
+                <input type="range" class="param-slider" id="c" min="-10" max="10" step="0.00001" value="1">  
+                <input type="number" class="param-value" data-param="c" value="1" step="0.00001">  
+            </div>  
+            <div class="param-row">  
+                <span class="param-label">d</span>  
+                <input type="range" class="param-slider" id="d" min="-10" max="10" step="0.00001" value="1">  
+                <input type="number" class="param-value" data-param="d" value="1" step="0.00001">  
+            </div>  
+            <div class="param-row">  
+                <span class="param-label">e</span>  
+                <input type="range" class="param-slider" id="e" min="-10" max="10" step="0.00001" value="1">  
+                <input type="number" class="param-value" data-param="e" value="1" step="0.00001">  
+            </div>  
+            <div class="param-row">  
+                <span class="param-label">f</span>  
+                <input type="range" class="param-slider" id="f" min="-10" max="10" step="0.00001" value="1">  
+                <input type="number" class="param-value" data-param="f" value="1" step="0.00001">  
+            </div>  
+        </div>  
+          
+        <!-- Secondary Dimensions (g-l) -->  
+        <div class="param-group">  
+            <h3>Secondary (g-l)</h3>  
+            <div class="param-row">  
+                <span class="param-label">g</span>  
+                <input type="range" class="param-slider" id="g" min="-10" max="10" step="0.00001" value="1">  
+                <input type="number" class="param-value" data-param="g" value="1" step="0.00001">  
+            </div>  
+            <div class="param-row">  
+                <span class="param-label">h</span>  
+                <input type="range" class="param-slider" id="h" min="-10" max="10" step="0.00001" value="1">  
+                <input type="number" class="param-value" data-param="h" value="1" step="0.00001">  
+            </div>  
+            <div class="param-row">  
+                <span class="param-label">i</span>  
+                <input type="range" class="param-slider" id="i" min="-10" max="10" step="0.00001" value="1">  
+                <input type="number" class="param-value" data-param="i" value="1" step="0.00001">  
+            </div>  
+            <div class="param-row">  
+                <span class="param-label">j</span>  
+                <input type="range" class="param-slider" id="j" min="-10" max="10" step="0.00001" value="1">  
+                <input type="number" class="param-value" data-param="j" value="1" step="0.00001">  
+            </div>  
+            <div class="param-row">  
+                <span class="param-label">k</span>  
+                <input type="range" class="param-slider" id="k" min="-10" max="10" step="0.00001" value="1">  
+                <input type="number" class="param-value" data-param="k" value="1" step="0.00001">  
+            </div>  
+            <div class="param-row">  
+                <span class="param-label">l</span>  
+                <input type="range" class="param-slider" id="l" min="-10" max="10" step="0.00001" value="1">  
+                <input type="number" class="param-value" data-param="l" value="1" step="0.00001">  
+            </div>  
+        </div>  
+          
+        <!-- Tertiary Dimensions (m-r) -->  
+        <div class="param-group">  
+            <h3>Tertiary (m-r)</h3>  
+            <div class="param-row">  
+                <span class="param-label">m</span>  
+                <input type="range" class="param-slider" id="m" min="-10" max="10" step="0.00001" value="1">  
+                <input type="number" class="param-value" data-param="m" value="1" step="0.00001">  
+            </div>  
+            <div class="param-row">  
+                <span class="param-label">n</span>  
+                <input type="range" class="param-slider" id="n" min="-10" max="10" step="0.00001" value="1">  
+                <input type="number" class="param-value" data-param="n" value="1" step="0.00001">  
+            </div>  
+            <div class="param-row">  
+                <span class="param-label">o</span>  
+                <input type="range" class="param-slider" id="o" min="-10" max="10" step="0.00001" value="1">  
+                <input type="number" class="param-value" data-param="o" value="1" step="0.00001">  
+            </div>  
+            <div class="param-row">  
+                <span class="param-label">p</span>  
+                <input type="range" class="param-slider" id="p" min="-10" max="10" step="0.00001" value="1">  
+                <input type="number" class="param-value" data-param="p" value="1" step="0.00001">  
+            </div>  
+            <div class="param-row">  
+                <span class="param-label">q</span>  
+                <input type="range" class="param-slider" id="q" min="-10" max="10" step="0.00001" value="1">  
+                <input type="number" class="param-value" data-param="q" value="1" step="0.00001">  
+            </div>  
+            <div class="param-row">  
+                <span class="param-label">r</span>  
+                <input type="range" class="param-slider" id="r" min="-10" max="10" step="0.00001" value="1">  
+                <input type="number" class="param-value" data-param="r" value="1" step="0.00001">  
+            </div>  
+        </div>  
+          
+        <!-- Final Dimensions (s-w) -->  
+        <div class="param-group">  
+            <h3>Final (s-w)</h3>  
+            <div class="param-row">  
+                <span class="param-label">s</span>  
+                <input type="range" class="param-slider" id="s" min="-10" max="10" step="0.00001" value="1">  
+                <input type="number" class="param-value" data-param="s" value="1" step="0.00001">  
+            </div>  
+            <div class="param-row">  
+                <span class="param-label">t</span>  
+                <input type="range" class="param-slider" id="t" min="-10" max="10" step="0.00001" value="1">  
+                <input type="number" class="param-value" data-param="t" value="1" step="0.00001">  
+            </div>  
+            <div class="param-row">  
+                <span class="param-label">u</span>  
+                <input type="range" class="param-slider" id="u" min="-10" max="10" step="0.00001" value="1">  
+                <input type="number" class="param-value" data-param="u" value="1" step="0.00001">  
+            </div>  
+            <div class="param-row">  
+                <span class="param-label">v</span>  
+                <input type="range" class="param-slider" id="v" min="-10" max="10" step="0.00001" value="1">  
+                <input type="number" class="param-value" data-param="v" value="1" step="0.00001">  
+            </div>  
+            <div class="param-row">  
+                <span class="param-label">w</span>  
+                <input type="range" class="param-slider" id="w" min="-10" max="10" step="0.00001" value="1">  
+                <input type="number" class="param-value" data-param="w" value="1" step="0.00001">  
+            </div>  
+        </div>  
+          
+        <!-- Hyperdimensional Controls -->  
+        <div class="param-group">  
+            <h3>Hyper (x-z)</h3>  
+            <div class="param-row">  
+                <span class="param-label">x</span>  
+                <input type="range" class="param-slider" id="x" min="-10" max="10" step="0.00001" value="0">  
+                <input type="number" class="param-value" data-param="x" value="0" step="0.00001">  
+            </div>  
+            <div class="param-row">  
+                <span class="param-label">y</span>  
+                <input type="range" class="param-slider" id="y" min="-10" max="10" step="0.00001" value="0">  
+                <input type="number" class="param-value" data-param="y" value="0" step="0.00001">  
+            </div>  
+            <div class="param-row">  
+                <span class="param-label">z</span>  
+                <input type="range" class="param-slider" id="z" min="-10" max="10" step="0.00001" value="0">  
+                <input type="number" class="param-value" data-param="z" value="0" step="0.00001">  
+            </div>  
+        </div>  
+    </div>  
+      
+    <div class="stats">  
+        <div class="dimension-display">Active Dimensions: <span id="activeDims">26</span></div>  
+        <div class="harmony-display">Letter Harmony: <span id="harmonyValue">0.000</span></div>  
+        <div class="fractal-depth">Fractal Depth: <span id="fractalDepth">1</span></div>  
+        <div>Vertices: <span id="vertexCount">0</span></div>  
+        <div>Quantum Energy: <span id="quantumEnergy">0.000</span></div>  
+        <div>Dimensional Phase: <span id="dimensionalPhase">0°</span></div>  
+    </div>  
+      
+    <script>  
+        // Dimensional Mathematics Engine  
+        class DimensionalEngine {  
+            constructor() {  
+                this.canvas = document.getElementById('canvas');  
+                this.ctx = this.canvas.getContext('2d');  
+                this.params = {};  
+                this.mode = 'wireframe';  
+                this.shape = 'koch_snowflake';  
+                this.time = 0;  
+                this.rotation = { x: 0, y: 0, z: 0 };  
+                this.isDragging = false;  
+                this.lastMouse = { x: 0, y: 0 };  
+                  
+                this.initCanvas();  
+                this.initControls();  
+                this.initParams();  
+                this.animate();  
+            }  
+              
+            initCanvas() {  
+                this.resizeCanvas();  
+                window.addEventListener('resize', () => this.resizeCanvas());  
+                  
+                this.canvas.addEventListener('mousedown', (e) => {  
+                    this.isDragging = true;  
+                    this.lastMouse = { x: e.clientX, y: e.clientY };  
+                });  
+                  
+                this.canvas.addEventListener('mousemove', (e) => {  
+                    if (this.isDragging) {  
+                        const dx = e.clientX - this.lastMouse.x;  
+                        const dy = e.clientY - this.lastMouse.y;  
+                        this.rotation.y += dx * 0.01;  
+                        this.rotation.x += dy * 0.01;  
+                        this.lastMouse = { x: e.clientX, y: e.clientY };  
+                    }  
+                });  
+                  
+                this.canvas.addEventListener('mouseup', () => {  
+                    this.isDragging = false;  
+                });  
+            }  
+              
+            resizeCanvas() {  
+                this.canvas.width = window.innerWidth;  
+                this.canvas.height = window.innerHeight;  
+            }  
+              
+            initControls() {  
+                // Shape selector  
+                document.getElementById('shapeSelect').addEventListener('change', (e) => {  
+                    this.shape = e.target.value;  
+                    this.updateShapeDefaults();  
+                });  
+                  
+                // Mode buttons  
+                document.querySelectorAll('.mode-btn').forEach(btn => {  
+                    btn.addEventListener('click', (e) => {  
+                        document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));  
+                        e.target.classList.add('active');  
+                        this.mode = e.target.dataset.mode;  
+                    });  
+                });  
+                  
+                // Parameter controls  
+                document.querySelectorAll('.param-slider').forEach(slider => {  
+                    slider.addEventListener('input', (e) => {  
+                        const param = e.target.id;  
+                        const value = parseFloat(e.target.value);  
+                        this.params[param] = value;  
+                        document.querySelector(`[data-param="${param}"]`).value = value;  
+                        this.updateStats();  
+                    });  
+                });  
+                  
+                document.querySelectorAll('.param-value').forEach(input => {  
+                    input.addEventListener('input', (e) => {  
+                        const param = e.target.dataset.param;  
+                        const value = parseFloat(e.target.value);  
+                        this.params[param] = value;  
+                        document.getElementById(param).value = value;  
+                        this.updateStats();  
+                    });  
+                });  
+            }  
+              
+            initParams() {  
+                const paramNames = ['a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z'];  
+                paramNames.forEach(name => {  
+                    const slider = document.getElementById(name);  
+                    if (slider) {  
+                        this.params[name] = parseFloat(slider.value);  
+                    }  
+                });  
+                this.updateShapeDefaults();  
+            }  
+              
+            updateShapeDefaults() {  
+                const defaults = {  
+                    koch_snowflake: { a: 2, b: 1, c: 1, d: 1, e: 1, f: 1, g: 1 },  
+                    sierpinski_pyramid: { a: 2, b: 1, c: 1, d: 2, e: 1, f: 1 },  
+                    dragon_curve: { a: 2, b: 1, c: 1, d: 3, e: 1, f: 1 },  
+                    mandelbrot_solid: { a: 1, b: 1, c: 2, d: 1, e: 1, f: 1, g: 0.5 },  
+                    gothic_arch: { a: 2, b: 1, c: 1, d: 0.3, e: 0.8, f: 1, h: 0.1 },  
+                    roman_arch: { a: 2, b: 1, c: 1, d: 1, e: 1, f: 1 },  
+                    ogee_curve: { a: 2, b: 1, c: 1, d: 1, e: 1, f: 1, h: 0.2 },  
+                    s_curve_flowing: { a: 2, b: 1, c: 1, d: 2, e: 1, f: 2, g: 0.5, j: 3, k: 0.3 },  
+                    hypercube: { a: 2, b: 1, c: 1, d: 1, w: 1 },  
+                    tesseract: { a: 1.5, b: 1, c: 1, d: 1, w: 0.5 },  
+                    hypersphere: { a: 2, b: 1, c: 1, w: 1 }  
+                };  
+                  
+                const shapeDefaults = defaults[this.shape] || {};  
+                Object.keys(shapeDefaults).forEach(param => {  
+                    if (document.getElementById(param)) {  
+                        this.params[param] = shapeDefaults[param];  
+                        document.getElementById(param).value = shapeDefaults[param];  
+                        document.querySelector(`[data-param="${param}"]`).value = shapeDefaults[param];  
+                    }  
+                });  
+                this.updateStats();  
+            }  
+              
+            updateStats() {  
+                const activeDims = Object.values(this.params).filter(v => Math.abs(v) > 0.001).length;  
+                document.getElementById('activeDims').textContent = activeDims;  
+                  
+                const harmonyValue = this.calculateLetterHarmony();  
+                document.getElementById('harmonyValue').textContent = harmonyValue.toFixed(3);  
+                  
+                const fractalDepth = Math.floor(this.params.d * 5) + 1;  
+                document.getElementById('fractalDepth').textContent = fractalDepth;  
+                  
+                const quantumEnergy = this.calculateQuantumEnergy();  
+                document.getElementById('quantumEnergy').textContent = quantumEnergy.toFixed(3);  
+                  
+                const phase = (this.time * 57.2958) % 360;  
+                document.getElementById('dimensionalPhase').textContent = Math.floor(phase) + '°';  
+            }  
+              
+            calculateLetterHarmony() {  
+                const letterValues = {  
+                    a: 0.0, b: 1.1, c: 22.22, d: 333.333, e: 4444.4444,  
+                    f: 55555.55555, g: 666666.666666, h: 7777777.7777777  
+                };  
+                  
+                let harmony = 0;  
+                Object.keys(this.params).forEach(param => {  
+                    if (letterValues[param]) {  
+                        harmony += this.params[param] * letterValues[param] * 0.0001;  
+                    }  
+                });  
+                  
+                return harmony % 1000;  
+            }  
+              
+            calculateQuantumEnergy() {  
+                let energy = 0;  
+                Object.values(this.params).forEach(value => {  
+                    energy += Math.sin(value * this.time) * Math.cos(value * 2);  
+                });  
+                return Math.abs(energy) * 0.1;  
+            }  
+              
+            generateShape() {  
+                const points = [];  
+                const segments = 120;  
+                  
+                for (let i = 0; i < segments; i++) {  
+                    for (let j = 0; j < segments; j++) {  
+                        const u = (i / segments);  
+                        const v = (j / segments);  
+                          
+                        let x, y, z, w = 0;  
+                          
+                        switch (this.shape) {  
+                            case 'koch_snowflake':  
+                                [x, y, z] = this.kochSnowflake(u, v);  
+                                break;  
+                            case 'sierpinski_pyramid':  
+                                [x, y, z] = this.sierpinskiPyramid(u, v);  
+                                break;  
+                            case 'dragon_curve':  
+                                [x, y, z] = this.dragonCurve(u, v);  
+                                break;  
+                            case 'mandelbrot_solid':  
+                                [x, y, z] = this.mandelbrotSolid(u, v);  
+                                break;  
+                            case 'gothic_arch':  
+                                [x, y, z] = this.gothicArch(u, v);  
+                                break;  
+                            case 'roman_arch':  
+                                [x, y, z] = this.romanArch(u, v);  
+                                break;  
+                            case 'ogee_curve':  
+                                [x, y, z] = this.ogeeCurve(u, v);  
+                                break;  
+                            case 's_curve_flowing':  
+                                [x, y, z] = this.sCurveFlowing(u, v);  
+                                break;  
+                            case 'hypercube':  
+                                [x, y, z, w] = this.hypercube(u, v);  
+                                break;  
+                            case 'tesseract':  
+                                [x, y, z, w] = this.tesseract(u, v);  
+                                break;  
+                            case 'hypersphere':  
+                                [x, y, z, w] = this.hypersphere(u, v);  
+                                break;  
+                            default:  
+                                [x, y, z] = [u * 2 - 1, v * 2 - 1, 0];  
+                        }  
+                          
+                        // Apply hyperdimensional transformations  
+                        x += this.params.x * Math.sin(u * Math.PI * 4) * 0.1;  
+                        y += this.params.y * Math.cos(v * Math.PI * 4) * 0.1;  
+                        z += this.params.z * Math.sin((u + v) * Math.PI * 2) * 0.1;  
+                          
+                        // 4D projection if w dimension exists  
+                        if (w !== undefined) {  
+                            const wProj = 1 / (4 - w * this.params.w);  
+                            x *= wProj;  
+                            y *= wProj;  
+                            z *= wProj;  
+                        }  
+                          
+                        points.push({ x, y, z, u, v, energy: this.calculateQuantumEnergy() });  
+                    }  
+                }  
+                  
+                document.getElementById('vertexCount').textContent = points.length;  
+                return points;  
+            }  
+              
+            kochSnowflake(u, v) {  
+                const iterations = Math.floor(this.params.d * 4) + 1;  
+                let angle = u * Math.PI * 2;  
+                let radius = this.params.a;  
+                  
+                for (let iter = 0; iter < iterations; iter++) {  
+                    const segment = Math.floor(angle / (Math.PI / 3)) % 6;  
+                    const localAngle = (angle % (Math.PI / 3)) * 3;  
+                      
+                    if (localAngle > Math.PI/3 && localAngle < 2*Math.PI/3) {  
+                        radius *= (1 + this.params.e * 0.2);  
+                        angle += this.params.f * Math.PI / 6;  
+                    }  
+                    angle *= this.params.g * 1.1;  
+                }  
+                  
+                return [  
+                    radius * Math.cos(angle) * this.params.b,  
+                    radius * Math.sin(angle) * this.params.b,  
+                    v * this.params.c  
+                ];  
+            }  
+              
+            sierpinskiPyramid(u, v) {  
+                const iterations = Math.floor(this.params.d * 6) + 1;  
+                let x = u * this.params.a * this.params.b;  
+                let y = v * this.params.a * this.params.b;  
+                let scale = 1;  
+                  
+                for (let iter = 0; iter < iterations; iter++) {  
+                    scale *= 0.5 * this.params.e;  
+                    const triX = Math.floor(x / scale) % 3;  
+                    const triY = Math.floor(y / scale) % 3;  
+                      
+                    if ((triX === 1 && triY === 1) || (triX + triY === 2)) {  
+                        x *= this.params.f * 0.8;  
+                        y *= this.params.f * 0.8;  
+                    }  
+                    x += Math.sin(iter * this.params.g) * scale * this.params.h;  
+                    y += Math.cos(iter * this.params.g) * scale * this.params.h;  
+                }  
+                  
+                const height = Math.sqrt(u*u + v*v) * this.params.c;  
+                return [x, y, height];  
+            }  
+              
+            dragonCurve(u, v) {  
+                const iterations = Math.floor(this.params.d * 10) + 1;  
+                let x = 0, y = 0;  
+                let direction = 0;  
+                let length = this.params.a * this.params.e;  
+                  
+                for (let iter = 0; iter < iterations; iter++) {  
+                    const dragonBit = Math.floor(u * Math.pow(2, iter)) % 2;  
+                    direction += dragonBit ? this.params.f * Math.PI/2 : -this.params.f * Math.PI/2;  
+                      
+                    x += Math.cos(direction) * length * this.params.g;  
+                    y += Math.sin(direction) * length * this.params.h;  
+                    length *= 0.7 * this.params.i;  
+                }  
+                  
+                return [x * this.params.b, y * this.params.b, v * this.params.c];  
+            }  
+              
+            mandelbrotSolid(u, v) {  
+                const cx = (u - 0.5) * 4 * this.params.a;  
+                const cy = (v - 0.5) * 4 * this.params.a;  
+                  
+                let zx = 0, zy = 0;  
+                let iterations = 0;  
+                const maxIter = Math.floor(this.params.d * 50) + 10;  
+                  
+                while (zx*zx + zy*zy < 4 && iterations < maxIter) {  
+                    const temp = zx*zx - zy*zy + cx * this.params.e;  
+                    zy = 2*zx*zy + cy * this.params.f;  
+                    zx = temp;  
+                    iterations++;  
+                }  
+                  
+                const escape = iterations / maxIter;  
+                return [  
+                    cx * (1 - escape * this.params.g) * this.params.b,  
+                    cy * (1 - escape * this.params.g) * this.params.b,  
+                    escape * this.params.c  
+                ];  
+            }  
+              
+            gothicArch(u, v) {  
+                const angle = u * Math.PI;  
+                const radius1 = this.params.a * (1 + this.params.d * Math.sin(angle * 2));  
+                const radius2 = this.params.a * this.params.e * (1 - Math.abs(Math.sin(angle)));  
+                  
+                const baseRadius = Math.max(radius1, radius2) * this.params.f;  
+                const height = baseRadius * Math.sin(angle) + this.params.h * Math.sin(angle * 3) * 0.1;  
+                  
+                return [  
+                    baseRadius * Math.cos(angle) * this.params.b,  
+                    height * this.params.b,  
+                    v * this.params.c  
+                ];  
+            }  
+              
+            romanArch(u, v) {  
+                const angle = u * Math.PI;  
+                const radius = this.params.a * (1 + this.params.d * 0.05 * Math.cos(angle * 4));  
+                  
+                return [  
+                    radius * Math.cos(angle) * this.params.b * this.params.e,  
+                    radius * Math.sin(angle) * this.params.b * this.params.f,  
+                    v * this.params.c * this.params.g  
+                ];  
+            }  
+              
+            ogeeCurve(u, v) {  
+                const t = u * 2 - 1;  
+                const ogee = Math.sign(t) * Math.pow(Math.abs(t), this.params.d * 2 + 0.5) * this.params.e;  
+                const curve = Math.sin(t * Math.PI * this.params.g) * this.params.h;  
+                  
+                return [  
+                    this.params.a * ogee * this.params.b * this.params.f,  
+                    this.params.a * t + curve * this.params.i,  
+                    v * this.params.c * this.params.j  
+                ];  
+            }  
+              
+            sCurveFlowing(u, v) {  
+                const t = u * Math.PI * this.params.d;  
+                const s_shape = Math.sin(t) * this.params.e;  
+                const flow = Math.cos(t * this.params.f) * this.params.g * 0.2;  
+                const progression = u * this.params.a * this.params.i;  
+                const undulation = Math.sin(t * this.params.j) * this.params.k * 0.1;  
+                  
+                return [  
+                    this.params.a * (s_shape + flow) * this.params.b * this.params.h,  
+                    progression + undulation,  
+                    v * this.params.c * this.params.l  
+                ];  
+            }  
+              
+            hypercube(u, v) {  
+                const t = this.time * 0.01;  
+                const x = Math.cos(u * Math.PI * 2) * this.params.a;  
+                const y = Math.sin(u * Math.PI * 2) * this.params.a;  
+                const z = Math.cos(v * Math.PI * 2) * this.params.b;  
+                const w = Math.sin(v * Math.PI * 2 + t) * this.params.w;  
+                  
+                return [x, y, z, w];  
+            }  
+              
+            tesseract(u, v) {  
+                const t = this.time * 0.005;  
+                const cube1 = [  
+                    this.params.a * Math.cos(u * Math.PI * 2),  
+                    this.params.a * Math.sin(u * Math.PI * 2),  
+                    this.params.b * Math.cos(v * Math.PI * 2)  
+                ];  
+                const w = this.params.w * Math.sin(t + u * v * Math.PI);  
+                  
+                return [cube1[0], cube1[1], cube1[2], w];  
+            }  
+              
+            hypersphere(u, v) {  
+                const phi = u * Math.PI * 2;  
+                const theta = v * Math.PI;  
+                const psi = this.time * 0.01;  
+                  
+                const x = this.params.a * Math.sin(theta) * Math.cos(phi);  
+                const y = this.params.a * Math.sin(theta) * Math.sin(phi);  
+                const z = this.params.a * Math.cos(theta);  
+                const w = this.params.w * Math.cos(psi + theta + phi);  
+                  
+                return [x, y, z, w];  
+            }  
+              
+            project3D(x, y, z) {  
+                const distance = 5;  
+                const scale = 200;  
+                  
+                // Apply rotations  
+                const cosX = Math.cos(this.rotation.x);  
+                const sinX = Math.sin(this.rotation.x);  
+                const cosY = Math.cos(this.rotation.y);  
+                const sinY = Math.sin(this.rotation.y);  
+                  
+                // Rotate around Y axis  
+                const x1 = x * cosY - z * sinY;  
+                const z1 = x * sinY + z * cosY;  
+                  
+                // Rotate around X axis  
+                const y1 = y * cosX - z1 * sinX;  
+                const z2 = y * sinX + z1 * cosX;  
+                  
+                // Project to 2D  
+                const factor = distance / (distance + z2);  
+                  
+                return {  
+                    x: this.canvas.width / 2 + x1 * scale * factor,  
+                    y: this.canvas.height / 2 + y1 * scale * factor,  
+                    depth: z2  
+                };  
+            }  
+              
+            getColor(point) {  
+                const time = this.time * 0.001;  
+                  
+                switch (this.mode) {  
+                    case 'quantum':  
+                        const energy = point.energy;  
+                        const r = Math.sin(energy * 10 + time) * 127 + 128;  
+                        const g = Math.sin(energy * 15 + time + 2) * 127 + 128;  
+                        const b = Math.sin(energy * 20 + time + 4) * 127 + 128;  
+                        return `rgb(${r},${g},${b})`;  
+                      
+                    case 'star':  
+                        return '#ffff00';  
+                      
+                    case 'points':  
+                        return '#00ffff';  
+                      
+                    default:  
+                        const depth = (point.z + 2) / 4;  
+                        const intensity = Math.floor(depth * 255);  
+                        return `rgb(0,${intensity},${255-intensity})`;  
+                }  
+            }  
+              
+            render() {  
+                this.ctx.fillStyle = 'rgba(0, 0, 0, 0.1)';  
+                this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);  
+                  
+                const points = this.generateShape();  
+                const projectedPoints = points.map(p => ({  
+                    ...this.project3D(p.x, p.y, p.z),  
+                    original: p  
+                })).filter(p => p.depth > -3);  
+                  
+                // Sort by depth for proper rendering  
+                projectedPoints.sort((a, b) => b.depth - a.depth);  
+                  
+                this.ctx.save();  
+                  
+                switch (this.mode) {  
+                    case 'wireframe':  
+                        this.renderWireframe(projectedPoints);  
+                        break;  
+                    case 'points':  
+                        this.renderPoints(projectedPoints);  
+                        break;  
+                    case 'star':  
+                        this.renderStars(projectedPoints);  
+                        break;  
+                    case 'quantum':  
+                        this.renderQuantum(projectedPoints);  
+                        break;  
+                }  
+                  
+                this.ctx.restore();  
+            }  
+              
+            renderWireframe(points) {  
+                this.ctx.strokeStyle = '#00ffff';  
+                this.ctx.lineWidth = 0.5;  
+                this.ctx.globalAlpha = 0.7;  
+                  
+                for (let i = 0; i < points.length - 1; i++) {  
+                    const p1 = points[i];  
+                    const p2 = points[i + 1];  
+                      
+                    if (Math.abs(p1.x - p2.x) < 50 && Math.abs(p1.y - p2.y) < 50) {  
+                        this.ctx.strokeStyle = this.getColor(p1.original);  
+                        this.ctx.beginPath();  
+                        this.ctx.moveTo(p1.x, p1.y);  
+                        this.ctx.lineTo(p2.x, p2.y);  
+                        this.ctx.stroke();  
+                    }  
+                }  
+            }  
+              
+            renderPoints(points) {  
+                this.ctx.globalAlpha = 0.8;  
+                  
+                points.forEach(point => {  
+                    this.ctx.fillStyle = this.getColor(point.original);  
+                    this.ctx.beginPath();  
+                    this.ctx.arc(point.x, point.y, 1, 0, Math.PI * 2);  
+                    this.ctx.fill();  
+                });  
+            }  
+              
+            renderStars(points) {  
+                this.ctx.globalAlpha = 0.9;  
+                  
+                points.forEach(point => {  
+                    this.ctx.strokeStyle = this.getColor(point.original);  
+                    this.ctx.lineWidth = 1;  
+                      
+                    const size = 3;  
+                    this.ctx.beginPath();  
+                    this.ctx.moveTo(point.x - size, point.y);  
+                    this.ctx.lineTo(point.x + size, point.y);  
+                    this.ctx.moveTo(point.x, point.y - size);  
+                    this.ctx.lineTo(point.x, point.y + size);  
+                    this.ctx.stroke();  
+                });  
+            }  
+              
+            renderQuantum(points) {  
+                this.ctx.globalAlpha = 0.6;  
+                  
+                points.forEach(point => {  
+                    const energy = point.original.energy;  
+                    const size = 1 + energy * 3;  
+                      
+                    this.ctx.fillStyle = this.getColor(point.original);  
+                    this.ctx.beginPath();  
+                    this.ctx.arc(point.x, point.y, size, 0, Math.PI * 2);  
+                    this.ctx.fill();  
+                      
+                    // Energy halo  
+                    this.ctx.strokeStyle = this.getColor(point.original);  
+                    this.ctx.lineWidth = 0.5;  
+                    this.ctx.beginPath();  
+                    this.ctx.arc(point.x, point.y, size + 2, 0, Math.PI * 2);  
+                    this.ctx.stroke();  
+                });  
+            }  
+              
+            animate() {  
+                this.time++;  
+                this.rotation.z += 0.002;  
+                  
+                this.render();  
+                this.updateStats();  
+                  
+                requestAnimationFrame(() => this.animate());  
+            }  
+        }  
+          
+        // Initialize the engine  
+        new DimensionalEngine();  
+    </script>  
+</body>  
+</html>  

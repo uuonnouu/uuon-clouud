@@ -1,0 +1,1 @@
+[https://redirector.gvt1.com/edgedl/android/studio/install/2025.1.1.12/android-studio-2025.1.1.12-mac_arm.dmg](https://redirector.gvt1.com/edgedl/android/studio/install/2025.1.1.12/android-studio-2025.1.1.12-mac_arm.dmg)  

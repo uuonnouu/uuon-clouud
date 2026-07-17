@@ -1,0 +1,685 @@
+# HTML Engines & Files — Master Index
+
+**Total:** 331 files | **Indexed:** 2026-06-26
+---
+
+## UUON Fractal Engines (HTML ENGINES/) (48 files)
+- `UUON-Acid-Fractal-Engine (1).html`
+  - `HTML ENGINES/UUON-Acid-Fractal-Engine (1).html`
+- `UUON-Acid-Fractal-Engine (2).html`
+  - `HTML ENGINES/UUON-Acid-Fractal-Engine (2).html`
+- `UUON-Acid-Fractal-Engine (3).html`
+  - `HTML ENGINES/UUON-Acid-Fractal-Engine (3).html`
+- `UUON-Acid-Fractal-Engine.html`
+  - `HTML ENGINES/UUON-Acid-Fractal-Engine.html`
+- `UUON-TAYLOR-EUCLID-ENGINE-v6 (1).html`
+  - `HTML ENGINES/UUON-TAYLOR-EUCLID-ENGINE-v6 (1).html`
+- `UUON-TAYLOR-EUCLID-ENGINE-v6.html`
+  - `HTML ENGINES/UUON-TAYLOR-EUCLID-ENGINE-v6.html`
+- `UUON-TAYLOR-EUCLID-ENGINE-v8.html`
+  - `HTML ENGINES/UUON-TAYLOR-EUCLID-ENGINE-v8.html`
+- `UUON-UUON-ART-001-RAW.html`
+  - `HTML ENGINES/UUON-UUON-ART-001-RAW.html`
+- `UUON_TFE_v2.html`
+  - `HTML ENGINES/UUON_TFE_v2.html`
+- `complete-wave-gen-fixed.html`
+  - `HTML ENGINES/complete-wave-gen-fixed.html`
+- `fractal-screensaver-burning-1774832344703.html`
+  - `HTML ENGINES/fractal-screensaver-burning-1774832344703.html`
+- `fractal-screensaver-mandelbrot-1774805257401.html`
+  - `HTML ENGINES/fractal-screensaver-mandelbrot-1774805257401.html`
+- `fractal-screensaver-mandelbrot-1774805518112.html`
+  - `HTML ENGINES/fractal-screensaver-mandelbrot-1774805518112.html`
+- `fractal-screensaver-mandelbrot-1774805904239.html`
+  - `HTML ENGINES/fractal-screensaver-mandelbrot-1774805904239.html`
+- `fractal-screensaver-mandelbrot-1774826439701.html`
+  - `HTML ENGINES/fractal-screensaver-mandelbrot-1774826439701.html`
+- `fractal-screensaver-mandelbrot-1774826538591.html`
+  - `HTML ENGINES/fractal-screensaver-mandelbrot-1774826538591.html`
+- `fractal-screensaver-mandelbrot-1774826661559.html`
+  - `HTML ENGINES/fractal-screensaver-mandelbrot-1774826661559.html`
+- `fractal-screensaver-mandelbrot-1774830253614.html`
+  - `HTML ENGINES/fractal-screensaver-mandelbrot-1774830253614.html`
+- `fractal-screensaver-mandelbrot-1774832774682.html`
+  - `HTML ENGINES/fractal-screensaver-mandelbrot-1774832774682.html`
+- `fractal-screensaver-reaction-1774832499688.html`
+  - `HTML ENGINES/fractal-screensaver-reaction-1774832499688.html`
+- `fractal-screensaver-reaction-1774832583719.html`
+  - `HTML ENGINES/fractal-screensaver-reaction-1774832583719.html`
+- `fractal_universe_prototype.html`
+  - `HTML ENGINES/fractal_universe_prototype.html`
+- `letter_values_analysis.html`
+  - `HTML ENGINES/letter_values_analysis.html`
+- `medical_terminology_encoder.html`
+  - `HTML ENGINES/medical_terminology_encoder.html`
+- `psychedelic-nature-portal-v18.html`
+  - `HTML ENGINES/psychedelic-nature-portal-v18.html`
+- `qfe_v2_fixed.html`
+  - `HTML ENGINES/qfe_v2_fixed.html`
+- `qfe_v3.html`
+  - `HTML ENGINES/qfe_v3.html`
+- `quantum_engine.html`
+  - `HTML ENGINES/quantum_engine.html`
+- `quantum_heatmap_mesh_reim.html`
+  - `HTML ENGINES/quantum_heatmap_mesh_reim.html`
+- `remixed-14dd4564.html`
+  - `HTML ENGINES/remixed-14dd4564.html`
+- `remixed-7a985082 (1).html`
+  - `HTML ENGINES/remixed-7a985082 (1).html`
+- `remixed-7a985082 (2).html`
+  - `HTML ENGINES/remixed-7a985082 (2).html`
+- `remixed-7a985082.html`
+  - `HTML ENGINES/remixed-7a985082.html`
+- `remixed-c77a5469.html`
+  - `HTML ENGINES/remixed-c77a5469.html`
+- `remixed-f6ca4904 (1).html`
+  - `HTML ENGINES/remixed-f6ca4904 (1).html`
+- `remixed-f6ca4904.html`
+  - `HTML ENGINES/remixed-f6ca4904.html`
+- `remixed-ff9a932d.html`
+  - `HTML ENGINES/remixed-ff9a932d.html`
+- `temporal_fractal_engine.html`
+  - `HTML ENGINES/temporal_fractal_engine.html`
+- `uuon-v8.html`
+  - `HTML ENGINES/uuon-v8.html`
+- `uuon-wire-pipeline (1).html`
+  - `HTML ENGINES/uuon-wire-pipeline (1).html`
+- `uuon-wire-pipeline.html`
+  - `HTML ENGINES/uuon-wire-pipeline.html`
+- `uuon_fe_v3.4.html`
+  - `HTML ENGINES/uuon_fe_v3.4.html`
+- `uuon_fe_v3.5.html`
+  - `HTML ENGINES/uuon_fe_v3.5.html`
+- `uuon_fractal_engine-2.html`
+  - `HTML ENGINES/uuon_fractal_engine-2.html`
+- `uuon_fractal_engine.html`
+  - `HTML ENGINES/uuon_fractal_engine.html`
+- `uuon_fractal_v4.html`
+  - `HTML ENGINES/uuon_fractal_v4.html`
+- `uuon_pipeline_full_ui.html`
+  - `HTML ENGINES/uuon_pipeline_full_ui.html`
+- `uuon_voxel_build_ii.html`
+  - `HTML ENGINES/uuon_voxel_build_ii.html`
+
+## MengerHTMLS (12 files)
+- `fractal_analysis.html`
+  - `HTML ENGINES/MengerHTMLS/fractal_analysis.html`
+- `fractal_weave.html`
+  - `HTML ENGINES/MengerHTMLS/fractal_weave.html`
+- `ifs_inverse.html`
+  - `HTML ENGINES/MengerHTMLS/ifs_inverse.html`
+- `lsystem_ifs.html`
+  - `HTML ENGINES/MengerHTMLS/lsystem_ifs.html`
+- `mandelbulb-v2.html`
+  - `HTML ENGINES/MengerHTMLS/mandelbulb-v2.html`
+- `mandelbulb.html`
+  - `HTML ENGINES/MengerHTMLS/mandelbulb.html`
+- `menger-kleinian.html`
+  - `HTML ENGINES/MengerHTMLS/menger-kleinian.html`
+- `parametric_ifs.html`
+  - `HTML ENGINES/MengerHTMLS/parametric_ifs.html`
+- `platonic_ifs.html`
+  - `HTML ENGINES/MengerHTMLS/platonic_ifs.html`
+- `platonic_v2.html`
+  - `HTML ENGINES/MengerHTMLS/platonic_v2.html`
+- `rd_ifs.html`
+  - `HTML ENGINES/MengerHTMLS/rd_ifs.html`
+- `unified_viewer.html`
+  - `HTML ENGINES/MengerHTMLS/unified_viewer.html`
+
+## Screen Savers (67 files)
+- `fractal-screensaver-fluid-1760737061397.html`
+  - `SCREEN SAVERS/fractal-screensaver-fluid-1760737061397.html`
+- `fractal-screensaver-julia-1760722957506.html`
+  - `SCREEN SAVERS/fractal-screensaver-julia-1760722957506.html`
+- `fractal-screensaver-julia-1760723186347.html`
+  - `SCREEN SAVERS/fractal-screensaver-julia-1760723186347.html`
+- `fractal-screensaver-julia-1760723201279.html`
+  - `SCREEN SAVERS/fractal-screensaver-julia-1760723201279.html`
+- `fractal-screensaver-julia-1760723410240.html`
+  - `SCREEN SAVERS/fractal-screensaver-julia-1760723410240.html`
+- `fractal-screensaver-julia-1760723462273.html`
+  - `SCREEN SAVERS/fractal-screensaver-julia-1760723462273.html`
+- `fractal-screensaver-julia-1760723811230.html`
+  - `SCREEN SAVERS/fractal-screensaver-julia-1760723811230.html`
+- `fractal-screensaver-julia-1760723830544.html`
+  - `SCREEN SAVERS/fractal-screensaver-julia-1760723830544.html`
+- `fractal-screensaver-julia-1760723912760.html`
+  - `SCREEN SAVERS/fractal-screensaver-julia-1760723912760.html`
+- `fractal-screensaver-julia-1760724741364.html`
+  - `SCREEN SAVERS/fractal-screensaver-julia-1760724741364.html`
+- `fractal-screensaver-julia-1760726554223.html`
+  - `SCREEN SAVERS/fractal-screensaver-julia-1760726554223.html`
+- `fractal-screensaver-julia-1760733368923.html`
+  - `SCREEN SAVERS/fractal-screensaver-julia-1760733368923.html`
+- `fractal-screensaver-julia-1760733648005.html`
+  - `SCREEN SAVERS/fractal-screensaver-julia-1760733648005.html`
+- `fractal-screensaver-julia-1760733714912.html`
+  - `SCREEN SAVERS/fractal-screensaver-julia-1760733714912.html`
+- `fractal-screensaver-julia-1760734041360.html`
+  - `SCREEN SAVERS/fractal-screensaver-julia-1760734041360.html`
+- `fractal-screensaver-julia-1760734198793.html`
+  - `SCREEN SAVERS/fractal-screensaver-julia-1760734198793.html`
+- `fractal-screensaver-julia-1760734246277.html`
+  - `SCREEN SAVERS/fractal-screensaver-julia-1760734246277.html`
+- `fractal-screensaver-julia-1760734363809.html`
+  - `SCREEN SAVERS/fractal-screensaver-julia-1760734363809.html`
+- `fractal-screensaver-julia-1760734436076.html`
+  - `SCREEN SAVERS/fractal-screensaver-julia-1760734436076.html`
+- `fractal-screensaver-julia-1760734504247.html`
+  - `SCREEN SAVERS/fractal-screensaver-julia-1760734504247.html`
+- `fractal-screensaver-julia-1760744223535.html`
+  - `SCREEN SAVERS/fractal-screensaver-julia-1760744223535.html`
+- `fractal-screensaver-julia-1760745540596.html`
+  - `SCREEN SAVERS/fractal-screensaver-julia-1760745540596.html`
+- `fractal-screensaver-julia-1760745652175.html`
+  - `SCREEN SAVERS/fractal-screensaver-julia-1760745652175.html`
+- `fractal-screensaver-julia-1760745714848.html`
+  - `SCREEN SAVERS/fractal-screensaver-julia-1760745714848.html`
+- `fractal-screensaver-julia-1760745727922.html`
+  - `SCREEN SAVERS/fractal-screensaver-julia-1760745727922.html`
+- `fractal-screensaver-julia-1760745756766.html`
+  - `SCREEN SAVERS/fractal-screensaver-julia-1760745756766.html`
+- `fractal-screensaver-julia-1760746199203.html`
+  - `SCREEN SAVERS/fractal-screensaver-julia-1760746199203.html`
+- `fractal-screensaver-julia-1760746216898.html`
+  - `SCREEN SAVERS/fractal-screensaver-julia-1760746216898.html`
+- `fractal-screensaver-julia-1760746242530.html`
+  - `SCREEN SAVERS/fractal-screensaver-julia-1760746242530.html`
+- `fractal-screensaver-julia-1760746285814.html`
+  - `SCREEN SAVERS/fractal-screensaver-julia-1760746285814.html`
+- `fractal-screensaver-julia-1760746317816.html`
+  - `SCREEN SAVERS/fractal-screensaver-julia-1760746317816.html`
+- `fractal-screensaver-julia-1760746346046.html`
+  - `SCREEN SAVERS/fractal-screensaver-julia-1760746346046.html`
+- `fractal-screensaver-julia-1760746383282.html`
+  - `SCREEN SAVERS/fractal-screensaver-julia-1760746383282.html`
+- `fractal-screensaver-julia-1760746431792.html`
+  - `SCREEN SAVERS/fractal-screensaver-julia-1760746431792.html`
+- `fractal-screensaver-julia-1760746453119.html`
+  - `SCREEN SAVERS/fractal-screensaver-julia-1760746453119.html`
+- `fractal-screensaver-julia-1760746467346.html`
+  - `SCREEN SAVERS/fractal-screensaver-julia-1760746467346.html`
+- `fractal-screensaver-julia-1760746525453.html`
+  - `SCREEN SAVERS/fractal-screensaver-julia-1760746525453.html`
+- `fractal-screensaver-julia-1760746594292.html`
+  - `SCREEN SAVERS/fractal-screensaver-julia-1760746594292.html`
+- `fractal-screensaver-julia-1760746766532.html`
+  - `SCREEN SAVERS/fractal-screensaver-julia-1760746766532.html`
+- `fractal-screensaver-julia-1760748273194.html`
+  - `SCREEN SAVERS/fractal-screensaver-julia-1760748273194.html`
+- `fractal-screensaver-mandelbrot-1760720686990.html`
+  - `SCREEN SAVERS/fractal-screensaver-mandelbrot-1760720686990.html`
+- `fractal-screensaver-mandelbrot-1760721140263.html`
+  - `SCREEN SAVERS/fractal-screensaver-mandelbrot-1760721140263.html`
+- `fractal-screensaver-mandelbrot-1760721259824.html`
+  - `SCREEN SAVERS/fractal-screensaver-mandelbrot-1760721259824.html`
+- `fractal-screensaver-mandelbrot-1760721906415.html`
+  - `SCREEN SAVERS/fractal-screensaver-mandelbrot-1760721906415.html`
+- `fractal-screensaver-mandelbrot-1760722290066.html`
+  - `SCREEN SAVERS/fractal-screensaver-mandelbrot-1760722290066.html`
+- `fractal-screensaver-mandelbrot-1760722461318.html`
+  - `SCREEN SAVERS/fractal-screensaver-mandelbrot-1760722461318.html`
+- `fractal-screensaver-mandelbrot-1760722788159.html`
+  - `SCREEN SAVERS/fractal-screensaver-mandelbrot-1760722788159.html`
+- `fractal-screensaver-mandelbrot-1760723108322.html`
+  - `SCREEN SAVERS/fractal-screensaver-mandelbrot-1760723108322.html`
+- `fractal-screensaver-mandelbrot-1760723196785.html`
+  - `SCREEN SAVERS/fractal-screensaver-mandelbrot-1760723196785.html`
+- `fractal-screensaver-mandelbrot-1760726349358.html`
+  - `SCREEN SAVERS/fractal-screensaver-mandelbrot-1760726349358.html`
+- `fractal-screensaver-mandelbrot-1760733793069.html`
+  - `SCREEN SAVERS/fractal-screensaver-mandelbrot-1760733793069.html`
+- `fractal-screensaver-mandelbrot-1760733793229.html`
+  - `SCREEN SAVERS/fractal-screensaver-mandelbrot-1760733793229.html`
+- `fractal-screensaver-mandelbrot-1760733988721.html`
+  - `SCREEN SAVERS/fractal-screensaver-mandelbrot-1760733988721.html`
+- `fractal-screensaver-mandelbrot-1760734004543.html`
+  - `SCREEN SAVERS/fractal-screensaver-mandelbrot-1760734004543.html`
+- `fractal-screensaver-mandelbrot-1760737233308.html`
+  - `SCREEN SAVERS/fractal-screensaver-mandelbrot-1760737233308.html`
+- `fractal-screensaver-mandelbrot-1760737303199.html`
+  - `SCREEN SAVERS/fractal-screensaver-mandelbrot-1760737303199.html`
+- `fractal-screensaver-mandelbrot-1760737357097.html`
+  - `SCREEN SAVERS/fractal-screensaver-mandelbrot-1760737357097.html`
+- `fractal-screensaver-mandelbrot-1760739468910.html`
+  - `SCREEN SAVERS/fractal-screensaver-mandelbrot-1760739468910.html`
+- `fractal-screensaver-mandelbrot-1760739936765.html`
+  - `SCREEN SAVERS/fractal-screensaver-mandelbrot-1760739936765.html`
+- `fractal-screensaver-mandelbrot-1760745495729.html`
+  - `SCREEN SAVERS/fractal-screensaver-mandelbrot-1760745495729.html`
+- `fractal-screensaver-quantum-1760723337673.html`
+  - `SCREEN SAVERS/fractal-screensaver-quantum-1760723337673.html`
+- `fractal-screensaver-quantum-1760724795753.html`
+  - `SCREEN SAVERS/fractal-screensaver-quantum-1760724795753.html`
+- `fractal-screensaver-quantum-1760724858920.html`
+  - `SCREEN SAVERS/fractal-screensaver-quantum-1760724858920.html`
+- `fractal-screensaver-quantum-1760725694037.html`
+  - `SCREEN SAVERS/fractal-screensaver-quantum-1760725694037.html`
+- `fractal-screensaver-quantum-1760733478093.html`
+  - `SCREEN SAVERS/fractal-screensaver-quantum-1760733478093.html`
+- `fractal-screensaver-quantum-1760733912207.html`
+  - `SCREEN SAVERS/fractal-screensaver-quantum-1760733912207.html`
+- `fractal-screensaver-quantum-1760734171001.html`
+  - `SCREEN SAVERS/fractal-screensaver-quantum-1760734171001.html`
+
+## Dmension Project Files (78 files)
+- `DMension_Complete.html`
+  - `Dmension-Mathematical-Universe-V1/DMension_Complete.html`
+- `DMension_Demo.html`
+  - `Dmension-Mathematical-Universe-V1/DMension_Demo.html`
+- `Δmension_Standalone.html`
+  - `Dmension-Mathematical-Universe-V1/Δmension_Standalone.html`
+- `index.html`
+  - `Dmension-Mathematical-Universe-V1/dist/public/index.html`
+- `index.html`
+  - `Dmension-Mathematical-Universe-V1/.local/skills/artifacts/artifacts/mockup-sandbox/files/index.html`
+- `landing-page.html`
+  - `Dmension-Mathematical-Universe-V1/.local/skills/artifacts/artifacts/expo/files/server/templates/landing-page.html`
+- `index.html`
+  - `Dmension-Mathematical-Universe-V1/client/index.html`
+- `index.html`
+  - `Dmension-Mathematical-Universe-V1/client/dist/index.html`
+- `DMension_Complete.html`
+  - `3D FOR SALE/ΝΕΘΡΑΛ/ReplitExport-appfeal/Dmension-Mathematical-Universe-V1/DMension_Complete.html`
+- `DMension_Demo.html`
+  - `3D FOR SALE/ΝΕΘΡΑΛ/ReplitExport-appfeal/Dmension-Mathematical-Universe-V1/DMension_Demo.html`
+- `Δmension_Standalone.html`
+  - `3D FOR SALE/ΝΕΘΡΑΛ/ReplitExport-appfeal/Dmension-Mathematical-Universe-V1/Δmension_Standalone.html`
+- `index.html`
+  - `3D FOR SALE/ΝΕΘΡΑΛ/ReplitExport-appfeal/Dmension-Mathematical-Universe-V1/dist/public/index.html`
+- `index.html`
+  - `3D FOR SALE/ΝΕΘΡΑΛ/ReplitExport-appfeal/Dmension-Mathematical-Universe-V1/client/index.html`
+- `index.html`
+  - `3D FOR SALE/ΝΕΘΡΑΛ/ReplitExport-appfeal/Dmension-Mathematical-Universe-V1/client/dist/index.html`
+- `Δmension.html`
+  - `3D FOR SALE/ΝΕΘΡΑΛ/ReplitExport-appfeal/UUON-Dmension-Mathematical-Universe/Δmension.html`
+- `4d-showcase.html`
+  - `3D FOR SALE/ΝΕΘΡΑΛ/ReplitExport-appfeal/UUON-Dmension-Mathematical-Universe/dist/public/4d-showcase.html`
+- `feedback-integration.html`
+  - `3D FOR SALE/ΝΕΘΡΑΛ/ReplitExport-appfeal/UUON-Dmension-Mathematical-Universe/dist/public/feedback-integration.html`
+- `index.html`
+  - `3D FOR SALE/ΝΕΘΡΑΛ/ReplitExport-appfeal/UUON-Dmension-Mathematical-Universe/dist/public/index.html`
+- `interactive-sphere-showcase.html`
+  - `3D FOR SALE/ΝΕΘΡΑΛ/ReplitExport-appfeal/UUON-Dmension-Mathematical-Universe/dist/public/interactive-sphere-showcase.html`
+- `marketing-tools.html`
+  - `3D FOR SALE/ΝΕΘΡΑΛ/ReplitExport-appfeal/UUON-Dmension-Mathematical-Universe/dist/public/marketing-tools.html`
+- `pwa-integration.html`
+  - `3D FOR SALE/ΝΕΘΡΑΛ/ReplitExport-appfeal/UUON-Dmension-Mathematical-Universe/dist/public/pwa-integration.html`
+- `seo-optimization.html`
+  - `3D FOR SALE/ΝΕΘΡΑΛ/ReplitExport-appfeal/UUON-Dmension-Mathematical-Universe/dist/public/seo-optimization.html`
+- `social-widgets.html`
+  - `3D FOR SALE/ΝΕΘΡΑΛ/ReplitExport-appfeal/UUON-Dmension-Mathematical-Universe/dist/public/social-widgets.html`
+- `sphere-widget.html`
+  - `3D FOR SALE/ΝΕΘΡΑΛ/ReplitExport-appfeal/UUON-Dmension-Mathematical-Universe/dist/public/sphere-widget.html`
+- `tracking-snippet.html`
+  - `3D FOR SALE/ΝΕΘΡΑΛ/ReplitExport-appfeal/UUON-Dmension-Mathematical-Universe/dist/public/tracking-snippet.html`
+- `index.html`
+  - `3D FOR SALE/ΝΕΘΡΑΛ/ReplitExport-appfeal/UUON-Dmension-Mathematical-Universe/client/index.html`
+- `4d-showcase.html`
+  - `3D FOR SALE/ΝΕΘΡΑΛ/ReplitExport-appfeal/UUON-Dmension-Mathematical-Universe/client/public/4d-showcase.html`
+- `feedback-integration.html`
+  - `3D FOR SALE/ΝΕΘΡΑΛ/ReplitExport-appfeal/UUON-Dmension-Mathematical-Universe/client/public/feedback-integration.html`
+- `interactive-sphere-showcase.html`
+  - `3D FOR SALE/ΝΕΘΡΑΛ/ReplitExport-appfeal/UUON-Dmension-Mathematical-Universe/client/public/interactive-sphere-showcase.html`
+- `marketing-tools.html`
+  - `3D FOR SALE/ΝΕΘΡΑΛ/ReplitExport-appfeal/UUON-Dmension-Mathematical-Universe/client/public/marketing-tools.html`
+- `pwa-integration.html`
+  - `3D FOR SALE/ΝΕΘΡΑΛ/ReplitExport-appfeal/UUON-Dmension-Mathematical-Universe/client/public/pwa-integration.html`
+- `seo-optimization.html`
+  - `3D FOR SALE/ΝΕΘΡΑΛ/ReplitExport-appfeal/UUON-Dmension-Mathematical-Universe/client/public/seo-optimization.html`
+- `social-widgets.html`
+  - `3D FOR SALE/ΝΕΘΡΑΛ/ReplitExport-appfeal/UUON-Dmension-Mathematical-Universe/client/public/social-widgets.html`
+- `sphere-widget.html`
+  - `3D FOR SALE/ΝΕΘΡΑΛ/ReplitExport-appfeal/UUON-Dmension-Mathematical-Universe/client/public/sphere-widget.html`
+- `tracking-snippet.html`
+  - `3D FOR SALE/ΝΕΘΡΑΛ/ReplitExport-appfeal/UUON-Dmension-Mathematical-Universe/client/public/tracking-snippet.html`
+- `index.html`
+  - `3D FOR SALE/ΝΕΘΡΑΛ/ReplitExport-appfeal/DimensionalBlend/index.html`
+- `DMension_Complete.html`
+  - `Replit/ReplitExport-appfeal/Dmension-Mathematical-Universe-V1/DMension_Complete.html`
+- `DMension_Demo.html`
+  - `Replit/ReplitExport-appfeal/Dmension-Mathematical-Universe-V1/DMension_Demo.html`
+- `Δmension_Standalone.html`
+  - `Replit/ReplitExport-appfeal/Dmension-Mathematical-Universe-V1/Δmension_Standalone.html`
+- `index.html`
+  - `Replit/ReplitExport-appfeal/Dmension-Mathematical-Universe-V1/dist/public/index.html`
+- `index.html`
+  - `Replit/ReplitExport-appfeal/Dmension-Mathematical-Universe-V1/client/index.html`
+- `index.html`
+  - `Replit/ReplitExport-appfeal/Dmension-Mathematical-Universe-V1/client/dist/index.html`
+- `embedded-engine.html`
+  - `Replit/ReplitExport-appfeal/Dmension-Mathematical-Universe-UUON-Foundation/embedded-engine.html`
+- `Δmension.html`
+  - `Replit/ReplitExport-appfeal/Dmension-Mathematical-Universe-UUON-Foundation/Δmension.html`
+- `google5e41bf51e3958aa6.html`
+  - `Replit/ReplitExport-appfeal/Dmension-Mathematical-Universe-UUON-Foundation/dist/public/google5e41bf51e3958aa6.html`
+- `index.html`
+  - `Replit/ReplitExport-appfeal/Dmension-Mathematical-Universe-UUON-Foundation/dist/public/index.html`
+- `performance-dashboard-v2.html`
+  - `Replit/ReplitExport-appfeal/Dmension-Mathematical-Universe-UUON-Foundation/dist/public/performance-dashboard-v2.html`
+- `fractal-screensaver-burning-1761335329918_1767228578316.html`
+  - `Replit/ReplitExport-appfeal/Dmension-Mathematical-Universe-UUON-Foundation/attached_assets/fractal-screensaver-burning-1761335329918_1767228578316.html`
+- `fractal-screensaver-burning-1761335338661_1767228578316.html`
+  - `Replit/ReplitExport-appfeal/Dmension-Mathematical-Universe-UUON-Foundation/attached_assets/fractal-screensaver-burning-1761335338661_1767228578316.html`
+- `fractal-screensaver-julia-1760797184899_1767228503828.html`
+  - `Replit/ReplitExport-appfeal/Dmension-Mathematical-Universe-UUON-Foundation/attached_assets/fractal-screensaver-julia-1760797184899_1767228503828.html`
+- `google5e41bf51e3958aa6_(4)_1767330755468.html`
+  - `Replit/ReplitExport-appfeal/Dmension-Mathematical-Universe-UUON-Foundation/attached_assets/google5e41bf51e3958aa6_(4)_1767330755468.html`
+- `google5e41bf51e3958aa6_1764363692366.html`
+  - `Replit/ReplitExport-appfeal/Dmension-Mathematical-Universe-UUON-Foundation/attached_assets/google5e41bf51e3958aa6_1764363692366.html`
+- `index.html`
+  - `Replit/ReplitExport-appfeal/Dmension-Mathematical-Universe-UUON-Foundation/client/index.html`
+- `google5e41bf51e3958aa6.html`
+  - `Replit/ReplitExport-appfeal/Dmension-Mathematical-Universe-UUON-Foundation/client/public/google5e41bf51e3958aa6.html`
+- `performance-dashboard-v2.html`
+  - `Replit/ReplitExport-appfeal/Dmension-Mathematical-Universe-UUON-Foundation/client/public/performance-dashboard-v2.html`
+- `Δmension.html`
+  - `Replit/ReplitExport-appfeal/UUON-Dmension-Mathematical-Universe/Δmension.html`
+- `4d-showcase.html`
+  - `Replit/ReplitExport-appfeal/UUON-Dmension-Mathematical-Universe/dist/public/4d-showcase.html`
+- `feedback-integration.html`
+  - `Replit/ReplitExport-appfeal/UUON-Dmension-Mathematical-Universe/dist/public/feedback-integration.html`
+- `index.html`
+  - `Replit/ReplitExport-appfeal/UUON-Dmension-Mathematical-Universe/dist/public/index.html`
+- `interactive-sphere-showcase.html`
+  - `Replit/ReplitExport-appfeal/UUON-Dmension-Mathematical-Universe/dist/public/interactive-sphere-showcase.html`
+- `marketing-tools.html`
+  - `Replit/ReplitExport-appfeal/UUON-Dmension-Mathematical-Universe/dist/public/marketing-tools.html`
+- `pwa-integration.html`
+  - `Replit/ReplitExport-appfeal/UUON-Dmension-Mathematical-Universe/dist/public/pwa-integration.html`
+- `seo-optimization.html`
+  - `Replit/ReplitExport-appfeal/UUON-Dmension-Mathematical-Universe/dist/public/seo-optimization.html`
+- `social-widgets.html`
+  - `Replit/ReplitExport-appfeal/UUON-Dmension-Mathematical-Universe/dist/public/social-widgets.html`
+- `sphere-widget.html`
+  - `Replit/ReplitExport-appfeal/UUON-Dmension-Mathematical-Universe/dist/public/sphere-widget.html`
+- `tracking-snippet.html`
+  - `Replit/ReplitExport-appfeal/UUON-Dmension-Mathematical-Universe/dist/public/tracking-snippet.html`
+- `index.html`
+  - `Replit/ReplitExport-appfeal/UUON-Dmension-Mathematical-Universe/client/index.html`
+- `4d-showcase.html`
+  - `Replit/ReplitExport-appfeal/UUON-Dmension-Mathematical-Universe/client/public/4d-showcase.html`
+- `feedback-integration.html`
+  - `Replit/ReplitExport-appfeal/UUON-Dmension-Mathematical-Universe/client/public/feedback-integration.html`
+- `interactive-sphere-showcase.html`
+  - `Replit/ReplitExport-appfeal/UUON-Dmension-Mathematical-Universe/client/public/interactive-sphere-showcase.html`
+- `marketing-tools.html`
+  - `Replit/ReplitExport-appfeal/UUON-Dmension-Mathematical-Universe/client/public/marketing-tools.html`
+- `pwa-integration.html`
+  - `Replit/ReplitExport-appfeal/UUON-Dmension-Mathematical-Universe/client/public/pwa-integration.html`
+- `seo-optimization.html`
+  - `Replit/ReplitExport-appfeal/UUON-Dmension-Mathematical-Universe/client/public/seo-optimization.html`
+- `social-widgets.html`
+  - `Replit/ReplitExport-appfeal/UUON-Dmension-Mathematical-Universe/client/public/social-widgets.html`
+- `sphere-widget.html`
+  - `Replit/ReplitExport-appfeal/UUON-Dmension-Mathematical-Universe/client/public/sphere-widget.html`
+- `tracking-snippet.html`
+  - `Replit/ReplitExport-appfeal/UUON-Dmension-Mathematical-Universe/client/public/tracking-snippet.html`
+- `index.html`
+  - `Replit/ReplitExport-appfeal/DimensionalBlend/index.html`
+- `index.html`
+  - `Replit/ReplitExport-appfeal/DimensionalBlend/client/index.html`
+
+## Replit App Exports (121 files)
+- `index.html`
+  - `3D FOR SALE/ΝΕΘΡΑΛ/ReplitExport-appfeal/LinkHubPro/client/index.html`
+- `index.html`
+  - `3D FOR SALE/ΝΕΘΡΑΛ/ReplitExport-appfeal/LatticeNavigator/client/index.html`
+- `index.html`
+  - `3D FOR SALE/ΝΕΘΡΑΛ/ReplitExport-appfeal/WebSocketTracker/index.html`
+- `index.html`
+  - `3D FOR SALE/ΝΕΘΡΑΛ/ReplitExport-appfeal/BrushCanvas/client/index.html`
+- `index.html`
+  - `3D FOR SALE/ΝΕΘΡΑΛ/ReplitExport-appfeal/DimensionalGeometryEngine/index.html`
+- `index.html`
+  - `3D FOR SALE/ΝΕΘΡΑΛ/ReplitExport-appfeal/DimensionalGeometryEngine/client/index.html`
+- `49MathFormulasDashboard_HTML5.html`
+  - `3D FOR SALE/ΝΕΘΡΑΛ/ReplitExport-appfeal/Formula-Art-Template/49MathFormulasDashboard_HTML5.html`
+- `49MathFormulasDashboard_HTML6.html`
+  - `3D FOR SALE/ΝΕΘΡΑΛ/ReplitExport-appfeal/Formula-Art-Template/49MathFormulasDashboard_HTML6.html`
+- `graph_dashboard.html`
+  - `3D FOR SALE/ΝΕΘΡΑΛ/ReplitExport-appfeal/Formula-Art-Template/graph_dashboard.html`
+- `mathematical_dashboard.html`
+  - `3D FOR SALE/ΝΕΘΡΑΛ/ReplitExport-appfeal/Formula-Art-Template/mathematical_dashboard.html`
+- `index.html`
+  - `3D FOR SALE/ΝΕΘΡΑΛ/ReplitExport-appfeal/Mathematical-Constant-Buffer-System/client/index.html`
+- `parametric-explorer-standalone.html`
+  - `3D FOR SALE/ΝΕΘΡΑΛ/ReplitExport-appfeal/3dParamatric-Curve-Explorer/parametric-explorer-standalone.html`
+- `index.html`
+  - `3D FOR SALE/ΝΕΘΡΑΛ/ReplitExport-appfeal/3dParamatric-Curve-Explorer/client/index.html`
+- `Hidden85Percent.html`
+  - `3D FOR SALE/ΝΕΘΡΑΛ/ReplitExport-appfeal/Pentagon-Dark-Matter-Analysis-Universal-Truth/Hidden85Percent.html`
+- `index.html`
+  - `3D FOR SALE/ΝΕΘΡΑΛ/ReplitExport-appfeal/Pentagon-Dark-Matter-Analysis-Universal-Truth/index.html`
+- `index.html`
+  - `3D FOR SALE/ΝΕΘΡΑΛ/ReplitExport-appfeal/Pentagon-Dark-Matter-Analysis-Universal-Truth/dist/public/index.html`
+- `index.html`
+  - `3D FOR SALE/ΝΕΘΡΑΛ/ReplitExport-appfeal/Pentagon-Dark-Matter-Analysis-Universal-Truth/client/index.html`
+- `index.html`
+  - `3D FOR SALE/ΝΕΘΡΑΛ/ReplitExport-appfeal/MathMorphNft/client/index.html`
+- `index.html`
+  - `3D FOR SALE/ΝΕΘΡΑΛ/ReplitExport-appfeal/ShapeSynth/dist/public/index.html`
+- `index.html`
+  - `3D FOR SALE/ΝΕΘΡΑΛ/ReplitExport-appfeal/ShapeSynth/client/index.html`
+- `Δmension.html`
+  - `3D FOR SALE/ΝΕΘΡΑΛ/ReplitExport-appfeal/HASHING/Δmension.html`
+- `index.html`
+  - `3D FOR SALE/ΝΕΘΡΑΛ/ReplitExport-appfeal/HASHING/client/index.html`
+- `index.html`
+  - `3D FOR SALE/ΝΕΘΡΑΛ/ReplitExport-appfeal/dPsigner-Beta/client/index.html`
+- `index.html`
+  - `3D FOR SALE/ΝΕΘΡΑΛ/ReplitExport-appfeal/ModelWarp/client/index.html`
+- `index.html`
+  - `3D FOR SALE/ΝΕΘΡΑΛ/ReplitExport-appfeal/ApiKeyManager/client/index.html`
+- `index.html`
+  - `3D FOR SALE/ΝΕΘΡΑΛ/ReplitExport-appfeal/QuantumLatticeAnalyzer/client/index.html`
+- `index.html`
+  - `3D FOR SALE/ΝΕΘΡΑΛ/ReplitExport-appfeal/Pentagon-Coefficient-in-Dark-Matter-Architecture/dist/public/index.html`
+- `index.html`
+  - `3D FOR SALE/ΝΕΘΡΑΛ/ReplitExport-appfeal/Pentagon-Coefficient-in-Dark-Matter-Architecture/client/index.html`
+- `index.html`
+  - `3D FOR SALE/ΝΕΘΡΑΛ/ReplitExport-appfeal/StippleSphere/client/index.html`
+- `debug.html`
+  - `3D FOR SALE/ΝΕΘΡΑΛ/ReplitExport-appfeal/ShapeShiftCanvas/debug.html`
+- `index.html`
+  - `3D FOR SALE/ΝΕΘΡΑΛ/ReplitExport-appfeal/ShapeShiftCanvas/index.html`
+- `minimal-test.html`
+  - `3D FOR SALE/ΝΕΘΡΑΛ/ReplitExport-appfeal/ShapeShiftCanvas/minimal-test.html`
+- `simple-wave.html`
+  - `3D FOR SALE/ΝΕΘΡΑΛ/ReplitExport-appfeal/ShapeShiftCanvas/simple-wave.html`
+- `test.html`
+  - `3D FOR SALE/ΝΕΘΡΑΛ/ReplitExport-appfeal/ShapeShiftCanvas/test.html`
+- `working-wave.html`
+  - `3D FOR SALE/ΝΕΘΡΑΛ/ReplitExport-appfeal/ShapeShiftCanvas/working-wave.html`
+- `index.html`
+  - `3D FOR SALE/ΝΕΘΡΑΛ/ReplitExport-appfeal/PrototypeForge/client/index.html`
+- `index.html`
+  - `3D FOR SALE/ΝΕΘΡΑΛ/ReplitExport-appfeal/LatticeToken/client/index.html`
+- `index.html`
+  - `3D FOR SALE/ΝΕΘΡΑΛ/ReplitExport-appfeal/LatticeVibrations/client/index.html`
+- `index.html`
+  - `3D FOR SALE/ΝΕΘΡΑΛ/ReplitExport-appfeal/GreekTopology/client/index.html`
+- `index.html`
+  - `3D FOR SALE/ΝΕΘΡΑΛ/ReplitExport-appfeal/LatticeInnovation/client/index.html`
+- `shapevoyager-complete.html`
+  - `3D FOR SALE/ΝΕΘΡΑΛ/ReplitExport-appfeal/ShapeVoyager/shapevoyager-complete.html`
+- `tesseract-export.html`
+  - `3D FOR SALE/ΝΕΘΡΑΛ/ReplitExport-appfeal/ShapeVoyager/tesseract-export.html`
+- `index.html`
+  - `3D FOR SALE/ΝΕΘΡΑΛ/ReplitExport-appfeal/ShapeVoyager/client/index.html`
+- `index.html`
+  - `3D FOR SALE/ΝΕΘΡΑΛ/ReplitExport-appfeal/QuuantZum-Physics-Visualization/dist/public/index.html`
+- `index.html`
+  - `3D FOR SALE/ΝΕΘΡΑΛ/ReplitExport-appfeal/QuuantZum-Physics-Visualization/client/index.html`
+- `index.html`
+  - `3D FOR SALE/ΝΕΘΡΑΛ/ReplitExport-appfeal/HashCanvasTool/client/index.html`
+- `index.html`
+  - `3D FOR SALE/ΝΕΘΡΑΛ/ReplitExport-appfeal/SpacetimeTwister/client/index.html`
+- `index.html`
+  - `3D FOR SALE/ΝΕΘΡΑΛ/ReplitExport-appfeal/GraphicsDimensionEngine/client/index.html`
+- `index.html`
+  - `3D FOR SALE/ΝΕΘΡΑΛ/ReplitExport-appfeal/WaveExtrapolationVisualizer/client/index.html`
+- `prophetic-geometry.html`
+  - `3D FOR SALE/ΝΕΘΡΑΛ/ReplitExport-appfeal/ThreeDViewer/prophetic-geometry.html`
+- `index.html`
+  - `3D FOR SALE/ΝΕΘΡΑΛ/ReplitExport-appfeal/ThreeDViewer/client/index.html`
+- `index.html`
+  - `3D FOR SALE/ΝΕΘΡΑΛ/ReplitExport-appfeal/WebsiteAnalyzer/client/index.html`
+- `index.html`
+  - `3D FOR SALE/ΝΕΘΡΑΛ/ReplitExport-appfeal/ShapeShifter/client/index.html`
+- `index.html`
+  - `Replit/ReplitExport-appfeal/LinkHubPro/client/index.html`
+- `index.html`
+  - `Replit/ReplitExport-appfeal/LatticeNavigator/client/index.html`
+- `index.html`
+  - `Replit/ReplitExport-appfeal/WebSocketTracker/index.html`
+- `index.html`
+  - `Replit/ReplitExport-appfeal/Sphaer-Vision/client/index.html`
+- `index.html`
+  - `Replit/ReplitExport-appfeal/BrushCanvas/client/index.html`
+- `index.html`
+  - `Replit/ReplitExport-appfeal/Obfuscated-Data-Vault/client/index.html`
+- `index.html`
+  - `Replit/ReplitExport-appfeal/WireGenesis/dist/public/index.html`
+- `index.html`
+  - `Replit/ReplitExport-appfeal/WireGenesis/client/index.html`
+- `index.html`
+  - `Replit/ReplitExport-appfeal/ProConnectSystem/client/index.html`
+- `index.html`
+  - `Replit/ReplitExport-appfeal/EngineRender/client/index.html`
+- `Δmension.html`
+  - `Replit/ReplitExport-appfeal/HASHING-v2/Δmension.html`
+- `index.html`
+  - `Replit/ReplitExport-appfeal/HASHING-v2/dist/public/index.html`
+- `index.html`
+  - `Replit/ReplitExport-appfeal/HASHING-v2/client/index.html`
+- `index.html`
+  - `Replit/ReplitExport-appfeal/SDK-Builder/client/index.html`
+- `index.html`
+  - `Replit/ReplitExport-appfeal/Mathematical-Constant-Buffer-System/client/index.html`
+- `parametric-explorer-standalone.html`
+  - `Replit/ReplitExport-appfeal/3dParamatric-Curve-Explorer/parametric-explorer-standalone.html`
+- `index.html`
+  - `Replit/ReplitExport-appfeal/3dParamatric-Curve-Explorer/client/index.html`
+- `Hidden85Percent.html`
+  - `Replit/ReplitExport-appfeal/Pentagon-Dark-Matter-Analysis-Universal-Truth/Hidden85Percent.html`
+- `index.html`
+  - `Replit/ReplitExport-appfeal/Pentagon-Dark-Matter-Analysis-Universal-Truth/index.html`
+- `index.html`
+  - `Replit/ReplitExport-appfeal/Pentagon-Dark-Matter-Analysis-Universal-Truth/dist/public/index.html`
+- `index.html`
+  - `Replit/ReplitExport-appfeal/Pentagon-Dark-Matter-Analysis-Universal-Truth/client/index.html`
+- `index.html`
+  - `Replit/ReplitExport-appfeal/gdit/dist/public/index.html`
+- `index.html`
+  - `Replit/ReplitExport-appfeal/gdit/client/index.html`
+- `index.html`
+  - `Replit/ReplitExport-appfeal/UUON-Clouud/dist/public/index.html`
+- `API.html`
+  - `Replit/ReplitExport-appfeal/UUON-Clouud/node_modules/decimal.js-light/doc/API.html`
+- `tslib.es6.html`
+  - `Replit/ReplitExport-appfeal/UUON-Clouud/node_modules/tslib/tslib.es6.html`
+- `tslib.html`
+  - `Replit/ReplitExport-appfeal/UUON-Clouud/node_modules/tslib/tslib.html`
+- `report.html`
+  - `Replit/ReplitExport-appfeal/UUON-Clouud/node_modules/recharts/umd/report.html`
+- `index.html`
+  - `Replit/ReplitExport-appfeal/UUON-Clouud/client/index.html`
+- `index.html`
+  - `Replit/ReplitExport-appfeal/MathMorphNft/client/index.html`
+- `index.html`
+  - `Replit/ReplitExport-appfeal/Obfuscated-SDK-Connect/client/index.html`
+- `index.html`
+  - `Replit/ReplitExport-appfeal/Quuantum-Explorer/dist/public/index.html`
+- `index.html`
+  - `Replit/ReplitExport-appfeal/Quuantum-Explorer/client/index.html`
+- `index.html`
+  - `Replit/ReplitExport-appfeal/MathMorph-by-UUON-Foundatoin/client/index.html`
+- `index.html`
+  - `Replit/ReplitExport-appfeal/dPsigner-Beta/client/index.html`
+- `index.html`
+  - `Replit/ReplitExport-appfeal/Pentagon-Coefficient-in-Dark-Matter-Architecture/dist/public/index.html`
+- `index.html`
+  - `Replit/ReplitExport-appfeal/Pentagon-Coefficient-in-Dark-Matter-Architecture/client/index.html`
+- `Δmension.html`
+  - `Replit/ReplitExport-appfeal/Prototypes-1/Δmension.html`
+- `index.html`
+  - `Replit/ReplitExport-appfeal/Prototypes-1/dist/public/index.html`
+- `index.html`
+  - `Replit/ReplitExport-appfeal/Prototypes-1/client/index.html`
+- `Δmension.html`
+  - `Replit/ReplitExport-appfeal/Prototypes/Δmension.html`
+- `index.html`
+  - `Replit/ReplitExport-appfeal/Prototypes/dist/public/index.html`
+- `index.html`
+  - `Replit/ReplitExport-appfeal/Prototypes/client/index.html`
+- `standalone-viewer.html`
+  - `Replit/ReplitExport-appfeal/Prototypes/client/public/standalone-viewer.html`
+- `index.html`
+  - `Replit/ReplitExport-appfeal/Model-Comparator/client/index.html`
+- `debug.html`
+  - `Replit/ReplitExport-appfeal/ShapeShiftCanvas/debug.html`
+- `index.html`
+  - `Replit/ReplitExport-appfeal/ShapeShiftCanvas/index.html`
+- `minimal-test.html`
+  - `Replit/ReplitExport-appfeal/ShapeShiftCanvas/minimal-test.html`
+- `simple-wave.html`
+  - `Replit/ReplitExport-appfeal/ShapeShiftCanvas/simple-wave.html`
+- `test.html`
+  - `Replit/ReplitExport-appfeal/ShapeShiftCanvas/test.html`
+- `working-wave.html`
+  - `Replit/ReplitExport-appfeal/ShapeShiftCanvas/working-wave.html`
+- `index.html`
+  - `Replit/ReplitExport-appfeal/LatticeToken/client/index.html`
+- `index.html`
+  - `Replit/ReplitExport-appfeal/3D-Modeling-Engine-Prototype/client/index.html`
+- `index.html`
+  - `Replit/ReplitExport-appfeal/MathModeler/client/index.html`
+- `index.html`
+  - `Replit/ReplitExport-appfeal/GreekTopology/client/index.html`
+- `index.html`
+  - `Replit/ReplitExport-appfeal/LatticeInnovation/client/index.html`
+- `shapevoyager-complete.html`
+  - `Replit/ReplitExport-appfeal/ShapeVoyager/shapevoyager-complete.html`
+- `tesseract-export.html`
+  - `Replit/ReplitExport-appfeal/ShapeVoyager/tesseract-export.html`
+- `index.html`
+  - `Replit/ReplitExport-appfeal/ShapeVoyager/client/index.html`
+- `index.html`
+  - `Replit/ReplitExport-appfeal/3D-Wave-Engine/client/index.html`
+- `index.html`
+  - `Replit/ReplitExport-appfeal/HashCanvasTool/client/index.html`
+- `index.html`
+  - `Replit/ReplitExport-appfeal/GraphicsDimensionEngine/client/index.html`
+- `index.html`
+  - `Replit/ReplitExport-appfeal/Iconify3D/client/index.html`
+- `index.html`
+  - `Replit/ReplitExport-appfeal/WaveExtrapolationVisualizer/client/index.html`
+- `index.html`
+  - `Replit/ReplitExport-appfeal/Proof-Concept/client/index.html`
+- `index.html`
+  - `Replit/ReplitExport-appfeal/FractalMicrographs/client/index.html`
+- `index.html`
+  - `Replit/ReplitExport-appfeal/WebsiteAnalyzer/client/index.html`
+- `index.html`
+  - `Replit/ReplitExport-appfeal/ShapeShifter/client/index.html`
+
+## CLOUUD Brain (2 files)
+- `shape-explorer.html`
+  - `CLOUUD/:Brain/:Raw/shape-explorer.html`
+- `Δ_Dmension Mathematical Universe - UUON Foundation - Replit.html`
+  - `CLOUUD/:Brain/:Raw/Δ_Dmension Mathematical Universe - UUON Foundation - Replit.html`
+
+## Standalone Desktop (3 files)
+- `Home - Replit.html`
+  - `Home - Replit.html`
+- `NEONFRACTALS.html`
+  - `NEONFRACTALS.html`
+- `UUON-HTML-Wrapper.html`
+  - `UUON-HTML-Wrapper.html`
+
+---
+## Links
+- [[UUON Foundation]]
+- [[UUON Sketchfab Master Index]]
