@@ -67,3 +67,6 @@ backups/*.sql.gz
 !.env.example
 !backups/
 !FILES.sha256
+
+!clouud-observer/logs
+!clouud-observer/logs/**
