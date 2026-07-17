@@ -1,0 +1,152 @@
+{
+  "benchmark_id": "CLOUUD-BENCH-004",
+  "ran_at_utc": "2026-07-17T11:43:33Z",
+  "golden_set": "CLOUUD-BENCH-004-GOLDENSET",
+  "n_cases": 10,
+  "confusion_matrix": {
+    "TP": 3,
+    "FP": 0,
+    "TN": 7,
+    "FN": 0
+  },
+  "precision": 1.0,
+  "recall": 1.0,
+  "f1": 1.0,
+  "accuracy": 1.0,
+  "condition_failure_counts": {
+    "events outside temporal window": 2,
+    "similarity 0.00 below threshold": 2,
+    "sources not independent (mere causation)": 1,
+    "no observer meaning \u2014 mere coincidence": 1,
+    "similarity 0.60 below threshold": 1
+  },
+  "cases": [
+    {
+      "id": "T01",
+      "label": "TRUE_SYNCHRONICITY",
+      "tests": "all four conditions pass",
+      "expected": true,
+      "predicted": true,
+      "correct": true,
+      "reasons": [
+        "PASS: temporal coincidence",
+        "PASS: similarity 1.00 on shared encoding",
+        "PASS: causal independence \u2014 conjunction is acausal",
+        "PASS: observer meaning declared: pun/literal collision, canonical instance"
+      ]
+    },
+    {
+      "id": "T02",
+      "label": "TRUE_SYNCHRONICITY",
+      "tests": "tight window, identical surface",
+      "expected": true,
+      "predicted": true,
+      "correct": true,
+      "reasons": [
+        "PASS: temporal coincidence",
+        "PASS: similarity 1.00 on shared encoding",
+        "PASS: causal independence \u2014 conjunction is acausal",
+        "PASS: observer meaning declared: song thought and broadcast collided"
+      ]
+    },
+    {
+      "id": "T03",
+      "label": "TRUE_SYNCHRONICITY",
+      "tests": "cross-modal match at threshold edge",
+      "expected": true,
+      "predicted": true,
+      "correct": true,
+      "reasons": [
+        "PASS: temporal coincidence",
+        "PASS: similarity 1.00 on shared encoding",
+        "PASS: causal independence \u2014 conjunction is acausal",
+        "PASS: observer meaning declared: homophone across independent streams"
+      ]
+    },
+    {
+      "id": "N01",
+      "label": "NEAR_MISS",
+      "tests": "FAILS condition 1: outside temporal window",
+      "expected": false,
+      "predicted": false,
+      "correct": true,
+      "reasons": [
+        "FAIL: events outside temporal window"
+      ]
+    },
+    {
+      "id": "N02",
+      "label": "NEAR_MISS",
+      "tests": "FAILS condition 2: weak similarity",
+      "expected": false,
+      "predicted": false,
+      "correct": true,
+      "reasons": [
+        "PASS: temporal coincidence",
+        "FAIL: similarity 0.00 below threshold"
+      ]
+    },
+    {
+      "id": "N03",
+      "label": "NEAR_MISS",
+      "tests": "FAILS condition 3: causally linked (echo)",
+      "expected": false,
+      "predicted": false,
+      "correct": true,
+      "reasons": [
+        "PASS: temporal coincidence",
+        "PASS: similarity 1.00 on shared encoding",
+        "FAIL: sources not independent (mere causation)"
+      ]
+    },
+    {
+      "id": "N04",
+      "label": "NEAR_MISS",
+      "tests": "FAILS condition 4: no observer meaning declared",
+      "expected": false,
+      "predicted": false,
+      "correct": true,
+      "reasons": [
+        "PASS: temporal coincidence",
+        "PASS: similarity 1.00 on shared encoding",
+        "PASS: causal independence \u2014 conjunction is acausal",
+        "FAIL: no observer meaning \u2014 mere coincidence"
+      ]
+    },
+    {
+      "id": "X01",
+      "label": "NOISE",
+      "tests": "fails multiple conditions",
+      "expected": false,
+      "predicted": false,
+      "correct": true,
+      "reasons": [
+        "FAIL: events outside temporal window"
+      ]
+    },
+    {
+      "id": "X02",
+      "label": "NOISE",
+      "tests": "empty encoding guard",
+      "expected": false,
+      "predicted": false,
+      "correct": true,
+      "reasons": [
+        "PASS: temporal coincidence",
+        "FAIL: similarity 0.00 below threshold"
+      ]
+    },
+    {
+      "id": "X03",
+      "label": "NOISE",
+      "tests": "similarity genuinely below threshold (0.4)",
+      "expected": false,
+      "predicted": false,
+      "correct": true,
+      "reasons": [
+        "PASS: temporal coincidence",
+        "FAIL: similarity 0.60 below threshold"
+      ]
+    }
+  ]
+}
