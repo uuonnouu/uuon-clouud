@@ -1,0 +1,225 @@
+{
+  "meta": {
+    "id": "CLOUUD-BENCH-004-GOLDENSET",
+    "version": "1.0",
+    "rule": "Labels assigned from the OBS-001 four-condition definition BEFORE classifier execution. Each case states which condition it exercises.",
+    "classes": [
+      "TRUE_SYNCHRONICITY",
+      "NEAR_MISS",
+      "NOISE"
+    ],
+    "boundary_rule": "Threshold 0.8 is INCLUSIVE: similarity == 0.8 passes condition 2. Documented after BENCH-004 first run caught a mislabeled boundary case (author error, not code error)."
+  },
+  "cases": [
+    {
+      "id": "T01",
+      "label": "TRUE_SYNCHRONICITY",
+      "tests": "all four conditions pass",
+      "a": {
+        "source": "Phillip typing",
+        "modality": "motor/text",
+        "content": "makes cents",
+        "encoding": "meiks sents",
+        "t_ms": 0
+      },
+      "b": {
+        "source": "narrator audio",
+        "modality": "auditory",
+        "content": "makes sense",
+        "encoding": "meiks sents",
+        "t_ms": 1200
+      },
+      "causally_independent": true,
+      "observer_meaning": "pun/literal collision, canonical instance"
+    },
+    {
+      "id": "T02",
+      "label": "TRUE_SYNCHRONICITY",
+      "tests": "tight window, identical surface",
+      "a": {
+        "source": "user humming",
+        "modality": "auditory",
+        "content": "let it be",
+        "encoding": "let it bi",
+        "t_ms": 500
+      },
+      "b": {
+        "source": "radio independent",
+        "modality": "auditory",
+        "content": "let it be",
+        "encoding": "let it bi",
+        "t_ms": 900
+      },
+      "causally_independent": true,
+      "observer_meaning": "song thought and broadcast collided"
+    },
+    {
+      "id": "T03",
+      "label": "TRUE_SYNCHRONICITY",
+      "tests": "cross-modal match at threshold edge",
+      "a": {
+        "source": "user writing",
+        "modality": "motor/text",
+        "content": "night",
+        "encoding": "nait",
+        "t_ms": 0
+      },
+      "b": {
+        "source": "neighbor shout",
+        "modality": "auditory",
+        "content": "knight",
+        "encoding": "nait",
+        "t_ms": 2500
+      },
+      "causally_independent": true,
+      "observer_meaning": "homophone across independent streams"
+    },
+    {
+      "id": "N01",
+      "label": "NEAR_MISS",
+      "tests": "FAILS condition 1: outside temporal window",
+      "a": {
+        "source": "user typing",
+        "modality": "motor/text",
+        "content": "blue moon",
+        "encoding": "blu mun",
+        "t_ms": 0
+      },
+      "b": {
+        "source": "tv independent",
+        "modality": "auditory",
+        "content": "blue moon",
+        "encoding": "blu mun",
+        "t_ms": 8000
+      },
+      "causally_independent": true,
+      "observer_meaning": "same phrase but minutes apart"
+    },
+    {
+      "id": "N02",
+      "label": "NEAR_MISS",
+      "tests": "FAILS condition 2: weak similarity",
+      "a": {
+        "source": "user typing",
+        "modality": "motor/text",
+        "content": "cat",
+        "encoding": "kaet",
+        "t_ms": 0
+      },
+      "b": {
+        "source": "narrator",
+        "modality": "auditory",
+        "content": "dog",
+        "encoding": "dog",
+        "t_ms": 300
+      },
+      "causally_independent": true,
+      "observer_meaning": "felt related but no structural match"
+    },
+    {
+      "id": "N03",
+      "label": "NEAR_MISS",
+      "tests": "FAILS condition 3: causally linked (echo)",
+      "a": {
+        "source": "user speaking",
+        "modality": "auditory",
+        "content": "good morning",
+        "encoding": "gud morning",
+        "t_ms": 0
+      },
+      "b": {
+        "source": "smart speaker replying to user",
+        "modality": "auditory",
+        "content": "good morning",
+        "encoding": "gud morning",
+        "t_ms": 700
+      },
+      "causally_independent": false,
+      "observer_meaning": "device responded to me"
+    },
+    {
+      "id": "N04",
+      "label": "NEAR_MISS",
+      "tests": "FAILS condition 4: no observer meaning declared",
+      "a": {
+        "source": "log stream A",
+        "modality": "text",
+        "content": "error 404",
+        "encoding": "error 404",
+        "t_ms": 0
+      },
+      "b": {
+        "source": "log stream B",
+        "modality": "text",
+        "content": "error 404",
+        "encoding": "error 404",
+        "t_ms": 1000
+      },
+      "causally_independent": true,
+      "observer_meaning": ""
+    },
+    {
+      "id": "X01",
+      "label": "NOISE",
+      "tests": "fails multiple conditions",
+      "a": {
+        "source": "user typing",
+        "modality": "motor/text",
+        "content": "alpha",
+        "encoding": "aelfa",
+        "t_ms": 0
+      },
+      "b": {
+        "source": "same user pasting own text",
+        "modality": "text",
+        "content": "omega",
+        "encoding": "omega",
+        "t_ms": 9000
+      },
+      "causally_independent": false,
+      "observer_meaning": ""
+    },
+    {
+      "id": "X02",
+      "label": "NOISE",
+      "tests": "empty encoding guard",
+      "a": {
+        "source": "sensor",
+        "modality": "text",
+        "content": "",
+        "encoding": "",
+        "t_ms": 0
+      },
+      "b": {
+        "source": "sensor",
+        "modality": "text",
+        "content": "ping",
+        "encoding": "ping",
+        "t_ms": 100
+      },
+      "causally_independent": true,
+      "observer_meaning": "felt odd"
+    },
+    {
+      "id": "X03",
+      "label": "NOISE",
+      "tests": "similarity genuinely below threshold (0.4)",
+      "a": {
+        "source": "user",
+        "modality": "text",
+        "content": "storm",
+        "encoding": "storm",
+        "t_ms": 0
+      },
+      "b": {
+        "source": "radio",
+        "modality": "auditory",
+        "content": "star",
+        "encoding": "star ",
+        "t_ms": 200
+      },
+      "causally_independent": true,
+      "observer_meaning": "close words, weak match"
+    }
+  ]
+}
