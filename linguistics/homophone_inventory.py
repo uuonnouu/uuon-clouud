@@ -14,6 +14,7 @@ PAIRS = [
     ("a.i./a-eye",   "eɪaɪ",     "eɪaɪ",     "perfect decomposition; AI puns are cheap collisions"),
     ("night/knight", "naɪt",     "naɪt",     "silent letters vanish in IPA; diphthong = 1 segment"),
     ("cents/sense",  "sɛnts",    "sɛns",     "phonemic near; phonetic identical w/ epenthetic [t]"),
+    ("uuon/one",     "wʌn",      "wʌn",      "founder name; homophonic respelling of one/won; perfect homophone, discount"),
     ("right/rite",   "raɪt",     "raɪt",     "perfect triple w/ write; high prior, discount"),
 ]
 
