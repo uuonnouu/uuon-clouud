@@ -1,0 +1,1196 @@
+# UUON Foundation — Sketchfab Master Index
+
+**Total Models:** 417
+**Platform:** Sketchfab | **Account:** UUON Foundation
+**Date Indexed:** 2026-06-26
+
+---
+
+## Portfolio Stats
+- **Total Models:** 417
+- **Total Views:** 23,675
+- **Total Likes:** 325
+- **Date Range:** Oct 2025 — Jun 2026
+
+---
+
+## Top Models by Views
+- **Permanence Code Wireframe - Tron Ares Tribute** — 1,558 views / 28 likes | [sketchfab](https://sketchfab.com/3d-models/bd7e46343cf14635938df5af8c57ff73)
+- **Event Horixon by UUON Foundation** — 785 views / 15 likes | [sketchfab](https://sketchfab.com/3d-models/ce10a9c66e4348c8ae7a0bd0a4f601eb)
+- **3I/Atlas - Blue Kachina Comet Tribute** — 743 views / 4 likes | [sketchfab](https://sketchfab.com/3d-models/3907415307b64430a4dde7777eb10f22)
+- **Null Set Empty - Δmension M.U:** — 651 views / 11 likes | [sketchfab](https://sketchfab.com/3d-models/6aaa6d265bf24dfcb2b9fbae02bd7083)
+- **DNA Double Helix** — 547 views / 2 likes | [sketchfab](https://sketchfab.com/3d-models/224d09f75a674f4a8107e79e3d3d5552)
+- **Black Hole Sun** — 485 views / 2 likes | [sketchfab](https://sketchfab.com/3d-models/a1f286bbaf4d4aa1952b28f1b4441f95)
+- **quantum_wave_Ψ(x,t)** — 479 views / 11 likes | [sketchfab](https://sketchfab.com/3d-models/54ca329798cf4d4c93cacd5faa8856a1)
+- **Electromagnetic Wave Model** — 440 views / 1 likes | [sketchfab](https://sketchfab.com/3d-models/bb811a1b0e774e408e7ba05cd5fb6f79)
+- **hello_uuorld_geodesic_model** — 433 views / 3 likes | [sketchfab](https://sketchfab.com/3d-models/6cea832876714ef5bcfb1e07c5b8fa8a)
+- **Lichtenbergs Shield - Fractal Linear Geometry** — 428 views / 5 likes | [sketchfab](https://sketchfab.com/3d-models/eb6faeb5c9ae41f79a05220387e245d9)
+
+---
+
+## DNA & Biology (62 models)
+- **b_form_dna_helix_solid_fallback_1780005563776** |  | 👁 0 ❤️ 0
+  - [View](https://sketchfab.com/3d-models/535e72e9e04b43a6bce4e0f2ff6c5631)
+- **b_form_dna_helix_solid_fallback_1780005563776 (1** |  | 👁 0 ❤️ 0
+  - [View](https://sketchfab.com/3d-models/830646d8fd56493088788987dfb52ba6)
+- **cellular_automata_4d_ar_universal** |  | 👁 0 ❤️ 0
+  - [View](https://sketchfab.com/3d-models/de554fba71084361b636e1d0494ccca5)
+- **iceberg_system_ar_universal** |  | 👁 0 ❤️ 0
+  - [View](https://sketchfab.com/3d-models/c2a546822cd649fb937774c8036b8823)
+- **tree_root_crown_system_ar_universal (3)** |  | 👁 0 ❤️ 0
+  - [View](https://sketchfab.com/3d-models/fbafbd4844854bfbb2dccc42d687786d)
+- **DNA Double Helix Set** | 2025-10-09 | 👁 70 ❤️ 1
+  - Tags: dna, biotechnology, genetics, biochemistry
+  - [View](https://sketchfab.com/3d-models/c75959ef98c146c28f4e849532304fb1)
+- **DNA Double Helix** | 2025-10-09 | 👁 547 ❤️ 2
+  - Tags: dna, biotechnology, genetics, double-helix
+  - [View](https://sketchfab.com/3d-models/224d09f75a674f4a8107e79e3d3d5552)
+- **120 Cell Dodecahedra** | 2025-10-09 | 👁 39 ❤️ 1
+  - Tags: dodecahedron, stereographic-projection, four-dimensional, polychora
+  - [View](https://sketchfab.com/3d-models/90048892162b42b6be156c417b7d8513)
+- **Protein Alpha Helix** | 2025-10-09 | 👁 236 ❤️ 2
+  - Tags: protein;, helix, alpha-helix, protein-structure
+  - [View](https://sketchfab.com/3d-models/07dc56b4cf6346a48ed09b8d9172ed31)
+- **Permanence Code Wireframe - Tron Ares Tribute** | 2025-10-11 | 👁 1558 ❤️ 28
+  - Tags: tron, dna, Ares, doublehelix
+  - [View](https://sketchfab.com/3d-models/bd7e46343cf14635938df5af8c57ff73)
+- **Spherical Stem Cell - Pure Potential** | 2025-10-11 | 👁 303 ❤️ 8
+  - Tags: biology, explosive, cellular, differentiation
+  - [View](https://sketchfab.com/3d-models/1b7c16c5920c4a649d5d0c2ab9e5fcf2)
+- **Eye of Perception - Neural Vision** | 2025-10-12 | 👁 125 ❤️ 1
+  - Tags: cyberpunk, Neuron, neuroscience, psychedelic
+  - [View](https://sketchfab.com/3d-models/3294c895190446518b9dcf3d12a18578)
+- **Root Chakra** | 2025-10-12 | 👁 40 ❤️ 1
+  - Tags: foundation, security, survival, garnet
+  - [View](https://sketchfab.com/3d-models/786b8f3c8c0a4522b834457ecf3e47f2)
+- **Ellipsoid - Foundational Structure** | 2025-10-14 | 👁 239 ❤️ 1
+  - Tags: plant, anatomy, cell, visualization
+  - [View](https://sketchfab.com/3d-models/5bae85e90a7c4d5ab0b47c3de314444e)
+- **4D Simplex - 5-Cell - Pentachoron** | 2025-10-15 | 👁 254 ❤️ 0
+  - Tags: generative, mesh, geometric, wireframe
+  - [View](https://sketchfab.com/3d-models/698340a3635b4969899b490ebb4fc8c6)
+- **120-Cell** | 2025-10-15 | 👁 85 ❤️ 2
+  - Tags: dodecahedron, topological, multidimensional, four-dimensional
+  - [View](https://sketchfab.com/3d-models/123834a4c5294ac586ff5dabf4b80401)
+- **Parametric Axon-Myelin Sheath Set** | 2025-10-15 | 👁 30 ❤️ 0
+  - Tags: neuroscience, computational-neuroscience, 3d-anatomy, myelin-sheath
+  - [View](https://sketchfab.com/3d-models/a5aa87da65a446d3b2f6c2de8312176c)
+- **Parametric Cross** | 2025-10-15 | 👁 42 ❤️ 0
+  - Tags: cross, system, generative design, sacred-geometry
+  - [View](https://sketchfab.com/3d-models/f331f7aeadee402793b830fd1f0859e1)
+- **Digital Organoid** | 2025-10-15 | 👁 219 ❤️ 4
+  - Tags: brain, network, parametric, cyborg
+  - [View](https://sketchfab.com/3d-models/dc6b9b674d3f4398abccae226c2db3c6)
+- **Golden Helix** | 2025-10-16 | 👁 80 ❤️ 0
+  - Tags: geometry, depth, ph, helix
+  - [View](https://sketchfab.com/3d-models/9af1ed94459143ca8b258f5be52faa3b)
+- **Platelet - Set** | 2025-10-19 | 👁 35 ❤️ 2
+  - Tags: blood, anatomy, and, biology
+  - [View](https://sketchfab.com/3d-models/8e1db20ef4624c04949707b4d4c913ed)
+- **Coronavirus - 3 Model Set** | 2025-10-19 | 👁 31 ❤️ 1
+  - Tags: biology, geometry, education, Scientific
+  - [View](https://sketchfab.com/3d-models/66dd41de3733481b8eebe11439ff3eff)
+- **red-blood-cell-solid (5) (1)** | 2025-10-19 | 👁 41 ❤️ 0
+  - Tags: biology, geometry, visualization, Scientific
+  - [View](https://sketchfab.com/3d-models/41c78bbd5c8a4685a41282b1afb9addc)
+- **Neutrophil - Mathematical Foundation** | 2025-10-20 | 👁 83 ❤️ 1
+  - Tags: blood, white, cell, visualization
+  - [View](https://sketchfab.com/3d-models/7d18ac405de2431da468c13c52e5a405)
+- **Mitochondria - Model Set** | 2025-10-20 | 👁 39 ❤️ 0
+  - Tags: 3D Model,, mitochondria, cell-biology, mitochondrion
+  - [View](https://sketchfab.com/3d-models/3c9e69d83cfa40dfb0ede1485bba9f5b)
+- **Lymphocyte - Set** | 2025-10-20 | 👁 8 ❤️ 0
+  - Tags: cell, killer, science, medicine
+  - [View](https://sketchfab.com/3d-models/6bad18df470149ad86b60050c5503bbb)
+- **DNA Double - Helix Variations** | 2025-10-21 | 👁 51 ❤️ 1
+  - Tags: biology, pathogen, math, virus;
+  - [View](https://sketchfab.com/3d-models/4b218cbdfaef405a81f0efa96f05ef32)
+- **Cell Nucleus - Transparent Structure** | 2025-10-21 | 👁 107 ❤️ 0
+  - Tags: 3D Model,, parametric-geometry, cell-biology, scientific-visualization
+  - [View](https://sketchfab.com/3d-models/79d5ccefe0be4069a37c00c859492525)
+- **Bacteriophage - Parametric Structural Variations** | 2025-10-21 | 👁 8 ❤️ 1
+  - Tags: virus;, bacteriophage, viral, capsid
+  - [View](https://sketchfab.com/3d-models/2fc25ba8a582473f8505384ba44bbecf)
+- **Bacterial Cell - Macro Scale Variations** | 2025-10-21 | 👁 19 ❤️ 1
+  - Tags: pathogen, virus;, dna, bacteriophage
+  - [View](https://sketchfab.com/3d-models/f2de1a99d2424c709d91330b92d9b0a2)
+- **Icosahedral Virus - External Structures** | 2025-10-21 | 👁 6 ❤️ 0
+  - Tags: pathogen, virus;, dna, bacteriophage
+  - [View](https://sketchfab.com/3d-models/2220bd891fc34ac49b9988df7aac58a2)
+- **Atomic Structures** | 2025-10-22 | 👁 10 ❤️ 0
+  - Tags: system, foundation, atoms, quuantum
+  - [View](https://sketchfab.com/3d-models/9ff5cd00ae644b8499d16eff7ee99656)
+- **Event Horixon by UUON Foundation** | 2025-11-02 | 👁 785 ❤️ 15
+  - Tags: topology, surface, internal, abstractart
+  - [View](https://sketchfab.com/3d-models/ce10a9c66e4348c8ae7a0bd0a4f601eb)
+- **Yoda Neuronal Cell Body** | 2025-11-05 | 👁 18 ❤️ 0
+  - Tags: yoda, character, starwars
+  - [View](https://sketchfab.com/3d-models/5feb7e68996b42dabd085570141a7ef7)
+- **Double Helix DNA** | 2025-11-10 | 👁 109 ❤️ 1
+  - Tags: desing, dna, double-helix, biometric
+  - [View](https://sketchfab.com/3d-models/ee0c2d5e027e4b2a98d35aa2c482e8d0)
+- **RNA Polymerase** | 2025-11-10 | 👁 126 ❤️ 0
+  - Tags: cell, molecule, dna, polymerase
+  - [View](https://sketchfab.com/3d-models/7b7bf04e95bf4b72a0e7daea74b43c31)
+- **a-dna-helix-solid** | 2025-11-15 | 👁 133 ❤️ 3
+  - Tags: helix, dna, abstract
+  - [View](https://sketchfab.com/3d-models/3da6691de3954f9c841ed3d297839bab)
+- **gravitational-force-law-solid** | 2025-11-17 | 👁 331 ❤️ 4
+  - Tags: helix, Vertex, blackhole, curvature
+  - [View](https://sketchfab.com/3d-models/6b24c216e3dc434096d58617573ce566)
+- **dna-quantum-folding-points** | 2025-11-17 | 👁 45 ❤️ 4
+  - Tags: helix, grail, helicoid, symmetrical
+  - [View](https://sketchfab.com/3d-models/821c1fe0486d416093cac2aec89bff37)
+- **sixteen-cell-cross-polytope-solid** | 2025-11-20 | 👁 8 ❤️ 0
+  - Tags: 4d, dimensional, mathart, polytope
+  - [View](https://sketchfab.com/3d-models/82ec9d7d89d9425fa5ce69d46d7deb57)
+- **DNA_supercoil** | 2025-12-05 | 👁 116 ❤️ 1
+  - Tags: biology, astronomy, dna, double-helix
+  - [View](https://sketchfab.com/3d-models/a914c2a4739a4e3fba32e22e32a302ce)
+- **A-Form DNA Helix Structure** | 2025-12-08 | 👁 147 ❤️ 2
+  - Tags: biology, medicine, health, dna-helix
+  - [View](https://sketchfab.com/3d-models/b21bb88b9cf048b5924b3f83dde77454)
+- **z_form_dna_helix_structure** | 2025-12-09 | 👁 38 ❤️ 0
+  - Tags: biology, dna, health, genetics
+  - [View](https://sketchfab.com/3d-models/8d3ce75259344518a69c251316fabe8a)
+- **electromagentic_spectrum_system** | 2025-12-10 | 👁 113 ❤️ 1
+  - Tags: foundation, energy, physics, framework
+  - [View](https://sketchfab.com/3d-models/3270ebc26d2f49a2aec02b2208f51e56)
+- **360 Moon Mapping - High Detail/Poly** | 2025-12-12 | 👁 106 ❤️ 1
+  - Tags: moon, nasa, astronomy, esa
+  - [View](https://sketchfab.com/3d-models/95fb94ab98f840edb707a2dc3fb51a8a)
+- **Jupiter 3D Model** | 2025-12-13 | 👁 19 ❤️ 0
+  - Tags: jupiter, planet, universe, Galaxy
+  - [View](https://sketchfab.com/3d-models/a7147040938e4db1824bf89bc19b59b2)
+- **Neptune 3D Model** | 2025-12-13 | 👁 9 ❤️ 0
+  - Tags: universe, earth, Galaxy, Neptune
+  - [View](https://sketchfab.com/3d-models/c87dca8049e249d8b246483131b08ac7)
+- **Venus 3D Model - 8K Resolution** | 2025-12-13 | 👁 14 ❤️ 0
+  - Tags: solarsystem, planet, universe, astronomy
+  - [View](https://sketchfab.com/3d-models/671aab10e076482c9e57f959d2bf1da4)
+- **Earth 3D Model - 8K Ultra Definition** | 2025-12-13 | 👁 27 ❤️ 0
+  - Tags: universe, earth, Galaxy, solar-system
+  - [View](https://sketchfab.com/3d-models/730e38501b124aa39c17e0e0a6f23094)
+- **Aureum Helix** | 2025-12-19 | 👁 60 ❤️ 2
+  - Tags: helix, aureum, aureum-helix, phi3
+  - [View](https://sketchfab.com/3d-models/402a2478b9c341c3b11d232d6b2df82f)
+- **Earth Dual-Layer Model** | 2025-12-20 | 👁 17 ❤️ 1
+  - Tags: solarsystem, planet, earth, map
+  - [View](https://sketchfab.com/3d-models/4fe111f4edba4547afa0d267fe8a82aa)
+- **Dual-Layer Jupiter Model - 8K Resolution** | 2025-12-20 | 👁 6 ❤️ 1
+  - Tags: solarsystem, jupiter, planet, science
+  - [View](https://sketchfab.com/3d-models/6bc31fb4b0ff47e78e5e8722b7b5bdeb)
+- **Cross Spin System** | 2025-12-22 | 👁 10 ❤️ 0
+  - Tags: drone, satellite, weapon
+  - [View](https://sketchfab.com/3d-models/453a2d60bd49403b85362f5f5889e77b)
+- **Energy Particle Stream** | 2025-12-22 | 👁 83 ❤️ 2
+  - Tags: energy, cme, astro-physics, energy-particle
+  - [View](https://sketchfab.com/3d-models/2c2fad4c805d41e28fd184871141cc65)
+- **The Golden Sun - NeRF Included** | 2025-12-22 | 👁 3 ❤️ 0
+  - Tags: sun, star, golden-sun, solar-system
+  - [View](https://sketchfab.com/3d-models/0ae7a13f33fd4c5094662777def6f4d7)
+- **Interstellar Comet 3I/ATLAS, Anomalies Data** | 2026-01-07 | 👁 67 ❤️ 1
+  - Tags: system, solar, nasa, visualization
+  - [View](https://sketchfab.com/3d-models/6b81d521e0bc4cc89480554f2e204d3d)
+- **Viral Capsid DNA Model** | 2026-01-17 | 👁 30 ❤️ 0
+  - Tags: viral-capsid-dna, microscopic-structures, biological-structures, b-dna-double-helix
+  - [View](https://sketchfab.com/3d-models/8268d44250944ce98f5fb6c7f73a5a4b)
+- **RNA Single-Helix Meso** | 2026-01-21 | 👁 46 ❤️ 0
+  - Tags: mathematical, structual-biology, rna-single-helix, single-stranded-ribonucleic-acid
+  - [View](https://sketchfab.com/3d-models/f511c951b9784222bb916c2a3d182f63)
+- **Neuron Network Mesh, ML - 3D Model** | 2026-05-18 | 👁 19 ❤️ 0
+  - Tags: anatomy, biology, quantum, parametric
+  - [View](https://sketchfab.com/3d-models/d0b2a515b822435fa2717dfd08b48644)
+- **Neural Double Helix Network** | 2026-05-28 | 👁 6 ❤️ 0
+  - [View](https://sketchfab.com/3d-models/978d2e3923214591b252f3b0a44a7d71)
+- **Ergosphere - Ergodic Sphere** | 2026-05-29 | 👁 2 ❤️ 0
+  - Tags: mathematical sculpture, parametric-design, algorithmic-art, computational-design
+  - [View](https://sketchfab.com/3d-models/efb6972c9daa42e296d1a3592bf3fbdf)
+- **Iterated Function pSystem** | 2026-06-25 | 👁 1 ❤️ 0
+  - [View](https://sketchfab.com/3d-models/424bf1f12b3549158d5cefd3d1635557)
+
+## Sacred Geometry & Chakras (23 models)
+- **cross_cap_surface_ar_universal** |  | 👁 0 ❤️ 0
+  - [View](https://sketchfab.com/3d-models/7c142e8edb094bed95bb6552eb5d5619)
+- **Succulent Mandala** | 2025-10-09 | 👁 46 ❤️ 1
+  - Tags: rosette, succulent, mandala, sacred-geometry
+  - [View](https://sketchfab.com/3d-models/0f533e9e109a41dea9a09dd2d0489f41)
+- **Flower of Life** | 2025-10-11 | 👁 124 ❤️ 1
+  - Tags: topology, geometric, wireframe, chrome
+  - [View](https://sketchfab.com/3d-models/111155a8273b403abc868bba53491e43)
+- **Apollonian Gasket - Infinite Linear** | 2025-10-11 | 👁 119 ❤️ 0
+  - Tags: fractal, geometry, apollo, sacred
+  - [View](https://sketchfab.com/3d-models/32e05817be9440f784a39c038afec753)
+- **Third Eye Chakra - The Cross of Perception** | 2025-10-12 | 👁 69 ❤️ 2
+  - Tags: 3dart, consciousness, geometricart, sacredgeometry
+  - [View](https://sketchfab.com/3d-models/e36c5d2d84344e4f8c2f7bd6a038521f)
+- **Throat Chakra - Blue** | 2025-10-12 | 👁 51 ❤️ 1
+  - Tags: communication, Yoga, Balance, Creativity
+  - [View](https://sketchfab.com/3d-models/9831acb9cd0840ee99c93c4955fe8d6b)
+- **Heart Chakra Wireframe** | 2025-10-12 | 👁 51 ❤️ 1
+  - Tags: love, emerald, Healing, Yoga
+  - [View](https://sketchfab.com/3d-models/29c2ce3673d2458b8fafa414c87ce56c)
+- **Soul Star Chakra - 8th Chakra** | 2025-10-13 | 👁 80 ❤️ 1
+  - Tags: heart, solar, crown, soul
+  - [View](https://sketchfab.com/3d-models/d91f653cbe53412d8ae424eef3930efe)
+- **Universal Eye** | 2025-10-13 | 👁 41 ❤️ 0
+  - Tags: eye, fractal, geometry, mystical
+  - [View](https://sketchfab.com/3d-models/bfd54fda1db9476bbe3bdea706a0951c)
+- **Pythagorean Fractal Tree** | 2025-10-13 | 👁 31 ❤️ 0
+  - Tags: tree, fractal, generative, geometry
+  - [View](https://sketchfab.com/3d-models/0854f65d552b468da008b4de11a73547)
+- **Sun Disc** | 2025-10-13 | 👁 39 ❤️ 0
+  - Tags: parametricdesign, digitalart, abstractart, conceptualart
+  - [View](https://sketchfab.com/3d-models/40b2e12ab20349abad25c9dba995aaae)
+- **Pneumatic Wave** | 2025-10-13 | 👁 53 ❤️ 0
+  - Tags: fractal, sacred, Pneumatic, motif
+  - [View](https://sketchfab.com/3d-models/2711e53678424b63b5d59a5565ceddaa)
+- **Paradox Hypersphere - Glitch Art** | 2025-10-14 | 👁 46 ❤️ 0
+  - Tags: generative, geometry, visualization, interactive
+  - [View](https://sketchfab.com/3d-models/ce6b85ae552f4ab1888b5f74f209d1c9)
+- **Stellate Octahedron - Stella Octangula** | 2025-10-15 | 👁 286 ❤️ 1
+  - Tags: generative, mesh, geometric, wireframe
+  - [View](https://sketchfab.com/3d-models/a95ec4372a65489683b0aa25a0265318)
+- **Cross Cap** | 2025-10-17 | 👁 198 ❤️ 2
+  - Tags: cross, topology, geometry, cap
+  - [View](https://sketchfab.com/3d-models/af2831471bdd42209e2583b492fd7ce9)
+- **Eye of Hamsa - Point Based** | 2025-10-20 | 👁 3 ❤️ 0
+  - [View](https://sketchfab.com/3d-models/754bfaccba2e47a19c7c8124447944ac)
+- **Cross of Emergence** | 2025-10-20 | 👁 13 ❤️ 1
+  - Tags: intersection, crossroads, emergence, cross-disciplinary
+  - [View](https://sketchfab.com/3d-models/901b19c9880041f8a4c6e06c1f89a2b4)
+- **time_cross_field_structure** | 2025-12-09 | 👁 24 ❤️ 0
+  - Tags: maxwell, space, electromagnetism, time-cross-field-structure
+  - [View](https://sketchfab.com/3d-models/53b54d52a5ed4b47b51b4946ad271cb6)
+- **Torus Knot General** | 2025-12-22 | 👁 60 ❤️ 0
+  - Tags: geometry, torus, sacred, geomorphology
+  - [View](https://sketchfab.com/3d-models/b74a8b6c4cc044ab9bcf815a55117eba)
+- **Sacred Titanium Ankh** | 2025-12-31 | 👁 19 ❤️ 0
+  - Tags: cross, egyptian, parametric, ankh
+  - [View](https://sketchfab.com/3d-models/a263f4a0d29f4333a0bb3d13414f3b28)
+- **Cross of Emergence** | 2026-03-01 | 👁 8 ❤️ 1
+  - Tags: cross, Architec, emergence, crossofemergence
+  - [View](https://sketchfab.com/3d-models/83eb4dee856d42aabbb52c9b2e41875b)
+- **Earths' Cube** | 2026-03-01 | 👁 49 ❤️ 2
+  - Tags: cube, architectural, earth, plato
+  - [View](https://sketchfab.com/3d-models/1d7b2436efed445ea74e51ceb9d6fb6c)
+- **Spiral Phyllotaxis Sphere** | 2026-05-29 | 👁 4 ❤️ 0
+  - Tags: fractal, generative, geometric, sphere
+  - [View](https://sketchfab.com/3d-models/cd981d0cfa5946fb841a321a299d0602)
+
+## Physics & Quantum (66 models)
+- **electromagnetic_wave_solid_fallback_177994091953** |  | 👁 0 ❤️ 0
+  - [View](https://sketchfab.com/3d-models/ec07e424e7794ff9882b91cf417fd0a4)
+- **sound_wave_wireframe_fallback_1780269785687** |  | 👁 0 ❤️ 0
+  - [View](https://sketchfab.com/3d-models/5d55d056daea4d9781031000f1802083)
+- **hydrogen_orbital_5d_ar_universal** |  | 👁 0 ❤️ 0
+  - [View](https://sketchfab.com/3d-models/13b0148efc1d41fd921992c5e7004044)
+- **loop_quantum_volume_spectrum_physics_wireframe_a** |  | 👁 0 ❤️ 0
+  - [View](https://sketchfab.com/3d-models/a4d37f4c607e408f96f44ebecbd00b91)
+- **quantum_atom_complete_points_1781296515936** |  | 👁 0 ❤️ 0
+  - [View](https://sketchfab.com/3d-models/f1a489ee3e1e493cb604a1e6aa8da6e9)
+- **dft_electron_density_001_physics_animated_178206** |  | 👁 0 ❤️ 0
+  - [View](https://sketchfab.com/3d-models/6fddc9cfb8c4480eaa26f1ec6cc685da)
+- **String Theory Compactification Model** | 2025-10-09 | 👁 41 ❤️ 1
+  - Tags: cosmology, string-theory, quantum-mechanics, theoretical-physics
+  - [View](https://sketchfab.com/3d-models/bfd15527e6014b759204f8c83f95da16)
+- **Quantum Wave Candelabra** | 2025-10-09 | 👁 66 ❤️ 1
+  - Tags: parametric, superposition, quantum-physics, quantum-mechanics
+  - [View](https://sketchfab.com/3d-models/e469b4b1bf7f464cbd75376e2a6cb416)
+- **Spin Network - Quantum Spacetime Fabric** | 2025-10-11 | 👁 84 ❤️ 0
+  - [View](https://sketchfab.com/3d-models/0d81e682bfcf47aab361a494b1687447)
+- **Möbius Strip - Infinite Loop** | 2025-10-12 | 👁 120 ❤️ 1
+  - Tags: topology, 3dart, digitalsculpture, mathart
+  - [View](https://sketchfab.com/3d-models/3a8b34b511244c129102d41217a60856)
+- **Spindle Torus** | 2025-10-17 | 👁 69 ❤️ 0
+  - Tags: geometry, parametric, spindle-torus, polar-singularities
+  - [View](https://sketchfab.com/3d-models/be58ee625526442fb3ccf9f068ccaccc)
+- **Quantum Wave Models** | 2025-10-19 | 👁 35 ❤️ 1
+  - Tags: architect, engineer, filmmaker, 3D Artist
+  - [View](https://sketchfab.com/3d-models/39fe07c82d834b4fad02997346e46691)
+- **Electromagnetic Wave Particle Cloud** | 2025-10-20 | 👁 127 ❤️ 2
+  - Tags: visualization, physics, simulation, education
+  - [View](https://sketchfab.com/3d-models/3464198a9455444193c094651d327c0f)
+- **Gravitational Wave Scene** | 2025-10-23 | 👁 36 ❤️ 0
+  - Tags: gravity, sphere, ripples, waves
+  - [View](https://sketchfab.com/3d-models/e3b902e3c4a8445b9a4d8d9841653b7d)
+- **Electromagnetic Wave Model** | 2025-10-23 | 👁 440 ❤️ 1
+  - Tags: quantum, physics, science, electromagnetic
+  - [View](https://sketchfab.com/3d-models/bb811a1b0e774e408e7ba05cd5fb6f79)
+- **Photon Animated Model** | 2025-10-23 | 👁 346 ❤️ 3
+  - Tags: quantum, physics, science, electromagnetic
+  - [View](https://sketchfab.com/3d-models/44fd3ea4373d470d9a7cadf8e2913099)
+- **Antimatter Animated Model** | 2025-10-23 | 👁 32 ❤️ 1
+  - Tags: quantum, physics, science, electromagnetic
+  - [View](https://sketchfab.com/3d-models/39ac08db7d08473f80a76c72aeb4dc06)
+- **Fractal SEM Surface Set 1** | 2025-10-23 | 👁 16 ❤️ 0
+  - Tags: future, quantum, mathematics, medicine
+  - [View](https://sketchfab.com/3d-models/89830fa028be43e49d11aaa427f07e68)
+- **Electro Magnetic Algorithms,  Set 1 of 2** | 2025-10-23 | 👁 28 ❤️ 1
+  - Tags: quantum, foundational, texturemapping, displacement-map
+  - [View](https://sketchfab.com/3d-models/b7008f1214a44e8788832fb4ed310863)
+- **Photonic Sphere - Particle** | 2025-10-30 | 👁 196 ❤️ 5
+  - Tags: physics, blackhole, light, photons
+  - [View](https://sketchfab.com/3d-models/63550a43d6994769be5ed68a330496ab)
+- **Crystal-Lattice FFC - Point Based** | 2025-11-04 | 👁 130 ❤️ 0
+  - Tags: quantum, physics, science, Matter
+  - [View](https://sketchfab.com/3d-models/1f5e7d0ee95a47ffb688aaae6951b9e3)
+- **Spin Network - Quantum Math** | 2025-11-04 | 👁 74 ❤️ 3
+  - Tags: quantum, physics, science, Matter
+  - [View](https://sketchfab.com/3d-models/032114014059484eaf69a5e7dfe8c1ce)
+- **Cubic Moiré Interference** | 2025-11-04 | 👁 66 ❤️ 0
+  - Tags: quantum, physics, science, Matter
+  - [View](https://sketchfab.com/3d-models/908ed40d4b8c4e16b8f519940ff5e0fa)
+- **Einsteins Mass Energy** | 2025-11-04 | 👁 41 ❤️ 0
+  - Tags: quantum, physics, science, Matter
+  - [View](https://sketchfab.com/3d-models/c790ff5ebfe24dac901f51876cab0a9d)
+- **Einstein Energy Per Mass Points E/m=c^2** | 2025-11-05 | 👁 405 ❤️ 5
+  - Tags: quantum, physics, science, blackhole
+  - [View](https://sketchfab.com/3d-models/dffb14606964415c9112ce99883da454)
+- **Universal Crown** | 2025-11-07 | 👁 33 ❤️ 1
+  - Tags: quantum, physics, ripple, universal
+  - [View](https://sketchfab.com/3d-models/1d4d181a8f1844afb7d95c16550e2f0d)
+- **Momentum Force Law** | 2025-11-07 | 👁 97 ❤️ 1
+  - Tags: quantum, force, physics, law
+  - [View](https://sketchfab.com/3d-models/d8352dd0b9274aa1a59eaab5686ced10)
+- **electron-spin-up-solid** | 2025-11-11 | 👁 286 ❤️ 8
+  - Tags: designer, electron, biometric, engineering
+  - [View](https://sketchfab.com/3d-models/5b2ad76f61984f659c98121e1667dc5e)
+- **bell-state-visualization-solid** | 2025-11-15 | 👁 27 ❤️ 2
+  - Tags: technology, quantum-mechanics, bellstates, informationtheory
+  - [View](https://sketchfab.com/3d-models/d4a0b2454f9b45de9a49bf949d34a020)
+- **time-symmetry-breaking-solid** | 2025-11-17 | 👁 48 ❤️ 1
+  - Tags: portal, time, gateway, design
+  - [View](https://sketchfab.com/3d-models/8879a0191c9a42babd114bfbc10db512)
+- **hydrogen-orbital-6s-points** | 2025-11-18 | 👁 35 ❤️ 2
+  - Tags: generative, hydrogen, art, abstract
+  - [View](https://sketchfab.com/3d-models/efd0b937dfe04151b12283b11237ee2d)
+- **gravastar-point** | 2025-11-18 | 👁 79 ❤️ 1
+  - Tags: quantum, physics, blackhole, gravastar
+  - [View](https://sketchfab.com/3d-models/fc07f2a228784fca814177ddf912a241)
+- **quantum-entanglement-model** | 2025-11-18 | 👁 51 ❤️ 0
+  - Tags: quantum, physics, simulation, space
+  - [View](https://sketchfab.com/3d-models/dedddc2e59b045bfb12c0fa1fdb5e6b2)
+- **hydrogen-1s-orbital-solid** | 2025-11-19 | 👁 43 ❤️ 0
+  - Tags: orbit, Chemistry, electron, hydrogen
+  - [View](https://sketchfab.com/3d-models/f33b629a591a42e698594db4ac3b2bff)
+- **quantum-atom-solid** | 2025-11-19 | 👁 21 ❤️ 0
+  - Tags: atom, quantum, physics, Chemistry
+  - [View](https://sketchfab.com/3d-models/e57af3eff39d40249c01d95672723adc)
+- **bose-einstein-condensate-uuave** | 2025-11-19 | 👁 14 ❤️ 0
+  - Tags: einstein, bose-einstein-condensate, uuhy, uuhat
+  - [View](https://sketchfab.com/3d-models/452e9de9593c4c9f94eccd73a5dc9782)
+- **entanglemet-occurance-measure** | 2025-11-21 | 👁 23 ❤️ 0
+  - Tags: universe, geometry, quantum, fibonacci
+  - [View](https://sketchfab.com/3d-models/ae8c8fb6518949be912003dcab8975b0)
+- **d_yz_orbital-clover** | 2025-11-26 | 👁 3 ❤️ 0
+  - Tags: atom, physics, electron, nucleus
+  - [View](https://sketchfab.com/3d-models/29c1ad27db7f4330862d79f7ea371677)
+- **Einstein Mass Energy (E=mc²)** | 2025-11-27 | 👁 12 ❤️ 1
+  - Tags: einstein, emc2, mass-energy
+  - [View](https://sketchfab.com/3d-models/62932ce6760342bf8eb399a6988a54ed)
+- **Einstein Energy Per Mass (E/m = c²)** | 2025-11-27 | 👁 13 ❤️ 1
+  - Tags: energy, einstein, Matter, energy-per-mass
+  - [View](https://sketchfab.com/3d-models/41a1142b92d54455a9f1895018602508)
+- **Einstein Mass From Energy (m = E/c²)** | 2025-11-27 | 👁 15 ❤️ 1
+  - Tags: einstein, relativity, mass-from-energy
+  - [View](https://sketchfab.com/3d-models/c9aa7374fda742e69117fd2483dd396b)
+- **wheeler_dewitt_equation (HΨ=0)** | 2025-11-27 | 👁 5 ❤️ 0
+  - Tags: universe, time, geometry, gravity
+  - [View](https://sketchfab.com/3d-models/e005900f65ef459ba15c86c79cb5e8f1)
+- **Einstein Absolute Magnitude- |E| = |m|c²** | 2025-11-27 | 👁 14 ❤️ 0
+  - Tags: e, energy, physics, einstein
+  - [View](https://sketchfab.com/3d-models/60677bdfd3f9437cac94e4a0b35d7eb4)
+- **quantum_wave_Ψ(x,t)** | 2025-11-27 | 👁 479 ❤️ 11
+  - Tags: t, psx, Wave, schrodinger
+  - [View](https://sketchfab.com/3d-models/54ca329798cf4d4c93cacd5faa8856a1)
+- **tensor_network_spacetime** | 2025-11-27 | 👁 6 ❤️ 0
+  - Tags: mapping, physics, spacetime, quantum-physics
+  - [View](https://sketchfab.com/3d-models/3f8d343e5f1a4713bfacd91687fc0ca9)
+- **ryu_takayanagi_entropy** | 2025-11-28 | 👁 16 ❤️ 1
+  - Tags: quantum, r/t, entropy, entanglement
+  - [View](https://sketchfab.com/3d-models/f8113df91e0f430fb4018dad96bc6d7f)
+- **quaternion_rotation_3d_frame** | 2025-11-29 | 👁 220 ❤️ 9
+  - Tags: robotic, quantum, video-games, quaternion
+  - [View](https://sketchfab.com/3d-models/5a6d21e9d0f04a8d920cfc5feb9b34b9)
+- **hello_uuorld_geodesic_model** | 2025-12-05 | 👁 433 ❤️ 3
+  - Tags: universe, earth, shell, physics
+  - [View](https://sketchfab.com/3d-models/6cea832876714ef5bcfb1e07c5b8fa8a)
+- **einstein_energy_per_mass** | 2025-12-07 | 👁 15 ❤️ 0
+  - Tags: energy, star, einsteins, emc2
+  - [View](https://sketchfab.com/3d-models/4ea789451c3c4108a61339884f3aab10)
+- **nambu_goto_string_wireframe** | 2025-12-07 | 👁 29 ❤️ 0
+  - Tags: particle, energy, string, quantum
+  - [View](https://sketchfab.com/3d-models/dbce2805d42e4f12843e401133379720)
+- **sectional_curvature_surface** | 2025-12-07 | 👁 79 ❤️ 0
+  - Tags: geodesic, einstein, ks, relativity
+  - [View](https://sketchfab.com/3d-models/a88ab1f6c9f7492d94e5a3d65fb1495b)
+- **weyl_tensor_surface_animated** | 2025-12-07 | 👁 24 ❤️ 0
+  - Tags: geodesic, Wave, vectors, ligo
+  - [View](https://sketchfab.com/3d-models/fde443312b33460d8944e4bcf0ac7815)
+- **square_root_riemann_** | 2025-12-07 | 👁 39 ❤️ 0
+  - Tags: z, geometry, development, research
+  - [View](https://sketchfab.com/3d-models/c9e34654b8be48f59d8bb9380922bbb8)
+- **Photon Enhanced** | 2025-12-20 | 👁 10 ❤️ 0
+  - [View](https://sketchfab.com/3d-models/7a1d5402db5a4264a094ccabcea52268)
+- **Hydrogen Atom 1S-Obital** | 2025-12-22 | 👁 57 ❤️ 0
+  - Tags: atom, energy, electron, hydrogen
+  - [View](https://sketchfab.com/3d-models/991f0f95a0264473965c574ccf97444d)
+- **Universe_wave_function** | 2025-12-22 | 👁 9 ❤️ 0
+  - [View](https://sketchfab.com/3d-models/89a58c44fbd44597bb6ffde7ff32101c)
+- **Planetary Recharging Station** | 2025-12-22 | 👁 18 ❤️ 1
+  - Tags: satellite, Depot, space-station, charging-station
+  - [View](https://sketchfab.com/3d-models/35cbfa8dea81496fa799cec9f1e9b67b)
+- **Hydrogen 3D Orbital** | 2025-12-22 | 👁 118 ❤️ 0
+  - Tags: energy, electron, hydrogen, nucleus
+  - [View](https://sketchfab.com/3d-models/e4a0a751a365470da920258153f8ba31)
+- **Einstein Tensor Field Transformation** | 2025-12-22 | 👁 11 ❤️ 0
+  - Tags: einstein, curvature, spacetime, general-relativity
+  - [View](https://sketchfab.com/3d-models/5f8f1706f3474932a5edd27361e2df9e)
+- **Quantum Gate Controlled-Not (C-Not)** | 2025-12-22 | 👁 35 ❤️ 1
+  - Tags: quantum-gate, controlled-not, cnot, c-not
+  - [View](https://sketchfab.com/3d-models/622ae540e5da4418a4f9816f76b2a759)
+- **Quantum Discord Surface Amplification** | 2026-01-11 | 👁 27 ❤️ 0
+  - Tags: Blueprint, uuon-foundation, quantum-discord, digitial-quantum-surface
+  - [View](https://sketchfab.com/3d-models/c87a7b50096e4136af3587320343a42f)
+- **Super/Quantum Superposition (UV 0 Set)** | 2026-01-13 | 👁 25 ❤️ 0
+  - Tags: curvature, coherence, linearity, uv-0
+  - [View](https://sketchfab.com/3d-models/826dcdfe40bb49e0aa71210d6c57819b)
+- **F(R) Modified Gravity Tool** | 2026-01-18 | 👁 59 ❤️ 0
+  - Tags: gravity, physics, einstein, modified-gravity
+  - [View](https://sketchfab.com/3d-models/df55e458d6194fbfa4b52472467e159f)
+- **Macroscopic Quantum Qubit** | 2026-05-18 | 👁 11 ❤️ 0
+  - [View](https://sketchfab.com/3d-models/108a7b30e4c8407aba067ba092ed7ba3)
+- **ætəm Probability** | 2026-06-07 | 👁 27 ❤️ 0
+  - Tags: mesh, geometry, atom, ICOSAHEDRON
+  - [View](https://sketchfab.com/3d-models/feaeec2fd62248c492aa48f251081398)
+- **Orbital Electron** | 2026-06-21 | 👁 1 ❤️ 0
+  - [View](https://sketchfab.com/3d-models/ed1545b726ca4154986ddb135f228c84)
+
+## Fractals (15 models)
+- **mandelbrot_heightmap_solid_fallback_178026816821** |  | 👁 0 ❤️ 0
+  - [View](https://sketchfab.com/3d-models/d9263677733044ff9b39ef59a5234991)
+- **mass_fractal_dimension_df_solid_fallback_1780291** |  | 👁 0 ❤️ 0
+  - [View](https://sketchfab.com/3d-models/be0d82fc79214908a527cea2580bf0d7)
+- **mandelbox_fractal_pointcloud_1780323280604** |  | 👁 0 ❤️ 0
+  - [View](https://sketchfab.com/3d-models/a5e82ee51b044939bee76b0f4cc1d333)
+- **mandelbox_fractal_points_1780734338465** |  | 👁 0 ❤️ 0
+  - [View](https://sketchfab.com/3d-models/e8d87028a43f462da3715bb5c3491d23)
+- **Lichtenbergs Shield - Fractal Linear Geometry** | 2025-10-11 | 👁 428 ❤️ 5
+  - Tags: fractal, electricity, wireframe, physics
+  - [View](https://sketchfab.com/3d-models/eb6faeb5c9ae41f79a05220387e245d9)
+- **Fractal Semi-Sphere** | 2025-10-12 | 👁 21 ❤️ 0
+  - [View](https://sketchfab.com/3d-models/7025b8a307fb4399b8445593a1f5bf22)
+- **Pythagorean Tree - Recursive Branch Fractal** | 2025-10-12 | 👁 90 ❤️ 0
+  - Tags: fractal, high-poly, mathematical-art, recursive
+  - [View](https://sketchfab.com/3d-models/45edd46e01314bc1a29ee1e3c1724e5d)
+- **Lichtenberg Star** | 2025-10-13 | 👁 9 ❤️ 0
+  - Tags: fractal, generative, geometry, math
+  - [View](https://sketchfab.com/3d-models/033f37007c6745d69fcadf11b80df01f)
+- **Black Hole Sun** | 2025-10-22 | 👁 485 ❤️ 2
+  - Tags: fractal, solar, sun, star
+  - [View](https://sketchfab.com/3d-models/a1f286bbaf4d4aa1952b28f1b4441f95)
+- **Fractal Earth** | 2025-10-22 | 👁 9 ❤️ 0
+  - Tags: planet, solar, earth, Galaxy
+  - [View](https://sketchfab.com/3d-models/34ae26a09a254f119808d80178dae4ad)
+- **Multibrot Portal** | 2025-10-24 | 👁 67 ❤️ 1
+  - Tags: portal, fractal, mandelbrot
+  - [View](https://sketchfab.com/3d-models/85098ff4f31c423c92e05446c045e87a)
+- **Mandelbrot Depth Field** | 2025-12-22 | 👁 234 ❤️ 2
+  - Tags: fractal, infinite, mandelbrot-depth-field, mandlebrot
+  - [View](https://sketchfab.com/3d-models/bdbe25c0f4c447bda8c8fa981e9d17f9)
+- **Menger Sponge - Infinite Surface Area** | 2026-04-14 | 👁 25 ❤️ 0
+  - Tags: infinite, menger-sponge, karl-menger
+  - [View](https://sketchfab.com/3d-models/7334a419078f4a93af34d65543a03697)
+- **mengerfusion** | 2026-05-09 | 👁 3 ❤️ 0
+  - [View](https://sketchfab.com/3d-models/a2c30944944f40158dd3ede24ff02033)
+- **newton_fractal_3d_solid_fallback_1778978975294** | 2026-05-17 | 👁 7 ❤️ 0
+  - [View](https://sketchfab.com/3d-models/6edeceafce3d42d183819398703d25c3)
+
+## Topology & Math Surfaces (55 models)
+- **pseudosphere_solid_fallback_1779926782380** |  | 👁 0 ❤️ 0
+  - [View](https://sketchfab.com/3d-models/8762535bb6884d38bc987980a22f946a)
+- **Proper_time_surface** |  | 👁 0 ❤️ 0
+  - [View](https://sketchfab.com/3d-models/a74610be52de454b8a6832e4bd6f2e8a)
+- **mobius_strip_points_fallback_1779980007213** |  | 👁 0 ❤️ 0
+  - [View](https://sketchfab.com/3d-models/38e203de1f3a4c8eb60453a67b92a6e5)
+- **mobius-strip-3d-1780009806613** |  | 👁 0 ❤️ 0
+  - [View](https://sketchfab.com/3d-models/ae5faed8cecd40fc817220cf6bcb12e5)
+- **volume_form_surface_solid_fallback_1780075769701** |  | 👁 0 ❤️ 0
+  - [View](https://sketchfab.com/3d-models/cb0e6dff1a0e42a7906e91aedfe7ee75)
+- **klein-bottle-4d-1780076615129** |  | 👁 0 ❤️ 0
+  - [View](https://sketchfab.com/3d-models/5fb371fe2e394e888466ce330a5b6272)
+- **mobius_morph** |  | 👁 0 ❤️ 0
+  - [View](https://sketchfab.com/3d-models/3e4e6c799cf64ecdae21730f7318aa75)
+- **metric_tensor_surface_wireframe_fallback_1780287** |  | 👁 0 ❤️ 0
+  - [View](https://sketchfab.com/3d-models/951d08b7748842ccb3b87c5edc3b352f)
+- **riemann_curvature_surface_ar_universal** |  | 👁 0 ❤️ 0
+  - [View](https://sketchfab.com/3d-models/9ad5961304bb4c7f8f0a3905104e7ec0)
+- **klein_bottle_4d_ar_universal** |  | 👁 0 ❤️ 0
+  - [View](https://sketchfab.com/3d-models/b01234f773c24162aa02c77354d26376)
+- **Breather Surface** | 2025-10-09 | 👁 84 ❤️ 1
+  - Tags: mesh, geometry, surface, physics
+  - [View](https://sketchfab.com/3d-models/f0bae8caa56b4f1c86c9c58cee6bf054)
+- **Jeener Klein Bottle** | 2025-10-09 | 👁 54 ❤️ 2
+  - Tags: topology, immersion, klein-bottle, differential-geometry
+  - [View](https://sketchfab.com/3d-models/303afe2fce604b3b8d13122cb1e82d84)
+- **Pseudosphere** | 2025-10-09 | 👁 35 ❤️ 1
+  - Tags: parametric-surface, differential-geometry, pseudosphere, non-euclidean
+  - [View](https://sketchfab.com/3d-models/9e06de36a82b42e2b8b0a55abd10d59e)
+- **Helicoid** | 2025-10-09 | 👁 34 ❤️ 1
+  - Tags: teaching, architects, spiral, Helical
+  - [View](https://sketchfab.com/3d-models/d507d64d5bd846aa88f544e18dc70eb4)
+- **Klein Bottle 4D** | 2025-10-09 | 👁 127 ❤️ 3
+  - Tags: topology, 4d, parametric, manifold
+  - [View](https://sketchfab.com/3d-models/7ac8f015a11941b0b4357f19b35d27bc)
+- **Polar Mesh Sphere** | 2025-10-11 | 👁 174 ❤️ 2
+  - Tags: topology, geometry, geometric, wireframe
+  - [View](https://sketchfab.com/3d-models/ef1cbdbc16da43d6a475341fc3bc3b34)
+- **Black Hole Paradox** | 2025-10-11 | 👁 50 ❤️ 0
+  - Tags: astrophysics, singularity, black-hole, accretion-disk
+  - [View](https://sketchfab.com/3d-models/638a2660d308467c82769f5b0c61db3d)
+- **Spherical-Helicoid** | 2025-10-11 | 👁 111 ❤️ 0
+  - Tags: portal, wormhole, spacetime, recursive-geometry
+  - [View](https://sketchfab.com/3d-models/932a120696af428bb21d3f04fdd6962b)
+- **Kuen Surface- Hyperbolic Geometry** | 2025-10-13 | 👁 37 ❤️ 0
+  - Tags: minimal, geometry, surfaces, curvature
+  - [View](https://sketchfab.com/3d-models/028e42f71c72498f972ad718aa35357c)
+- **Sievert-Enneper Surface** | 2025-10-13 | 👁 29 ❤️ 1
+  - Tags: computer, mesh, materials, architectural
+  - [View](https://sketchfab.com/3d-models/e37259c6a2dc4cf79400e8962fd476f6)
+- **Hyper Torus** | 2025-10-13 | 👁 21 ❤️ 0
+  - [View](https://sketchfab.com/3d-models/d780f4a2bca345579f3d64ecf9208988)
+- **Black Hole Set** | 2025-10-16 | 👁 34 ❤️ 0
+  - Tags: topology, geometry, gravity, folding
+  - [View](https://sketchfab.com/3d-models/7800b09ccf9c45f38738d8b87eb32398)
+- **Riemann Surface e^z - Vortex Formation** | 2025-10-16 | 👁 304 ❤️ 6
+  - Tags: surface, spiral, Helical, blackhole
+  - [View](https://sketchfab.com/3d-models/fbd6dc6956e7406a932f48158809516a)
+- **Red Eye** | 2025-10-16 | 👁 111 ❤️ 2
+  - Tags: orbs, sphere, Developer, uvlayout
+  - [View](https://sketchfab.com/3d-models/637d6d5e9ee54f2eadd42a3096fe6565)
+- **klein_bottle_parametric_4D_surface** | 2025-10-17 | 👁 223 ❤️ 2
+  - Tags: topology, geometry, 4d, mathematics
+  - [View](https://sketchfab.com/3d-models/e162014f60a14b1aba917b9c719a9198)
+- **Seashell Rose** | 2025-10-17 | 👁 19 ❤️ 0
+  - Tags: geometry, wireframe, rose, natural
+  - [View](https://sketchfab.com/3d-models/f0203d21a9a64dc4bbb3a486855bb586)
+- **Astroidal Ellipsoid** | 2025-10-17 | 👁 223 ❤️ 7
+  - Tags: geometry, surface, robotics, optics
+  - [View](https://sketchfab.com/3d-models/1b033bb61b274bbcb8f2310e305911a5)
+- **Reaction Diffusion Pattern** | 2025-11-10 | 👁 30 ❤️ 0
+  - Tags: topology, interfaces, Biological, Implants
+  - [View](https://sketchfab.com/3d-models/e2fd927b6a5a491d987033b71a45a268)
+- **universal-phi-pi-mossaic** | 2025-11-26 | 👁 14 ❤️ 0
+  - Tags: universe, topology, phi, pi
+  - [View](https://sketchfab.com/3d-models/036659ebdb0546d8b3a652250993209e)
+- **topological_klein_bottle_imersion** | 2025-12-07 | 👁 159 ❤️ 4
+  - Tags: e, geometry, v, Mobius
+  - [View](https://sketchfab.com/3d-models/5b0867aabe6947bbb84a6d4cada606b4)
+- **Riemann_curvature_surface** | 2025-12-07 | 👁 126 ❤️ 2
+  - Tags: geometry, gravity, spacetime, riemann
+  - [View](https://sketchfab.com/3d-models/0e485c1c7a6c4eb79c278675f44864fb)
+- **Ricci_curvature_surface** | 2025-12-07 | 👁 40 ❤️ 0
+  - Tags: geometry, gravity, spacetime, riemann
+  - [View](https://sketchfab.com/3d-models/3a11b299af0d4ff995be1fffb6a8d6b8)
+- **scalar_curvature_surface** | 2025-12-07 | 👁 33 ❤️ 1
+  - Tags: geodesic, r, relativity, scalar-curvature
+  - [View](https://sketchfab.com/3d-models/03045df58f7a416e9c62068ed65defb1)
+- **Metric_tensor_riemann** | 2025-12-07 | 👁 51 ❤️ 1
+  - Tags: geodesic, relativity, riemann, metric-tensor
+  - [View](https://sketchfab.com/3d-models/0fa5f07efea1456bbcde376e311d014f)
+- **Geodesic_flow_surface** | 2025-12-07 | 👁 50 ❤️ 1
+  - Tags: geodesic, relativity, riemann, metric-tensor
+  - [View](https://sketchfab.com/3d-models/a62da395f3d043a082a38f5060bb91b6)
+- **Exponential_map_surface** | 2025-12-07 | 👁 108 ❤️ 1
+  - Tags: geodesic, vectors, tangent, relativity
+  - [View](https://sketchfab.com/3d-models/dfa046f015ce4bc384a94016d3cf1d6f)
+- **laplace_beltrami_surface** | 2025-12-07 | 👁 39 ❤️ 2
+  - Tags: geometry, riemann, machine-learning, curved-geometry
+  - [View](https://sketchfab.com/3d-models/b155939c529c4bd394f8a7ec8428203e)
+- **covariant_derivative_surface** | 2025-12-07 | 👁 61 ❤️ 1
+  - Tags: geometry, particles, medical-imaging, riemann
+  - [View](https://sketchfab.com/3d-models/279acbcabc3a4892bda659223910a2dd)
+- **volume_form_surface** | 2025-12-07 | 👁 41 ❤️ 2
+  - Tags: geometry, particles, medical-imaging, riemann
+  - [View](https://sketchfab.com/3d-models/a74fd77119d3447d9ece4882d89ab5aa)
+- **Cinquefoil Knot - Holographic & Animated** | 2025-12-11 | 👁 178 ❤️ 2
+  - Tags: geometry, computational, Services, holographic
+  - [View](https://sketchfab.com/3d-models/6af431234d3b4f3aa42fec18a9d614ec)
+- **Volume Form Surface Structure** | 2025-12-21 | 👁 8 ❤️ 0
+  - [View](https://sketchfab.com/3d-models/8ccf3468948f454089e8a582c13e0b3e)
+- **Clifford 4D Torus - Beau Ty** | 2025-12-22 | 👁 178 ❤️ 2
+  - Tags: torus, 4d, bow-tie, duocylinder
+  - [View](https://sketchfab.com/3d-models/88189525201f429d8850180116880cfa)
+- **Radial Topology by UUON Foundation** | 2025-12-25 | 👁 14 ❤️ 0
+  - [View](https://sketchfab.com/3d-models/3fbc73e1b25b4d7ab015dd577414b707)
+- **Exponential Map Surface** | 2026-01-14 | 👁 11 ❤️ 0
+  - Tags: robotics, kinematics, exponential-map-surface, lie-group-theory
+  - [View](https://sketchfab.com/3d-models/7ff26ba151a744cd88e4007ae0a638a0)
+- **Hyperbolic Limit Set 4D-to-3D** | 2026-01-14 | 👁 38 ❤️ 0
+  - Tags: 4d_geometry, hyperbolic-space, hyperbolic-limit-set
+  - [View](https://sketchfab.com/3d-models/4a3c26c35a744a96a1db8dfb1123c37c)
+- **Four Ended Torus (New Set)** | 2026-01-17 | 👁 32 ❤️ 2
+  - Tags: formula, torus, uuon-foundation, four-ended-torus
+  - [View](https://sketchfab.com/3d-models/660028a1919f4ef183e3c2fa7aa735c9)
+- **Torus Catenoid Enneper - Warp Tech.** | 2026-01-17 | 👁 39 ❤️ 0
+  - Tags: torus, enneper, catenoid, warp-travel
+  - [View](https://sketchfab.com/3d-models/b1d7435b7ce84f279df8fd221c1e73b9)
+- **Parametric Horn** | 2026-01-22 | 👁 33 ❤️ 0
+  - Tags: horn, parametric-surface, parametric-geometry, parametric-design
+  - [View](https://sketchfab.com/3d-models/a139ac994d73412fa889e99a28391c69)
+- **Boustrophedon Pattern Surface** | 2026-01-22 | 👁 23 ❤️ 0
+  - Tags: parametric-surface, parametric-geometry, parametric-design, boustrophedon
+  - [View](https://sketchfab.com/3d-models/6b340ba0624d48ab82f638052431cea4)
+- **The Universal Crown - Torus Wiremesh** | 2026-03-23 | 👁 18 ❤️ 2
+  - Tags: universemodel, universe-emperor, universe-shape, universe-shape-model
+  - [View](https://sketchfab.com/3d-models/e015be830e4c4ab79b416dbcf6c5e853)
+- **ellipsoidal-neural-precursor-solid (2)** | 2026-03-24 | 👁 7 ❤️ 0
+  - [View](https://sketchfab.com/3d-models/e3fd135d22d74126887661ebf2ba6639)
+- **Dipole-White Hole Singularity** | 2026-05-25 | 👁 7 ❤️ 0
+  - Tags: vfx, topology, geometry, torus
+  - [View](https://sketchfab.com/3d-models/e66af2fffcec4f32aa08cb232650c2f5)
+- **genus2-surface-combo** | 2026-05-29 | 👁 2 ❤️ 0
+  - [View](https://sketchfab.com/3d-models/696396509bd7444790ab10d87ff34760)
+- **Subset Relation Solid Manifold** | 2026-06-02 | 👁 3 ❤️ 0
+  - Tags: topology, voronoi, foundation, parametric
+  - [View](https://sketchfab.com/3d-models/4ffc74010a724e1796a9b560926b8017)
+- **Recursive Kleinian Scaffold** | 2026-06-04 | 👁 2 ❤️ 0
+  - [View](https://sketchfab.com/3d-models/db48b4e0402d4dadb042b577c5d2b940)
+
+## Cosmology & Space (43 models)
+- **kepler_planetary_motion_ar_universal** |  | 👁 0 ❤️ 0
+  - [View](https://sketchfab.com/3d-models/ac3209f026b642659de9843811bd8442)
+- **Chaotic Universe** | 2025-10-13 | 👁 79 ❤️ 0
+  - Tags: universe, reality, dimensional, chaos
+  - [View](https://sketchfab.com/3d-models/4dc0146806d142a5a4fafae8937f3e3c)
+- **Eye in the Sky** | 2025-10-16 | 👁 73 ❤️ 2
+  - Tags: particles, finalboss, cosmic, conciousness
+  - [View](https://sketchfab.com/3d-models/48281c38004a418281e2a7d8a8f60e35)
+- **Particle Planet** | 2025-10-16 | 👁 105 ❤️ 1
+  - Tags: planet, particle, astronomy, sphere
+  - [View](https://sketchfab.com/3d-models/5543ed787f15426282bcdd53b04ab975)
+- **Universe Expansion Model** | 2025-10-16 | 👁 104 ❤️ 0
+  - Tags: universe, time, geometry, growth
+  - [View](https://sketchfab.com/3d-models/02f0e485904b4da5ac1a905dc14c67b0)
+- **Death Star Replicate** | 2025-10-22 | 👁 34 ❤️ 0
+  - Tags: movie, video-games, deathstar, game
+  - [View](https://sketchfab.com/3d-models/beb34c7ffdc34c04921fc292be49dd65)
+- **Quuantum Alignment by UUON Foundation** | 2025-11-02 | 👁 10 ❤️ 0
+  - Tags: solar, star, astrological, phenomenon
+  - [View](https://sketchfab.com/3d-models/44669f609ede40ab9e7783e011052457)
+- **Black Hole Sun** | 2025-11-10 | 👁 47 ❤️ 0
+  - Tags: sun, layered
+  - [View](https://sketchfab.com/3d-models/38370c81d52a49b7a9bcfda43897e2e3)
+- **spacetime-curvature** | 2025-11-17 | 👁 26 ❤️ 1
+  - Tags: curvature, spacetime, generativeart, algorithmic-art
+  - [View](https://sketchfab.com/3d-models/f2b5444c5d014ee39c7f3cafbaade625)
+- **great-attractor** | 2025-11-18 | 👁 81 ❤️ 1
+  - Tags: seeker, free-model, sketchfab
+  - [View](https://sketchfab.com/3d-models/6e03a9c5e7fa4a9fa98e96b70eed9241)
+- **spiral-galaxy** | 2025-11-18 | 👁 51 ❤️ 2
+  - Tags: generative, phi, Galaxy, spiral
+  - [View](https://sketchfab.com/3d-models/27b5c5cd57804f54bdec5a57f1f667ba)
+- **gravitational-force-law-wireframe (1)** | 2025-11-18 | 👁 7 ❤️ 0
+  - [View](https://sketchfab.com/3d-models/8cee213b4f854b3b897cb1f7c12a3e81)
+- **15 point star** | 2025-11-19 | 👁 16 ❤️ 0
+  - Tags: star, 15-point
+  - [View](https://sketchfab.com/3d-models/be5a7421996f4905ac78c921b959cd25)
+- **Pyramid of Ra** | 2025-11-20 | 👁 34 ❤️ 0
+  - Tags: pyramid, 4d, Ra, spacetime
+  - [View](https://sketchfab.com/3d-models/e436a8f04d2b43b59b4667a70a03f58a)
+- **African Sphinx Man** | 2025-11-20 | 👁 43 ❤️ 0
+  - Tags: south, universe, africa, earth
+  - [View](https://sketchfab.com/3d-models/f48df4314a0745d39fb47430c8064fb5)
+- **As above, so below** | 2025-11-25 | 👁 17 ❤️ 0
+  - Tags: reality, stars, planets, Inner
+  - [View](https://sketchfab.com/3d-models/f06e64a905be4c8a859a121ed886c4ea)
+- **rossler-attractor-pathways** | 2025-11-25 | 👁 37 ❤️ 0
+  - Tags: visualization, dynamics, chaos, theory
+  - [View](https://sketchfab.com/3d-models/0645733407dc4409b3fe4abdab1a6be1)
+- **gravitational_time_2D_dilation** | 2025-11-29 | 👁 15 ❤️ 0
+  - Tags: time, father, gravitational-time-dillation, space-curvature
+  - [View](https://sketchfab.com/3d-models/81d6cf48a4084afdaf016a5323ffa418)
+- **gravitational_time_3D_dilation** | 2025-11-29 | 👁 48 ❤️ 0
+  - Tags: time, father, gravitational-time-dillation, space-curvature
+  - [View](https://sketchfab.com/3d-models/8aca0e662649494aaa599740d7b9134a)
+- **soso-star** | 2025-12-04 | 👁 14 ❤️ 0
+  - Tags: astronomy, star, babylonian, soso
+  - [View](https://sketchfab.com/3d-models/609dca89239c4d0bbefd6f9caa9e2acc)
+- **scalar_field_inflation_physics_animated_17648519** | 2025-12-04 | 👁 117 ❤️ 0
+  - Tags: universe, big-bang, epoch, scalar-field-inflation
+  - [View](https://sketchfab.com/3d-models/e8a308d65faa479e9c9bb0f15148fe09)
+- **Earth 3D Hologram** | 2025-12-11 | 👁 11 ❤️ 0
+  - Tags: world, planet, universe, earth
+  - [View](https://sketchfab.com/3d-models/1c6a84bdd5aa42fa91b0814e2f914cd7)
+- **Black Hole Merger Concept** | 2025-12-12 | 👁 30 ❤️ 0
+  - Tags: macro, macro-verse, black-hole-dynamics, ligo-binary-merger
+  - [View](https://sketchfab.com/3d-models/3e445bf3b0c74dfaa55c3ff942918643)
+- **Holographic Earth - Promotional** | 2025-12-13 | 👁 6 ❤️ 0
+  - Tags: world, planet, earth, science
+  - [View](https://sketchfab.com/3d-models/1ccac6a0458e410088e5ef629ca28692)
+- **Emergent Sun-Verse** | 2025-12-14 | 👁 7 ❤️ 0
+  - Tags: planet, universe, sun, star
+  - [View](https://sketchfab.com/3d-models/893f06f7ee574a8a80552568eb7ffa9f)
+- **1 Ceres 3D Model** | 2025-12-15 | 👁 5 ❤️ 0
+  - Tags: jupiter, planet, mars, demeter
+  - [View](https://sketchfab.com/3d-models/e2650cd169ae437aa5ac3f8b4a938d51)
+- **Discrete Spacetime Graph** | 2025-12-15 | 👁 40 ❤️ 0
+  - Tags: math, science, graphics, phsyics
+  - [View](https://sketchfab.com/3d-models/fc99a9262c054b7799d781ad609cf844)
+- **Cuancoá - LTT 9979 B** | 2025-12-20 | 👁 8 ❤️ 1
+  - Tags: universe, earth, Neptune, exoplanet
+  - [View](https://sketchfab.com/3d-models/6888daa370074adf9e629b31ead034eb)
+- **Axion Field Oscillations** | 2025-12-22 | 👁 29 ❤️ 0
+  - Tags: cosmic, sine, cosine, axion
+  - [View](https://sketchfab.com/3d-models/5f5efa454b314457aa09a9709b5093c6)
+- **Makemake - 4K Resolution** | 2025-12-22 | 👁 1 ❤️ 0
+  - Tags: planet, astronomy, dwarf-planet, makemake
+  - [View](https://sketchfab.com/3d-models/5f86b8c084594ecc936882d159cdecc9)
+- **Gravitational Lensing Demonstration** | 2025-12-22 | 👁 2 ❤️ 0
+  - Tags: gravity, spacetime, relativity, gravitational-lensing
+  - [View](https://sketchfab.com/3d-models/633689c98199418e8db2e8bb400c7e36)
+- **Event Horizon by UUON Foundation** | 2025-12-24 | 👁 10 ❤️ 0
+  - [View](https://sketchfab.com/3d-models/c82e9248d5954e499ce529b85267812b)
+- **Ying-Yang Solar Terms** | 2025-12-25 | 👁 35 ❤️ 2
+  - Tags: yin, yang, ying-yang, year
+  - [View](https://sketchfab.com/3d-models/ec75e0b9e4ec49b3ab6746fc26b67d7c)
+- **3I/Atlas - Blue Kachina Comet Tribute** | 2025-12-25 | 👁 743 ❤️ 4
+  - Tags: comet, tribute, 2025, history
+  - [View](https://sketchfab.com/3d-models/3907415307b64430a4dde7777eb10f22)
+- **3I Atlas Density Layers** | 2026-01-07 | 👁 13 ❤️ 0
+  - Tags: asteroid, comet, 3i-atlas, toplogical
+  - [View](https://sketchfab.com/3d-models/9211524b477d4b90bf281b145a48d9e6)
+- **Cosmic Quartz Crystal** | 2026-01-07 | 👁 14 ❤️ 0
+  - Tags: Quartz
+  - [View](https://sketchfab.com/3d-models/ea6808d1ad4a494d9c0d4cfad1be1046)
+- **Comet 3I/ATLAS: Anomalies & Data Visualization** | 2026-01-07 | 👁 20 ❤️ 0
+  - Tags: object, visualization, astronomy, data
+  - [View](https://sketchfab.com/3d-models/1d6ca58b216146d384b75a36350d3af2)
+- **M87 Black Hole Visualization Tool** | 2026-01-11 | 👁 123 ❤️ 0
+  - Tags: visualization, fingerprint, cosmic, Tool
+  - [View](https://sketchfab.com/3d-models/0e5044b1dce74cbeb17d66425eba2628)
+- **100+ Pointed Star** | 2026-01-18 | 👁 16 ❤️ 0
+  - Tags: i, me, you
+  - [View](https://sketchfab.com/3d-models/15c3611bf32b44168b09aafd79490032)
+- **Gargantua UUormhole #000000** | 2026-03-02 | 👁 21 ❤️ 0
+  - Tags: astronomy, physics, interstellar, Gargantua
+  - [View](https://sketchfab.com/3d-models/b47df8ff57e8404eb0c1f8b6e5031d4a)
+- **Enhanced Parametric Earth Concept** | 2026-06-02 | 👁 168 ❤️ 1
+  - Tags: planet, earth, 001, Gaia
+  - [View](https://sketchfab.com/3d-models/cff12999ce96464abded2bd0d4f17805)
+- **Arcturus Star - 3D Model** | 2026-06-02 | 👁 31 ❤️ 2
+  - Tags: star, hokulea, arcturus, space
+  - [View](https://sketchfab.com/3d-models/5c2a42cd68c3481393bab863d9800bfb)
+- **Comet Tail - Energy through Geometry** | 2026-06-25 | 👁 0 ❤️ 0
+  - [View](https://sketchfab.com/3d-models/9cfe44687b9e4fc3b72cf1a518275cd0)
+
+## UUON Originals (26 models)
+- **UUON_IFS_mi1_res256_1780659633947** |  | 👁 0 ❤️ 0
+  - [View](https://sketchfab.com/3d-models/dd451357b8ee49d7bc701fa3e87da73b)
+- **UUON_000001** |  | 👁 0 ❤️ 0
+  - [View](https://sketchfab.com/3d-models/d19a9f0daa3941dd85db7e17354b9ba7)
+- **uuon_ifs_lattice** |  | 👁 0 ❤️ 0
+  - [View](https://sketchfab.com/3d-models/998698d5864b44b1bc3f803d5d146f11)
+- **uuon_ifs_none_hd** |  | 👁 0 ❤️ 0
+  - [View](https://sketchfab.com/3d-models/6dbc1c80bb054b9cb7a09a7a6c65e0f2)
+- **UUON Proof Stamp** | 2025-10-16 | 👁 37 ❤️ 0
+  - Tags: proof, collectible, punch-through, uuonfoundation
+  - [View](https://sketchfab.com/3d-models/1bc5c99cd25a4af08ebfdd72e0c74e79)
+- **UUON Token Cube** | 2025-12-16 | 👁 3 ❤️ 0
+  - Tags: cube, gaming, cyberpunk, token
+  - [View](https://sketchfab.com/3d-models/171fc6f745ff41d196bae7529226051c)
+- **12x8 Hologram Cuboid** | 2025-12-21 | 👁 37 ❤️ 0
+  - Tags: collaboration, graphicdesign, free, sketchfab
+  - [View](https://sketchfab.com/3d-models/58d6a3a5054945c793f97d99bd798efc)
+- **UUON Earphone** | 2025-12-22 | 👁 18 ❤️ 0
+  - Tags: foundation, uuonfoundation, uuon, uuon-foundation
+  - [View](https://sketchfab.com/3d-models/4362c10d837043e88b91fe7ae46e5200)
+- **UUON Holographic - U²O(n) Linear Complexity** | 2025-12-22 | 👁 10 ❤️ 0
+  - [View](https://sketchfab.com/3d-models/d559612fc6484eeb826738f9e5fa83e6)
+- **Stellar_Dream_Art Promotion** | 2025-12-23 | 👁 12 ❤️ 1
+  - Tags: 2Dto3D, uuonfoundation, wiregenesis
+  - [View](https://sketchfab.com/3d-models/163ab9616ba8422aad0cfbac8fcd7286)
+- **UUON Foundation Universal Holgraph** | 2025-12-23 | 👁 15 ❤️ 0
+  - Tags: uuonfoundation, uuon-foundation, uuon_foundation
+  - [View](https://sketchfab.com/3d-models/eb266abe336248c9aea58e4a1e50e9a8)
+- **3rd Eye Alignment by UUON Foundation** | 2025-12-24 | 👁 46 ❤️ 0
+  - Tags: united, feedback, unity, texture
+  - [View](https://sketchfab.com/3d-models/eb3370163f6546aebc21c0d2a084ff7a)
+- **Life of Kreis** | 2026-01-10 | 👁 9 ❤️ 0
+  - Tags: circle, kreis, uuon, uuon-foundation
+  - [View](https://sketchfab.com/3d-models/8a64c78490604351bbe8bf8593aae5a6)
+- **Magnus Opus Hologram** | 2026-02-13 | 👁 7 ❤️ 0
+  - Tags: heretic, prana, uuon-foundation, magnus-opus
+  - [View](https://sketchfab.com/3d-models/e1bd0141641f4a459ed3b28312df3e6d)
+- **UUON Cloud** | 2026-02-26 | 👁 7 ❤️ 1
+  - [View](https://sketchfab.com/3d-models/ddef614b189d465b9a11d09f33d147fe)
+- **Clouud Æye** | 2026-03-02 | 👁 6 ❤️ 0
+  - Tags: aeye, uuon, uuon-foundation, uuon-foundation-inc
+  - [View](https://sketchfab.com/3d-models/dbbc6c3ef7e4442ab07fd48c95449c7b)
+- **UUON Dollar** | 2026-03-23 | 👁 8 ❤️ 0
+  - Tags: eyeofprovidence, annuit, coeptis, uuon-dollar
+  - [View](https://sketchfab.com/3d-models/9850018bf0cc41328d6730666268440e)
+- **uuon_ifs_box_hd (2)** | 2026-05-09 | 👁 0 ❤️ 0
+  - [View](https://sketchfab.com/3d-models/21fb65ee66d6465ea1d7d09ce4011708)
+- **uuon_ifs_box_hd** | 2026-05-10 | 👁 3 ❤️ 0
+  - [View](https://sketchfab.com/3d-models/b514df47e961424db7ec0c064a9bfe9a)
+- **uuon_ifs_box (7)** | 2026-05-10 | 👁 5 ❤️ 1
+  - [View](https://sketchfab.com/3d-models/da6b68e69af749f395fb291709d077e3)
+- **uuon_ifs_none (6)_obj** | 2026-05-11 | 👁 1 ❤️ 0
+  - [View](https://sketchfab.com/3d-models/4a76b665dcc447609041aa9beccef89b)
+- **uuon_ifs_box_hd (8)** | 2026-05-11 | 👁 6 ❤️ 1
+  - [View](https://sketchfab.com/3d-models/47f344b44c2742169d46870b943f998d)
+- **uuon_ifs_box (10)** | 2026-05-11 | 👁 2 ❤️ 0
+  - [View](https://sketchfab.com/3d-models/f9d6b80ed4d34f1caf0f491b449df317)
+- **uuon_ifs_box (6)** | 2026-05-11 | 👁 2 ❤️ 0
+  - [View](https://sketchfab.com/3d-models/d36c6653ded24a8083ee68945e284409)
+- **Milky Way Galactic UV Sphere** | 2026-06-05 | 👁 18 ❤️ 0
+  - Tags: astronomy, mathematics, Procedural, galactic
+  - [View](https://sketchfab.com/3d-models/6259fb27d8574e789b383f83cc3eb24c)
+- **babylonian_libra_scales_ar_universal** | 2026-06-25 | 👁 0 ❤️ 0
+  - [View](https://sketchfab.com/3d-models/ba4056f785744f0594bd6b0818489846)
+
+## Other (127 models)
+- **area_rectangle_solid_fallback_1779926486659** |  | 👁 0 ❤️ 0
+  - [View](https://sketchfab.com/3d-models/9a71bdf531264bc4846b3efa8d5f55d6)
+- **riemann_curvature_manifold_solid_fallback_177992** |  | 👁 0 ❤️ 0
+  - [View](https://sketchfab.com/3d-models/57c8a006666e4eed886f844290f149b8)
+- **sr_time_dilation_solid_fallback_1779942026368** |  | 👁 0 ❤️ 0
+  - [View](https://sketchfab.com/3d-models/2b5488e39c39475a9f568a36cc9de295)
+- **model** |  | 👁 0 ❤️ 0
+  - [View](https://sketchfab.com/3d-models/a91b7e0068964042b273afa059349326)
+- **breast_cancer_tissue_solid_fallback_177997174702** |  | 👁 0 ❤️ 0
+  - [View](https://sketchfab.com/3d-models/de2fd0fa6e0342a6970d51471825f3c4)
+- **ergosphere-1779981447239** |  | 👁 0 ❤️ 0
+  - [View](https://sketchfab.com/3d-models/7968f48ea20647bb9d91f3d3a9627564)
+- **model** |  | 👁 0 ❤️ 0
+  - [View](https://sketchfab.com/3d-models/692f400ebbf7460e85f1f8bf1e238730)
+- **hypersphere-4d-1780010502139** |  | 👁 0 ❤️ 0
+  - [View](https://sketchfab.com/3d-models/4a0d4e0548e042568f4f58d4af2c1fb2)
+- **untitled** |  | 👁 0 ❤️ 0
+  - [View](https://sketchfab.com/3d-models/663421ff634341d6803ebe23d91f28d6)
+- **venn_diagram_sets_solid_fallback_1780408602601** |  | 👁 0 ❤️ 0
+  - [View](https://sketchfab.com/3d-models/69de3346c2b34e9497c52b9a222fa283)
+- **four_sphere_hypersphere_ar_universal** |  | 👁 0 ❤️ 0
+  - [View](https://sketchfab.com/3d-models/b3c7e51c90cc4f5bb28ac9f743f15ed2)
+- **equirectangular_sphere_ar_universal** |  | 👁 0 ❤️ 0
+  - [View](https://sketchfab.com/3d-models/25f370c346b94038a405f32da72ce024)
+- **sphere_ar_universal (3)** |  | 👁 0 ❤️ 0
+  - [View](https://sketchfab.com/3d-models/9f65809aaa8a43bfa696aecf013f4a00)
+- **sphere_ar_universal (3)** |  | 👁 0 ❤️ 0
+  - [View](https://sketchfab.com/3d-models/5d5c1cea2ba84c748262b1b661c82e03)
+- **sphere_ar_universal (5)** |  | 👁 0 ❤️ 0
+  - [View](https://sketchfab.com/3d-models/fefaa05648204356bfedba9d184e6bcf)
+- **projection_comparison_4d_ar_universal** |  | 👁 0 ❤️ 0
+  - [View](https://sketchfab.com/3d-models/3fbeccdab29a4f21a807c32a4018541b)
+- **ifs_mandelbulb_raymarched_mesh_1780617588990** |  | 👁 0 ❤️ 0
+  - [View](https://sketchfab.com/3d-models/c17ab907df594c37a437c49d37a72b43)
+- **galactic_uv_sphere_ar_universal (1)** |  | 👁 0 ❤️ 0
+  - [View](https://sketchfab.com/3d-models/5fc9025f81434feab93e6ee61d923bd9)
+- **foundation_tensor_mesh_ar_universal** |  | 👁 0 ❤️ 0
+  - [View](https://sketchfab.com/3d-models/a308ef9cd8844a97a3f4f6537a402063)
+- **ads_cft_correspondence_ar_universal** |  | 👁 0 ❤️ 0
+  - [View](https://sketchfab.com/3d-models/a6166eb1b58d40108b101d42dea32e0a)
+- **cube_ar_universal** |  | 👁 0 ❤️ 0
+  - [View](https://sketchfab.com/3d-models/7feca31e69004d91bc232f1f28bdb5b8)
+- **sphere_ar_universal (6) (1)** |  | 👁 0 ❤️ 0
+  - [View](https://sketchfab.com/3d-models/72b7e6f558bc4563a56e8087b46618ed)
+- **ifs_mandelbulb_raymarched_mesh_1780734781608** |  | 👁 0 ❤️ 0
+  - [View](https://sketchfab.com/3d-models/68ccb3e9e47f49b4a9ebfb99dda4ec61)
+- **lichen_expansion_ar_universal** |  | 👁 0 ❤️ 0
+  - [View](https://sketchfab.com/3d-models/c69ea78d702a43dbb308b618e7b985ab)
+- **four_sphere_hypersphere_ar_universal** |  | 👁 0 ❤️ 0
+  - [View](https://sketchfab.com/3d-models/f9f071c9d3c44ddea85a60c14f057b53)
+- **equivalent_sets_physics_animated_1781999947748** |  | 👁 0 ❤️ 0
+  - [View](https://sketchfab.com/3d-models/df670f3c1d6646858d7211203229e523)
+- **null_set_empty_physics_wireframe_animated_178206** |  | 👁 0 ❤️ 0
+  - [View](https://sketchfab.com/3d-models/ea1a97f69eda4db7a3e179f187c613e7)
+- **hypersphere_projectable_ar_universal** |  | 👁 0 ❤️ 0
+  - [View](https://sketchfab.com/3d-models/0693a2d9a4b4443fb261f6bad9bb5589)
+- **Dendrimer Nanotech - Molecular Architecture** | 2025-10-12 | 👁 105 ❤️ 0
+  - Tags: nanotechnology, molecular-structure, nanoscale, dendrimer
+  - [View](https://sketchfab.com/3d-models/784c311bb4d043e9be32922e2538e0f7)
+- **Spider Woman** | 2025-10-14 | 👁 20 ❤️ 0
+  - Tags: 3dcharacter, mythology3d, pbr, gameart
+  - [View](https://sketchfab.com/3d-models/a8b8ee79420644adb54b4f40d7881f78)
+- **Theoretical Carbon Nanotube - Linear Geometry** | 2025-10-14 | 👁 54 ❤️ 0
+  - Tags: wireframe, carbon, simulation, nanotube
+  - [View](https://sketchfab.com/3d-models/03095cbeb7c14453abe591d17ec6efb6)
+- **Solid Carbon Nanotube** | 2025-10-14 | 👁 104 ❤️ 0
+  - Tags: carbon, graphene, nanotube, scientific-illustration
+  - [View](https://sketchfab.com/3d-models/c39a24c2b1b143ad8c223a0368fd43ec)
+- **Hyper Psilo** | 2025-10-14 | 👁 17 ❤️ 0
+  - Tags: mushroom, hypershroom
+  - [View](https://sketchfab.com/3d-models/2b95906b254d4569a21ea1a181c0d6a7)
+- **celtic-knot-001-points** | 2025-10-16 | 👁 12 ❤️ 0
+  - [View](https://sketchfab.com/3d-models/5843ad5e81b54d77ad3e3d2af315ffb9)
+- **Yoshi Cyberskull** | 2025-10-16 | 👁 23 ❤️ 0
+  - Tags: gaming, retro, point, nintendo
+  - [View](https://sketchfab.com/3d-models/91d08e048e5843d1bdf989daaebfe7a9)
+- **Bohemian Dome** | 2025-10-17 | 👁 34 ❤️ 0
+  - [View](https://sketchfab.com/3d-models/8753ebf748fa4674a47239f3c1a8f0a6)
+- **Amethyst Sphere** | 2025-10-20 | 👁 14 ❤️ 0
+  - Tags: sphere, amethyst, mathematical-art, digital-sculpture
+  - [View](https://sketchfab.com/3d-models/8551502d986641ef97dd82afce315b02)
+- **Chrome Globe** | 2025-10-23 | 👁 15 ❤️ 0
+  - Tags: globe, earth, sphere
+  - [View](https://sketchfab.com/3d-models/fc7d8b6e2c1e46299609195fc23b0b03)
+- **Nucleus** | 2025-10-30 | 👁 38 ❤️ 0
+  - [View](https://sketchfab.com/3d-models/9689c0ea00cd4e63b594d45f55f24338)
+- **Perfect Sphere** | 2025-11-02 | 👁 125 ❤️ 2
+  - Tags: sphere, spherical
+  - [View](https://sketchfab.com/3d-models/ebaee021ced848c8b376e5ccd95035ac)
+- **La Corona** | 2025-11-10 | 👁 40 ❤️ 0
+  - Tags: crown, sun, art
+  - [View](https://sketchfab.com/3d-models/91372a207157400eba5627e352788435)
+- **Nucleofill Eye** | 2025-11-12 | 👁 5 ❤️ 0
+  - Tags: eye, graphicdesigner, nucleofill
+  - [View](https://sketchfab.com/3d-models/07790ae2938e4358b00e20dafe5f5765)
+- **Nested Sphere Black& White Hole** | 2025-11-12 | 👁 42 ❤️ 0
+  - Tags: geometry, sphere, physics, blackhole
+  - [View](https://sketchfab.com/3d-models/b238a86672de4267aaa469e58d83a4a2)
+- **sirruiz eye** | 2025-11-17 | 👁 9 ❤️ 1
+  - Tags: generative, thirdeye, aeye
+  - [View](https://sketchfab.com/3d-models/3c37ee9ad2ed4d0bbb0cdf6387d57f0e)
+- **Q-eye** | 2025-11-18 | 👁 21 ❤️ 1
+  - Tags: generative, art
+  - [View](https://sketchfab.com/3d-models/e0a9cd06a25d4d08a0e28ceb1cb1abfc)
+- **phi** | 2025-11-19 | 👁 8 ❤️ 0
+  - Tags: phi, fibonacci, 1618
+  - [View](https://sketchfab.com/3d-models/a1dcc31caad04c94a8fb3b454b8241d2)
+- **vor-eye-hypersphere** | 2025-11-20 | 👁 21 ❤️ 0
+  - Tags: hyperdimension, hypersphere, hyperobjekt
+  - [View](https://sketchfab.com/3d-models/6ad034c7e2e24cbea7ffb1cff300161a)
+- **Ojo de Dios** | 2025-11-20 | 👁 40 ❤️ 1
+  - Tags: mexico, huichol, pueblo, native-american
+  - [View](https://sketchfab.com/3d-models/1baf793f05b4479cb64b46eb5cb6a2b6)
+- **AnteOjos** | 2025-11-22 | 👁 27 ❤️ 1
+  - Tags: generative, abstractart, gods-eye
+  - [View](https://sketchfab.com/3d-models/2f4bb2c824bd44ad830da8711d95444b)
+- **poincaré-disk-blackhole** | 2025-11-25 | 👁 19 ❤️ 1
+  - Tags: visualization, dynamics, chaos, blackhole
+  - [View](https://sketchfab.com/3d-models/41107d0d96544cc296cda61077c52cfc)
+- **nahui_quiahuitl** | 2025-11-26 | 👁 13 ❤️ 0
+  - Tags: aztec, mythology, nahui, concept
+  - [View](https://sketchfab.com/3d-models/02181db50ff74e6ea6ec00fd47dc3f5c)
+- **fiber_bundle_structure** | 2025-11-27 | 👁 5 ❤️ 0
+  - Tags: geometry, yoda, fiber-bundle
+  - [View](https://sketchfab.com/3d-models/1f88b8bb53b34bad8442d3d1823d6867)
+- **Null Set Empty - Δmension M.U:** | 2025-11-27 | 👁 651 ❤️ 11
+  - Tags: null-set, empty-set, void-set, zero-set
+  - [View](https://sketchfab.com/3d-models/6aaa6d265bf24dfcb2b9fbae02bd7083)
+- **analemma-figure-8-hologram** | 2025-11-28 | 👁 4 ❤️ 0
+  - Tags: mapping, sun, physics, figure-sculpture
+  - [View](https://sketchfab.com/3d-models/0e5e6743e3bf44259774b584fbec3274)
+- **molecular_dynamics_001_sketchfab_animated_176453** | 2025-11-30 | 👁 4 ❤️ 0
+  - [View](https://sketchfab.com/3d-models/9c34f7e6d625433b8a85ec28ecfd2dea)
+- **dark-matter-eyedeology** | 2025-12-03 | 👁 16 ❤️ 1
+  - Tags: eye, parametric-design, dark-matter
+  - [View](https://sketchfab.com/3d-models/75280f1d558741b8ac6dcb90322634f8)
+- **uuord-catcher** | 2025-12-04 | 👁 12 ❤️ 0
+  - Tags: uuord
+  - [View](https://sketchfab.com/3d-models/e179df1b3aef4f509b78bb6bea712abc)
+- **Moiré Pattern Sphere** | 2025-12-04 | 👁 92 ❤️ 0
+  - Tags: sphere, patterns, unit, moire
+  - [View](https://sketchfab.com/3d-models/943419e595354aed907d2b40338fcff2)
+- **hello_uuorld_animated** | 2025-12-04 | 👁 86 ❤️ 5
+  - Tags: hello-world, hello-uuorld
+  - [View](https://sketchfab.com/3d-models/a7e297a2a6984c7d967b4a5fc1111df0)
+- **needleman_wunsch_001** | 2025-12-04 | 👁 32 ❤️ 0
+  - Tags: computer, programming, algorithm-structure, dynamic-programming
+  - [View](https://sketchfab.com/3d-models/3d6e6ab30e444518a7e8c48e85729435)
+- **smith_waterman_001** | 2025-12-05 | 👁 22 ❤️ 0
+  - Tags: algorithmic-modeling, smith-waterman, sequence-alignment
+  - [View](https://sketchfab.com/3d-models/671960e695344434ac8a8120ad714931)
+- **hidden_markov_001** | 2025-12-05 | 👁 17 ❤️ 0
+  - Tags: state, probability, hhm, hidden-markov-model
+  - [View](https://sketchfab.com/3d-models/bcb00d6b7e4f41a3866b34d97cc55011)
+- **alphafold_prediction_001** | 2025-12-05 | 👁 19 ❤️ 1
+  - Tags: alphafold-prediction
+  - [View](https://sketchfab.com/3d-models/2b8fb91ac14543979dc563b81cc9d2ea)
+- **phi-constant-vortex** | 2025-12-05 | 👁 19 ❤️ 1
+  - Tags: phi, fn, Vortex, fibonacci
+  - [View](https://sketchfab.com/3d-models/199e5451b3f54178a17c5dd16dbaae67)
+- **pi_constant** | 2025-12-06 | 👁 47 ❤️ 2
+  - Tags: p, pi, 314159
+  - [View](https://sketchfab.com/3d-models/14543ed850fc43919793d66532ac1991)
+- **holographic_boundary** | 2025-12-07 | 👁 2 ❤️ 0
+  - Tags: fn, theoretical-physics, fn-1, fn-2
+  - [View](https://sketchfab.com/3d-models/c7e6cbda2efc4c29b9aa34d2c8ee2b65)
+- **metric_tensor_riemann** | 2025-12-07 | 👁 82 ❤️ 1
+  - Tags: geometry, riemann, machine-learning, metric-tensor
+  - [View](https://sketchfab.com/3d-models/6901ba8162bd4402b09c2927a23e4f54)
+- **Logarithm_riemann** | 2025-12-07 | 👁 111 ❤️ 5
+  - Tags: geometry, particles, logarithmic-spiral, medical-imaging
+  - [View](https://sketchfab.com/3d-models/49f55886e84b403caa8526d07e2ed367)
+- **portal_vortex_ar_universal** | 2025-12-09 | 👁 32 ❤️ 0
+  - Tags: portal, ar, physics, universal
+  - [View](https://sketchfab.com/3d-models/44acf1ebb96441628fd80c88c7e99d43)
+- **Premium Mars 3D Model - Ultra High Resolution** | 2025-12-11 | 👁 24 ❤️ 1
+  - Tags: mars, 8k-texture
+  - [View](https://sketchfab.com/3d-models/db85e7fc49cd4dfda6f83a6959afff95)
+- **Subset Relation Algorithmic 3D Visualization** | 2025-12-12 | 👁 28 ❤️ 1
+  - Tags: collection, groups, subset-relation, subset-relation-3d-model
+  - [View](https://sketchfab.com/3d-models/52ffdbaebf0c4b72bd8ab50403405967)
+- **Null Set Empty - Void Set** | 2025-12-13 | 👁 198 ❤️ 1
+  - [View](https://sketchfab.com/3d-models/390eb4cb60094ee8b250fae3eb893ff7)
+- **Horizontal Square Mesh** | 2025-12-15 | 👁 2 ❤️ 0
+  - Tags: energy, aerospace, cad, automotive
+  - [View](https://sketchfab.com/3d-models/4dd1267ca56a4f85bd0d46214f6ef5c2)
+- **Vertical Square Mesh** | 2025-12-15 | 👁 3 ❤️ 0
+  - Tags: energy, aerospace, cad, automotive
+  - [View](https://sketchfab.com/3d-models/e4f0571ddeab47cbb1e716f814f3a7bd)
+- **Mirror Cube - 2D to 3D Display** | 2025-12-16 | 👁 1 ❤️ 0
+  - Tags: cube, display, artist, 2Dto3D
+  - [View](https://sketchfab.com/3d-models/f9a682ac3d764bd1b435c27e9a143e62)
+- **Pandoras Box** | 2025-12-16 | 👁 4 ❤️ 1
+  - Tags: greek, mythology, pandora, pandorasbox
+  - [View](https://sketchfab.com/3d-models/22f13c09df3d4825b1e96a87eff4442b)
+- **Cubit** | 2025-12-16 | 👁 4 ❤️ 0
+  - Tags: gameart, gameready, gaming-assets, cubit
+  - [View](https://sketchfab.com/3d-models/7071195e6ddb452aa03e12cbe83c509a)
+- **AR/VR Hologram Cuboid - Promo Asset** | 2025-12-17 | 👁 4 ❤️ 0
+  - Tags: music, cube, interactive, branding
+  - [View](https://sketchfab.com/3d-models/92eaadd518d648a191ede09bebc65fb2)
+- **AR/VR Cuboid - 30 Vertices - 48 Polygons** | 2025-12-17 | 👁 5 ❤️ 1
+  - Tags: cube, cuboid, token, cuboidal
+  - [View](https://sketchfab.com/3d-models/2b4d5816c98b4e40b44c5854a1f9c904)
+- **Promotional Asset** | 2025-12-18 | 👁 0 ❤️ 0
+  - Tags: square, virtualreality, marketing, promotional
+  - [View](https://sketchfab.com/3d-models/edc5a133a39945b78cd0140b90719238)
+- **Pikachu Pokemon Card Mapping - Promotional** | 2025-12-19 | 👁 8 ❤️ 0
+  - Tags: pokemon, gaming, pikachu, museum
+  - [View](https://sketchfab.com/3d-models/4f46df11ba84439db8d5abeb76c82924)
+- **The Eye of Monad** | 2025-12-19 | 👁 260 ❤️ 7
+  - Tags: eye, i, visualization, 4d
+  - [View](https://sketchfab.com/3d-models/136695f366de41708f48f791161aefea)
+- **Rooster Flare** | 2025-12-22 | 👁 20 ❤️ 0
+  - Tags: bird, pet, Rooster;, symbolism
+  - [View](https://sketchfab.com/3d-models/daa39912b1d8496581dc69cf2b561ed9)
+- **Holographic Boundary** | 2025-12-22 | 👁 16 ❤️ 0
+  - Tags: projection, boundary, 3d-space, space
+  - [View](https://sketchfab.com/3d-models/2e37805d3fa64b4da9cbea73bf6be6cd)
+- **Enneper Owl** | 2025-12-22 | 👁 16 ❤️ 1
+  - Tags: tiling, symmetric, enneper-minimal, enneper-owl
+  - [View](https://sketchfab.com/3d-models/2fc2ceb265f5461ba4a02c602fb378f6)
+- **Grand United Theory (GUT)** | 2025-12-22 | 👁 13 ❤️ 0
+  - Tags: proton, gut, grand-united-theory, theory-of-everything
+  - [View](https://sketchfab.com/3d-models/47598d6055e7418d91e59ced9c695e5b)
+- **Riemannn Zeta Critical Line** | 2025-12-22 | 👁 46 ❤️ 1
+  - Tags: riemann-zeta-function, analytic-number-theory, complex-plane
+  - [View](https://sketchfab.com/3d-models/050481eb9a45419880bfebc569456b76)
+- **Omega Penny Gold - 24K** | 2025-12-22 | 👁 1 ❤️ 0
+  - Tags: coin, penny, cent, coinage
+  - [View](https://sketchfab.com/3d-models/494e3cfd8ca542179b1e6b882de8537f)
+- **2025 Omega One Cent - Denver Mint** | 2025-12-22 | 👁 36 ❤️ 0
+  - Tags: one, penny, cent, abrahamlincoln
+  - [View](https://sketchfab.com/3d-models/00b925e21e1247b68372508403321bab)
+- **Orbital Cubix** | 2025-12-22 | 👁 0 ❤️ 0
+  - Tags: cube, cuboid, glass-cube, orbital-cubix
+  - [View](https://sketchfab.com/3d-models/6233f5c5f8a5429493f71ccdb24badc5)
+- **logarithmic_spiral_curve_ar_universal** | 2025-12-22 | 👁 0 ❤️ 0
+  - [View](https://sketchfab.com/3d-models/d8503d96f6f441f7be1c64d6befa00bf)
+- **69** | 2025-12-23 | 👁 12 ❤️ 0
+  - [View](https://sketchfab.com/3d-models/cd551a6f687b4aba8599d59fdb742381)
+- **Phoenix Suns Promotional Collaboration** | 2025-12-25 | 👁 147 ❤️ 5
+  - Tags: basketball, sports, phoenix, arizona
+  - [View](https://sketchfab.com/3d-models/2b875cf0ccd4433d90c08ba4fa839420)
+- **Fibonacci Neutrophi1** | 2026-01-05 | 👁 11 ❤️ 0
+  - [View](https://sketchfab.com/3d-models/eb96e4e3a14f4429a4ca9ed9cf20536c)
+- **Elongated Asteroid - Dimensional Vehicle** | 2026-01-07 | 👁 21 ❤️ 0
+  - Tags: asteroid, ufo, dimensional, uap
+  - [View](https://sketchfab.com/3d-models/b49cd0d0dfd040f3a78a60e366ee4142)
+- **Primordial Dimensional Archetype** | 2026-01-10 | 👁 9 ❤️ 0
+  - Tags: Dimension, primordial, theoretical-physics
+  - [View](https://sketchfab.com/3d-models/930cc19a93344787ab21bf826b9cb125)
+- **Art. Intelligence Reinforcement Q-Learning** | 2026-01-11 | 👁 25 ❤️ 0
+  - Tags: agent, learning, 0, reinforcement
+  - [View](https://sketchfab.com/3d-models/4b3c82404e1a4cf8990490ef7df0a442)
+- **Superposition Object** | 2026-01-12 | 👁 15 ❤️ 0
+  - Tags: object, artifact, nameless, superposition
+  - [View](https://sketchfab.com/3d-models/ecd32603496f46c4b0699fa0c97b502b)
+- **Bipyramid/Double-Sided Pyramid** | 2026-01-14 | 👁 100 ❤️ 0
+  - Tags: dipyramid, bipyramid, double-pyramid, bi-pyramid
+  - [View](https://sketchfab.com/3d-models/d21b6866dfd8406eb6c00b64817f7b23)
+- **Projection Comparison 4D** | 2026-01-14 | 👁 26 ❤️ 0
+  - Tags: hypersphere, 4d-geometry, projection-comparison
+  - [View](https://sketchfab.com/3d-models/b174730034af4a37a1032b20a868a115)
+- **Fibonacci Spyral Enhanced** | 2026-01-17 | 👁 80 ❤️ 2
+  - Tags: phi, golden-ratio, fibonacci-spiral-enhanced, fibonacci-spiral
+  - [View](https://sketchfab.com/3d-models/3ff6c18c5d6e45379b66ad6cd5253647)
+- **Djedi Pillar Symbol 𓊽** | 2026-01-17 | 👁 45 ❤️ 0
+  - Tags: jedi, Osiris, egyptain, djed-pillar
+  - [View](https://sketchfab.com/3d-models/07ae144145d34613beff3abe10a4e9b2)
+- **Golden Ratio - Ulam Pspiral Jeuus** | 2026-01-18 | 👁 35 ❤️ 0
+  - [View](https://sketchfab.com/3d-models/c74866dca34e4bfaae1e70d8479f51ca)
+- **Eye of Motecuhzoma Xocoyotzin** | 2026-01-18 | 👁 18 ❤️ 0
+  - Tags: aztec, King, ruler, montezuma
+  - [View](https://sketchfab.com/3d-models/6318ca5aeea548efba1c2526b6df1b97)
+- **Stiefel_Whitney_Class** | 2026-01-18 | 👁 21 ❤️ 0
+  - Tags: tag, whitney, eduard, stiefel
+  - [View](https://sketchfab.com/3d-models/5b135860a5ad4538b448692aecb20239)
+- **Lotus Column Geometric Meso Shape** | 2026-01-21 | 👁 42 ❤️ 0
+  - Tags: creation, rebirth, bridge, ancient-architecture
+  - [View](https://sketchfab.com/3d-models/f95615fa0807485ea1d89cd32340851e)
+- **Big Bang Liberty Bell** | 2026-01-22 | 👁 38 ❤️ 1
+  - Tags: singularity, big-bang-singularity, infinte-to-finite
+  - [View](https://sketchfab.com/3d-models/a40a6a6573ba4504a8ad6402d9c9e7bc)
+- **ψiloψιbin** | 2026-01-23 | 👁 23 ❤️ 1
+  - Tags: psilopsibin, silocybin, psil-psaibin, psi-luh-psi-bin
+  - [View](https://sketchfab.com/3d-models/1a7ef658fa8348458c0d2b9a690ea89e)
+- **Forbiden Fruit** | 2026-01-27 | 👁 24 ❤️ 1
+  - Tags: gravity, energy, Newton, space-curvature
+  - [View](https://sketchfab.com/3d-models/5422887780a6417286656c13dc92ad1e)
+- **Philosophers Stone - Asscher Diamond** | 2026-02-17 | 👁 35 ❤️ 1
+  - Tags: diamond, asscher
+  - [View](https://sketchfab.com/3d-models/786c29c16ee340a9b5c7df03995191a8)
+- **Eye of Siruiz** | 2026-02-17 | 👁 11 ❤️ 1
+  - [View](https://sketchfab.com/3d-models/f2d65125b53744998a217920eb2fc826)
+- **The Shield of Truth Amulet** | 2026-03-01 | 👁 4 ❤️ 0
+  - Tags: jewelery, Amulet, design, shielfoftruth
+  - [View](https://sketchfab.com/3d-models/b2e8f3c74c4542cfa307d7627cabaad6)
+- **Eye of Providence 3D Talis** | 2026-03-01 | 👁 16 ❤️ 0
+  - Tags: Masonry, providence, guidance, all-seeing-eye
+  - [View](https://sketchfab.com/3d-models/ab63f350b513409d840d0af9a2529a16)
+- **Scene (6)** | 2026-03-01 | 👁 5 ❤️ 0
+  - [View](https://sketchfab.com/3d-models/7653c75d098c4436a19eebea8f682e94)
+- **Evil Eye Charm** | 2026-03-01 | 👁 10 ❤️ 0
+  - Tags: eye, charm, goodluck, evileye
+  - [View](https://sketchfab.com/3d-models/529482d11651436daba7e51998402f33)
+- **Sirius Unanimated** | 2026-03-03 | 👁 11 ❤️ 0
+  - [View](https://sketchfab.com/3d-models/85a3e9c3246447d9ae18429b13ccec09)
+- **Tree Gnode** | 2026-03-23 | 👁 7 ❤️ 0
+  - Tags: tree, nature, tree-gnode, node-tree
+  - [View](https://sketchfab.com/3d-models/bab343cb40084527b51b7654b5103823)
+- **Space Craft** | 2026-03-23 | 👁 7 ❤️ 0
+  - Tags: ufo, galactic, uap, fleet
+  - [View](https://sketchfab.com/3d-models/b37cda528a6d40e2832d6afa5dc76eb4)
+- **Annuit Cœptis** | 2026-03-23 | 👁 18 ❤️ 1
+  - Tags: illumination, magnumopus, annuit, coeptis
+  - [View](https://sketchfab.com/3d-models/d7c11a397718462e9fff59241df89958)
+- **Base Escher - : Bridging Mathematica 3D Space** | 2026-03-24 | 👁 14 ❤️ 1
+  - Tags: escher, surrealism, tesselation, art
+  - [View](https://sketchfab.com/3d-models/ffaff7924fe041caab821b658b4ac66f)
+- **Godland Green (Gottland)** | 2026-03-24 | 👁 4 ❤️ 0
+  - Tags: tree, green, node-tree, gottland
+  - [View](https://sketchfab.com/3d-models/95a66a45adda4fafb44fb224884e23af)
+- **DIgital Angel** | 2026-03-31 | 👁 11 ❤️ 0
+  - Tags: matrix, art, digital
+  - [View](https://sketchfab.com/3d-models/a4697cccb5084eeeb4475cd0ce38952e)
+- **ifs_ft1_mi4_1778536177060** | 2026-05-11 | 👁 1 ❤️ 0
+  - [View](https://sketchfab.com/3d-models/470189c833f544658717a216cfc61e2f)
+- **nucleus_solid_** | 2026-05-22 | 👁 5 ❤️ 0
+  - [View](https://sketchfab.com/3d-models/badc7e3f7e634181b10ce180c3d2a18a)
+- **Glitch Sphere** | 2026-06-01 | 👁 0 ❤️ 0
+  - [View](https://sketchfab.com/3d-models/8d9f239e7e2947b08c226a0fcd8d979c)
+- **null_set_empty_ar_universal (1)** | 2026-06-04 | 👁 0 ❤️ 0
+  - [View](https://sketchfab.com/3d-models/822758c41cec4453ba10e020131bbe21)
+- **Subset Relation ΔIMond** | 2026-06-21 | 👁 8 ❤️ 0
+  - [View](https://sketchfab.com/3d-models/d278a96a6ff44afba70a2ffadf53af29)
+
+---
+## Links
+- [[UUON Foundation]]
+- [[Sacred Geometry - Energy Creation Through Geometry]]
+- [[CGTrader Master Index]]
