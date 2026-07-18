@@ -33,3 +33,13 @@ container network; adjacent LFS port; conclusion: Replit internal
 backup service, auto-added, benign. Removed anyway (GitHub is the
 backup of record). Kept as a worked example: flag on unknown,
 downgrade on evidence, log both.
+
+## 2026-07-18 — Credential purge COMPLETE
+Purged from full git history via filter-repo + force-push: Pi wallet
+file, Etsy backup codes, Tripo3D api key file, Replit passphrases,
+BTC/ETH address fragments, D13MON4 corpus copy (extracted locally
+first). Rotations: Tripo3D key regenerated, Replit passphrases
+regenerated, Etsy codes regenerated. [MARK EACH DONE/PENDING]
+Caveat logged: GitHub may cache orphaned objects; rotation, not
+purge, is the security fix. D13MON4 original remains in Dmension
+repo — extraction to private repo still open (pre-existing item).
