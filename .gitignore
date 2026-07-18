@@ -70,3 +70,5 @@ backups/*.sql.gz
 
 !clouud-observer/logs
 !clouud-observer/logs/**
+backups/
+*.db
