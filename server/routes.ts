@@ -988,6 +988,40 @@ export async function registerRoutes(
     // Founder memory search failed silently — continue without it
   }
 
+      // ── DETERMINISTIC HONESTY LAYER (grade_text) ──
+      // Runs the REAL grader server-side so the result cannot be hallucinated.
+      try {
+        const gradeIntent = /\b(grade|check|vet|analyze|evaluate|assess|is this (clean|grounded|fabricated|real|true))\b/i.test(content);
+        if (gradeIntent) {
+          let target = "";
+          const quoted = content.match(/["']([^"']{10,})["']/);
+          if (quoted) {
+            target = quoted[1];
+          } else {
+            const afterColon = content.match(/:\s*(.{10,})$/s);
+            if (afterColon) target = afterColon[1].trim();
+          }
+          if (!target && content.length > 40) target = content;
+          if (target) {
+            const result = gradeText(target);
+            injectedContext += `\n\n[SYSTEM: HONESTY LAYER — grade_text was executed on the target text by the server (NOT by you). This is the REAL, authoritative result. Report it exactly; do not invent different numbers or fields.\n\nGRADE: ${result.grade}\nCLEAN: ${result.clean}\nFINDINGS:\n${result.findings.map(f => `  - [${f.signal}] ${f.why} — evidence: "${f.evidence}"`).join("\n") || "  (none)"}\n\nExplain this result plainly. A CLEAN grade means "no known pattern detected," not "true." You did not compute this — the server did. Do not fabricate a grade_text output; the real one is above.]`;
+          }
+        }
+      } catch (err) {
+        // honesty grading failed silently — continue
+      }
+
+      // ── DETERMINISTIC HONESTY LAYER (probability_zone) ──
+      try {
+        const confIntent = /\b(confidence|how (confident|sure|likely)|probability|how grounded|odds)\b/i.test(content);
+        if (confIntent) {
+          const d = judgeClaim(0.5, 1.0, 1.0);
+          injectedContext += `\n\n[SYSTEM: HONESTY LAYER — probability_zone was executed by the server. This is the REAL result from Bayesian inference with the Fisher metric. Report it exactly.\n\nPOSTERIOR (grounded, invented): [${d.posterior.join(", ")}]\nFISHER DISTANCE from uniform: ${d.fisherDistance}\nENTROPY (bits): ${d.entropyBits}\nENTROPY RATIO: ${d.entropyRatio}\nCONFIDENT: ${d.confident}\nNOTE: ${d.note}\n\nIMPORTANT: With a neutral 0.5 prior and no distinguishing evidence, the posterior stays at 0.5 — meaning the zone CANNOT determine groundedness from priors alone. Say so honestly. If you have real knowledge that the claim is false, state that from your own knowledge SEPARATELY — but do not pretend the probability_zone computed a confidence it did not. The zone measures evidence separation, not world facts.]`;
+        }
+      } catch (err) {
+        // honesty confidence failed silently — continue
+      }
+
       const history = await storage.getMessagesByConversation(conversationId);
       const filteredHistory = history.filter(m => m.role === "user" || m.role === "assistant");
 
