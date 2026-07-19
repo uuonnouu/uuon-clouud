@@ -1,4 +1,7 @@
 import OpenAI from "openai";
+import { gradeText } from "./detection/grader";
+import { judgeClaim } from "./detection/probability-zone";
+import { ellomental } from "./ellomental-hash";
 
 // Model routing:
 // 1. OLLAMA_MODEL set → local Ollama (free, no tokens)
@@ -60,16 +63,105 @@ const TOOLS: OpenAI.Chat.ChatCompletionTool[] = [
       },
     },
   },
+  // ── Layer 3: HONESTY tools (the differentiator) ──
+  {
+    type: "function",
+    function: {
+      name: "grade_text",
+      description:
+        "Grade text for fabrication patterns (FEED-003): unfalsifiable anchors, " +
+        "unearned validation stamps, statistics without method, agreement-elicitation " +
+        "structure, secrets, personal data. Use on any claim, document, OR your own " +
+        "draft before asserting it. Returns grade + findings. CLEAN means 'no known " +
+        "pattern detected', not 'true'.",
+      parameters: {
+        type: "object",
+        properties: {
+          text: { type: "string", description: "The text to grade" },
+        },
+        required: ["text"],
+      },
+    },
+  },
+  {
+    type: "function",
+    function: {
+      name: "probability_zone",
+      description:
+        "Compute a calibrated confidence for a claim using Bayesian inference " +
+        "with the Fisher information metric (CLOUUD-PROB-004). Returns posterior, " +
+        "Shannon entropy (bits of uncertainty), and whether the result is well-" +
+        "separated from 'I don't know'. Use to report honest confidence instead " +
+        "of asserting. priorGrounded is the base rate this kind of claim is true.",
+      parameters: {
+        type: "object",
+        properties: {
+          priorGrounded: {
+            type: "number",
+            description: "Base rate (0-1) that this kind of claim is grounded. Default 0.5.",
+          },
+          evidenceFor: {
+            type: "number",
+            description: "Likelihood of the evidence if grounded. Default 1.0.",
+          },
+          evidenceAgainst: {
+            type: "number",
+            description: "Likelihood of the evidence if invented. Default 1.0.",
+          },
+        },
+        required: [],
+      },
+    },
+  },
+  // ── Existing capability, now callable: provenance ──
+  {
+    type: "function",
+    function: {
+      name: "ellomental_verify",
+      description:
+        "Generate an Ellomental provenance hash for text — a verifiable fingerprint " +
+        "proving content origin and integrity. Use when the user asks to track, " +
+        "verify, or prove the provenance of a piece of text.",
+      parameters: {
+        type: "object",
+        properties: {
+          content: { type: "string", description: "The content to hash" },
+        },
+        required: ["content"],
+      },
+    },
+  },
 ];
 
-function executeTool(name: string, args: Record<string, string>): string {
+function executeTool(name: string, args: Record<string, any>): string {
   if (name === "lunar_phase") return JSON.stringify(getLunarPhase());
+
   if (name === "explore_dmension") {
     return JSON.stringify({
       query: args.query,
       url: `https://uuon.world/app/search?q=${encodeURIComponent(args.query || "")}`,
     });
   }
+
+  if (name === "grade_text") {
+    return JSON.stringify(gradeText(String(args.text || "")));
+  }
+
+  if (name === "probability_zone") {
+    const prior = typeof args.priorGrounded === "number" ? args.priorGrounded : 0.5;
+    const eFor = typeof args.evidenceFor === "number" ? args.evidenceFor : 1.0;
+    const eAgainst = typeof args.evidenceAgainst === "number" ? args.evidenceAgainst : 1.0;
+    return JSON.stringify(judgeClaim(prior, eFor, eAgainst));
+  }
+
+  if (name === "ellomental_verify") {
+    try {
+      return JSON.stringify(ellomental(String(args.content || "")));
+    } catch (e: any) {
+      return JSON.stringify({ error: e.message || "ellomental failed" });
+    }
+  }
+
   return JSON.stringify({ error: "unknown tool" });
 }
 
