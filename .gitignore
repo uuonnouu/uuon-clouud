@@ -76,3 +76,4 @@ backups/
 # backup files
 *.bak
 *.bak.*
+*.orig
