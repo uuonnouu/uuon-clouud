@@ -84,7 +84,12 @@ export const corsOptions = {
       'http://127.0.0.1:3000',
       'http://127.0.0.1:5173',
       'http://127.0.0.1:5174',
-      process.env.FRONTEND_URL || 'https://uuon-foundation.com',
+      'https://uuon-foundation.com',
+      'https://uuon.world',
+      'https://uuon-clouud-production.up.railway.app',
+      'https://distinguished-rebirth-production.up.railway.app',
+      ...(process.env.FRONTEND_URL ? [process.env.FRONTEND_URL] : []),
+      ...(process.env.CORS_EXTRA_ORIGINS ? process.env.CORS_EXTRA_ORIGINS.split(',').map(o => o.trim()) : []),
     ];
 
     if (!origin) {
