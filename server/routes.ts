@@ -23,6 +23,8 @@ import { matchTopicToShape } from "./dmension-routes";
 import { ingestFounderArchive, getIngestionProgress } from "./founder-memory";
 import OpenAI from "openai";
 import { callClouud } from "./clouud-ai";
+import { gradeText } from "./detection/grader";
+import { judgeClaim } from "./detection/probability-zone";
 import rateLimit from "express-rate-limit";
 import fs from "fs";
 import path from "path";
