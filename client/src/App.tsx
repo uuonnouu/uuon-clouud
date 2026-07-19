@@ -1,35 +1,6 @@
-import { Switch, Route } from "wouter";
-import { queryClient } from "./lib/queryClient";
-import { QueryClientProvider } from "@tanstack/react-query";
-import { Toaster } from "@/components/ui/toaster";
-import { TooltipProvider } from "@/components/ui/tooltip";
-import NotFound from "@/pages/not-found";
-import ClouudTerminal from "@/pages/clouud-terminal";
-import LegalPage from "@/pages/legal";
-import UInVerse from "@/pages/uinverse";
-import CodexPage from "@/pages/codex";
+import CLOUUDBrain from "./components/CLOUUDBrain";
 
-function Router() {
-  return (
-    <Switch>
-      <Route path="/" component={ClouudTerminal} />
-      <Route path="/codex" component={CodexPage} />
-      <Route path="/uinverse" component={UInVerse} />
-      <Route path="/legal" component={LegalPage} />
-      <Route component={NotFound} />
-    </Switch>
-  );
+export default function App() {
+    return <CLOUUDBrain />;
 }
 
-function App() {
-  return (
-    <QueryClientProvider client={queryClient}>
-      <TooltipProvider>
-        <Toaster />
-        <Router />
-      </TooltipProvider>
-    </QueryClientProvider>
-  );
-}
-
-export default App;
