@@ -54,7 +54,7 @@ class Signal{
 }
 
 function createMarketSim(){
-  let price=105000+Math.random()*3000,vol24h=28e9+Math.random()*8e9,ethPrice=3200+Math.random()*200,ethChange=0,momentum=0;
+  let price=64500+Math.random()*1000,vol24h=28e9+Math.random()*8e9,ethPrice=1840+Math.random()*50,ethChange=0,momentum=0;
   return{tick(){
     momentum=momentum*0.97+(Math.random()-0.495)*0.03;
     const shock=Math.random()<0.02?(Math.random()-0.5)*800:0;
