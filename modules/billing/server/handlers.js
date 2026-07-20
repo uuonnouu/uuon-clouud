@@ -1,4 +1,5 @@
 import { query } from './db.js';
+import { verifyBlockchainTransaction } from './blockchain.js';
 import { CreateUserSchema, BuyCreditSchema, TransferCreditsSchema, UseCreditsSchema, PaginationSchema } from './validation.js';
 
 // User Management
@@ -55,7 +56,29 @@ export async function listPackages(req, res) {
 export async function buyCredits(req, res) {
   try {
     const { user_id, package_id } = BuyCreditSchema.parse(req.body);
-    
+    const { txHash, token, fromAddress } = req.body;
+
+    // Payment is mandatory: verified PIEZ/PSENT transfer on Base
+    if (!txHash || !token || !fromAddress) {
+      return res.status(402).json({ error: 'Payment required: txHash, token (PIEZ|PSENT), fromAddress' });
+    }
+
+    // Replay protection: reject already-used txHash
+    const dupe = await query("SELECT 1 FROM transactions WHERE description LIKE $1 LIMIT 1", ['%' + txHash + '%']);
+    if (dupe.rows.length > 0) {
+      return res.status(409).json({ error: 'Transaction already used' });
+    }
+
+    const TREASURY = process.env.UUON_TREASURY_ADDRESS;
+    if (!TREASURY) {
+      return res.status(500).json({ error: 'Server misconfigured: UUON_TREASURY_ADDRESS not set' });
+    }
+
+    const verification = await verifyBlockchainTransaction(txHash, token, fromAddress, TREASURY, 0);
+    if (!verification.valid) {
+      return res.status(402).json({ error: 'Payment verification failed', detail: verification.error });
+    }
+
     // Get package details
     const pkgResult = await query('SELECT * FROM packages WHERE id = $1', [package_id]);
     if (pkgResult.rows.length === 0) {
@@ -79,7 +102,7 @@ export async function buyCredits(req, res) {
     // Log transaction
     await query(
       'INSERT INTO transactions (user_id, type, amount, balance_before, balance_after, reference_id, description) VALUES ($1, $2, $3, $4, $5, $6, $7)',
-      [user_id, 'purchase', pkg.credits, user.credits_balance, user.credits_balance + pkg.credits, package_id, `Purchased ${pkg.name} package`]
+      [user_id, 'purchase', pkg.credits, user.credits_balance, user.credits_balance + pkg.credits, package_id, `Purchased ${pkg.name} package | tx:${txHash}`]
     );
 
     res.status(201).json({ user: updatedUser.rows[0], transaction: { package: pkg.name, credits_purchased: pkg.credits } });
