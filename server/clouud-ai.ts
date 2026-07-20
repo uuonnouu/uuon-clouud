@@ -150,6 +150,66 @@ const TOOLS: OpenAI.Chat.ChatCompletionTool[] = [
       },
     },
   },
+  {
+    type: "function",
+    function: {
+      name: "scrape_url",
+      description:
+        "Fetch and extract text content from a URL. Use when the user shares a " +
+        "link or asks you to read a webpage. Returns extracted text. Rate limited.",
+      parameters: {
+        type: "object",
+        properties: {
+          url: { type: "string", description: "The URL to scrape" },
+        },
+        required: ["url"],
+      },
+    },
+  },
+  {
+    type: "function",
+    function: {
+      name: "lattice_value",
+      description:
+        "Get the chi value and metadata for a specific position (1-33) in the " +
+        "UUON 33-point lattice. Use when asked about lattice positions, chi values, " +
+        "or the mathematical structure of the system.",
+      parameters: {
+        type: "object",
+        properties: {
+          position: { type: "number", description: "Lattice position (1-33)" },
+        },
+        required: ["position"],
+      },
+    },
+  },
+  {
+    type: "function",
+    function: {
+      name: "dmension_search",
+      description:
+        "Search the Dmension mathematical shape library by name, category, or " +
+        "equation type. Returns matching shapes with their equations and metadata.",
+      parameters: {
+        type: "object",
+        properties: {
+          query: { type: "string", description: "Search term for shapes" },
+        },
+        required: ["query"],
+      },
+    },
+  },
+  {
+    type: "function",
+    function: {
+      name: "self_assessment",
+      description:
+        "Run a self-assessment of Clouud system health: model info, tool count, " +
+        "founder memory stats, detection layer status, uptime. Use when asked " +
+        "about system status or capabilities.",
+      parameters: { type: "object", properties: {}, required: [] },
+    },
+  },
 ];
 
 async function executeTool(name: string, args: Record<string, any>): Promise<string> {
@@ -190,12 +250,54 @@ async function executeTool(name: string, args: Record<string, any>): Promise<str
     }
   }
 
-  if (name === "search_founder_memory") {
+  
+
+  if (name === "scrape_url") {
     try {
-      const results = await storage.searchFounderMemory(String(args.query || ""), 10);
-      return JSON.stringify({ results: results.slice(0, 5).map(m => ({ role: m.role, content: m.content?.substring(0, 500), timestamp: m.timestamp })) });
+      const fetch = (await import("node-fetch")).default;
+      const resp = await fetch(String(args.url), { timeout: 10000 });
+      const html = await resp.text();
+      const text = html.replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").substring(0, 2000);
+      return JSON.stringify({ url: args.url, text });
     } catch (e: any) {
-      return JSON.stringify({ error: e.message || "search failed" });
+      return JSON.stringify({ error: e.message || "scrape failed" });
+    }
+  }
+
+  if (name === "lattice_value") {
+    try {
+      const { chiValue } = await import("./lattice");
+      const pos = Number(args.position) || 1;
+      const result = chiValue(pos);
+      return JSON.stringify(result);
+    } catch (e: any) {
+      return JSON.stringify({ error: e.message || "lattice lookup failed" });
+    }
+  }
+
+  if (name === "dmension_search") {
+    try {
+      const { searchDmensionShapes } = await import("./dmension-codex");
+      const results = searchDmensionShapes(String(args.query || ""));
+      return JSON.stringify({ results: results.slice(0, 5) });
+    } catch (e: any) {
+      return JSON.stringify({ error: e.message || "dmension search failed" });
+    }
+  }
+
+  if (name === "self_assessment") {
+    try {
+      const stats = await storage.getFounderStats();
+      return JSON.stringify({
+        model: process.env.OLLAMA_MODEL || process.env.OPENROUTER_MODEL || "unknown",
+        backend: process.env.AI_BACKEND || "openrouter",
+        tools: TOOLS.length,
+        founderConversations: stats.conversations,
+        founderMessages: stats.messages,
+        uptime: process.uptime().toFixed(0) + "s",
+      });
+    } catch (e: any) {
+      return JSON.stringify({ error: e.message || "self-assessment failed" });
     }
   }
 
