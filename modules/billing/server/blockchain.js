@@ -9,15 +9,14 @@
  */
 
 const BLOCKCHAIN_RPC_URLS = {
-  ethereum: process.env.ETHEREUM_RPC_URL || "https://eth.publicnode.com",
-  polygon: process.env.POLYGON_RPC_URL || "https://polygon-rpc.com",
-  arbitrum: process.env.ARBITRUM_RPC_URL || "https://arb1.arbitrum.io/rpc"
+  base: process.env.BASE_RPC_URL || "https://mainnet.base.org"
 };
 
-const PIEZ_CONTRACT_ADDRESSES = {
-  ethereum: process.env.PIEZ_ETHEREUM_ADDRESS || "0x...",
-  polygon: process.env.PIEZ_POLYGON_ADDRESS || "0x...",
-  arbitrum: process.env.PIEZ_ARBITRUM_ADDRESS || "0x..."
+const CHAIN_ID = 8453; // Base Mainnet
+
+const TOKEN_CONTRACT_ADDRESSES = {
+  PIEZ: process.env.PIEZ_BASE_ADDRESS || "0x985A1ebac4388DFb6EB4FE1171dCa9c6a5DB9cE7",
+  PSENT: process.env.PSENT_BASE_ADDRESS || "0xfb9c83432331EAf6f4a9D9488828823587d6f3da"
 };
 
 /**
@@ -63,7 +62,7 @@ export async function verifyBlockchainTransaction(
     }
 
     const rpcUrl = BLOCKCHAIN_RPC_URLS[chain];
-    const piezAddress = PIEZ_CONTRACT_ADDRESSES[chain];
+    const piezAddress = TOKEN_CONTRACT_ADDRESSES[chain];
 
     // Fetch transaction receipt
     const receipt = await fetchTransactionReceipt(rpcUrl, txHash);
