@@ -8,7 +8,7 @@ import { ellomental } from "./ellomental-hash";
 // 1. OLLAMA_MODEL set → local Ollama (free, no tokens)
 // 2. OPENROUTER_API_KEY set → OpenRouter (paid)
 // 3. Neither → null (system prompt only mode)
-const USE_OLLAMA = !!process.env.OLLAMA_MODEL || process.env.AI_BACKEND === "ollama";
+const USE_OLLAMA = process.env.FORCE_OLLAMA === "1";
 
 const client = USE_OLLAMA
   ? new OpenAI({
