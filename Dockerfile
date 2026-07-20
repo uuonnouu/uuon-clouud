@@ -6,7 +6,7 @@ ARG CACHEBUST=1
 
 COPY package*.json ./
 
-RUN npm install --include=dev
+RUN rm -f package-lock.json && npm install --include=dev
 
 COPY . .
 
