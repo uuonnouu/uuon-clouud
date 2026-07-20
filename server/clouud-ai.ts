@@ -27,7 +27,7 @@ const client = USE_OLLAMA
 
 const MODEL = USE_OLLAMA
   ? (process.env.OLLAMA_MODEL || "clouud:latest")
-  : (process.env.OPENROUTER_MODEL || "meta-llama/llama-3.1-8b-instruct");
+  : (process.env.OPENROUTER_MODEL || "anthropic/claude-haiku-4-5");
 
 function getLunarPhase(): Record<string, string> {
   const k = 1 / 29.530588853;
@@ -177,7 +177,7 @@ export async function callClouud(
 
     let response = await client.chat.completions.create({
       model: MODEL,
-      max_tokens: 768,
+      max_tokens: 2048,
       messages: [{ role: "system", content: systemPrompt }, ...input],
       ...(USE_OLLAMA ? {} : { tools: TOOLS, tool_choice: "auto" }),
     });
@@ -192,7 +192,7 @@ export async function callClouud(
 
       response = await client.chat.completions.create({
         model: MODEL,
-        max_tokens: 768,
+        max_tokens: 2048,
         messages: [
           { role: "system", content: systemPrompt },
           ...input,
