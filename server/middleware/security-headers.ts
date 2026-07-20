@@ -17,7 +17,7 @@ export function configureSecurityHeaders(app: Express): void {
           styleSrc: ["'self'", "'unsafe-inline'"],
           imgSrc: ["'self'", 'data:', 'https:', 'blob:'],
           fontSrc: ["'self'", 'data:'],
-          connectSrc: ["'self'", 'https://openrouter.ai', 'https://uuon-foundation.com'],
+          connectSrc: ["'self'", 'https://openrouter.ai', 'https://uuon-foundation.com', 'https://api.coingecko.com'],
           mediaSrc: ["'self'"],
           objectSrc: ["'none'"],
           frameSrc: ["'self'"],
