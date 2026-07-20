@@ -6,7 +6,7 @@ ARG CACHEBUST=1
 
 COPY package*.json ./
 
-RUN npm ci --include=dev
+RUN npm install --include=dev
 
 COPY . .
 
