@@ -214,7 +214,7 @@ export async function callClouud(
 
     let response = await client.chat.completions.create({
       model: MODEL,
-      max_tokens: 2048,
+      max_tokens: 1024,
       messages: [{ role: "system", content: systemPrompt }, ...input],
       ...(USE_OLLAMA ? {} : { tools: TOOLS, tool_choice: "auto" }),
     });
@@ -229,7 +229,7 @@ export async function callClouud(
 
       response = await client.chat.completions.create({
         model: MODEL,
-        max_tokens: 2048,
+        max_tokens: 1024,
         messages: [
           { role: "system", content: systemPrompt },
           ...input,
