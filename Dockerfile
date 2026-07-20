@@ -2,6 +2,7 @@ FROM node:20-alpine
 
 WORKDIR /app
 ENV PUPPETEER_SKIP_DOWNLOAD=true
+ARG CACHEBUST=1
 
 COPY package*.json ./
 
