@@ -216,7 +216,7 @@ export async function callClouud(
       model: MODEL,
       max_tokens: 1024,
       messages: [{ role: "system", content: systemPrompt }, ...input],
-      ...(USE_OLLAMA ? {} : { tools: TOOLS, tool_choice: "auto" }),
+      tools: TOOLS, tool_choice: "auto",
     });
 
     while (response.choices[0]?.finish_reason === "tool_calls") {
@@ -236,7 +236,7 @@ export async function callClouud(
           response.choices[0].message,
           ...results,
         ],
-        ...(USE_OLLAMA ? {} : { tools: TOOLS, tool_choice: "auto" }),
+        tools: TOOLS, tool_choice: "auto",
       });
     }
 
