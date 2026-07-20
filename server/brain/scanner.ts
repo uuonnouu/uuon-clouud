@@ -21,7 +21,7 @@ import { BrainFileMetadata } from "../types";
 function resolveBrainPath(): string {
   if (process.env.BRAIN_PATH) return process.env.BRAIN_PATH;
   // Monorepo: server runs from uuon-clouud/, Brain is at ../
-  const monorepoPath = path.join(process.cwd(), "..", ":Brain", ":Raw");
+  const monorepoPath = path.join(process.cwd(), "..", "Brain", "Raw");
   return monorepoPath;
 }
 
