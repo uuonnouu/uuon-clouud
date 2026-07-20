@@ -37,6 +37,12 @@ M|W Engine (miwenginev5)
 
 ---
 
+observer_drift.py (ODT-005)
+  Three-layer observer drift measurement (Turing/Weizenbaum/Wallace).
+  Declared metrics, reproducible, all thresholds tunable, fractal
+  incompleteness points explicitly named. No unfalsifiable anchors.
+  Feed.
+
 ## SPLIT
 
 Robertson Verification Engine (RVE_Spec_v11)
