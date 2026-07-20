@@ -22,7 +22,7 @@ const TOKEN_CONTRACT_ADDRESSES = {
 /**
  * Verify a blockchain transaction
  * @param {string} txHash - Transaction hash (0x-prefixed)
- * @param {string} chain - "ethereum" | "polygon" | "arbitrum"
+ * @param {string} token - "PIEZ" | "PSENT" (chain is always Base Mainnet)
  * @param {string} fromAddress - Expected sender address
  * @param {string} toAddress - Expected recipient address (UUON contract)
  * @param {number} minAmount - Minimum PIEZ amount to transfer
@@ -30,14 +30,14 @@ const TOKEN_CONTRACT_ADDRESSES = {
  */
 export async function verifyBlockchainTransaction(
   txHash,
-  chain,
+  token,
   fromAddress,
   toAddress,
   minAmount = 1
 ) {
   try {
     // Validate inputs
-    if (!txHash || !chain || !fromAddress || !toAddress) {
+    if (!txHash || !token || !fromAddress || !toAddress) {
       return {
         valid: false,
         error: "Missing required parameters",
@@ -45,10 +45,10 @@ export async function verifyBlockchainTransaction(
       };
     }
 
-    if (!["ethereum", "polygon", "arbitrum"].includes(chain)) {
+    if (!["PIEZ", "PSENT"].includes(token)) {
       return {
         valid: false,
-        error: "Unsupported blockchain",
+        error: "Unsupported token (expected PIEZ or PSENT)",
         code: "BLOCKCHAIN_UNSUPPORTED"
       };
     }
@@ -61,8 +61,8 @@ export async function verifyBlockchainTransaction(
       };
     }
 
-    const rpcUrl = BLOCKCHAIN_RPC_URLS[chain];
-    const piezAddress = TOKEN_CONTRACT_ADDRESSES[chain];
+    const rpcUrl = BLOCKCHAIN_RPC_URLS.base;
+    const piezAddress = TOKEN_CONTRACT_ADDRESSES[token];
 
     // Fetch transaction receipt
     const receipt = await fetchTransactionReceipt(rpcUrl, txHash);
