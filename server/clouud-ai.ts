@@ -1,3 +1,4 @@
+import { storage } from "./storage";
 import OpenAI from "openai";
 import { gradeText } from "./detection/grader";
 import { judgeClaim } from "./detection/probability-zone";
@@ -131,9 +132,27 @@ const TOOLS: OpenAI.Chat.ChatCompletionTool[] = [
       },
     },
   },
+  {
+    type: "function",
+    function: {
+      name: "search_founder_memory",
+      description:
+        "Search the founder conversation archive (835 conversations). Use when " +
+        "asked about UUON history, founder decisions, past discussions, the " +
+        "Robertson Engine, project history, or anything Clouud should know from " +
+        "its own memory. Returns matching messages.",
+      parameters: {
+        type: "object",
+        properties: {
+          query: { type: "string", description: "Search term or phrase" },
+        },
+        required: ["query"],
+      },
+    },
+  },
 ];
 
-function executeTool(name: string, args: Record<string, any>): string {
+async function executeTool(name: string, args: Record<string, any>): Promise<string> {
   if (name === "lunar_phase") return JSON.stringify(getLunarPhase());
 
   if (name === "explore_dmension") {
@@ -162,6 +181,24 @@ function executeTool(name: string, args: Record<string, any>): string {
     }
   }
 
+  if (name === "search_founder_memory") {
+    try {
+      const results = await storage.searchFounderMemory(String(args.query || ""), 10);
+      return JSON.stringify({ results: results.slice(0, 5).map(m => ({ role: m.role, content: m.content?.substring(0, 500), timestamp: m.timestamp })) });
+    } catch (e: any) {
+      return JSON.stringify({ error: e.message || "search failed" });
+    }
+  }
+
+  if (name === "search_founder_memory") {
+    try {
+      const results = await storage.searchFounderMemory(String(args.query || ""), 10);
+      return JSON.stringify({ results: results.slice(0, 5).map(m => ({ role: m.role, content: m.content?.substring(0, 500), timestamp: m.timestamp })) });
+    } catch (e: any) {
+      return JSON.stringify({ error: e.message || "search failed" });
+    }
+  }
+
   return JSON.stringify({ error: "unknown tool" });
 }
 
@@ -184,11 +221,11 @@ export async function callClouud(
 
     while (response.choices[0]?.finish_reason === "tool_calls") {
       const calls = response.choices[0].message.tool_calls ?? [];
-      const results: OpenAI.Chat.ChatCompletionToolMessageParam[] = calls.map(tc => ({
+      const results: OpenAI.Chat.ChatCompletionToolMessageParam[] = await Promise.all(calls.map(async tc => ({
         role: "tool",
         tool_call_id: tc.id,
-        content: executeTool(tc.function.name, JSON.parse(tc.function.arguments || "{}")),
-      }));
+        content: await executeTool(tc.function.name, JSON.parse(tc.function.arguments || "{}")),
+      })));
 
       response = await client.chat.completions.create({
         model: MODEL,
