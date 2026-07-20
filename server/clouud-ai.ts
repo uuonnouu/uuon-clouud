@@ -13,7 +13,7 @@ const USE_OLLAMA = !!process.env.OLLAMA_MODEL || process.env.AI_BACKEND === "oll
 const client = USE_OLLAMA
   ? new OpenAI({
       apiKey: "ollama",                          // Ollama ignores the key
-      baseURL: process.env.OLLAMA_HOST || "http://127.0.0.1:11434/v1",
+      baseURL: process.env.OLLAMA_BASE_URL ? process.env.OLLAMA_BASE_URL + "/v1" : "http://127.0.0.1:11434/v1",
     })
   : process.env.OPENROUTER_API_KEY
     ? new OpenAI({
