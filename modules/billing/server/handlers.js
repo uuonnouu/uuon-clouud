@@ -64,7 +64,7 @@ export async function buyCredits(req, res) {
     }
 
     // Replay protection: reject already-used txHash
-    const dupe = await query("SELECT 1 FROM transactions WHERE description LIKE $1 LIMIT 1", ['%' + txHash + '%']);
+    const dupe = await query("SELECT 1 FROM transactions WHERE tx_hash = $1 LIMIT 1", [txHash]);
     if (dupe.rows.length > 0) {
       return res.status(409).json({ error: 'Transaction already used' });
     }
@@ -101,8 +101,8 @@ export async function buyCredits(req, res) {
 
     // Log transaction
     await query(
-      'INSERT INTO transactions (user_id, type, amount, balance_before, balance_after, reference_id, description) VALUES ($1, $2, $3, $4, $5, $6, $7)',
-      [user_id, 'purchase', pkg.credits, user.credits_balance, user.credits_balance + pkg.credits, package_id, `Purchased ${pkg.name} package | tx:${txHash}`]
+      'INSERT INTO transactions (user_id, type, amount, balance_before, balance_after, reference_id, description, tx_hash) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)',
+      [user_id, 'purchase', pkg.credits, user.credits_balance, user.credits_balance + pkg.credits, package_id, `Purchased ${pkg.name} package`, txHash]
     );
 
     res.status(201).json({ user: updatedUser.rows[0], transaction: { package: pkg.name, credits_purchased: pkg.credits } });
