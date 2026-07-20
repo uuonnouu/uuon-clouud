@@ -54,7 +54,7 @@ class Signal{
 }
 
 function createMarketSim(){
-  let price=67500+Math.random()*3000,vol24h=28e9+Math.random()*8e9,momentum=0;
+  let price=105000+Math.random()*3000,vol24h=28e9+Math.random()*8e9,ethPrice=3200+Math.random()*200,ethChange=0,momentum=0;
   return{tick(){
     momentum=momentum*0.97+(Math.random()-0.495)*0.03;
     const shock=Math.random()<0.02?(Math.random()-0.5)*800:0;
@@ -62,7 +62,7 @@ function createMarketSim(){
     const tradeSize=Math.exp(Math.random()*4)*50;
     const tradesPerSec=3+Math.random()*12+(Math.abs(momentum)>0.01?15:0);
     vol24h=vol24h*0.9999+tradeSize*tradesPerSec*86400*0.0001;
-    return{price,change24h:momentum*100,vol24h,tradeSize,tradesPerSec,velocity:momentum,live:false};
+    ethPrice=ethPrice*(1+momentum*0.0012+(Math.random()-0.5)*0.002);return{price,change24h:momentum*100,vol24h,tradeSize,tradesPerSec,velocity:momentum,live:false,ethPrice,ethChange:momentum*120};
   }};
 }
 
@@ -104,12 +104,12 @@ export default function CLOUUDBrain(){
   const lt=useRef(0);
   const set=(k,v)=>setParams(p=>({...p,[k]:v}));
 
-  const market=useRef({price:0,change24h:0,vol24h:0,tradeSize:0,tradesPerSec:0,velocity:0,live:false,history:[]});
+  const market=useRef({price:0,change24h:0,vol24h:0,tradeSize:0,tradesPerSec:0,velocity:0,live:false,history:[],ethPrice:0,ethChange:0});
   const simRef=useRef(createMarketSim());
 
   const fetchMarket=useCallback(async()=>{
     try{
-      const r=await fetch("https://api.binance.com/api/v3/ticker/24hr?symbol=BTCUSDT");
+      const r=await fetch("https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum&vs_currencies=usd&include_24hr_change=true&include_24hr_vol=true");
       if(!r.ok)throw new Error();
       const d=await r.json();
       const price=parseFloat(d.lastPrice),prev=market.current.price||price;
