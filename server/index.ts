@@ -3,6 +3,7 @@ import cors from "cors";
 import { registerPublicAPI } from "./public-api";
 import { registerRoutes, registerSystemRoutes } from "./routes";
 import { codexRouter } from "./codex-routes";
+import { billingRouter } from "./billing-routes";
 import { registerDmensionRoutes } from "./dmension-routes";
 import registerEnhancedRoutes from "./enhanced-routes";
 import { serveStatic } from "./static";
@@ -75,6 +76,7 @@ app.use((req, res, next) => {
   await registerRoutes(httpServer, app);
   registerPublicAPI(app);
   app.use("/api/codex", codexRouter);
+  app.use("/api/v1/credits", apiLimiter, billingRouter);
   registerDmensionRoutes(app);
   registerEnhancedRoutes(app);
   registerSystemRoutes(app);
