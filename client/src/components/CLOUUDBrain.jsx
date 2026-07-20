@@ -112,11 +112,11 @@ export default function CLOUUDBrain(){
       const r=await fetch("https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum&vs_currencies=usd&include_24hr_change=true&include_24hr_vol=true");
       if(!r.ok)throw new Error();
       const d=await r.json();
-      const price=parseFloat(d.lastPrice),prev=market.current.price||price;
-      market.current={price,change24h:parseFloat(d.priceChangePercent),vol24h:parseFloat(d.quoteVolume),
-        tradeSize:parseFloat(d.quoteVolume)/Math.max(1,parseInt(d.count)),
-        tradesPerSec:parseInt(d.count)/86400,velocity:(price-prev)/prev,live:true,
-        history:[...market.current.history.slice(-89),{price,t:Date.now()}]};
+      const price=d.bitcoin.usd,prev=market.current.price||price;
+      const vol=d.bitcoin.usd_24h_vol||0;
+      market.current={price,change24h:d.bitcoin.usd_24h_change||0,vol24h:vol,
+        tradeSize:vol/86400,tradesPerSec:vol/(price*86400),velocity:(price-prev)/Math.max(prev,1),live:true,
+        history:[...market.current.history.slice(-89),{price,t:Date.now()}],ethPrice:d.ethereum?d.ethereum.usd:0,ethChange:d.ethereum?d.ethereum.usd_24h_change||0:0};
     }catch{
       const d=simRef.current.tick();
       market.current={...d,history:[...market.current.history.slice(-89),{price:d.price,t:Date.now()}]};
