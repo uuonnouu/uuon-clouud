@@ -66,6 +66,7 @@ export class ParametricCompressionHandler implements CompressionHandler {
       seed,
       generator: parametricElements.mainFunction || metadata.fileName,
       params: parametricElements.parameters,
+      originalHash: metadata.contentHash,
     };
 
     // Step 4: Calculate compression
@@ -117,7 +118,7 @@ export class ParametricCompressionHandler implements CompressionHandler {
     return {
       content: reconstructed,
       reconstructionTimeMs,
-      verified: true, // TODO: verify against stored hash
+      verified: ruleContent.originalHash ? contentHash === ruleContent.originalHash : false,
       contentHash,
     };
   }

@@ -5,12 +5,8 @@ import crypto from "crypto";
 /**
  * Brain Meta-Indexer
  * 
- * Catalogs ALL .md files across the entire UUON system:
- * - /Brain/raw (200+ files)
- * - /uuon-clouud (documentation)
- * - /uuon.world (monorepo docs)
- * 
- * Creates unified index for cross-document analysis
+ * Catalogs all .md files in /Brain/Raw.
+ * Creates unified index for cross-document analysis.
  */
 
 export interface DocumentMetadata {
@@ -49,15 +45,13 @@ export class BrainMetaIndexer {
   };
 
   /**
-   * Scan all .md files across entire system
+   * Scan all .md files in Brain/Raw
    */
   async scanAll(): Promise<UnifiedIndex> {
     console.log("[Meta-Indexer] Starting comprehensive scan...");
 
     const paths = [
-      path.join(process.cwd(), ":Brain", ":Raw"),
-      path.join(process.cwd(), "uuon-clouud"),
-      path.join(process.cwd(), "uuon.world"),
+      path.join(process.cwd(), "Brain", "Raw"),
     ];
 
     for (const dirPath of paths) {
