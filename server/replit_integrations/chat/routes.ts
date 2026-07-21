@@ -10,7 +10,7 @@ const openaiClient = new OpenAI({
     "X-Title": "UUON Clouud",
   },
 });
-const CHAT_MODEL = process.env.OPENROUTER_MODEL || "meta-llama/llama-3.1-8b-instruct";
+const CHAT_MODEL = process.env.OPENROUTER_MODEL || "openrouter/free";
 
 export function registerChatRoutes(app: Express): void {
   // Get all conversations
