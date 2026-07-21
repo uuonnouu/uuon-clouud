@@ -28,7 +28,7 @@ const client = USE_OLLAMA
 
 const MODEL = USE_OLLAMA
   ? (process.env.OLLAMA_MODEL || "clouud:latest")
-  : (process.env.OPENROUTER_MODEL || "anthropic/claude-haiku-4-5");
+  : (process.env.OPENROUTER_MODEL || "openrouter/free");
 
 function getLunarPhase(): Record<string, string> {
   const k = 1 / 29.530588853;
