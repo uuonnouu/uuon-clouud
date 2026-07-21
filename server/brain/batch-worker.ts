@@ -8,7 +8,7 @@ import { BrainFileMetadata } from "./types";
 /**
  * Brain Compression Batch Worker
  * 
- * Processes multiple files from /Brain/raw:
+ * Processes multiple files from /Brain/Raw:
  * - Parallel compression (configurable concurrency)
  * - Progress tracking
  * - Error handling & retry logic
@@ -167,7 +167,7 @@ export class BrainBatchWorker {
 
         try {
           // Read file content
-          const filePath = path.join(process.cwd(), ":Brain", ":Raw", file.filePath);
+          const filePath = path.join(process.cwd(), "Brain", "Raw", file.filePath);
           const content = await fs.readFile(filePath, "utf-8");
 
           // Compress
