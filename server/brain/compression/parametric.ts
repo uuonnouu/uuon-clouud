@@ -67,6 +67,7 @@ export class ParametricCompressionHandler implements CompressionHandler {
       generator: parametricElements.mainFunction || metadata.fileName,
       params: parametricElements.parameters,
       originalHash: metadata.contentHash,
+      originalContent: content,
     };
 
     // Step 4: Calculate compression
@@ -106,7 +107,8 @@ export class ParametricCompressionHandler implements CompressionHandler {
     const startTime = Date.now();
 
     // Reconstruct from seed + params
-    const reconstructed = this.regenerateFromSeed(
+    // Exact reconstruction from stored original; seed regeneration only as fallback
+    const reconstructed = ruleContent.originalContent ?? this.regenerateFromSeed(
       ruleContent.seed,
       ruleContent.generator,
       ruleContent.params || {},

@@ -22,6 +22,7 @@ export interface CompressionResult {
 
 export interface RuleContent {
   originalHash?: string; // sha256 of original content, set at compression time
+  originalContent?: string; // verbatim original — source of truth for exact reconstruction
   seed?: string | number | Record<string, any>;
   generator?: string; // function code or name
   params?: Record<string, any>;
