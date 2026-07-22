@@ -28,7 +28,7 @@ const client = USE_OLLAMA
 
 const MODEL = USE_OLLAMA
   ? (process.env.OLLAMA_MODEL || "clouud:latest")
-  : (process.env.OPENROUTER_MODEL || "openrouter/free");
+  : (process.env.OPENROUTER_MODEL || "anthropic/claude-haiku-4-5");
 
 function getLunarPhase(): Record<string, string> {
   const k = 1 / 29.530588853;
@@ -56,7 +56,10 @@ const TOOLS: OpenAI.Chat.ChatCompletionTool[] = [
     type: "function",
     function: {
       name: "explore_dmension",
-      description: "Search Δmension 3D mathematical shape library",
+      description:
+        "LIVE search of the Δmension 3D mathematical shape library via the " +
+        "Dmension bridge API. Returns real current catalog data. Prefer this " +
+        "over dmension_search when the user wants current/authoritative results.",
       parameters: {
         type: "object",
         properties: { query: { type: "string" } },
@@ -188,8 +191,9 @@ const TOOLS: OpenAI.Chat.ChatCompletionTool[] = [
     function: {
       name: "dmension_search",
       description:
-        "Search the Dmension mathematical shape library by name, category, or " +
-        "equation type. Returns matching shapes with their equations and metadata.",
+        "Search a LOCAL CACHED copy (dmension-codex) of the Dmension shape " +
+        "library. Fast but may be out of date with the live catalog. Use as " +
+        "fallback if explore_dmension (live bridge) is unreachable.",
       parameters: {
         type: "object",
         properties: {
@@ -216,10 +220,34 @@ async function executeTool(name: string, args: Record<string, any>): Promise<str
   if (name === "lunar_phase") return JSON.stringify(getLunarPhase());
 
   if (name === "explore_dmension") {
-    return JSON.stringify({
-      query: args.query,
-      url: `https://uuon.world/app/search?q=${encodeURIComponent(args.query || "")}`,
-    });
+    const base = process.env.UUON_DMENSION_URL;
+    if (!base) {
+      return JSON.stringify({
+        error: "UUON_DMENSION_URL not configured — live Dmension search unavailable. Use dmension_search (local cache) instead.",
+      });
+    }
+    try {
+      const res = await fetch(
+        `${base.replace(/\/$/, "")}/api/shapes/shapes`,
+        {
+          headers: process.env.UUON_BRIDGE_SECRET
+            ? { "x-bridge-secret": process.env.UUON_BRIDGE_SECRET }
+            : {},
+          signal: AbortSignal.timeout(10000),
+        }
+      );
+      if (!res.ok) {
+        return JSON.stringify({ error: `Dmension bridge returned ${res.status}` });
+      }
+      const all = await res.json();
+      const list = Array.isArray(all) ? all : (all.shapes ?? []);
+      const q = (args.query || "").toLowerCase();
+      const hits = list.filter((s: any) =>
+        JSON.stringify(s).toLowerCase().includes(q)).slice(0, 10);
+      return JSON.stringify({ query: args.query, count: hits.length, shapes: hits });
+    } catch (e: any) {
+      return JSON.stringify({ error: "Dmension unreachable: " + (e.message || "unknown") });
+    }
   }
 
   if (name === "grade_text") {
@@ -250,8 +278,6 @@ async function executeTool(name: string, args: Record<string, any>): Promise<str
     }
   }
 
-  
-
   if (name === "scrape_url") {
     try {
       const fetch = (await import("node-fetch")).default;
@@ -279,7 +305,7 @@ async function executeTool(name: string, args: Record<string, any>): Promise<str
     try {
       const { searchDmensionShapes } = await import("./dmension-codex");
       const results = searchDmensionShapes(String(args.query || ""));
-      return JSON.stringify({ results: results.slice(0, 5) });
+      return JSON.stringify({ results: results.slice(0, 5), source: "local-codex-cache" });
     } catch (e: any) {
       return JSON.stringify({ error: e.message || "dmension search failed" });
     }
@@ -353,7 +379,7 @@ export async function callClouud(
       model: "clouud",
       stream: false,
       messages: [{ role: "system", content: systemPrompt }, ...messages],
-    }),
+    })
   });
   if (!res.ok) throw new Error(`Ollama unavailable: ${res.status}`);
   const data = await res.json() as { message?: { content?: string } };
