@@ -1,0 +1,184 @@
+<meta charset="utf-8">
+<title>UUON Category Cards</title>
+<style>
+  body{margin:0;background:#05080f;font-family:-apple-system,system-ui,sans-serif;color:#cfe;padding:24px}
+  .top{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;flex-wrap:wrap;gap:12px}
+  h1{font-size:18px;font-weight:500;margin:0;color:#eaf6f2;letter-spacing:1px}
+  .sub{font-family:monospace;font-size:12px;color:#5a7088}
+  button{background:#0d2137;border:0.5px solid #2dd4bf;color:#3ee8c8;font-family:monospace;
+    font-size:12px;padding:8px 14px;border-radius:8px;cursor:pointer}
+  button:hover{background:#123;}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:20px}
+  .card-wrap{display:flex;flex-direction:column;gap:6px}
+  canvas{width:100%;border-radius:18px;display:block}
+  .dl{align-self:flex-start;font-size:11px;padding:5px 10px}
+</style>
+
+<div class="top">
+  <div>
+    <h1>UUON · ΔMENSION CATEGORY CARDS</h1>
+    <div class="sub">28 categories · tokens 0–569 · energy-tiered rarity</div>
+  </div>
+  <button onclick="downloadAll()">Download all 28 PNGs</button>
+</div>
+<div class="grid" id="grid"></div>
+
+<script>
+const DATA = [{"category": "cryptography", "shape_count": 24, "tok_lo": 51, "tok_hi": 234, "energy": 1000, "hero_name": "Threshold Signature", "eq": "y\u00b2 = x\u00b3 + ax + b"}, {"category": "theory-of-everything", "shape_count": 20, "tok_lo": 295, "tok_hi": 314, "energy": 999, "hero_name": "Mathematical Universe", "eq": "\u222b D\u03c6 e^(iS[\u03c6]/\u210f)"}, {"category": "quantum-gravity", "shape_count": 20, "tok_lo": 169, "tok_hi": 188, "energy": 980, "hero_name": "Regge Calculus", "eq": "\u03a3 \u03b5_h A_h"}, {"category": "black-holes", "shape_count": 20, "tok_lo": 75, "tok_hi": 412, "energy": 970, "hero_name": "Quasi Normal Modes", "eq": "ds\u00b2 = -(1-2M/r)dt\u00b2"}, {"category": "quantum-machine-learning", "shape_count": 20, "tok_lo": 550, "tok_hi": 569, "energy": 960, "hero_name": "Expressibility", "eq": "\u27e8\u03c8(\u03b8)|H|\u03c8(\u03b8)\u27e9"}, {"category": "cosmology", "shape_count": 20, "tok_lo": 374, "tok_hi": 393, "energy": 960, "hero_name": "Heat Death", "eq": "H\u00b2 = (8\u03c0G/3)\u03c1"}, {"category": "quantum-computing", "shape_count": 20, "tok_lo": 13, "tok_hi": 373, "energy": 950, "hero_name": "Quantum Error Correction", "eq": "|\u03c8\u27e9 = \u03b1|0\u27e9 + \u03b2|1\u27e9"}, {"category": "quantum-mechanics", "shape_count": 21, "tok_lo": 148, "tok_hi": 168, "energy": 940, "hero_name": "Quantum Tunneling", "eq": "i\u210f\u2202\u03c8/\u2202t = \u0124\u03c8"}, {"category": "4d-hyperdimensional", "shape_count": 20, "tok_lo": 44, "tok_hi": 275, "energy": 930, "hero_name": "Tesseract", "eq": "x\u2074 + y\u2074 + z\u2074 + w\u2074 = 1"}, {"category": "uuon-acas", "shape_count": 17, "tok_lo": 533, "tok_hi": 549, "energy": 920, "hero_name": "Acas Trajectory Prediction", "eq": "\u03c6\u207f \u00b7 \u0394\u03b8"}, {"category": "general-relativity", "shape_count": 25, "tok_lo": 74, "tok_hi": 211, "energy": 920, "hero_name": "Light Cone Structure", "eq": "G\u03bc\u03bd = 8\u03c0T\u03bc\u03bd"}, {"category": "field-theory", "shape_count": 20, "tok_lo": 473, "tok_hi": 492, "energy": 910, "hero_name": "Yang Mills Field", "eq": "F\u03bc\u03bd = \u2202\u03bcA\u03bd - \u2202\u03bdA\u03bc"}, {"category": "tensor-algebra", "shape_count": 20, "tok_lo": 453, "tok_hi": 472, "energy": 900, "hero_name": "Lie Derivative", "eq": "\u00a3_X T = \u2207_X T"}, {"category": "topology", "shape_count": 20, "tok_lo": 41, "tok_hi": 124, "energy": 890, "hero_name": "Chinese Button Knot", "eq": "\u03c7 = V - E + F"}, {"category": "entropic-principles", "shape_count": 20, "tok_lo": 513, "tok_hi": 532, "energy": 880, "hero_name": "Von Neumann Entropy", "eq": "S = -Tr(\u03c1 ln \u03c1)"}, {"category": "wave-functions", "shape_count": 20, "tok_lo": 433, "tok_hi": 452, "energy": 870, "hero_name": "Wave Dispersion", "eq": "\u03c8 = A e^(i(kx-\u03c9t))"}, {"category": "algorithms", "shape_count": 20, "tok_lo": 235, "tok_hi": 294, "energy": 850, "hero_name": "Sorting Network", "eq": "O(n log n)"}, {"category": "modulo-algorithms", "shape_count": 20, "tok_lo": 315, "tok_hi": 334, "energy": 840, "hero_name": "Modular Exponentiation", "eq": "a\u1d47 mod n"}, {"category": "neural-networks", "shape_count": 20, "tok_lo": 335, "tok_hi": 354, "energy": 830, "hero_name": "Backpropagation", "eq": "\u03c3(Wx + b)"}, {"category": "set-theory", "shape_count": 20, "tok_lo": 493, "tok_hi": 512, "energy": 820, "hero_name": "Power Set", "eq": "|P(S)| = 2\u207f"}, {"category": "fractals", "shape_count": 25, "tok_lo": 125, "tok_hi": 147, "energy": 800, "hero_name": "Lorenz Attractor", "eq": "dx/dt = \u03c3(y-x)"}, {"category": "sacred-geometry", "shape_count": 20, "tok_lo": 413, "tok_hi": 432, "energy": 750, "hero_name": "Metatron Cube", "eq": "\u03c6 = (1+\u221a5)/2"}, {"category": "molecular-biology", "shape_count": 25, "tok_lo": 355, "tok_hi": 379, "energy": 700, "hero_name": "DNA Double Helix", "eq": "r(t) = (cos t, sin t, t)"}, {"category": "general", "shape_count": 36, "tok_lo": 0, "tok_hi": 569, "energy": 600, "hero_name": "Riemann Zeta", "eq": "\u03b6(s) = \u03a3 1/n\u02e2"}, {"category": "mathematical-art", "shape_count": 1, "tok_lo": 0, "tok_hi": 0, "energy": 600, "hero_name": "Yeganeh Eagle", "eq": "parametric"}, {"category": "babylonian-zodiac", "shape_count": 12, "tok_lo": 1, "tok_hi": 12, "energy": 480, "hero_name": "Babylonian Aries", "eq": "\u03b8 \u2192 r(\u03b8)"}, {"category": "chakras", "shape_count": 15, "tok_lo": 394, "tok_hi": 411, "energy": 450, "hero_name": "Root Chakra", "eq": "r = sin(n\u03b8)"}, {"category": "basic", "shape_count": 29, "tok_lo": 13, "tok_hi": 569, "energy": 400, "hero_name": "Sphere", "eq": "x\u00b2 + y\u00b2 + z\u00b2 = r\u00b2"}];
+
+const W=600, H=860, S=2; // render scale
+
+// rarity by energy
+function rarity(e){
+  if(e>=970) return {label:"LEGENDARY", c:"#f0a020", c2:"#ffd060"};
+  if(e>=900) return {label:"EPIC", c:"#a06cf0", c2:"#c89cff"};
+  if(e>=800) return {label:"RARE", c:"#3ee8c8", c2:"#7cf0e0"};
+  if(e>=600) return {label:"UNCOMMON", c:"#3a9ce8", c2:"#7cc0ff"};
+  return {label:"COMMON", c:"#6a8098", c2:"#9ab0c8"};
+}
+
+// hero geometry — distinct parametric form per category family
+function heroPath(ctx, cat, cx, cy, scale, col){
+  ctx.strokeStyle=col; ctx.lineWidth=1.6; ctx.globalAlpha=0.92;
+  const N=240;
+  const draw=(fn)=>{ctx.beginPath();for(let i=0;i<=N;i++){const t=i/N;const [x,y]=fn(t);if(i==0)ctx.moveTo(cx+x*scale,cy+y*scale);else ctx.lineTo(cx+x*scale,cy+y*scale);}ctx.stroke();};
+  const TAU=Math.PI*2;
+  switch(true){
+    case /crypto/.test(cat): // elliptic curve
+      draw(t=>{const x=(t-0.5)*3.2;let y=Math.sqrt(Math.max(0,x*x*x-2*x+2));return [x,-y];});
+      draw(t=>{const x=(t-0.5)*3.2;let y=Math.sqrt(Math.max(0,x*x*x-2*x+2));return [x,y];});
+      break;
+    case /everything|unified/.test(cat): // superstring loops
+      for(let k=0;k<5;k++)draw(t=>{const a=t*TAU;const r=1+0.3*Math.sin(a*5+k);return [r*Math.cos(a+k*1.2),r*Math.sin(a+k*1.2)*0.6];});
+      break;
+    case /quantum-gravity|regge/.test(cat): // simplicial lattice
+      for(let k=0;k<6;k++){ctx.beginPath();const a=k*TAU/6;ctx.moveTo(cx,cy);ctx.lineTo(cx+Math.cos(a)*scale*1.4,cy+Math.sin(a)*scale*1.4);ctx.stroke();}
+      draw(t=>{const a=t*TAU;return [1.4*Math.cos(a),1.4*Math.sin(a)];});
+      break;
+    case /black-hole/.test(cat): // accretion + horizon
+      for(let k=0;k<4;k++)draw(t=>{const a=t*TAU;const r=0.5+k*0.35;return [r*Math.cos(a)*1.3,r*Math.sin(a)*0.45];});
+      ctx.beginPath();ctx.arc(cx,cy,scale*0.35,0,TAU);ctx.fillStyle=col;ctx.globalAlpha=0.25;ctx.fill();ctx.globalAlpha=0.92;
+      break;
+    case /machine-learning|neural/.test(cat): // network mesh
+      {const nodes=[];for(let k=0;k<7;k++)nodes.push([Math.cos(k*TAU/7)*1.3,Math.sin(k*TAU/7)*1.3]);
+       for(let a=0;a<nodes.length;a++)for(let b=a+1;b<nodes.length;b++){ctx.globalAlpha=0.25;ctx.beginPath();ctx.moveTo(cx+nodes[a][0]*scale,cy+nodes[a][1]*scale);ctx.lineTo(cx+nodes[b][0]*scale,cy+nodes[b][1]*scale);ctx.stroke();}
+       ctx.globalAlpha=1;nodes.forEach(n=>{ctx.beginPath();ctx.arc(cx+n[0]*scale,cy+n[1]*scale,4,0,TAU);ctx.fillStyle=col;ctx.fill();});}
+      break;
+    case /cosmolog/.test(cat): // expanding shells
+      for(let k=1;k<=5;k++)draw(t=>{const a=t*TAU;const r=k*0.3;return [r*Math.cos(a),r*Math.sin(a)];});
+      break;
+    case /quantum-comput|quantum-mech|wave/.test(cat): // wavefunction / bloch
+      draw(t=>{const x=(t-0.5)*4;return [x,Math.sin(x*3)*Math.exp(-x*x*0.3)*1.5];});
+      ctx.globalAlpha=0.4;draw(t=>{const a=t*TAU;return [1.3*Math.cos(a),1.3*Math.sin(a)*0.4];});ctx.globalAlpha=0.92;
+      break;
+    case /4d|hyperdimension/.test(cat): // tesseract projection
+      {const o=0.55;const sq=(s,dx,dy)=>{ctx.strokeRect(cx-s*scale+dx,cy-s*scale+dy,2*s*scale,2*s*scale);};
+       ctx.strokeStyle=col;sq(1,0,0);sq(0.6,scale*o*0.6,-scale*o*0.6);
+       const a=1*scale,b=0.6*scale,ox=scale*o*0.6,oy=-scale*o*0.6;
+       [[-1,-1],[1,-1],[1,1],[-1,1]].forEach(c=>{ctx.beginPath();ctx.moveTo(cx+c[0]*a,cy+c[1]*a);ctx.lineTo(cx+c[0]*b+ox,cy+c[1]*b+oy);ctx.stroke();});}
+      break;
+    case /relativity|field|tensor/.test(cat): // curved spacetime grid
+      for(let r=0.4;r<=1.5;r+=0.28)draw(t=>{const a=t*TAU;const w=1-0.25*Math.exp(-r);return [r*Math.cos(a),r*Math.sin(a)*w-0.15/r];});
+      break;
+    case /topolog/.test(cat): // trefoil knot
+      draw(t=>{const a=t*TAU;return [Math.sin(a)+2*Math.sin(2*a),Math.cos(a)-2*Math.cos(2*a)].map(v=>v*0.4);});
+      break;
+    case /entrop/.test(cat): // diffusion spread
+      for(let k=0;k<40;k++){const a=k*2.4;const r=Math.sqrt(k)*0.22;ctx.beginPath();ctx.arc(cx+Math.cos(a)*r*scale,cy+Math.sin(a)*r*scale,1.5,0,TAU);ctx.fillStyle=col;ctx.globalAlpha=0.7;ctx.fill();}ctx.globalAlpha=0.92;
+      break;
+    case /fractal/.test(cat): // lorenz
+      {let x=0.1,y=0,z=0;const pts=[];for(let i=0;i<2500;i++){const dx=10*(y-x),dy=x*(28-z)-y,dz=x*y-2.66*z;x+=dx*0.006;y+=dy*0.006;z+=dz*0.006;if(i>50)pts.push([x*0.07,(z-25)*0.07]);}
+       ctx.beginPath();pts.forEach((p,i)=>{i?ctx.lineTo(cx+p[0]*scale,cy+p[1]*scale):ctx.moveTo(cx+p[0]*scale,cy+p[1]*scale);});ctx.globalAlpha=0.8;ctx.lineWidth=0.7;ctx.stroke();ctx.lineWidth=1.6;ctx.globalAlpha=0.92;}
+      break;
+    case /sacred|chakra/.test(cat): // flower of life
+      for(let k=0;k<6;k++){const a=k*TAU/6;ctx.beginPath();ctx.arc(cx+Math.cos(a)*scale*0.6,cy+Math.sin(a)*scale*0.6,scale*0.6,0,TAU);ctx.stroke();}
+      ctx.beginPath();ctx.arc(cx,cy,scale*0.6,0,TAU);ctx.stroke();
+      break;
+    case /molecular|biolog/.test(cat): // double helix
+      draw(t=>{const z=(t-0.5)*4;return [Math.cos(z*2.5)*0.9,z*0.6];});
+      draw(t=>{const z=(t-0.5)*4;return [Math.cos(z*2.5+Math.PI)*0.9,z*0.6];});
+      for(let i=0;i<=10;i++){const z=(i/10-0.5)*4;ctx.beginPath();ctx.moveTo(cx+Math.cos(z*2.5)*0.9*scale,cy+z*0.6*scale);ctx.lineTo(cx+Math.cos(z*2.5+Math.PI)*0.9*scale,cy+z*0.6*scale);ctx.globalAlpha=0.4;ctx.stroke();ctx.globalAlpha=0.92;}
+      break;
+    case /modulo|algorithm|set-theory|acas/.test(cat): // modular star polygon
+      {const n=9,step=4;ctx.beginPath();for(let i=0;i<=n;i++){const a=(i*step%n)*TAU/n;const x=cx+Math.cos(a)*scale*1.3,y=cy+Math.sin(a)*scale*1.3;i?ctx.lineTo(x,y):ctx.moveTo(x,y);}ctx.stroke();}
+      break;
+    case /babylonian/.test(cat): // rose curve
+      draw(t=>{const a=t*TAU;const r=Math.cos(3*a);return [r*Math.cos(a)*1.4,r*Math.sin(a)*1.4];});
+      break;
+    default: // basic — sphere wireframe
+      for(let k=-3;k<=3;k++){const yy=k/3.2;const rr=Math.sqrt(Math.max(0,1-yy*yy));draw(t=>{const a=t*TAU;return [rr*Math.cos(a)*1.3,yy*1.3];});}
+      for(let k=0;k<6;k++)draw(t=>{const a=(t-0.5)*Math.PI;return [Math.sin(a)*Math.cos(k*TAU/6)*1.3,Math.cos(a)*1.3];});
+  }
+  ctx.globalAlpha=1;
+}
+
+function drawCard(c){
+  const cv=document.createElement('canvas');cv.width=W*S;cv.height=H*S;
+  const x=cv.getContext('2d');x.scale(S,S);
+  const r=rarity(c.energy);
+  const idx=String(DATA.indexOf(c)+1).padStart(3,'0');
+  // bg
+  const g=x.createLinearGradient(0,0,0,H);g.addColorStop(0,'#0a1628');g.addColorStop(0.55,'#0d2137');g.addColorStop(1,'#06101d');
+  x.fillStyle=g;roundRect(x,12,12,W-24,H-24,22);x.fill();
+  x.strokeStyle='#1d3a52';x.lineWidth=2;roundRect(x,12,12,W-24,H-24,22);x.stroke();
+  x.strokeStyle=r.c;x.globalAlpha=0.35;x.lineWidth=0.5;roundRect(x,20,20,W-40,H-40,18);x.stroke();x.globalAlpha=1;
+  // header
+  x.fillStyle='#7c8fa8';x.font='12px monospace';x.fillText('CATEGORY · '+idx, 44, 56);
+  x.fillStyle='#eaf6f2';x.font='500 24px -apple-system,sans-serif';x.fillText(titleCase(c.category), 44, 90);
+  x.fillStyle=r.c;x.font='11px monospace';x.textAlign='right';x.fillText('gPoW', W-44, 56);x.textAlign='left';
+  x.beginPath();x.arc(W-52,76,8,0,Math.PI*2);x.strokeStyle=r.c2;x.lineWidth=1.2;x.stroke();
+  x.beginPath();x.arc(W-52,76,3,0,Math.PI*2);x.fillStyle=r.c2;x.fill();
+  // art panel
+  x.fillStyle='#081320';roundRect(x,40,110,W-80,440,10);x.fill();
+  x.save();roundRect(x,40,110,W-80,440,10);x.clip();
+  // grid
+  x.strokeStyle='#16364d';x.lineWidth=0.5;x.globalAlpha=0.5;
+  for(let yy=150;yy<550;yy+=40){x.beginPath();x.moveTo(40,yy);x.lineTo(W-40,yy);x.stroke();}
+  for(let xx=80;xx<W-40;xx+=40){x.beginPath();x.moveTo(xx,110);x.lineTo(xx,550);x.stroke();}
+  x.globalAlpha=1;
+  // axes
+  x.strokeStyle=r.c;x.globalAlpha=0.5;x.lineWidth=0.5;
+  x.beginPath();x.moveTo(40,330);x.lineTo(W-40,330);x.stroke();
+  x.beginPath();x.moveTo(W/2,110);x.lineTo(W/2,550);x.stroke();x.globalAlpha=1;
+  // hero geometry
+  heroPath(x, c.category, W/2, 330, 95, r.c);
+  // glow pass
+  x.globalAlpha=0.18;x.lineWidth=5;heroPath(x,c.category,W/2,330,95,r.c2);x.globalAlpha=1;x.lineWidth=1.6;
+  x.restore();
+  x.strokeStyle=r.c;x.globalAlpha=0.5;x.lineWidth=0.5;roundRect(x,40,110,W-80,440,10);x.stroke();x.globalAlpha=1;
+  // equation DNA
+  x.fillStyle='#eaf6f2';x.font='15px monospace';x.fillText(c.eq, 44, 590);
+  x.fillStyle='#5a7088';x.font='10px monospace';x.fillText('anchored equation-DNA · Phase III', 44, 610);
+  // divider
+  x.strokeStyle='#1d3a52';x.lineWidth=1;x.beginPath();x.moveTo(44,632);x.lineTo(W-44,632);x.stroke();
+  // stats
+  stat(x,'SHAPES',c.shape_count,r.c2,44,672);
+  stat(x,'TOKENS',c.tok_lo+'–'+c.tok_hi,'#eaf6f2',180,672);
+  stat(x,'ENERGY',c.energy,r.c2,360,672);
+  // rarity pill
+  x.fillStyle='#0d2137';roundRect(x,440,650,116,48,8);x.fill();
+  x.strokeStyle=r.c;x.lineWidth=0.5;roundRect(x,440,650,116,48,8);x.stroke();
+  x.fillStyle='#7c8fa8';x.font='9px monospace';x.textAlign='center';x.fillText('RARITY',498,670);
+  x.fillStyle=r.c;x.font='500 13px monospace';x.fillText(r.label,498,688);x.textAlign='left';
+  // footer
+  x.fillStyle='#3a5570';x.font='10px monospace';x.fillText('UUON · ΔMENSION MATHEMATICAL UNIVERSE',44,H-46);
+  x.fillStyle='#5a7088';x.font='10px monospace';x.fillText('Base Mainnet · 0xa14c…1165',44,H-30);
+  return cv;
+}
+function stat(x,label,val,col,px,py){x.fillStyle='#7c8fa8';x.font='12px monospace';x.fillText(label,px,py);x.fillStyle=col;x.font='500 22px monospace';x.fillText(val,px,py+26);}
+function roundRect(x,a,b,w,h,rad){x.beginPath();x.moveTo(a+rad,b);x.arcTo(a+w,b,a+w,b+h,rad);x.arcTo(a+w,b+h,a,b+h,rad);x.arcTo(a,b+h,a,b,rad);x.arcTo(a,b,a+w,b,rad);x.closePath();}
+function titleCase(s){return s.replace(/-/g,' ').replace(/\b\w/g,m=>m.toUpperCase());}
+
+const grid=document.getElementById('grid');
+const canvases=[];
+DATA.forEach(c=>{
+  const wrap=document.createElement('div');wrap.className='card-wrap';
+  const cv=drawCard(c);canvases.push({cv,name:c.category});
+  wrap.appendChild(cv);
+  const b=document.createElement('button');b.className='dl';b.textContent='↓ '+c.category+'.png';
+  b.onclick=()=>dl(cv,c.category);
+  wrap.appendChild(b);grid.appendChild(wrap);
+});
+function dl(cv,name){const a=document.createElement('a');a.download='uuon_card_'+name+'.png';a.href=cv.toDataURL('image/png');a.click();}
+function downloadAll(){canvases.forEach((c,i)=>setTimeout(()=>dl(c.cv,c.name),i*300));}
+</script>
