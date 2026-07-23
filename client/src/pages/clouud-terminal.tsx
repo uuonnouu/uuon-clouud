@@ -351,10 +351,10 @@ export default function ClouudTerminal() {
       const formData = new FormData();
       formData.append("file", file);
       if (activeConvo) formData.append("conversationId", String(activeConvo));
-      const res = await fetch("/api/upload", { method: "POST", body: formData });
+      const res = await fetch("/api/clouud/upload", { method: "POST", body: formData });
       if (!res.ok) throw new Error("Upload failed");
       const data = await res.json();
-      const contextMsg = `[Uploaded file: ${data.originalName} (${(data.size / 1024).toFixed(1)}KB)]\n\n${data.extractedText}`;
+      const contextMsg = `[Uploaded file: ${data.originalName} (${(data.size / 1024).toFixed(1)}KB)]\n${data.url}`;
       setInput(prev => prev ? `${prev}\n\n${contextMsg}` : contextMsg);
     } catch (err: any) {
       setInput(prev => prev + `\n[Upload failed: ${err.message}]`);
@@ -368,7 +368,7 @@ export default function ClouudTerminal() {
     if (!linkUrl.trim()) return;
     setIsScraping(true);
     try {
-      const res = await fetch("/api/scrape", {
+      const res = await fetch("/api/clouud/scrape", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ url: linkUrl.trim() }),
@@ -376,7 +376,7 @@ export default function ClouudTerminal() {
       if (!res.ok) throw new Error("Scrape failed");
       const data = await res.json();
       const title = data.title ? ` — ${data.title}` : "";
-      const contextMsg = `[Scraped: ${linkUrl}${title}]\n\n${data.extractedText}`;
+      const contextMsg = `[Scraped: ${linkUrl}${title}]\n\n${data.text}`;
       setInput(prev => prev ? `${prev}\n\n${contextMsg}` : contextMsg);
       setShowLinkInput(false);
       setLinkUrl("");
