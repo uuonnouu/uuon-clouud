@@ -52,3 +52,4 @@ backups/
 bisect_progress.txt
 .github/
 dist/
+dist/
