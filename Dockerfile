@@ -6,11 +6,11 @@ ARG CACHEBUST=1
 
 COPY package*.json ./
 
-RUN rm -f package-lock.json && npm install --include=dev
+RUN rm -f package-lock.json && npm install --legacy-peer-deps --include=dev
 
 COPY . .
 
-RUN npm run build && npm prune --omit=dev
+RUN npm run build && npm prune --omit=dev --legacy-peer-deps
 
 RUN mkdir -p /app/uploads && chown -R node:node /app
 
