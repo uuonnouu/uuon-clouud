@@ -552,6 +552,18 @@ export class TokenLedgerService {
     };
   }
 
+  /**
+   * v1 energy: deterministic function of mint parameters (a, b, c, param count)
+   * ONLY. It does NOT measure shape geometry or mathematics — shapes minted
+   * with identical/default parameters get identical energy. The "phiAlignment"
+   * term rewards proximity of param b to the golden ratio; it is a stylistic
+   * choice, not a measurement.
+   * FROZEN: v1 values are signed into all existing token signatures (HMAC
+   * includes baseEnergy) — do not modify this formula. A geometry-derived
+   * metric, if ever needed, must ship as energy_v2 with an explicit version
+   * field. Until then: no energy leaderboards or energy-based value claims
+   * in anything user-facing.
+   */
   private calculateBaseEnergy(params: Record<string, number>): number {
     const a = params.a ?? 1;
     const b = params.b ?? 1;

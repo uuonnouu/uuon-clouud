@@ -28,3 +28,14 @@
 5. Apply to Base Builder Grants with real verified metrics
 6. Check Claude's Connectors Directory for a pre-built Postgres/Neon option before building custom
 7. Identify what "Clouud" actually refers to (workspace/account never confirmed)
+
+## Energy metric — honest status (2026-07-23)
+- `baseEnergy` (v1) is computed from mint parameters (a, b, c, param count)
+  only. It does NOT measure shape geometry or mathematics. Hundreds of shapes
+  minted with default params share identical values.
+- v1 values are signed into all 578 token signatures — formula is frozen.
+- Registry column `complete_shape_registry.base_energy` holds hand-assigned
+  round numbers; the minting path never reads it. Display metadata only.
+- Rule: no energy leaderboards or energy-based value claims user-facing until
+  a geometry-derived `energy_v2` (with version field) exists. The
+  `getEnergyLeaderboard` route is decorative under v1.
