@@ -1,0 +1,571 @@
+token_id,registry_id,display_name,category,base_energy
+0,1,"Yeganeh Eagle",mathematical-art,600
+1,2,"Babylonian Aries Hired Man",babylonian-zodiac,480
+2,3,"Babylonian Taurus Bull Of Heaven",babylonian-zodiac,480
+3,4,"Babylonian Gemini Great Twins",babylonian-zodiac,480
+4,5,"Babylonian Cancer Crayfish",babylonian-zodiac,480
+5,6,"Babylonian Leo Lion",babylonian-zodiac,480
+6,7,"Babylonian Virgo Furrow",babylonian-zodiac,480
+7,8,"Babylonian Libra Scales",babylonian-zodiac,480
+8,9,"Babylonian Scorpio Scorpion",babylonian-zodiac,480
+9,10,"Babylonian Sagittarius Pabilsag",babylonian-zodiac,480
+10,11,"Babylonian Capricorn Goat Fish",babylonian-zodiac,480
+11,12,"Babylonian Aquarius Water Bearer",babylonian-zodiac,480
+12,13,"Babylonian Pisces Fish String",babylonian-zodiac,480
+13,14,"Qubit",quantum-computing,950
+14,15,"Hadamard Gate",quantum-computing,950
+15,16,"Pauli X Gate",quantum-computing,950
+16,17,"Pauli Y Gate",quantum-computing,950
+17,18,"Pauli Z Gate",quantum-computing,950
+18,19,"Cnot Gate",quantum-computing,950
+19,20,"Toffoli Gate",quantum-computing,950
+20,21,"Fredkin Gate",quantum-computing,950
+21,22,"Swap Gate",quantum-computing,950
+22,23,"Controlled Phase",quantum-computing,950
+23,24,"Quantum Fourier Transform",quantum-computing,950
+24,25,"Grover Oracle",quantum-computing,950
+25,26,"Shor Factoring",quantum-computing,950
+26,27,"Vqe Circuit",quantum-computing,950
+27,28,"Qaoa Circuit",quantum-computing,950
+28,49,"Grover Search",general,300
+29,50,"Shor Algorithm",general,300
+30,52,"Bell State",general,300
+31,53,"Quantum Teleportation",general,300
+32,54,"Sphere",basic,300
+33,55,"Cube",basic,300
+34,56,"Cylinder",basic,300
+35,57,"Cone",basic,300
+36,58,"Torus",basic,300
+37,59,"Tetrahedron",basic,300
+38,60,"Octahedron",basic,300
+39,61,"Icosahedron",basic,300
+40,62,"Dodecahedron",basic,300
+41,63,"Klein Bottle",topology,890
+42,64,"Trefoil Knot",topology,890
+43,65,"Mobius Strip",topology,890
+44,66,"Hopf Fibration",4d-hyperdimensional,930
+45,67,"Sha256 Compression Function",general,300
+46,68,"Keccak Sha3 Sponge",general,300
+47,69,"Aes Rijndael Cipher",general,300
+48,70,"Elliptic Curve Cryptography",general,300
+49,71,"Blake3 Hash",general,300
+50,72,"Lattice Kyber Ntru",general,300
+51,73,"Merkle Tree",cryptography,1000
+52,74,"Black Scholes Surface",general,300
+53,75,"Volatility Surface",general,300
+54,76,"Monte Carlo Risk",general,300
+55,77,"Neural Loss Landscape",general,300
+56,78,"Gradient Descent Path",general,300
+57,79,"Attention Mechanism",neural-networks,850
+58,80,"Kolmogorov Complexity",general,300
+59,81,"Quantum Information Flow",general,300
+60,82,"Hash Avalanche Effect",general,300
+61,83,"Blockchain Merkle Tree",general,300
+62,84,"Tesseract 4d",general,300
+63,85,"Hypersphere",4d-hyperdimensional,930
+64,86,"Pentatope",general,300
+65,87,"Mandelbulb",general,300
+66,88,"Sierpinski Triangle",general,300
+67,89,"Menger Sponge",fractals,780
+68,90,"Julia Set",general,300
+69,91,"Lorenz Attractor",fractals,780
+70,92,"Dna Double Helix",molecular-biology,700
+71,93,"Protein Folding",molecular-biology,700
+72,94,"Neuron Morphology",general,300
+73,95,"Heart Surface",general,300
+74,96,"Schwarzschild Metric",general-relativity,920
+75,97,"Kerr Black Hole",black-holes,970
+76,98,"Gravitational Wave",general-relativity,920
+77,99,"Riemann Zeta",general,300
+78,100,"Golden Ratio Spiral",general,300
+79,101,"Fibonacci Surface",general,300
+80,102,"Penrose Tiling",general,300
+81,103,"Vesica Piscis",sacred-geometry,650
+82,104,"Euler Product Formula",general,300
+83,105,"Policy Impact Visualization",general,300
+84,106,"Qubit Bloch Sphere",general,300
+85,107,"Qubit State Vector",general,300
+86,108,"Three Qubit Ghz State",general,300
+87,109,"Shor Nine Qubit Code",general,300
+88,132,"Square",basic,300
+89,133,"Circle",basic,300
+90,134,"Triangle",basic,300
+91,135,"Rectangle",basic,300
+92,136,"Pentagon",basic,300
+93,137,"Hexagon",basic,300
+94,138,"Oval",basic,300
+95,139,"Star 3d",basic,300
+96,140,"Diamond",basic,300
+97,141,"Heart Shape",basic,300
+98,142,"Triangular Prism",basic,300
+99,143,"Square Prism",basic,300
+100,144,"Pentagonal Prism",basic,300
+101,145,"Hexagonal Prism",basic,300
+102,146,"Heptagonal Prism",basic,300
+103,147,"Octagonal Prism",basic,300
+104,148,"Nonagonal Prism",basic,300
+105,149,"Decagonal Prism",basic,300
+106,150,"Hendecagonal Prism",basic,300
+107,151,"Dodecagonal Prism",basic,300
+108,154,"Figure8 Knot",topology,890
+109,156,"Cross Cap",topology,890
+110,157,"Boy Surface",topology,890
+111,158,"Genus2 Surface",topology,890
+112,159,"Genus3 Surface",topology,890
+113,160,"Fiber Bundle",topology,890
+114,161,"Homotopy Deformation",topology,890
+115,162,"Seifert Surface",topology,890
+116,163,"Torus Knot 2 3",topology,890
+117,164,"Torus Knot 3 5",topology,890
+118,165,"Borromean Rings",topology,890
+119,166,"Hopf Link",topology,890
+120,167,"Whitehead Link",topology,890
+121,168,"Chinese Button Knot",topology,890
+122,169,"Solomon Knot",topology,890
+123,170,"Endless Knot",topology,890
+124,171,"Celtic Knot",topology,890
+125,172,"Mandelbrot 3d",fractals,780
+126,173,"Julia 3d",fractals,780
+127,174,"Sierpinski Tetrahedron",fractals,780
+128,176,"Koch Snowflake 3d",fractals,780
+129,177,"Mandelbulb Raymarched",fractals,780
+130,178,"Platonic Icosa",fractals,780
+131,179,"Platonic Octa",fractals,780
+132,180,"Platonic Dodeca",fractals,780
+133,181,"Menger Kleinian V2",fractals,780
+134,182,"Dragon Curve 3d",fractals,780
+135,183,"Hilbert Curve 3d",fractals,780
+136,184,"Peano Curve 3d",fractals,780
+137,185,"Apollonian Gasket",fractals,780
+138,186,"Barnsley Fern 3d",fractals,780
+139,187,"Cantor Dust 3d",fractals,780
+140,188,"Levy C Curve",fractals,780
+141,189,"Gosper Curve",fractals,780
+142,190,"Moore Curve",fractals,780
+143,191,"Lindenmayer Tree",fractals,780
+144,192,"Strange Attractor",fractals,780
+145,194,"Rossler Attractor",fractals,780
+146,195,"Chen Attractor",fractals,780
+147,196,"Halvorsen Attractor",fractals,780
+148,197,"Hydrogen 1s",quantum-mechanics,940
+149,198,"Hydrogen 2s",quantum-mechanics,940
+150,199,"Hydrogen 2p",quantum-mechanics,940
+151,200,"Hydrogen 3s",quantum-mechanics,940
+152,201,"Hydrogen 3p",quantum-mechanics,940
+153,202,"Hydrogen 3d",quantum-mechanics,940
+154,203,"Schrodinger Wave",quantum-mechanics,940
+155,204,"Wave Function",quantum-mechanics,940
+156,205,"Probability Density",quantum-mechanics,940
+157,206,"Quantum Tunneling",quantum-mechanics,940
+158,207,"Quantum Well",quantum-mechanics,940
+159,208,"Spin State",quantum-mechanics,940
+160,209,"Bloch Sphere",quantum-mechanics,940
+161,210,"Qubit State",quantum-mechanics,940
+162,211,"Entanglement State",quantum-mechanics,940
+163,212,"Superposition State",quantum-mechanics,940
+164,213,"Wave Packet",quantum-mechanics,940
+165,214,"Momentum Space",quantum-mechanics,940
+166,215,"Phase Space",quantum-mechanics,940
+167,216,"Wigner Function",quantum-mechanics,940
+168,217,"Husimi Distribution",quantum-mechanics,940
+169,218,"Spin Foam",quantum-gravity,980
+170,219,"Spin Network",quantum-gravity,980
+171,220,"Loop Quantum Gravity",quantum-gravity,980
+172,221,"Planck Scale Geometry",quantum-gravity,980
+173,222,"Causal Dynamical Triangulation",quantum-gravity,980
+174,223,"Regge Calculus",quantum-gravity,980
+175,224,"Twistor Space",quantum-gravity,980
+176,225,"Penrose Diagram",quantum-gravity,980
+177,226,"Black Hole Entropy",quantum-gravity,980
+178,227,"Holographic Principle",quantum-gravity,980
+179,228,"Ads Cft",quantum-gravity,980
+180,229,"Bulk Boundary",quantum-gravity,980
+181,230,"Entanglement Wedge",quantum-gravity,980
+182,231,"Ryu Takayanagi",quantum-gravity,980
+183,232,"Quantum Extremal Surface",quantum-gravity,980
+184,233,"String Landscape",quantum-gravity,980
+185,234,"Flux Compactification",quantum-gravity,980
+186,235,"Moduli Stabilization",quantum-gravity,980
+187,236,"Swampland",quantum-gravity,980
+188,237,"Distance Conjecture",quantum-gravity,980
+189,239,"Kerr Metric",general-relativity,920
+190,240,"Reissner Nordstrom",general-relativity,920
+191,241,"Kerr Newman",general-relativity,920
+192,242,"Friedmann Metric",general-relativity,920
+193,243,"De Sitter Space",general-relativity,920
+194,244,"Anti De Sitter",general-relativity,920
+195,245,"Minkowski Space",general-relativity,920
+196,246,"Penrose Carter Diagram",general-relativity,920
+197,247,"Light Cone Structure",general-relativity,920
+198,248,"Geodesic Deviation",general-relativity,920
+199,249,"Riemann Tensor",general-relativity,920
+200,250,"Ricci Tensor",general-relativity,920
+201,251,"Weyl Tensor",general-relativity,920
+202,252,"Einstein Tensor",general-relativity,920
+203,254,"Gravitational Lensing",general-relativity,920
+204,255,"Frame Dragging",general-relativity,920
+205,256,"Ergosphere",general-relativity,920
+206,257,"Event Horizon",general-relativity,920
+207,258,"Singularity",general-relativity,920
+208,259,"Wormhole",general-relativity,920
+209,260,"Einstein Rosen Bridge",general-relativity,920
+210,261,"Closed Timelike Curve",general-relativity,920
+211,262,"Godel Universe",general-relativity,920
+212,263,"Elliptic Curve Secp256k1",cryptography,1000
+213,264,"Elliptic Curve P256",cryptography,1000
+214,265,"Elliptic Curve Ed25519",cryptography,1000
+215,266,"Rsa Modular Exponentiation",cryptography,1000
+216,267,"Diffie Hellman Key Exchange",cryptography,1000
+217,268,"Aes Sbox",cryptography,1000
+218,269,"Sha256 Compression",cryptography,1000
+219,271,"Hash Chain",cryptography,1000
+220,272,"Digital Signature",cryptography,1000
+221,273,"Zero Knowledge Proof",cryptography,1000
+222,274,"Commitment Scheme",cryptography,1000
+223,275,"Secret Sharing",cryptography,1000
+224,276,"Threshold Signature",cryptography,1000
+225,277,"Homomorphic Encryption",cryptography,1000
+226,278,"Lattice Based Crypto",cryptography,1000
+227,279,"Ntru Lattice",cryptography,1000
+228,280,"Kyber Lattice",cryptography,1000
+229,281,"Dilithium Signature",cryptography,1000
+230,282,"Rainbow Signature",cryptography,1000
+231,283,"Sphincs Signature",cryptography,1000
+232,284,"Post Quantum Crypto",cryptography,1000
+233,285,"Quantum Key Distribution",cryptography,1000
+234,286,"Bb84 Protocol",cryptography,1000
+235,288,"Rna Single Strand",molecular-biology,700
+236,289,"Protein Alpha Helix",molecular-biology,700
+237,290,"Protein Beta Sheet",molecular-biology,700
+238,292,"Lipid Bilayer",molecular-biology,700
+239,293,"Cell Membrane",molecular-biology,700
+240,294,"Phospholipid",molecular-biology,700
+241,295,"Cholesterol",molecular-biology,700
+242,296,"Glycoprotein",molecular-biology,700
+243,297,"Ribosome",molecular-biology,700
+244,298,"Mitochondria",molecular-biology,700
+245,299,"Endoplasmic Reticulum",molecular-biology,700
+246,300,"Golgi Apparatus",molecular-biology,700
+247,301,"Lysosome",molecular-biology,700
+248,302,"Nucleus",molecular-biology,700
+249,303,"Nucleolus",molecular-biology,700
+250,304,"Chromatin",molecular-biology,700
+251,305,"Chromosome",molecular-biology,700
+252,306,"Centromere",molecular-biology,700
+253,307,"Microtubule",molecular-biology,700
+254,308,"Actin Filament",molecular-biology,700
+255,309,"Intermediate Filament",molecular-biology,700
+256,310,"Motor Protein",molecular-biology,700
+257,311,"Ion Channel",molecular-biology,700
+258,312,"Tesseract",4d-hyperdimensional,930
+259,314,"Pentachoron",4d-hyperdimensional,930
+260,315,"Hexadecachoron",4d-hyperdimensional,930
+261,316,"Icositetrachoron",4d-hyperdimensional,930
+262,317,"Hecatonicosachoron",4d-hyperdimensional,930
+263,318,"Hexacosichoron",4d-hyperdimensional,930
+264,319,"Grand Antiprism",4d-hyperdimensional,930
+265,320,"Rectified Tesseract",4d-hyperdimensional,930
+266,321,"Bitruncated Tesseract",4d-hyperdimensional,930
+267,322,"Runcitruncated Tesseract",4d-hyperdimensional,930
+268,323,"Omnitruncated Tesseract",4d-hyperdimensional,930
+269,324,"Duoprism 4 4",4d-hyperdimensional,930
+270,325,"Duoprism 3 6",4d-hyperdimensional,930
+271,326,"Duocylinder",4d-hyperdimensional,930
+272,327,"Clifford Torus 4d",4d-hyperdimensional,930
+273,329,"Quaternion Rotation",4d-hyperdimensional,930
+274,330,"So4 Rotation",4d-hyperdimensional,930
+275,331,"Spinor 4d",4d-hyperdimensional,930
+276,332,"Flower Of Life",sacred-geometry,650
+277,333,"Seed Of Life",sacred-geometry,650
+278,334,"Tree Of Life",sacred-geometry,650
+279,335,"Metatrons Cube",sacred-geometry,650
+280,336,"Sri Yantra",sacred-geometry,650
+281,338,"Golden Spiral",sacred-geometry,650
+282,339,"Fibonacci Spiral",sacred-geometry,650
+283,340,"Merkaba",sacred-geometry,650
+284,341,"Platonic Solids Nested",sacred-geometry,650
+285,342,"Fruit Of Life",sacred-geometry,650
+286,343,"Egg Of Life",sacred-geometry,650
+287,344,"Genesis Pattern",sacred-geometry,650
+288,345,"Torus Field",sacred-geometry,650
+289,346,"Vector Equilibrium",sacred-geometry,650
+290,347,"64 Tetrahedron Grid",sacred-geometry,650
+291,348,"Isotropic Vector Matrix",sacred-geometry,650
+292,349,"Jitterbug",sacred-geometry,650
+293,350,"Cubeoctahedron",sacred-geometry,650
+294,351,"Rhombic Dodecahedron",sacred-geometry,650
+295,352,"M Theory",theory-of-everything,999
+296,353,"String Theory",theory-of-everything,999
+297,354,"Loop Quantum Gravity Toe",theory-of-everything,999
+298,355,"E8 Theory",theory-of-everything,999
+299,356,"Causal Fermion System",theory-of-everything,999
+300,357,"Twistor Theory",theory-of-everything,999
+301,358,"Noncommutative Geometry",theory-of-everything,999
+302,359,"Causal Set Theory",theory-of-everything,999
+303,360,"Asymptotic Safety",theory-of-everything,999
+304,361,"Emergent Gravity",theory-of-everything,999
+305,362,"Entropic Gravity",theory-of-everything,999
+306,363,"Shape Dynamics",theory-of-everything,999
+307,364,"Relative Locality",theory-of-everything,999
+308,365,"Doubly Special Relativity",theory-of-everything,999
+309,366,"Deformed Special Relativity",theory-of-everything,999
+310,367,"Holographic Universe",theory-of-everything,999
+311,368,"Simulation Hypothesis",theory-of-everything,999
+312,369,"Mathematical Universe",theory-of-everything,999
+313,370,"It From Bit",theory-of-everything,999
+314,371,"Participatory Universe",theory-of-everything,999
+315,372,"Bubble Sort Viz",algorithms,800
+316,373,"Quick Sort Viz",algorithms,800
+317,374,"Merge Sort Viz",algorithms,800
+318,375,"Heap Sort Viz",algorithms,800
+319,376,"Radix Sort Viz",algorithms,800
+320,377,"Binary Search Tree",algorithms,800
+321,378,"Avl Tree",algorithms,800
+322,379,"Red Black Tree",algorithms,800
+323,380,"B Tree",algorithms,800
+324,381,"Trie",algorithms,800
+325,382,"Hash Table",algorithms,800
+326,383,"Bloom Filter",algorithms,800
+327,384,"Skip List",algorithms,800
+328,385,"Segment Tree",algorithms,800
+329,386,"Fenwick Tree",algorithms,800
+330,387,"Dijkstra Path",algorithms,800
+331,388,"Bellman Ford",algorithms,800
+332,389,"Floyd Warshall",algorithms,800
+333,390,"A Star Search",algorithms,800
+334,391,"Dfs Bfs Graph",algorithms,800
+335,392,"Root Chakra",chakras,500
+336,393,"Sacral Chakra",chakras,500
+337,394,"Solar Plexus Chakra",chakras,500
+338,395,"Heart Chakra",chakras,500
+339,396,"Throat Chakra",chakras,500
+340,397,"Third Eye Chakra",chakras,500
+341,398,"Crown Chakra",chakras,500
+342,399,"Kundalini Energy",chakras,500
+343,400,"Aura Field",chakras,500
+344,401,"Meridian System",chakras,500
+345,402,"Prana Vortex",chakras,500
+346,403,"Chi Flow",chakras,500
+347,404,"Energy Body",chakras,500
+348,405,"Subtle Body",chakras,500
+349,406,"Causal Body",chakras,500
+350,407,"Perceptron",neural-networks,850
+351,408,"Multilayer Perceptron",neural-networks,850
+352,409,"Convolutional Layer",neural-networks,850
+353,410,"Pooling Layer",neural-networks,850
+354,411,"Fully Connected",neural-networks,850
+355,412,"Recurrent Cell",neural-networks,850
+356,413,"Lstm Cell",neural-networks,850
+357,414,"Gru Cell",neural-networks,850
+358,416,"Transformer Block",neural-networks,850
+359,417,"Residual Block",neural-networks,850
+360,418,"Inception Module",neural-networks,850
+361,419,"Dense Block",neural-networks,850
+362,420,"Unet Architecture",neural-networks,850
+363,421,"Gan Generator",neural-networks,850
+364,422,"Autoencoder",neural-networks,850
+365,423,"Variational Autoencoder",neural-networks,850
+366,424,"Diffusion Model",neural-networks,850
+367,425,"Neural Ode",neural-networks,850
+368,426,"Graph Neural Network",neural-networks,850
+369,442,"Quantum Error Correction",quantum-computing,950
+370,443,"Surface Code",quantum-computing,950
+371,444,"Stabilizer State",quantum-computing,950
+372,445,"Magic State",quantum-computing,950
+373,446,"Quantum Supremacy",quantum-computing,950
+374,447,"Big Bang",cosmology,960
+375,448,"Cosmic Inflation",cosmology,960
+376,449,"Cmb Power Spectrum",cosmology,960
+377,450,"Baryon Acoustic Oscillations",cosmology,960
+378,451,"Dark Matter Halo",cosmology,960
+379,452,"Dark Energy Field",cosmology,960
+380,453,"Cosmic Web",cosmology,960
+381,454,"Galaxy Cluster",cosmology,960
+382,455,"Void Structure",cosmology,960
+383,456,"Filament Structure",cosmology,960
+384,457,"Hubble Expansion",cosmology,960
+385,458,"Cosmic Horizon",cosmology,960
+386,459,"Particle Horizon",cosmology,960
+387,460,"Event Horizon Cosmology",cosmology,960
+388,461,"Multiverse Bubble",cosmology,960
+389,462,"Eternal Inflation",cosmology,960
+390,463,"Cyclic Universe",cosmology,960
+391,464,"Big Bounce",cosmology,960
+392,465,"Big Rip",cosmology,960
+393,466,"Heat Death",cosmology,960
+394,467,"Schwarzschild Black Hole",black-holes,970
+395,469,"Reissner Nordstrom Bh",black-holes,970
+396,470,"Kerr Newman Bh",black-holes,970
+397,471,"Primordial Black Hole",black-holes,970
+398,472,"Stellar Black Hole",black-holes,970
+399,473,"Intermediate Black Hole",black-holes,970
+400,474,"Supermassive Black Hole",black-holes,970
+401,475,"Ultramassive Black Hole",black-holes,970
+402,476,"Hawking Radiation",black-holes,970
+403,477,"Accretion Disk",black-holes,970
+404,478,"Relativistic Jet",black-holes,970
+405,479,"Photon Sphere",black-holes,970
+406,480,"Innermost Stable Orbit",black-holes,970
+407,481,"Penrose Process",black-holes,970
+408,482,"Black Hole Merger",black-holes,970
+409,483,"Ringdown",black-holes,970
+410,484,"Quasi Normal Modes",black-holes,970
+411,485,"Information Paradox",black-holes,970
+412,486,"Firewall Paradox",black-holes,970
+413,487,"Mod 2 Binary",modulo-algorithms,760
+414,488,"Mod 3 Ternary",modulo-algorithms,760
+415,489,"Mod 5 Quinary",modulo-algorithms,760
+416,490,"Mod 6 Hexary",modulo-algorithms,760
+417,491,"Mod 7 Septenary",modulo-algorithms,760
+418,492,"Mod 8 Octal",modulo-algorithms,760
+419,493,"Mod 9 Nonary",modulo-algorithms,760
+420,494,"Mod 10 Decimal",modulo-algorithms,760
+421,495,"Mod 12 Duodecimal",modulo-algorithms,760
+422,496,"Mod 16 Hexadecimal",modulo-algorithms,760
+423,497,"Mod 60 Sexagesimal",modulo-algorithms,760
+424,498,"Mod 360 Degrees",modulo-algorithms,760
+425,499,"Chinese Remainder",modulo-algorithms,760
+426,500,"Fermat Little",modulo-algorithms,760
+427,501,"Euler Totient",modulo-algorithms,760
+428,502,"Quadratic Residue",modulo-algorithms,760
+429,503,"Legendre Symbol",modulo-algorithms,760
+430,504,"Jacobi Symbol",modulo-algorithms,760
+431,505,"Kronecker Symbol",modulo-algorithms,760
+432,506,"Primitive Root",modulo-algorithms,760
+433,507,"Sine Wave",wave-functions,870
+434,508,"Cosine Wave",wave-functions,870
+435,509,"Tangent Wave",wave-functions,870
+436,510,"Sawtooth Wave",wave-functions,870
+437,511,"Square Wave",wave-functions,870
+438,512,"Triangle Wave",wave-functions,870
+439,513,"Pulse Wave",wave-functions,870
+440,514,"Gaussian Wave",wave-functions,870
+441,515,"Soliton Wave",wave-functions,870
+442,516,"Standing Wave",wave-functions,870
+443,517,"Traveling Wave",wave-functions,870
+444,518,"Spherical Wave",wave-functions,870
+445,519,"Cylindrical Wave",wave-functions,870
+446,520,"Plane Wave",wave-functions,870
+447,521,"Wave Superposition",wave-functions,870
+448,522,"Wave Interference",wave-functions,870
+449,523,"Wave Diffraction",wave-functions,870
+450,524,"Wave Refraction",wave-functions,870
+451,525,"Wave Reflection",wave-functions,870
+452,526,"Wave Dispersion",wave-functions,870
+453,527,"Rank 0 Scalar",tensor-algebra,900
+454,528,"Rank 1 Vector",tensor-algebra,900
+455,529,"Rank 2 Matrix",tensor-algebra,900
+456,530,"Rank 3 Tensor",tensor-algebra,900
+457,531,"Rank 4 Tensor",tensor-algebra,900
+458,532,"Metric Tensor",tensor-algebra,900
+459,533,"Stress Energy Tensor",tensor-algebra,900
+460,534,"Electromagnetic Tensor",tensor-algebra,900
+461,535,"Riemann Curvature",tensor-algebra,900
+462,536,"Ricci Curvature",tensor-algebra,900
+463,537,"Christoffel Symbols",tensor-algebra,900
+464,538,"Covariant Derivative",tensor-algebra,900
+465,539,"Lie Derivative",tensor-algebra,900
+466,540,"Killing Vector",tensor-algebra,900
+467,541,"Geodesic Equation",tensor-algebra,900
+468,542,"Parallel Transport",tensor-algebra,900
+469,543,"Holonomy",tensor-algebra,900
+470,544,"Curvature 2 Form",tensor-algebra,900
+471,545,"Torsion Tensor",tensor-algebra,900
+472,546,"Contorsion Tensor",tensor-algebra,900
+473,547,"Scalar Field",field-theory,910
+474,548,"Vector Field",field-theory,910
+475,549,"Spinor Field",field-theory,910
+476,550,"Gauge Field",field-theory,910
+477,551,"Yang Mills Field",field-theory,910
+478,552,"Higgs Field",field-theory,910
+479,553,"Electromagnetic Field",field-theory,910
+480,554,"Gravitational Field",field-theory,910
+481,555,"Weak Field",field-theory,910
+482,556,"Strong Field",field-theory,910
+483,557,"Inflaton Field",field-theory,910
+484,558,"Quintessence Field",field-theory,910
+485,559,"Axion Field",field-theory,910
+486,560,"Dilaton Field",field-theory,910
+487,561,"Moduli Field",field-theory,910
+488,562,"Topological Field",field-theory,910
+489,563,"Conformal Field",field-theory,910
+490,564,"Chiral Field",field-theory,910
+491,565,"Supersymmetric Field",field-theory,910
+492,566,"String Field",field-theory,910
+493,567,"Empty Set",set-theory,750
+494,568,"Singleton Set",set-theory,750
+495,569,"Finite Set",set-theory,750
+496,570,"Infinite Set",set-theory,750
+497,571,"Countable Set",set-theory,750
+498,572,"Uncountable Set",set-theory,750
+499,573,"Union Venn",set-theory,750
+500,574,"Intersection Venn",set-theory,750
+501,575,"Difference Venn",set-theory,750
+502,576,"Complement Venn",set-theory,750
+503,577,"Subset Relation",set-theory,750
+504,578,"Proper Subset",set-theory,750
+505,579,"Power Set",set-theory,750
+506,580,"Cartesian Product",set-theory,750
+507,581,"Ordinal Number",set-theory,750
+508,582,"Cardinal Number",set-theory,750
+509,583,"Transfinite Ordinal",set-theory,750
+510,584,"Continuum Cardinality",set-theory,750
+511,585,"Axiom Of Choice",set-theory,750
+512,586,"Well Ordering",set-theory,750
+513,587,"Boltzmann Entropy",entropic-principles,880
+514,588,"Shannon Entropy",entropic-principles,880
+515,589,"Von Neumann Entropy",entropic-principles,880
+516,590,"Renyi Entropy",entropic-principles,880
+517,591,"Tsallis Entropy",entropic-principles,880
+518,592,"Thermodynamic Arrow",entropic-principles,880
+519,593,"Cosmological Arrow",entropic-principles,880
+520,594,"Psychological Arrow",entropic-principles,880
+521,595,"Radiative Arrow",entropic-principles,880
+522,596,"Quantum Arrow",entropic-principles,880
+523,597,"Entropy Production",entropic-principles,880
+524,598,"Maximum Entropy",entropic-principles,880
+525,599,"Minimum Entropy",entropic-principles,880
+526,600,"Entropy Gradient",entropic-principles,880
+527,601,"Entropy Fluctuation",entropic-principles,880
+528,602,"Information Entropy",entropic-principles,880
+529,603,"Entanglement Entropy",entropic-principles,880
+530,604,"Black Hole Entropy Viz",entropic-principles,880
+531,605,"Holographic Entropy",entropic-principles,880
+532,606,"Area Law",entropic-principles,880
+533,607,"Acas Beacon Primary",uuon-acas,920
+534,608,"Acas Beacon Secondary",uuon-acas,920
+535,609,"Acas Network Node",uuon-acas,920
+536,610,"Acas Grid Cell",uuon-acas,920
+537,611,"Acas Quantum State",uuon-acas,920
+538,612,"Uuon Foundation Logo",uuon-acas,920
+539,613,"Uuon Token Symbol",uuon-acas,920
+540,614,"Uuon Network Topology",uuon-acas,920
+541,615,"Uuon Consensus Mechanism",uuon-acas,920
+542,616,"Uuon Validator Node",uuon-acas,920
+543,617,"Acas Collision Avoidance",uuon-acas,920
+544,618,"Acas Trajectory Prediction",uuon-acas,920
+545,619,"Acas Resolution Advisory",uuon-acas,920
+546,620,"Acas Traffic Alert",uuon-acas,920
+547,621,"Acas Surveillance",uuon-acas,920
+548,622,"Uuon Smart Contract",uuon-acas,920
+549,623,"Uuon Governance Dao",uuon-acas,920
+550,624,"Quantum Kernel",quantum-machine-learning,960
+551,625,"Quantum Feature Map",quantum-machine-learning,960
+552,626,"Variational Circuit",quantum-machine-learning,960
+553,627,"Parametric Gate",quantum-machine-learning,960
+554,628,"Ansatz Layer",quantum-machine-learning,960
+555,629,"Quantum Classifier",quantum-machine-learning,960
+556,630,"Quantum Regressor",quantum-machine-learning,960
+557,631,"Quantum Autoencoder",quantum-machine-learning,960
+558,632,"Quantum Gan",quantum-machine-learning,960
+559,633,"Quantum Boltzmann",quantum-machine-learning,960
+560,634,"Barren Plateau",quantum-machine-learning,960
+561,635,"Expressibility",quantum-machine-learning,960
+562,636,"Entangling Capacity",quantum-machine-learning,960
+563,637,"Trainability",quantum-machine-learning,960
+564,638,"Quantum Advantage",quantum-machine-learning,960
+565,639,"Hybrid Classical Quantum",quantum-machine-learning,960
+566,640,"Noise Resilient Circuit",quantum-machine-learning,960
+567,641,"Error Mitigated Vqe",quantum-machine-learning,960
+568,642,"Quantum Natural Gradient",quantum-machine-learning,960
+569,643,"Quantum Fisher",quantum-machine-learning,960

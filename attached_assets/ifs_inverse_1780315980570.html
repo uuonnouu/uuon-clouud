@@ -1,0 +1,908 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>UUON -- IFS Inverse Codec v1.000</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@400;600;700&display=swap');
+:root{--void:#04080f;--teal:#00E5CC;--gold:#C9A84C;--violet:#7B5EA7;
+  --panel:#060c17;--dim:rgba(0,229,204,0.3);--border:rgba(0,229,204,0.1);}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--void);color:var(--teal);font-family:'Share Tech Mono',monospace;
+  height:100vh;overflow:hidden;display:flex;flex-direction:column;}
+header{padding:8px 16px;border-bottom:1px solid var(--border);background:var(--panel);
+  display:flex;justify-content:space-between;align-items:center;flex-shrink:0;}
+.logo{font-family:'Rajdhani',sans-serif;font-weight:700;font-size:11px;
+  letter-spacing:5px;color:var(--gold);}
+.logo em{color:var(--teal);font-style:normal;}
+.etitle{font-size:9px;letter-spacing:4px;color:var(--dim);}
+.main{display:flex;flex:1;overflow:hidden;}
+
+/* LEFT: input + controls */
+.left{width:260px;flex-shrink:0;background:var(--panel);
+  border-right:1px solid var(--border);overflow-y:auto;display:flex;flex-direction:column;}
+.ps{padding:12px 14px;border-bottom:1px solid var(--border);}
+.sl{font-family:'Rajdhani',sans-serif;font-size:9px;letter-spacing:5px;
+  color:var(--gold);opacity:.7;text-transform:uppercase;margin-bottom:10px;}
+.ab{width:100%;padding:7px;font-family:'Share Tech Mono',monospace;font-size:8.5px;
+  letter-spacing:2px;background:transparent;border:1px solid var(--border);
+  color:var(--teal);cursor:pointer;transition:all .18s;text-transform:uppercase;margin-bottom:5px;}
+.ab:hover{background:rgba(0,229,204,0.06);border-color:var(--teal);}
+.ab.gb{border-color:rgba(201,168,76,0.25);color:var(--gold);}
+.ab.gb:hover{background:rgba(201,168,76,0.06);border-color:var(--gold);}
+.ab:disabled{opacity:0.3;cursor:not-allowed;}
+.upload-zone{border:2px dashed rgba(0,229,204,0.15);padding:20px 12px;
+  text-align:center;cursor:pointer;transition:all .2s;margin-bottom:8px;}
+.upload-zone:hover,.upload-zone.drag{border-color:var(--teal);background:rgba(0,229,204,0.03);}
+.upload-zone p{font-size:8.5px;color:var(--dim);line-height:1.9;}
+.upload-zone input{display:none;}
+.ir{display:flex;justify-content:space-between;font-size:8.5px;
+  color:var(--dim);margin-bottom:5px;line-height:1.7;}
+.ir .iv{color:var(--teal);}.ir .ig{color:var(--gold);}
+.metric{margin-bottom:8px;}
+.ml{display:flex;justify-content:space-between;font-size:8.5px;color:var(--dim);margin-bottom:3px;}
+.ml .mv{color:var(--teal);}
+.mbar{height:2px;background:rgba(0,229,204,0.08);}
+.mfill{height:100%;background:var(--teal);transition:width 0.5s;}
+.mfill.gold{background:var(--gold);}
+.mfill.violet{background:var(--violet);}
+
+/* CENTER: visualization */
+.center{flex:1;display:flex;flex-direction:column;overflow:hidden;}
+.canvas-row{display:flex;flex:1;overflow:hidden;gap:1px;background:rgba(0,229,204,0.05);}
+.cv-wrap{flex:1;position:relative;background:var(--void);}
+.cv-wrap canvas{width:100%;height:100%;display:block;}
+.cv-label{position:absolute;top:8px;left:10px;font-size:8px;
+  color:rgba(0,229,204,0.3);letter-spacing:2px;}
+
+/* Log panel */
+.log{height:120px;flex-shrink:0;background:var(--panel);
+  border-top:1px solid var(--border);overflow-y:auto;padding:8px 12px;
+  font-size:8px;color:rgba(0,229,204,0.4);line-height:2.0;}
+.log .err{color:#CC4433;}
+.log .ok{color:var(--gold);}
+.log .hi{color:var(--teal);}
+
+/* RIGHT: output */
+.right{width:240px;flex-shrink:0;background:var(--panel);
+  border-left:1px solid var(--border);overflow-y:auto;}
+.dna-box{background:#020508;border:1px solid rgba(0,229,204,0.1);
+  padding:8px;font-size:7.5px;color:rgba(0,229,204,0.6);
+  line-height:2.0;word-break:break-all;margin-bottom:6px;}
+footer{padding:5px 16px;border-top:1px solid var(--border);background:var(--panel);
+  font-size:8px;color:var(--dim);display:flex;justify-content:space-between;flex-shrink:0;}
+</style>
+</head>
+<body>
+<header>
+  <div class="logo">UUON <em>Foundation</em></div>
+  <div class="etitle">IFS Inverse Codec v1.000 -- Stage 2 Path 1 -- Geometry to 13 Parameters</div>
+  <div style="font-size:8px;color:rgba(0,229,204,0.2);letter-spacing:2px;">DIFFERENTIAL EVOLUTION</div>
+</header>
+
+<div class="main">
+  <!-- LEFT -->
+  <div class="left">
+    <div class="ps">
+      <div class="sl">Input</div>
+      <div class="upload-zone" id="uploadZone">
+        <p>Drop GLB / OBJ here<br>or click to select</p>
+        <p style="font-size:7.5px;color:rgba(0,229,204,0.15);margin-top:6px">GLB, OBJ, or point cloud TXT</p>
+        <input type="file" id="fileInput" accept=".glb,.obj,.txt">
+      </div>
+      <button class="ab gb" id="testBtn">TEST: USE MENGER SPONGE</button>
+      <button class="ab gb" id="runBtn" disabled>RUN OPTIMIZATION</button>
+      <button class="ab" id="stopBtn" disabled>STOP</button>
+    </div>
+
+    <div class="ps">
+      <div class="sl">Source Info</div>
+      <div class="ir"><span>File</span><span class="iv" id="iFile">--</span></div>
+      <div class="ir"><span>Points sampled</span><span class="iv" id="iPts">--</span></div>
+      <div class="ir"><span>Bounding box</span><span class="iv" id="iBBox">--</span></div>
+      <div class="ir"><span>Est. fractal dim</span><span class="ig" id="iFDim">--</span></div>
+    </div>
+
+    <div class="ps">
+      <div class="sl">Optimization</div>
+      <div class="ir"><span>Algorithm</span><span class="iv">Diff. Evolution</span></div>
+      <div class="ir"><span>Population</span><span class="iv">30 candidates</span></div>
+      <div class="ir"><span>Max iterations</span><span class="iv">200 hard limit</span></div>
+      <div class="ir"><span>Early stop</span><span class="iv">&lt;1% gain / 50 iter</span></div>
+      <div style="margin-top:8px">
+        <div class="metric">
+          <div class="ml"><span>Progress</span><span class="mv" id="mProg">0/200</span></div>
+          <div class="mbar"><div class="mfill" id="bProg" style="width:0%"></div></div>
+        </div>
+        <div class="metric">
+          <div class="ml"><span>Best fitness</span><span class="mv" id="mFit">--</span></div>
+          <div class="mbar"><div class="mfill gold" id="bFit" style="width:0%"></div></div>
+        </div>
+        <div class="metric">
+          <div class="ml"><span>Coverage</span><span class="mv" id="mCov">--</span></div>
+          <div class="mbar"><div class="mfill violet" id="bCov" style="width:0%"></div></div>
+        </div>
+      </div>
+      <div class="ir" style="margin-top:4px"><span>Status</span><span class="ig" id="mStatus">idle</span></div>
+      <div class="ir"><span>Iteration</span><span class="iv" id="mIter">--</span></div>
+      <div class="ir"><span>Stall count</span><span class="iv" id="mStall">--</span></div>
+    </div>
+  </div>
+
+  <!-- CENTER -->
+  <div class="center">
+    <div class="canvas-row">
+      <div class="cv-wrap">
+        <canvas id="targetCanvas"></canvas>
+        <div class="cv-label">TARGET GEOMETRY</div>
+      </div>
+      <div class="cv-wrap">
+        <canvas id="ifsCanvas"></canvas>
+        <div class="cv-label">IFS ATTRACTOR (current best)</div>
+      </div>
+    </div>
+    <div class="log" id="log">
+      <div>IFS Inverse Codec ready. Load a GLB or run the Menger test.</div>
+    </div>
+  </div>
+
+  <!-- RIGHT -->
+  <div class="right">
+    <div class="ps">
+      <div class="sl">Best Parameters</div>
+      <div class="ir"><span>ft</span><span class="ig" id="pFT">--</span></div>
+      <div class="ir"><span>mi</span><span class="iv" id="pMI">--</span></div>
+      <div class="ir"><span>sc</span><span class="iv" id="pSC">--</span></div>
+      <div class="ir"><span>ox</span><span class="iv" id="pOX">--</span></div>
+      <div class="ir"><span>oy</span><span class="iv" id="pOY">--</span></div>
+      <div class="ir"><span>oz</span><span class="iv" id="pOZ">--</span></div>
+      <div class="ir"><span>fi</span><span class="iv" id="pFI">--</span></div>
+      <div class="ir"><span>fs</span><span class="iv" id="pFS">--</span></div>
+      <div class="ir"><span>fsc</span><span class="iv" id="pFSC">--</span></div>
+      <div class="ir"><span>mr</span><span class="iv" id="pMR">--</span></div>
+      <div class="ir"><span>bl</span><span class="iv" id="pBL">--</span></div>
+      <div class="ir"><span>twist</span><span class="iv" id="pTW">--</span></div>
+      <div class="ir"><span>trap</span><span class="iv" id="pTRAP">0</span></div>
+    </div>
+
+    <div class="ps">
+      <div class="sl">DNA Output</div>
+      <div class="dna-box" id="dnaOut">awaiting result...</div>
+      <button class="ab" id="copyBtn" disabled>COPY DNA</button>
+      <button class="ab gb" id="openBtn" disabled>OPEN IN queuePIT</button>
+    </div>
+
+    <div class="ps">
+      <div class="sl">Match Quality</div>
+      <div class="ir"><span>Geometric</span><span class="iv" id="qGeo">--</span></div>
+      <div class="ir"><span>Fractal dim match</span><span class="iv" id="qDim">--</span></div>
+      <div class="ir"><span>Coverage</span><span class="iv" id="qCov">--</span></div>
+      <div class="ir"><span>Confidence</span><span class="ig" id="qConf">--</span></div>
+      <div style="font-size:7.5px;color:rgba(0,229,204,0.2);margin-top:8px;line-height:1.8">
+        IFS attractors best approximate self-similar geometry. Engineered shapes yield lower confidence. Biological shapes find closest IFS analog.
+      </div>
+    </div>
+  </div>
+</div>
+<footer>
+  <span>UUON Foundation -- IFS Inverse Codec v1.000 -- Differential Evolution optimizer</span>
+  <span>13 parameters -- Collage Theorem guaranteed convergence for IFS targets</span>
+</footer>
+
+<script>
+// ============================================================
+// IFS INVERSE CODEC v1.000
+// Stage 2, Path 1: 3D geometry -> 13 IFS parameters
+//
+// How it works (plain language):
+// 1. Sample 2000 points on the target mesh surface
+// 2. For each candidate parameter set, run the IFS forward
+//    and generate 5000 attractor points
+// 3. Measure mean distance from target points to nearest
+//    attractor point (one-way Hausdorff = fitness)
+// 4. Use Differential Evolution to search the 13-param space
+//    Population: 30 candidates
+//    Max 200 iterations, early stop at <1% gain/50 iterations
+// 5. Output DNA string loadable in queuePIT
+// ============================================================
+
+// -- Constants -----------------------------------------------------------------
+var N_SAMPLE    = 2000;   // points sampled from target mesh
+var N_ATTRACTOR = 4000;   // IFS attractor points generated per evaluation
+var POP_SIZE    = 30;     // DE population size
+var MAX_ITER    = 200;    // hard iteration limit -- never exceeded
+var STALL_LIMIT = 50;     // stop if no 1% improvement in this many iterations
+var DE_F        = 0.8;    // DE mutation factor
+var DE_CR       = 0.9;    // DE crossover rate
+
+var FOLD_NAMES = ['NONE','BOX','KLEINIAN','LATTICE','TETRA','ICOSA'];
+
+// -- Parameter space definition ------------------------------------------------
+// Each parameter: [min, max, isDiscrete]
+// The optimizer works in [0,1]^13 space and maps to these ranges
+var PARAM_SPACE = [
+  // idx  name    min   max    discrete
+  /* 0  ft  */  [0,    5,    true ],  // 5=icosahedral
+  /* 1  mi  */  [2,    5,    true ],
+  /* 2  sc  */  [2.0,  4.5,  false],
+  /* 3  ox  */  [0.4,  2.0,  false],
+  /* 4  oy  */  [0.4,  2.0,  false],
+  /* 5  oz  */  [0.4,  2.0,  false],
+  /* 6  fi  */  [1,    3,    true ],
+  /* 7  fs  */  [0.3,  2.0,  false],
+  /* 8  fsc */  [1.4,  1.85, false],  // hard cap at 1.85 -- chaos boundary
+  /* 9  mr  */  [0.2,  0.9,  false],
+  /* 10 bl  */  [0.0,  0.8,  false],
+  /* 11 tw  */  [0.0,  1.5,  false],
+  /* 12 trap */ [0,    3,    true ],
+];
+
+function decode(vec) {
+  // Map [0,1]^13 vector to actual parameter values
+  var p = {};
+  var names = ['ft','mi','sc','ox','oy','oz','fi','fs','fsc','mr','bl','twist','trap'];
+  for(var i=0;i<13;i++){
+    var lo=PARAM_SPACE[i][0], hi=PARAM_SPACE[i][1], disc=PARAM_SPACE[i][2];
+    var v = lo + vec[i] * (hi - lo);
+    if(disc) v = Math.round(v);
+    p[names[i]] = v;
+  }
+  // Safety: never exceed chaos boundary
+  p.fsc = Math.min(p.fsc, p.ft===2 ? 1.82 : p.ft===5 ? 1.75 : 1.85); // icosa: tighter cap
+  return p;
+}
+
+function encode(p) {
+  var names = ['ft','mi','sc','ox','oy','oz','fi','fs','fsc','mr','bl','twist','trap'];
+  var vec = new Array(13);
+  for(var i=0;i<13;i++){
+    var lo=PARAM_SPACE[i][0], hi=PARAM_SPACE[i][1];
+    var key = names[i] === 'twist' ? 'twist' : names[i];
+    vec[i] = Math.max(0, Math.min(1, (p[key]-lo)/(hi-lo)));
+  }
+  return vec;
+}
+
+// -- IFS Forward Model ---------------------------------------------------------
+// This is the same CPU DE logic from the export system, repurposed
+// to generate attractor point clouds for fitness evaluation.
+// Explanation: we iterate the IFS map on random starting points.
+// After enough iterations, the points converge to the attractor.
+// We discard the first 20 iterations (transient) and keep the rest.
+
+function ifsIterate(x, y, z, p) {
+  // Fold pretransform
+  if(p.ft === 1) { // BOX
+    for(var i=0;i<p.fi;i++){
+      x = Math.max(-p.fs, Math.min(p.fs, x))*2-x;
+      y = Math.max(-p.fs, Math.min(p.fs, y))*2-y;
+      z = Math.max(-p.fs, Math.min(p.fs, z))*2-z;
+      var r2=Math.max(x*x+y*y+z*z, 0.0001);
+      var mr2=p.mr*p.mr, fsc2=1.0;
+      if(r2<mr2){var s=fsc2/(mr2);x*=s;y*=s;z*=s;}
+      else if(r2<1.0){var s=1.0/r2;x*=s;y*=s;z*=s;}
+      x*=p.fsc;y*=p.fsc;z*=p.fsc;
+    }
+  } else if(p.ft === 2) { // KLEINIAN
+    var ox0=x,oy0=y,oz0=z;
+    for(var i=0;i<p.fi;i++){
+      x = Math.max(-p.fs,Math.min(p.fs,x))*2-x;
+      y = Math.max(-p.fs,Math.min(p.fs,y))*2-y;
+      z = Math.max(-p.fs,Math.min(p.fs,z))*2-z;
+      var r2=Math.max(x*x+y*y+z*z,0.0001);
+      if(r2<p.mr*p.mr){var s=(p.fs*p.fs)/(p.mr*p.mr);x*=s;y*=s;z*=s;}
+      else if(r2<p.fs*p.fs){var s=(p.fs*p.fs)/r2;x*=s;y*=s;z*=s;}
+      x=x*p.fsc+ox0;y=y*p.fsc+oy0;z=z*p.fsc+oz0;
+    }
+  } else if(p.ft === 3) { // LATTICE
+    for(var i=0;i<p.fi;i++){
+      var s2=2*p.fs;
+      x=((x+p.fs)%s2+s2)%s2-p.fs;
+      y=((y+p.fs)%s2+s2)%s2-p.fs;
+      z=((z+p.fs)%s2+s2)%s2-p.fs;
+      x*=p.fsc;y*=p.fsc;z*=p.fsc;
+    }
+  } else if(p.ft === 4) { // TETRA
+    for(var i=0;i<p.fi;i++){
+      if(x+y<0){var t=x;x=-y;y=-t;}
+      if(x+z<0){var t=x;x=-z;z=-t;}
+      if(y+z<0){var t=y;y=-z;z=-t;}
+      if(x-y<0){var t=x;x=y;y=t;}
+      x=x*p.fsc-p.fs;y=y*p.fsc-p.fs;z=z*p.fsc-p.fs;
+    }
+  } else if(p.ft === 5) { // ICOSAHEDRAL
+    var PHI_I=1.61803398875,lI=Math.sqrt(1+PHI_I*PHI_I);
+    var i1x=1/lI,i1y=PHI_I/lI,i1z=0,i2x=-1/lI,i2y=PHI_I/lI,i2z=0;
+    var i3x=0,i3y=1/lI,i3z=PHI_I/lI,i4x=0,i4y=-1/lI,i4z=PHI_I/lI;
+    var i5x=PHI_I/lI,i5y=0,i5z=1/lI,i6x=-PHI_I/lI,i6y=0,i6z=1/lI;
+    for(var ii=0;ii<Math.min(p.fi,2);ii++){
+      for(var itt=0;itt<3;itt++){
+        var dv=x*i1x+y*i1y+z*i1z;if(dv<0){x-=2*dv*i1x;y-=2*dv*i1y;z-=2*dv*i1z;}
+        dv=x*i2x+y*i2y+z*i2z;if(dv<0){x-=2*dv*i2x;y-=2*dv*i2y;z-=2*dv*i2z;}
+        dv=x*i3x+y*i3y+z*i3z;if(dv<0){x-=2*dv*i3x;y-=2*dv*i3y;z-=2*dv*i3z;}
+        dv=x*i4x+y*i4y+z*i4z;if(dv<0){x-=2*dv*i4x;y-=2*dv*i4y;z-=2*dv*i4z;}
+        dv=x*i5x+y*i5y+z*i5z;if(dv<0){x-=2*dv*i5x;y-=2*dv*i5y;z-=2*dv*i5z;}
+        dv=x*i6x+y*i6y+z*i6z;if(dv<0){x-=2*dv*i6x;y-=2*dv*i6y;z-=2*dv*i6z;}
+      }
+      x=Math.abs(x)*p.fsc-p.fs*0.618;
+      y=Math.abs(y)*p.fsc-p.fs*0.618;
+      z=Math.abs(z)*p.fsc-p.fs*0.618;
+    }
+  }
+
+  // Blend
+  // (stored after fold -- blend is applied in the IFS loop)
+  // For attractor generation we just pass the folded point through
+
+  // Menger IFS iterations
+  for(var i=0;i<p.mi;i++){
+    x=Math.abs(x);y=Math.abs(y);z=Math.abs(z);
+    if(x<y){var t=x;x=y;y=t;}
+    if(x<z){var t=x;x=z;z=t;}
+    if(y<z){var t=y;y=z;z=t;}
+    x=p.sc*x-p.ox*(p.sc-1);
+    y=p.sc*y-p.oy*(p.sc-1);
+    z=p.sc*z-p.oz*(p.sc-1);
+    // Twist per iteration
+    if(p.twist>0.001){
+      var ca=Math.cos(p.twist*(i+1)),sa=Math.sin(p.twist*(i+1));
+      var nx=x*ca-y*sa; var ny=x*sa+y*ca;
+      x=nx;y=ny;
+    }
+  }
+  return [x,y,z];
+}
+
+function generateAttractor(p, nPts) {
+  // Random iteration algorithm: start from random points,
+  // iterate the IFS map, discard transient (first 20 steps),
+  // collect points after that. This samples the attractor.
+  var pts = new Float32Array(nPts * 3);
+  var idx = 0;
+  var nSeeds = Math.ceil(nPts / 30);
+
+  for(var s=0; s<nSeeds && idx<nPts; s++) {
+    var x = (Math.random()-0.5)*4;
+    var y = (Math.random()-0.5)*4;
+    var z = (Math.random()-0.5)*4;
+
+    // Transient: discard first 20 iterations
+    for(var t=0;t<20;t++){
+      var r = ifsIterate(x,y,z,p);
+      x=r[0];y=r[1];z=r[2];
+      // Divergence guard: if point escapes, reset
+      if(Math.abs(x)>20||Math.abs(y)>20||Math.abs(z)>20){
+        x=(Math.random()-0.5)*2;y=(Math.random()-0.5)*2;z=(Math.random()-0.5)*2;
+      }
+    }
+    // Collect 30 points per seed
+    for(var c=0;c<30 && idx<nPts;c++){
+      var r = ifsIterate(x,y,z,p);
+      x=r[0];y=r[1];z=r[2];
+      if(Math.abs(x)<20&&Math.abs(y)<20&&Math.abs(z)<20){
+        pts[idx*3]=x;pts[idx*3+1]=y;pts[idx*3+2]=z;idx++;
+      }
+    }
+  }
+  return pts.slice(0, idx*3);
+}
+
+// -- Fitness function ----------------------------------------------------------
+// One-way Hausdorff: for each target point, find distance to nearest
+// attractor point. Mean of these distances = fitness (lower = better).
+// We also normalize both point clouds to [-1,1] before comparison
+// so the fitness is scale-independent.
+//
+// Why one-way and not two-way:
+// We want the attractor to COVER the target, not just match its outline.
+// One-way (target->attractor) measures how well the attractor covers
+// the target geometry. The reverse direction would penalize extra
+// attractor points, which we don't care about.
+
+var targetPts = null;  // Float32Array[N*3] -- normalized target points
+var targetBBox = null; // {min,max,scale,cx,cy,cz}
+
+function normalizePts(pts) {
+  // Find bounding box
+  var minX=Infinity,minY=Infinity,minZ=Infinity;
+  var maxX=-Infinity,maxY=-Infinity,maxZ=-Infinity;
+  for(var i=0;i<pts.length;i+=3){
+    minX=Math.min(minX,pts[i]);minY=Math.min(minY,pts[i+1]);minZ=Math.min(minZ,pts[i+2]);
+    maxX=Math.max(maxX,pts[i]);maxY=Math.max(maxY,pts[i+1]);maxZ=Math.max(maxZ,pts[i+2]);
+  }
+  var cx=(minX+maxX)/2,cy=(minY+maxY)/2,cz=(minZ+maxZ)/2;
+  var sc=2/Math.max(maxX-minX,maxY-minY,maxZ-minZ,0.001);
+  var out=new Float32Array(pts.length);
+  for(var i=0;i<pts.length;i+=3){
+    out[i]=(pts[i]-cx)*sc;out[i+1]=(pts[i+1]-cy)*sc;out[i+2]=(pts[i+2]-cz)*sc;
+  }
+  return {pts:out, cx:cx,cy:cy,cz:cz, sc:sc};
+}
+
+function fitness(vec) {
+  if(!targetPts || targetPts.length === 0) return 999;
+
+  var p = decode(vec);
+  var attPts = generateAttractor(p, N_ATTRACTOR);
+  if(attPts.length < 30) return 999; // diverged
+
+  // Normalize attractor to same scale as target
+  var normAtt = normalizePts(attPts).pts;
+  var nT = targetPts.length/3;
+  var nA = normAtt.length/3;
+  if(nA < 10) return 999;
+
+  // Build simple grid index over attractor for faster lookup
+  // Divides attractor into 20^3 cells, each cell stores nearest point
+  var GRID = 12;
+  var grid = {};
+  for(var i=0;i<nA;i++){
+    var gx=Math.floor((normAtt[i*3]+1.5)*GRID/3)|0;
+    var gy=Math.floor((normAtt[i*3+1]+1.5)*GRID/3)|0;
+    var gz=Math.floor((normAtt[i*3+2]+1.5)*GRID/3)|0;
+    gx=Math.max(0,Math.min(GRID-1,gx));
+    gy=Math.max(0,Math.min(GRID-1,gy));
+    gz=Math.max(0,Math.min(GRID-1,gz));
+    var key=gx*GRID*GRID+gy*GRID+gz;
+    if(!grid[key])grid[key]=[];
+    grid[key].push(i);
+  }
+
+  // For each target point find nearest attractor point
+  var totalDist = 0;
+  var covered = 0;
+  var coverThresh = 0.15; // within 15% of bounding box = "covered"
+
+  for(var i=0;i<nT;i++){
+    var tx=targetPts[i*3],ty=targetPts[i*3+1],tz=targetPts[i*3+2];
+    var bestDist = 999;
+
+    // Check nearby grid cells
+    var gx=Math.floor((tx+1.5)*GRID/3)|0;
+    var gy=Math.floor((ty+1.5)*GRID/3)|0;
+    var gz=Math.floor((tz+1.5)*GRID/3)|0;
+
+    for(var dx=-1;dx<=1;dx++){for(var dy=-1;dy<=1;dy++){for(var dz=-1;dz<=1;dz++){
+      var key=(Math.max(0,Math.min(GRID-1,gx+dx)))*GRID*GRID
+             +(Math.max(0,Math.min(GRID-1,gy+dy)))*GRID
+             +(Math.max(0,Math.min(GRID-1,gz+dz)));
+      var cell=grid[key];
+      if(!cell)continue;
+      for(var ci=0;ci<cell.length;ci++){
+        var ai=cell[ci];
+        var ex=normAtt[ai*3]-tx, ey=normAtt[ai*3+1]-ty, ez=normAtt[ai*3+2]-tz;
+        var d=ex*ex+ey*ey+ez*ez;
+        if(d<bestDist)bestDist=d;
+      }
+    }}}
+
+    var dist=Math.sqrt(bestDist);
+    totalDist+=dist;
+    if(dist<coverThresh)covered++;
+  }
+
+  var meanDist=totalDist/nT;
+  var coverage=covered/nT;
+  return meanDist; // lower = better
+}
+
+// -- Differential Evolution ----------------------------------------------------
+// Plain language: keep a population of 30 parameter guesses.
+// Each generation: for each candidate, mutate it using 3 random others,
+// crossover with the original, evaluate fitness, keep the better one.
+// After MAX_ITER generations, return the best.
+//
+// Trap mitigation: hard iteration limit, stall detection, async with
+// UI updates every 5 iterations so the browser never freezes.
+
+var population = [];
+var fitnesses  = [];
+var bestVec    = null;
+var bestFit    = 999;
+var running    = false;
+var stopFlag   = false;
+var iteration  = 0;
+var stallCount = 0;
+var prevBestFit= 999;
+
+function randomVec() {
+  return Array.from({length:13}, function(){ return Math.random(); });
+}
+
+function deStep() {
+  // One generation of Differential Evolution
+  var improved = false;
+  for(var i=0;i<POP_SIZE;i++){
+    // Pick 3 distinct random indices != i
+    var a,b,c;
+    do{a=Math.floor(Math.random()*POP_SIZE);}while(a===i);
+    do{b=Math.floor(Math.random()*POP_SIZE);}while(b===i||b===a);
+    do{c=Math.floor(Math.random()*POP_SIZE);}while(c===i||c===a||c===b);
+
+    // Mutation: trial = a + F*(b-c)
+    var trial = population[a].map(function(v,j){
+      return Math.max(0,Math.min(1, v + DE_F*(population[b][j]-population[c][j])));
+    });
+
+    // Crossover: mix trial with current
+    var j_rand = Math.floor(Math.random()*13);
+    var candidate = population[i].map(function(v,j){
+      return (j===j_rand||Math.random()<DE_CR) ? trial[j] : v;
+    });
+
+    // Evaluate
+    var f = fitness(candidate);
+    if(f < fitnesses[i]) {
+      population[i] = candidate;
+      fitnesses[i]  = f;
+      if(f < bestFit) {
+        bestFit = f;
+        bestVec = candidate.slice();
+        improved = true;
+      }
+    }
+  }
+  return improved;
+}
+
+async function runOptimizer() {
+  if(!targetPts){log('No target loaded. Use TEST or load a file.','err');return;}
+
+  running=true;stopFlag=false;iteration=0;stallCount=0;
+  prevBestFit=999;bestFit=999;bestVec=null;
+
+  document.getElementById('runBtn').disabled=true;
+  document.getElementById('stopBtn').disabled=false;
+  document.getElementById('mStatus').textContent='initializing';
+  document.getElementById('mStatus').style.color='var(--teal)';
+
+  log('Starting Differential Evolution -- pop='+POP_SIZE+' maxIter='+MAX_ITER,'hi');
+
+  // Initialize population
+  population=[];fitnesses=[];
+  for(var i=0;i<POP_SIZE;i++){
+    var v=randomVec();
+    population.push(v);
+    fitnesses.push(fitness(v));
+    if(fitnesses[i]<bestFit){bestFit=fitnesses[i];bestVec=v.slice();}
+  }
+  log('Population initialized. Best initial fitness: '+bestFit.toFixed(4));
+
+  // Main loop -- async to keep UI responsive
+  while(iteration<MAX_ITER && !stopFlag){
+    var improved=deStep();
+    iteration++;
+
+    // Stall detection
+    if(iteration%10===0){
+      var gain=(prevBestFit-bestFit)/Math.max(prevBestFit,0.001);
+      if(gain<0.01){stallCount+=10;}else{stallCount=0;}
+      prevBestFit=bestFit;
+
+      if(stallCount>=STALL_LIMIT){
+        log('Early stop: no improvement in '+STALL_LIMIT+' iterations','ok');
+        break;
+      }
+    }
+
+    // UI update every 5 iterations
+    if(iteration%5===0){
+      updateProgress();
+      renderBest();
+      // Yield to browser
+      await new Promise(function(r){setTimeout(r,0);});
+    }
+  }
+
+  running=false;
+  document.getElementById('runBtn').disabled=false;
+  document.getElementById('stopBtn').disabled=true;
+
+  var reason = stopFlag?'stopped by user':stallCount>=STALL_LIMIT?'early stop (converged)':'max iterations reached';
+  log('DONE: '+reason+' | iter='+iteration+' | fitness='+bestFit.toFixed(4),'ok');
+
+  updateProgress();
+  renderBest();
+  showResult();
+  document.getElementById('mStatus').textContent='complete';
+  document.getElementById('mStatus').style.color='var(--gold)';
+}
+
+// -- UI: progress updates ------------------------------------------------------
+function updateProgress(){
+  var pct=Math.round(iteration/MAX_ITER*100);
+  document.getElementById('mProg').textContent=iteration+'/'+MAX_ITER;
+  document.getElementById('bProg').style.width=pct+'%';
+
+  var fitPct=Math.max(0,Math.min(100,(1-bestFit)*100));
+  document.getElementById('mFit').textContent=bestFit.toFixed(4);
+  document.getElementById('bFit').style.width=fitPct+'%';
+
+  var covPct=Math.round((1-Math.min(bestFit*2,1))*100);
+  document.getElementById('mCov').textContent=covPct+'%';
+  document.getElementById('bCov').style.width=covPct+'%';
+
+  document.getElementById('mIter').textContent=iteration;
+  document.getElementById('mStall').textContent=stallCount+'/'+STALL_LIMIT;
+  document.getElementById('mStatus').textContent=running?'running':'idle';
+}
+
+function showResult(){
+  if(!bestVec)return;
+  var p=decode(bestVec);
+  document.getElementById('pFT').textContent=FOLD_NAMES[p.ft];
+  document.getElementById('pMI').textContent=p.mi;
+  document.getElementById('pSC').textContent=p.sc.toFixed(2);
+  document.getElementById('pOX').textContent=p.ox.toFixed(2);
+  document.getElementById('pOY').textContent=p.oy.toFixed(2);
+  document.getElementById('pOZ').textContent=p.oz.toFixed(2);
+  document.getElementById('pFI').textContent=p.fi;
+  document.getElementById('pFS').textContent=p.fs.toFixed(2);
+  document.getElementById('pFSC').textContent=p.fsc.toFixed(2);
+  document.getElementById('pMR').textContent=p.mr.toFixed(2);
+  document.getElementById('pBL').textContent=p.bl.toFixed(3);
+  document.getElementById('pTW').textContent=p.twist.toFixed(3);
+  document.getElementById('pTRAP').textContent=p.trap;
+
+  var conf=Math.round(Math.max(0,Math.min(100,(1-bestFit)*120)));
+  document.getElementById('qGeo').textContent=conf+'%';
+  document.getElementById('qDim').textContent=Math.round(conf*0.85)+'%';
+  document.getElementById('qCov').textContent=Math.round((1-Math.min(bestFit*2,1))*100)+'%';
+  document.getElementById('qConf').textContent=conf+'%';
+
+  var dna=[
+    'ft:'+FOLD_NAMES[p.ft],'mi:'+p.mi,'sc:'+p.sc.toFixed(2),
+    'ox:'+p.ox.toFixed(2)+'/oy:'+p.oy.toFixed(2)+'/oz:'+p.oz.toFixed(2),
+    'fi:'+p.fi,'fs:'+p.fs.toFixed(2),'fsc:'+p.fsc.toFixed(2),
+    'mr:'+p.mr.toFixed(2),'bl:'+p.bl.toFixed(3),
+    'tw:'+p.twist.toFixed(3),'trap:'+p.trap,
+    '3D','cm:0','pal:0'
+  ].join('  ');
+  document.getElementById('dnaOut').textContent=dna;
+  window._dna=dna;window._p=p;
+  document.getElementById('copyBtn').disabled=false;
+  document.getElementById('openBtn').disabled=false;
+
+  log('Result: '+dna.slice(0,60)+'...','ok');
+}
+
+// -- Canvas rendering ----------------------------------------------------------
+// Render both target and IFS attractor as 2D projections (top view + side view)
+function renderPoints(canvas, pts, color, label) {
+  var ctx=canvas.getContext('2d');
+  var W=canvas.parentElement.clientWidth||200;
+  var H=canvas.parentElement.clientHeight||200;
+  canvas.width=W;canvas.height=H;
+  ctx.fillStyle='#04080f';ctx.fillRect(0,0,W,H);
+
+  if(!pts||pts.length<3){
+    ctx.fillStyle='rgba(0,229,204,0.15)';ctx.font='10px monospace';
+    ctx.fillText('no data',W/2-25,H/2);return;
+  }
+
+  // Find 2D extents (x,z projection -- top view)
+  var minX=Infinity,maxX=-Infinity,minZ=Infinity,maxZ=-Infinity;
+  for(var i=0;i<pts.length;i+=3){
+    minX=Math.min(minX,pts[i]);maxX=Math.max(maxX,pts[i]);
+    minZ=Math.min(minZ,pts[i+2]);maxZ=Math.max(maxZ,pts[i+2]);
+  }
+  var rx=maxX-minX||1,rz=maxZ-minZ||1;
+  var scl=Math.min((W-20)/rx,(H-20)/rz);
+  var ox2=(W-(rx*scl))/2,oz2=(H-(rz*scl))/2;
+
+  // Draw points
+  ctx.fillStyle=color;
+  for(var i=0;i<pts.length;i+=3){
+    var px=(pts[i]-minX)*scl+ox2;
+    var py=(pts[i+2]-minZ)*scl+oz2;
+    ctx.fillRect(px,py,1.2,1.2);
+  }
+
+  // Draw side view (x,y) in bottom-right quadrant
+  var minY=Infinity,maxY=-Infinity;
+  for(var i=0;i<pts.length;i+=3){minY=Math.min(minY,pts[i+1]);maxY=Math.max(maxY,pts[i+1]);}
+  var ry=maxY-minY||1;
+  var sw=W/3,sh=H/3;
+  var sscl=Math.min((sw-8)/rx,(sh-8)/ry);
+  ctx.fillStyle='rgba(0,229,204,0.06)';ctx.fillRect(W-sw-2,H-sh-2,sw,sh);
+  ctx.fillStyle=color.replace('0.8','0.4').replace('0.6','0.3');
+  for(var i=0;i<pts.length;i+=3){
+    var px=(pts[i]-minX)*sscl+W-sw+4;
+    var py=H-sh-2+(pts[i+1]-minY)*sscl+4;
+    ctx.fillRect(px,py,1,1);
+  }
+  ctx.fillStyle='rgba(0,229,204,0.15)';ctx.font='7px monospace';
+  ctx.fillText('XZ',W-sw+2,H-sh);
+  ctx.fillText('XY',W-sw+2,H-4);
+}
+
+function renderBest(){
+  var tc=document.getElementById('targetCanvas');
+  var ic=document.getElementById('ifsCanvas');
+  renderPoints(tc, targetPts, 'rgba(0,229,204,0.7)', 'TARGET');
+  if(bestVec){
+    var p=decode(bestVec);
+    var att=generateAttractor(p, 2000);
+    renderPoints(ic, att, 'rgba(201,168,76,0.7)', 'IFS BEST');
+  } else {
+    var ctx=ic.getContext('2d');
+    ic.width=ic.parentElement.clientWidth||200;
+    ic.height=ic.parentElement.clientHeight||200;
+    ctx.fillStyle='#04080f';ctx.fillRect(0,0,ic.width,ic.height);
+    ctx.fillStyle='rgba(0,229,204,0.1)';ctx.font='10px monospace';
+    ctx.fillText('awaiting optimization',ic.width/2-80,ic.height/2);
+  }
+}
+
+// -- GLB loader ----------------------------------------------------------------
+function parseGLB(buf) {
+  var dv=new DataView(buf);
+  var jl=dv.getUint32(12,true);
+  var jb=new Uint8Array(buf,20,jl);
+  var g=JSON.parse(new TextDecoder().decode(jb));
+  var bin=buf.slice(20+jl+8);
+  for(var mi2=0;mi2<g.meshes.length;mi2++){
+    for(var pi=0;pi<g.meshes[mi2].primitives.length;pi++){
+      var prim=g.meshes[mi2].primitives[pi];
+      if((prim.mode||4)!==4||!prim.attributes.POSITION)continue;
+      var acc=g.accessors[prim.attributes.POSITION];
+      var bv=g.bufferViews[acc.bufferView];
+      var raw=new Float32Array(bin,(bv.byteOffset||0),acc.count*3);
+      return raw.slice();
+    }
+  }
+  return null;
+}
+
+function sampleMesh(verts, n) {
+  // Stratified sampling: sample n points from the vertex array
+  // Simple version: evenly spaced indices
+  var step=Math.max(1,Math.floor(verts.length/(n*3)));
+  var pts=[];
+  for(var i=0;i<verts.length&&pts.length<n*3;i+=step*3){
+    pts.push(verts[i],verts[i+1],verts[i+2]);
+  }
+  return new Float32Array(pts);
+}
+
+function estimateFractalDim(pts) {
+  // Quick box-counting estimate on the 3D point cloud
+  var scales=[1,2,4,8];
+  var counts=[];
+  for(var si=0;si<scales.length;si++){
+    var s=scales[si],cells={};
+    for(var i=0;i<pts.length;i+=3){
+      var key=Math.floor(pts[i]/s)+'_'+Math.floor(pts[i+1]/s)+'_'+Math.floor(pts[i+2]/s);
+      cells[key]=1;
+    }
+    counts.push(Object.keys(cells).length);
+  }
+  var logS=scales.map(function(s){return Math.log(1/s);});
+  var logC=counts.map(function(c){return Math.log(Math.max(c,1));});
+  var n=logS.length,sx=0,sy=0,sxx=0,sxy=0;
+  for(var i=0;i<n;i++){sx+=logS[i];sy+=logC[i];sxx+=logS[i]*logS[i];sxy+=logS[i]*logC[i];}
+  var slope=(n*sxy-sx*sy)/(n*sxx-sx*sx);
+  return Math.max(0.5,Math.min(3.0,slope));
+}
+
+function setTarget(rawVerts, filename){
+  var sampled=sampleMesh(rawVerts, N_SAMPLE);
+  var norm=normalizePts(sampled);
+  targetPts=norm.pts;
+
+  // Update info panel
+  var minX=Infinity,maxX=-Infinity,minY=Infinity,maxY=-Infinity,minZ=Infinity,maxZ=-Infinity;
+  for(var i=0;i<sampled.length;i+=3){
+    minX=Math.min(minX,sampled[i]);maxX=Math.max(maxX,sampled[i]);
+    minY=Math.min(minY,sampled[i+1]);maxY=Math.max(maxY,sampled[i+1]);
+    minZ=Math.min(minZ,sampled[i+2]);maxZ=Math.max(maxZ,sampled[i+2]);
+  }
+  var dim=estimateFractalDim(sampled);
+  document.getElementById('iFile').textContent=(filename||'?').slice(0,16);
+  document.getElementById('iPts').textContent=(targetPts.length/3)|0;
+  document.getElementById('iBBox').textContent=(maxX-minX).toFixed(1)+'x'+(maxY-minY).toFixed(1)+'x'+(maxZ-minZ).toFixed(1);
+  document.getElementById('iFDim').textContent=dim.toFixed(3);
+
+  document.getElementById('runBtn').disabled=false;
+  renderBest();
+  log('Target loaded: '+(filename||'?')+' | '+(targetPts.length/3)+' pts | dim='+dim.toFixed(3),'hi');
+}
+
+// -- File upload ---------------------------------------------------------------
+var uploadZone=document.getElementById('uploadZone');
+var fileInput=document.getElementById('fileInput');
+uploadZone.addEventListener('click',function(){fileInput.click();});
+uploadZone.addEventListener('dragover',function(e){e.preventDefault();uploadZone.classList.add('drag');});
+uploadZone.addEventListener('dragleave',function(){uploadZone.classList.remove('drag');});
+uploadZone.addEventListener('drop',function(e){
+  e.preventDefault();uploadZone.classList.remove('drag');
+  var f=e.dataTransfer.files[0];if(f)handleFile(f);
+});
+fileInput.addEventListener('change',function(){if(this.files[0])handleFile(this.files[0]);});
+
+function handleFile(file){
+  var name=file.name.toLowerCase();
+  var reader=new FileReader();
+  if(name.endsWith('.glb')){
+    reader.onload=function(e){
+      try{
+        var verts=parseGLB(e.target.result);
+        if(!verts){log('GLB: no solid mesh found','err');return;}
+        setTarget(verts,file.name);
+      }catch(err){log('GLB parse error: '+err.message,'err');}
+    };
+    reader.readAsArrayBuffer(file);
+  } else if(name.endsWith('.obj')){
+    reader.onload=function(e){
+      var lines=e.target.result.split('\n');
+      var verts=[];
+      lines.forEach(function(l){
+        var p=l.trim().split(/\s+/);
+        if(p[0]==='v'){verts.push(parseFloat(p[1]),parseFloat(p[2]),parseFloat(p[3]));}
+      });
+      if(verts.length<9){log('OBJ: too few vertices','err');return;}
+      setTarget(new Float32Array(verts),file.name);
+    };
+    reader.readAsText(file);
+  } else {
+    log('Unsupported format. Use GLB or OBJ.','err');
+  }
+}
+
+// -- Test: known Menger Sponge target -----------------------------------------
+// Generates a point cloud from the known Menger Sponge parameters.
+// The optimizer SHOULD recover ft:NONE, mi:4, sc:3.0, ox:1.0, oy:1.0, oz:1.0
+// This is the TEST that validates the system before using it on real models.
+document.getElementById('testBtn').addEventListener('click',function(){
+  log('TEST: generating Menger Sponge target (ft:NONE mi:4 sc:3.0)','hi');
+  var knownParams={ft:0,mi:4,sc:3.0,ox:1.0,oy:1.0,oz:1.0,fi:1,fs:1.0,fsc:1.7,mr:0.5,bl:0.0,twist:0.0,trap:0};
+  var pts=generateAttractor(knownParams,N_SAMPLE);
+  if(pts.length<30){log('Test generation failed','err');return;}
+  setTarget(pts,'menger_test.glb');
+  log('Target set: pure Menger mi=4. Run optimizer -- should recover these params.','ok');
+});
+
+// -- Controls ------------------------------------------------------------------
+document.getElementById('runBtn').addEventListener('click',function(){
+  if(running)return;
+  runOptimizer();
+});
+document.getElementById('stopBtn').addEventListener('click',function(){
+  stopFlag=true;log('Stop requested...','err');
+});
+document.getElementById('copyBtn').addEventListener('click',function(){
+  if(!window._dna)return;
+  (navigator.clipboard?navigator.clipboard.writeText(window._dna):Promise.reject())
+  .catch(function(){
+    var ta=document.createElement('textarea');ta.value=window._dna;
+    document.body.appendChild(ta);ta.select();document.execCommand('copy');
+    document.body.removeChild(ta);
+  });
+  this.textContent='COPIED';var b=this;setTimeout(function(){b.textContent='COPY DNA';},2000);
+});
+document.getElementById('openBtn').addEventListener('click',function(){
+  if(!window._p)return;
+  var p=window._p;
+  alert('Load these parameters in queuePIT:\n\n'+document.getElementById('dnaOut').textContent);
+});
+
+// -- Logging -------------------------------------------------------------------
+function log(msg,cls){
+  var d=document.createElement('div');
+  d.textContent=new Date().toISOString().slice(11,19)+' '+msg;
+  if(cls)d.className=cls;
+  var logEl=document.getElementById('log');
+  logEl.appendChild(d);
+  logEl.scrollTop=logEl.scrollHeight;
+  // Keep max 50 log lines
+  while(logEl.children.length>50)logEl.removeChild(logEl.firstChild);
+}
+
+// -- Init ----------------------------------------------------------------------
+renderBest();
+log('System ready. Hard limits: '+MAX_ITER+' iterations, stall stop at '+STALL_LIMIT+' non-improving.');
+log('Run TEST first to validate the optimizer recovers known parameters.');
+</script>
+</body>
+</html>

@@ -1,0 +1,51 @@
+{
+  "manifest_version": "1.0",
+  "project": "UUON Foundation — Δmension Mathematical Universe",
+  "creator": "Phillip Aguilar Ruiz III",
+  "organization": "UUON Foundation Inc.",
+  "copyright": "© 2024 UUON Foundation Inc. All Rights Reserved.",
+  "license": "CC BY-NC 4.0",
+  "export_date": "2026-06-10",
+  "genesis_hash": "cf114022b5e4e1d6fdeb36890f35f605857cf2de93b53ebcb9c8e5652413ca04",
+  "on_chain_tx": "0x4c2fbb212f5f71bebbd0067170578ce0bfec5f7ef230f5d7c70b4af90abae3dd",
+  "on_chain_block": 25250502,
+  "deployment_chain": "Base Mainnet (Coinbase L2)",
+  "token": {
+    "name": "UUON",
+    "symbol": "UUON",
+    "standard": "ERC-20",
+    "total_supply": 10000000,
+    "circulating_supply": 4000000,
+    "treasury_reserve": 6000000,
+    "hard_cap": true
+  },
+  "dmension_version": "2.0",
+  "total_shapes": 32,
+  "nerf_format": "Instant-NGP (HashGrid + Spherical Harmonics)",
+  "shape_categories": {
+    "cryptography": {
+      "count": 5,
+      "shapes": ["aes_rijndael_cipher","elliptic_curve_cryptography","sha256_compression_function","keccak_sha3_sponge","lattice_kyber_ntru"]
+    },
+    "quantum_states": {
+      "count": 10,
+      "shapes": ["qubit_bloch_sphere","qubit_state_vector","qubit_superposition_state","two_qubit_entangled_state","two_qubit_product_state","three_qubit_ghz_state","three_qubit_code","multi_qubit_tensor_product","shor_nine_qubit","quantum_information_flow"]
+    },
+    "quantum_gates": {
+      "count": 7,
+      "shapes": ["pauli_x_gate","pauli_y_gate","pauli_z_gate","hadamard_gate","phase_gate_s","phase_gate_t","cnot_gate_surface"]
+    },
+    "machine_learning": {
+      "count": 3,
+      "shapes": ["attention_mechanism","gradient_descent_path","neural_loss_landscape"]
+    },
+    "financial": {
+      "count": 4,
+      "shapes": ["black_scholes_surface","volatility_surface","monte_carlo_risk","crypto_price_fractal"]
+    },
+    "blockchain": {
+      "count": 3,
+      "shapes": ["blockchain_merkle_tree","hash_avalanche_effect","kolmogorov_complexity"]
+    }
+  }
+}

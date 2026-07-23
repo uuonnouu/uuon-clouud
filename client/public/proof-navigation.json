@@ -1,0 +1,1538 @@
+[
+  {
+    "category": "cryptography",
+    "displayName": "Cryptographic Proofs",
+    "description": "Zero-knowledge proofs, hash collision resistance, elliptic curve security, and post-quantum algorithms",
+    "scientificImpact": "Secures global financial systems, enables blockchain technology, protects digital identity",
+    "count": 36,
+    "shapes": [
+      {
+        "id": "aes_rijndael_cipher",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/aes_rijndael_cipher"
+      },
+      {
+        "id": "sha256_compression_function",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/sha256_compression_function"
+      },
+      {
+        "id": "elliptic_curve_cryptography",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/elliptic_curve_cryptography"
+      },
+      {
+        "id": "keccak_sha3_sponge",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/keccak_sha3_sponge"
+      },
+      {
+        "id": "lattice_kyber_ntru",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/lattice_kyber_ntru"
+      },
+      {
+        "id": "rsa_modular_exponentiation",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/rsa_modular_exponentiation"
+      },
+      {
+        "id": "merkle_tree",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/merkle_tree"
+      },
+      {
+        "id": "zero_knowledge_proof",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/zero_knowledge_proof"
+      },
+      {
+        "id": "diffie_hellman_key_exchange",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/diffie_hellman_key_exchange"
+      },
+      {
+        "id": "chacha20_stream_cipher",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/chacha20_stream_cipher"
+      },
+      {
+        "id": "poly1305_mac",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/poly1305_mac"
+      },
+      {
+        "id": "blake2_hash",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/blake2_hash"
+      },
+      {
+        "id": "argon2_password_hash",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/argon2_password_hash"
+      },
+      {
+        "id": "scrypt_kdf",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/scrypt_kdf"
+      },
+      {
+        "id": "ed25519_signature",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/ed25519_signature"
+      },
+      {
+        "id": "x25519_key_exchange",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/x25519_key_exchange"
+      },
+      {
+        "id": "schnorr_signature",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/schnorr_signature"
+      },
+      {
+        "id": "dilithium_lattice",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/dilithium_lattice"
+      },
+      {
+        "id": "sphincs_hash",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/sphincs_hash"
+      },
+      {
+        "id": "pedersen_commitment",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/pedersen_commitment"
+      },
+      {
+        "id": "bulletproofs",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/bulletproofs"
+      },
+      {
+        "id": "zk_snark",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/zk_snark"
+      },
+      {
+        "id": "zk_stark",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/zk_stark"
+      },
+      {
+        "id": "mpc_secret_sharing",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/mpc_secret_sharing"
+      },
+      {
+        "id": "homomorphic_encryption",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/homomorphic_encryption"
+      },
+      {
+        "id": "rsa_encryption",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/rsa_encryption"
+      },
+      {
+        "id": "dsa_signature",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/dsa_signature"
+      },
+      {
+        "id": "ecdsa_curve",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/ecdsa_curve"
+      },
+      {
+        "id": "keccak_sponge",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/keccak_sponge"
+      },
+      {
+        "id": "aes_sbox",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/aes_sbox"
+      },
+      {
+        "id": "ntru_lattice",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/ntru_lattice"
+      },
+      {
+        "id": "sike_isogeny",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/sike_isogeny"
+      },
+      {
+        "id": "mceliece_code",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/mceliece_code"
+      },
+      {
+        "id": "ring_signature",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/ring_signature"
+      },
+      {
+        "id": "verifiable_delay",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/verifiable_delay"
+      },
+      {
+        "id": "oblivious_transfer",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/oblivious_transfer"
+      }
+    ]
+  },
+  {
+    "category": "algorithms",
+    "displayName": "Algorithm Verification",
+    "description": "Computational complexity proofs, optimization guarantees, and algorithmic correctness",
+    "scientificImpact": "Enables AI/ML systems, proves computational limits, optimizes resource allocation",
+    "count": 35,
+    "shapes": [
+      {
+        "id": "merge_sort_divide",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/merge_sort_divide"
+      },
+      {
+        "id": "fast_multipole_001",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/fast_multipole_001"
+      },
+      {
+        "id": "grover_search_algorithm",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/grover_search_algorithm"
+      },
+      {
+        "id": "shor_factorization_algorithm",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/shor_factorization_algorithm"
+      },
+      {
+        "id": "fft_butterfly",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/fft_butterfly"
+      },
+      {
+        "id": "alphafold_prediction_001",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/alphafold_prediction_001"
+      },
+      {
+        "id": "riemann_zeta_function",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/riemann_zeta_function"
+      },
+      {
+        "id": "neural_network_backprop",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/neural_network_backprop"
+      },
+      {
+        "id": "needleman_wunsch_001",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/needleman_wunsch_001"
+      },
+      {
+        "id": "smith_waterman_001",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/smith_waterman_001"
+      },
+      {
+        "id": "blast_search_001",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/blast_search_001"
+      },
+      {
+        "id": "hidden_markov_001",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/hidden_markov_001"
+      },
+      {
+        "id": "debruijn_assembly_001",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/debruijn_assembly_001"
+      },
+      {
+        "id": "molecular_dynamics_001",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/molecular_dynamics_001"
+      },
+      {
+        "id": "monte_carlo_sampling_001",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/monte_carlo_sampling_001"
+      },
+      {
+        "id": "dft_electron_density_001",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/dft_electron_density_001"
+      },
+      {
+        "id": "quicksort_partition",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/quicksort_partition"
+      },
+      {
+        "id": "dijkstra_shortest_path",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/dijkstra_shortest_path"
+      },
+      {
+        "id": "a_star_search",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/a_star_search"
+      },
+      {
+        "id": "bellman_ford",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/bellman_ford"
+      },
+      {
+        "id": "kruskal_mst",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/kruskal_mst"
+      },
+      {
+        "id": "prim_mst",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/prim_mst"
+      },
+      {
+        "id": "simplex_method",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/simplex_method"
+      },
+      {
+        "id": "gradient_descent",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/gradient_descent"
+      },
+      {
+        "id": "adam_optimizer",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/adam_optimizer"
+      },
+      {
+        "id": "transformer_attention",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/transformer_attention"
+      },
+      {
+        "id": "diffusion_model",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/diffusion_model"
+      },
+      {
+        "id": "vae_latent_space",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/vae_latent_space"
+      },
+      {
+        "id": "gan_adversarial",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/gan_adversarial"
+      },
+      {
+        "id": "reinforcement_q_learning",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/reinforcement_q_learning"
+      },
+      {
+        "id": "policy_gradient",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/policy_gradient"
+      },
+      {
+        "id": "mcts_tree_search",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/mcts_tree_search"
+      },
+      {
+        "id": "neural_network_3d",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/neural_network_3d"
+      },
+      {
+        "id": "brainwave_alpha",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/brainwave_alpha"
+      },
+      {
+        "id": "global_workspace",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/global_workspace"
+      }
+    ]
+  },
+  {
+    "category": "quantum-mechanics",
+    "displayName": "Quantum Proofs",
+    "description": "Bell inequalities, uncertainty principles, quantum supremacy demonstrations",
+    "scientificImpact": "Foundation of quantum computing, quantum cryptography, and quantum sensing",
+    "count": 29,
+    "shapes": [
+      {
+        "id": "hydrogen_1s_orbital",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/hydrogen_1s_orbital"
+      },
+      {
+        "id": "hydrogen_2p_orbital",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/hydrogen_2p_orbital"
+      },
+      {
+        "id": "qubit_bloch_sphere",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/qubit_bloch_sphere"
+      },
+      {
+        "id": "schrodinger_time_dependent",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/schrodinger_time_dependent"
+      },
+      {
+        "id": "quantum_tunneling",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/quantum_tunneling"
+      },
+      {
+        "id": "quantum_entanglement",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/quantum_entanglement"
+      },
+      {
+        "id": "hydrogen_3d_orbital",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/hydrogen_3d_orbital"
+      },
+      {
+        "id": "hydrogen_4f_orbital",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/hydrogen_4f_orbital"
+      },
+      {
+        "id": "molecular_orbital",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/molecular_orbital"
+      },
+      {
+        "id": "hybridization_sp3",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/hybridization_sp3"
+      },
+      {
+        "id": "dirac_equation",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/dirac_equation"
+      },
+      {
+        "id": "pauli_matrices",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/pauli_matrices"
+      },
+      {
+        "id": "heisenberg_uncertainty",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/heisenberg_uncertainty"
+      },
+      {
+        "id": "quantum_harmonic_oscillator",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/quantum_harmonic_oscillator"
+      },
+      {
+        "id": "hydrogen_radial_probability",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/hydrogen_radial_probability"
+      },
+      {
+        "id": "quantum_gate_hadamard",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/quantum_gate_hadamard"
+      },
+      {
+        "id": "quantum_gate_cnot",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/quantum_gate_cnot"
+      },
+      {
+        "id": "quantum_fourier_transform",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/quantum_fourier_transform"
+      },
+      {
+        "id": "bell_state_phi_plus",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/bell_state_phi_plus"
+      },
+      {
+        "id": "bell_state_psi_minus",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/bell_state_psi_minus"
+      },
+      {
+        "id": "ghz_state",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/ghz_state"
+      },
+      {
+        "id": "spherical_harmonic_y2",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/spherical_harmonic_y2"
+      },
+      {
+        "id": "spherical_harmonic_y3",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/spherical_harmonic_y3"
+      },
+      {
+        "id": "dirac_spinor",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/dirac_spinor"
+      },
+      {
+        "id": "particle_in_box_3d",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/particle_in_box_3d"
+      },
+      {
+        "id": "wigner_function",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/wigner_function"
+      },
+      {
+        "id": "density_matrix",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/density_matrix"
+      },
+      {
+        "id": "penrose_orch_or",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/penrose_orch_or"
+      },
+      {
+        "id": "holonomic_brain",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/holonomic_brain"
+      }
+    ]
+  },
+  {
+    "category": "quantum-gravity",
+    "displayName": "Quantum Gravity Proofs",
+    "description": "Planck-scale physics, spacetime quantization, loop quantum gravity",
+    "scientificImpact": "Unifying general relativity with quantum mechanics, understanding singularities",
+    "count": 21,
+    "shapes": [
+      {
+        "id": "ashtekar_variables",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/ashtekar_variables"
+      },
+      {
+        "id": "wheeler_dewitt_equation",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/wheeler_dewitt_equation"
+      },
+      {
+        "id": "loop_quantum_gravity_spin_foam",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/loop_quantum_gravity_spin_foam"
+      },
+      {
+        "id": "planck_scale_foam",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/planck_scale_foam"
+      },
+      {
+        "id": "spin_network_vertex",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/spin_network_vertex"
+      },
+      {
+        "id": "holonomy_wilson_loop",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/holonomy_wilson_loop"
+      },
+      {
+        "id": "area_operator_spectrum",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/area_operator_spectrum"
+      },
+      {
+        "id": "volume_operator",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/volume_operator"
+      },
+      {
+        "id": "causal_dynamical_triangulation",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/causal_dynamical_triangulation"
+      },
+      {
+        "id": "regge_calculus",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/regge_calculus"
+      },
+      {
+        "id": "ponzano_regge_model",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/ponzano_regge_model"
+      },
+      {
+        "id": "barrett_crane_model",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/barrett_crane_model"
+      },
+      {
+        "id": "eprl_model",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/eprl_model"
+      },
+      {
+        "id": "group_field_theory",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/group_field_theory"
+      },
+      {
+        "id": "horava_lifshitz_gravity",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/horava_lifshitz_gravity"
+      },
+      {
+        "id": "asymptotic_safety",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/asymptotic_safety"
+      },
+      {
+        "id": "black_hole_entropy",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/black_hole_entropy"
+      },
+      {
+        "id": "hawking_radiation",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/hawking_radiation"
+      },
+      {
+        "id": "penrose_process",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/penrose_process"
+      },
+      {
+        "id": "information_paradox",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/information_paradox"
+      },
+      {
+        "id": "page_curve",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/page_curve"
+      }
+    ]
+  },
+  {
+    "category": "general-relativity",
+    "displayName": "Relativistic Proofs",
+    "description": "Einstein field equations, black hole solutions, gravitational wave predictions",
+    "scientificImpact": "GPS corrections, gravitational lensing, understanding cosmic structure",
+    "count": 37,
+    "shapes": [
+      {
+        "id": "einstein_field_equations",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/einstein_field_equations"
+      },
+      {
+        "id": "schwarzschild_metric_spacetime",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/schwarzschild_metric_spacetime"
+      },
+      {
+        "id": "kerr_rotating_black_hole",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/kerr_rotating_black_hole"
+      },
+      {
+        "id": "gravitational_wave",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/gravitational_wave"
+      },
+      {
+        "id": "penrose_diagram",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/penrose_diagram"
+      },
+      {
+        "id": "geodesic_deviation",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/geodesic_deviation"
+      },
+      {
+        "id": "riemann_curvature_tensor",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/riemann_curvature_tensor"
+      },
+      {
+        "id": "flrw_cosmological_metric",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/flrw_cosmological_metric"
+      },
+      {
+        "id": "reissner_nordstrom_metric",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/reissner_nordstrom_metric"
+      },
+      {
+        "id": "kerr_newman_metric",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/kerr_newman_metric"
+      },
+      {
+        "id": "godel_universe",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/godel_universe"
+      },
+      {
+        "id": "de_sitter_spacetime",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/de_sitter_spacetime"
+      },
+      {
+        "id": "anti_de_sitter_spacetime",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/anti_de_sitter_spacetime"
+      },
+      {
+        "id": "wormhole_einstein_rosen",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/wormhole_einstein_rosen"
+      },
+      {
+        "id": "alcubierre_drive",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/alcubierre_drive"
+      },
+      {
+        "id": "frame_dragging",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/frame_dragging"
+      },
+      {
+        "id": "bssn_formalism",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/bssn_formalism"
+      },
+      {
+        "id": "adm_formalism",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/adm_formalism"
+      },
+      {
+        "id": "shapiro_delay",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/shapiro_delay"
+      },
+      {
+        "id": "gravity_probe_b",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/gravity_probe_b"
+      },
+      {
+        "id": "binary_pulsar",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/binary_pulsar"
+      },
+      {
+        "id": "reissner_nordstrom",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/reissner_nordstrom"
+      },
+      {
+        "id": "kerr_newman",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/kerr_newman"
+      },
+      {
+        "id": "de_sitter_space",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/de_sitter_space"
+      },
+      {
+        "id": "anti_de_sitter",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/anti_de_sitter"
+      },
+      {
+        "id": "wormhole_morris_thorne",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/wormhole_morris_thorne"
+      },
+      {
+        "id": "cosmic_string",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/cosmic_string"
+      },
+      {
+        "id": "bianchi_ix",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/bianchi_ix"
+      },
+      {
+        "id": "christoffel_symbols",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/christoffel_symbols"
+      },
+      {
+        "id": "weyl_tensor",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/weyl_tensor"
+      },
+      {
+        "id": "kretschmann_scalar",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/kretschmann_scalar"
+      },
+      {
+        "id": "cosmic_web",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/cosmic_web"
+      },
+      {
+        "id": "cmbr_anisotropy",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/cmbr_anisotropy"
+      },
+      {
+        "id": "dark_matter_halo",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/dark_matter_halo"
+      },
+      {
+        "id": "lensing_caustic",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/lensing_caustic"
+      },
+      {
+        "id": "inflation_potential",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/inflation_potential"
+      },
+      {
+        "id": "baryon_acoustic",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/baryon_acoustic"
+      }
+    ]
+  },
+  {
+    "category": "theory-of-everything",
+    "displayName": "Unification Proofs",
+    "description": "String theory mathematics, supersymmetry, grand unified theories",
+    "scientificImpact": "Quest for a single framework explaining all fundamental forces",
+    "count": 22,
+    "shapes": [
+      {
+        "id": "superstring_vibration_modes",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/superstring_vibration_modes"
+      },
+      {
+        "id": "m_theory_11d_membrane",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/m_theory_11d_membrane"
+      },
+      {
+        "id": "grand_unified_theory_gut",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/grand_unified_theory_gut"
+      },
+      {
+        "id": "supersymmetry_transformation",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/supersymmetry_transformation"
+      },
+      {
+        "id": "ads_cft_correspondence",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/ads_cft_correspondence"
+      },
+      {
+        "id": "polyakov_action_worldsheet",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/polyakov_action_worldsheet"
+      },
+      {
+        "id": "nambu_goto_action",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/nambu_goto_action"
+      },
+      {
+        "id": "type_iia_string",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/type_iia_string"
+      },
+      {
+        "id": "type_iib_string",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/type_iib_string"
+      },
+      {
+        "id": "heterotic_string",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/heterotic_string"
+      },
+      {
+        "id": "d_brane",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/d_brane"
+      },
+      {
+        "id": "e8_structure",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/e8_structure"
+      },
+      {
+        "id": "standard_model_lagrangian",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/standard_model_lagrangian"
+      },
+      {
+        "id": "higgs_mechanism",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/higgs_mechanism"
+      },
+      {
+        "id": "technicolor",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/technicolor"
+      },
+      {
+        "id": "lqg_hamiltonian_constraint",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/lqg_hamiltonian_constraint"
+      },
+      {
+        "id": "ashtekar_connection_reformulation",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/ashtekar_connection_reformulation"
+      },
+      {
+        "id": "qcd_gluon_field",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/qcd_gluon_field"
+      },
+      {
+        "id": "electroweak_unification",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/electroweak_unification"
+      },
+      {
+        "id": "holographic_principle_boundary",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/holographic_principle_boundary"
+      },
+      {
+        "id": "exceptional_lie_e8",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/exceptional_lie_e8"
+      },
+      {
+        "id": "monster_group",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/monster_group"
+      }
+    ]
+  },
+  {
+    "category": "topology",
+    "displayName": "Topological Proofs",
+    "description": "Knot invariants, manifold classification, homology and cohomology",
+    "scientificImpact": "DNA topology, material science, quantum computing error correction",
+    "count": 32,
+    "shapes": [
+      {
+        "id": "klein_bottle",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/klein_bottle"
+      },
+      {
+        "id": "mobius_strip",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/mobius_strip"
+      },
+      {
+        "id": "trefoil_knot",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/trefoil_knot"
+      },
+      {
+        "id": "figure_eight_knot",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/figure_eight_knot"
+      },
+      {
+        "id": "borromean_rings",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/borromean_rings"
+      },
+      {
+        "id": "calabi_yau_manifold",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/calabi_yau_manifold"
+      },
+      {
+        "id": "boys_surface",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/boys_surface"
+      },
+      {
+        "id": "roman_surface",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/roman_surface"
+      },
+      {
+        "id": "cross_cap",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/cross_cap"
+      },
+      {
+        "id": "cinquefoil_knot",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/cinquefoil_knot"
+      },
+      {
+        "id": "seven_knot",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/seven_knot"
+      },
+      {
+        "id": "granny_knot",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/granny_knot"
+      },
+      {
+        "id": "square_knot",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/square_knot"
+      },
+      {
+        "id": "hopf_link",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/hopf_link"
+      },
+      {
+        "id": "whitehead_link",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/whitehead_link"
+      },
+      {
+        "id": "torus_genus_2",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/torus_genus_2"
+      },
+      {
+        "id": "torus_genus_3",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/torus_genus_3"
+      },
+      {
+        "id": "real_projective_plane",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/real_projective_plane"
+      },
+      {
+        "id": "complex_projective_line",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/complex_projective_line"
+      },
+      {
+        "id": "lens_space",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/lens_space"
+      },
+      {
+        "id": "poincare_homology_sphere",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/poincare_homology_sphere"
+      },
+      {
+        "id": "pretzel_knot",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/pretzel_knot"
+      },
+      {
+        "id": "seifert_surface",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/seifert_surface"
+      },
+      {
+        "id": "dunce_cap",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/dunce_cap"
+      },
+      {
+        "id": "alexander_horned_sphere",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/alexander_horned_sphere"
+      },
+      {
+        "id": "cayley_graph",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/cayley_graph"
+      },
+      {
+        "id": "orbifold",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/orbifold"
+      },
+      {
+        "id": "covering_space",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/covering_space"
+      },
+      {
+        "id": "handle_body",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/handle_body"
+      },
+      {
+        "id": "dehn_surgery",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/dehn_surgery"
+      },
+      {
+        "id": "knot_complement",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/knot_complement"
+      },
+      {
+        "id": "consciousness_field",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/consciousness_field"
+      }
+    ]
+  },
+  {
+    "category": "4d-hyperdimensional",
+    "displayName": "Higher-Dimensional Proofs",
+    "description": "4D polytopes, SO(4) rotations, hyperdimensional geometry",
+    "scientificImpact": "Understanding extra dimensions, string theory compactification",
+    "count": 32,
+    "shapes": [
+      {
+        "id": "tesseract",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/tesseract"
+      },
+      {
+        "id": "hyperoctahedron_16_cell",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/hyperoctahedron_16_cell"
+      },
+      {
+        "id": "24_cell",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/24_cell"
+      },
+      {
+        "id": "120_cell",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/120_cell"
+      },
+      {
+        "id": "600_cell",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/600_cell"
+      },
+      {
+        "id": "hypersphere",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/hypersphere"
+      },
+      {
+        "id": "clifford_torus",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/clifford_torus"
+      },
+      {
+        "id": "hopf_fibration",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/hopf_fibration"
+      },
+      {
+        "id": "grand_antiprism",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/grand_antiprism"
+      },
+      {
+        "id": "snub_24_cell",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/snub_24_cell"
+      },
+      {
+        "id": "rectified_tesseract",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/rectified_tesseract"
+      },
+      {
+        "id": "truncated_tesseract",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/truncated_tesseract"
+      },
+      {
+        "id": "duoprism",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/duoprism"
+      },
+      {
+        "id": "duocylinder",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/duocylinder"
+      },
+      {
+        "id": "spherinder",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/spherinder"
+      },
+      {
+        "id": "cubinder",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/cubinder"
+      },
+      {
+        "id": "glome",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/glome"
+      },
+      {
+        "id": "quaternion_space",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/quaternion_space"
+      },
+      {
+        "id": "so4_rotation",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/so4_rotation"
+      },
+      {
+        "id": "spin_4",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/spin_4"
+      },
+      {
+        "id": "omnitruncated_tesseract",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/omnitruncated_tesseract"
+      },
+      {
+        "id": "cantellated_tesseract",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/cantellated_tesseract"
+      },
+      {
+        "id": "runcinated_tesseract",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/runcinated_tesseract"
+      },
+      {
+        "id": "bitruncated_24_cell",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/bitruncated_24_cell"
+      },
+      {
+        "id": "rectified_600_cell",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/rectified_600_cell"
+      },
+      {
+        "id": "truncated_600_cell",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/truncated_600_cell"
+      },
+      {
+        "id": "cantellated_120_cell",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/cantellated_120_cell"
+      },
+      {
+        "id": "tesseractic_honeycomb",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/tesseractic_honeycomb"
+      },
+      {
+        "id": "16_cell_honeycomb",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/16_cell_honeycomb"
+      },
+      {
+        "id": "hyperbolic_5_cell",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/hyperbolic_5_cell"
+      },
+      {
+        "id": "klein_bottle_4d",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/klein_bottle_4d"
+      },
+      {
+        "id": "elliptic_fibration",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/elliptic_fibration"
+      }
+    ]
+  },
+  {
+    "category": "fractals",
+    "displayName": "Fractal & Chaos Proofs",
+    "description": "Strange attractors, universal constants, self-similarity demonstrations",
+    "scientificImpact": "Weather prediction limits, market dynamics, natural pattern formation",
+    "count": 36,
+    "shapes": [
+      {
+        "id": "mandelbrot_3d",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/mandelbrot_3d"
+      },
+      {
+        "id": "mandelbulb",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/mandelbulb"
+      },
+      {
+        "id": "julia_set_3d",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/julia_set_3d"
+      },
+      {
+        "id": "lorenz_attractor",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/lorenz_attractor"
+      },
+      {
+        "id": "rossler_attractor",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/rossler_attractor"
+      },
+      {
+        "id": "sierpinski_tetrahedron",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/sierpinski_tetrahedron"
+      },
+      {
+        "id": "menger_sponge",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/menger_sponge"
+      },
+      {
+        "id": "henon_attractor",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/henon_attractor"
+      },
+      {
+        "id": "ikeda_attractor",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/ikeda_attractor"
+      },
+      {
+        "id": "thomas_attractor",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/thomas_attractor"
+      },
+      {
+        "id": "chen_attractor",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/chen_attractor"
+      },
+      {
+        "id": "aizawa_attractor",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/aizawa_attractor"
+      },
+      {
+        "id": "halvorsen_attractor",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/halvorsen_attractor"
+      },
+      {
+        "id": "three_scroll_attractor",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/three_scroll_attractor"
+      },
+      {
+        "id": "dragon_curve",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/dragon_curve"
+      },
+      {
+        "id": "hilbert_curve",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/hilbert_curve"
+      },
+      {
+        "id": "peano_curve",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/peano_curve"
+      },
+      {
+        "id": "koch_snowflake",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/koch_snowflake"
+      },
+      {
+        "id": "apollonian_gasket",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/apollonian_gasket"
+      },
+      {
+        "id": "burning_ship_fractal",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/burning_ship_fractal"
+      },
+      {
+        "id": "tricorn_fractal",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/tricorn_fractal"
+      },
+      {
+        "id": "multibrot_set",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/multibrot_set"
+      },
+      {
+        "id": "cantor_set_3d",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/cantor_set_3d"
+      },
+      {
+        "id": "hilbert_curve_3d",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/hilbert_curve_3d"
+      },
+      {
+        "id": "gosper_curve",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/gosper_curve"
+      },
+      {
+        "id": "levy_c_curve",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/levy_c_curve"
+      },
+      {
+        "id": "dragon_curve_3d",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/dragon_curve_3d"
+      },
+      {
+        "id": "barnsley_fern_3d",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/barnsley_fern_3d"
+      },
+      {
+        "id": "sierpinski_triangle",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/sierpinski_triangle"
+      },
+      {
+        "id": "mandelbox",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/mandelbox"
+      },
+      {
+        "id": "burning_ship",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/burning_ship"
+      },
+      {
+        "id": "newton_fractal",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/newton_fractal"
+      },
+      {
+        "id": "lyapunov_fractal",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/lyapunov_fractal"
+      },
+      {
+        "id": "fractal_neuron",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/fractal_neuron"
+      },
+      {
+        "id": "riemann_zeta_surface",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/riemann_zeta_surface"
+      },
+      {
+        "id": "modular_curve",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/modular_curve"
+      }
+    ]
+  },
+  {
+    "category": "molecular-biology",
+    "displayName": "Biological Proofs",
+    "description": "DNA information theory, protein folding landscapes, evolutionary algorithms",
+    "scientificImpact": "Drug discovery, synthetic biology, understanding life itself",
+    "count": 33,
+    "shapes": [
+      {
+        "id": "dna_double_helix",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/dna_double_helix"
+      },
+      {
+        "id": "a_dna_helix",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/a_dna_helix"
+      },
+      {
+        "id": "z_dna_helix",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/z_dna_helix"
+      },
+      {
+        "id": "crispr_cas9_complex",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/crispr_cas9_complex"
+      },
+      {
+        "id": "atp_synthase",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/atp_synthase"
+      },
+      {
+        "id": "ribosome_detailed",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/ribosome_detailed"
+      },
+      {
+        "id": "mitochondria",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/mitochondria"
+      },
+      {
+        "id": "virus_capsid",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/virus_capsid"
+      },
+      {
+        "id": "rna_hairpin",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/rna_hairpin"
+      },
+      {
+        "id": "trna_structure",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/trna_structure"
+      },
+      {
+        "id": "alpha_helix",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/alpha_helix"
+      },
+      {
+        "id": "beta_sheet",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/beta_sheet"
+      },
+      {
+        "id": "protein_quaternary",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/protein_quaternary"
+      },
+      {
+        "id": "lipid_bilayer",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/lipid_bilayer"
+      },
+      {
+        "id": "ion_channel",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/ion_channel"
+      },
+      {
+        "id": "gpcr",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/gpcr"
+      },
+      {
+        "id": "nucleosome",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/nucleosome"
+      },
+      {
+        "id": "spliceosome",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/spliceosome"
+      },
+      {
+        "id": "proteasome",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/proteasome"
+      },
+      {
+        "id": "chaperonin",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/chaperonin"
+      },
+      {
+        "id": "kinesin_motor",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/kinesin_motor"
+      },
+      {
+        "id": "myosin_motor",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/myosin_motor"
+      },
+      {
+        "id": "dynein_motor",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/dynein_motor"
+      },
+      {
+        "id": "alpha_helix_protein",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/alpha_helix_protein"
+      },
+      {
+        "id": "beta_sheet_protein",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/beta_sheet_protein"
+      },
+      {
+        "id": "hemoglobin_quaternary",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/hemoglobin_quaternary"
+      },
+      {
+        "id": "antibody_igg",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/antibody_igg"
+      },
+      {
+        "id": "ribosome_70s",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/ribosome_70s"
+      },
+      {
+        "id": "nucleosome_histone",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/nucleosome_histone"
+      },
+      {
+        "id": "virus_capsid_icosahedral",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/virus_capsid_icosahedral"
+      },
+      {
+        "id": "chloroplast_thylakoid",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/chloroplast_thylakoid"
+      },
+      {
+        "id": "mitochondrion_cristae",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/mitochondrion_cristae"
+      },
+      {
+        "id": "actin_filament",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/actin_filament"
+      }
+    ]
+  },
+  {
+    "category": "sacred-geometry",
+    "displayName": "Sacred Geometry Proofs",
+    "description": "Golden ratio optimality, Platonic solid classification, harmonic proportions",
+    "scientificImpact": "Architecture, art, natural pattern optimization",
+    "count": 27,
+    "shapes": [
+      {
+        "id": "flower_of_life",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/flower_of_life"
+      },
+      {
+        "id": "metatrons_cube",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/metatrons_cube"
+      },
+      {
+        "id": "sri_yantra",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/sri_yantra"
+      },
+      {
+        "id": "merkaba",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/merkaba"
+      },
+      {
+        "id": "golden_spiral",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/golden_spiral"
+      },
+      {
+        "id": "torus_energy_field",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/torus_energy_field"
+      },
+      {
+        "id": "seed_of_life",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/seed_of_life"
+      },
+      {
+        "id": "egg_of_life",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/egg_of_life"
+      },
+      {
+        "id": "fruit_of_life",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/fruit_of_life"
+      },
+      {
+        "id": "vesica_piscis",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/vesica_piscis"
+      },
+      {
+        "id": "platonic_tetrahedron",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/platonic_tetrahedron"
+      },
+      {
+        "id": "platonic_cube",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/platonic_cube"
+      },
+      {
+        "id": "platonic_octahedron",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/platonic_octahedron"
+      },
+      {
+        "id": "platonic_dodecahedron",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/platonic_dodecahedron"
+      },
+      {
+        "id": "platonic_icosahedron",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/platonic_icosahedron"
+      },
+      {
+        "id": "phi_spiral",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/phi_spiral"
+      },
+      {
+        "id": "torus_field",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/torus_field"
+      },
+      {
+        "id": "flower_of_life_3d",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/flower_of_life_3d"
+      },
+      {
+        "id": "tree_of_life_3d",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/tree_of_life_3d"
+      },
+      {
+        "id": "sri_yantra_3d",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/sri_yantra_3d"
+      },
+      {
+        "id": "metatrons_cube_animated",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/metatrons_cube_animated"
+      },
+      {
+        "id": "phi_spiral_3d",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/phi_spiral_3d"
+      },
+      {
+        "id": "vector_equilibrium",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/vector_equilibrium"
+      },
+      {
+        "id": "64_tetrahedron",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/64_tetrahedron"
+      },
+      {
+        "id": "merkaba_field",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/merkaba_field"
+      },
+      {
+        "id": "platonic_dual_pair",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/platonic_dual_pair"
+      },
+      {
+        "id": "golden_rectangle_3d",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/golden_rectangle_3d"
+      }
+    ]
+  },
+  {
+    "category": "uuon-acas",
+    "displayName": "UUON-ACAS Verification",
+    "description": "Autonomous beacon synchronization, consciousness field models, E Pluribus Unum convergence",
+    "scientificImpact": "Next-generation AI, collective intelligence, autonomous systems",
+    "count": 17,
+    "shapes": [
+      {
+        "id": "hello_uuorld",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/hello_uuorld"
+      },
+      {
+        "id": "uuon",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/uuon"
+      },
+      {
+        "id": "shape_of_universe",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/shape_of_universe"
+      },
+      {
+        "id": "acas_beacon_attractor",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/acas_beacon_attractor"
+      },
+      {
+        "id": "dimension_gateway",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/dimension_gateway"
+      },
+      {
+        "id": "e_pluribus_unum",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/e_pluribus_unum"
+      },
+      {
+        "id": "combined_ten_percent_master",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/combined_ten_percent_master"
+      },
+      {
+        "id": "iceberg_system",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/iceberg_system"
+      },
+      {
+        "id": "dna_expression_system",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/dna_expression_system"
+      },
+      {
+        "id": "em_spectrum_system",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/em_spectrum_system"
+      },
+      {
+        "id": "universe_distribution_system",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/universe_distribution_system"
+      },
+      {
+        "id": "neural_network_layers_system",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/neural_network_layers_system"
+      },
+      {
+        "id": "tree_root_crown_system",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/tree_root_crown_system"
+      },
+      {
+        "id": "quantum_superposition_system",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/quantum_superposition_system"
+      },
+      {
+        "id": "thought_speech_system",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/thought_speech_system"
+      },
+      {
+        "id": "human_energy_system",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/human_energy_system"
+      },
+      {
+        "id": "tesla_369_unified",
+        "url": "https://uuon-dmension-math-universe.replit.app/proof/tesla_369_unified"
+      }
+    ]
+  }
+]

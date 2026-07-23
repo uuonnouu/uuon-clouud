@@ -1,0 +1,30 @@
+{
+  "system_infrastructure_manifest": {
+    "generation_date": "2026-06-13",
+    "foundation_status": "DEPLOYED_AND_OPERATIONAL",
+    "network_targets": {
+      "base_evm_anchor": "0x425734a7fd13E9994b66a7909206007A1EF7030B",
+      "sei_evm_layer1": "Parallel-Autobahn-Engine-Enabled",
+      "foundational_coin": "0x6eC2C89Ce63fDEB46b33860F56dBdB8B841801C7",
+      "coin_ticker_symbol": "PSENT",
+      "coin_hardcap_limit": "10000000.000000"
+    },
+    "database_matrix": {
+      "provider_host": "ep-square-mud-aqek3wfs-pooler.c-8.us-east-1.aws.neon.tech",
+      "connection_security": "PgBouncer-Shield-Active",
+      "tracked_shapes_count": 2154,
+      "precision_scale_depth": "6-Decimals-Enforced",
+      "aggregate_valuation_usd": "162966.400000"
+    },
+    "automation_daemons": {
+      "commodity_relay_loop": "run-mining-pool.sh [Interval: 60 Seconds]",
+      "geometric_morph_worker": "cron-morph-worker.ts [Interval: 7 Days]",
+      "cross_chain_broadcaster": "broadcast-crosschain.sh [Latency Target: 3.0s]"
+    },
+    "local_workspace_blueprints": [
+      "/home/runner/workspace/dashboard.html",
+      "/home/runner/workspace/final_uuon_matrix_backup_2026_06_13.csv",
+      "/home/runner/workspace/mining-pool-history.log"
+    ]
+  }
+}

@@ -1,0 +1,51 @@
+{
+  "source": "Δmension Mathematical Universe",
+  "shapeId": "monte_carlo_risk",
+  "shapeName": "Monte Carlo Risk Simulation",
+  "exportDate": "2026-06-10T20:33:51.857Z",
+  "parameters": {
+    "a": 1,
+    "b": 0.05,
+    "c": 0.2,
+    "d": 10000,
+    "e": 252,
+    "f": 0,
+    "uMin": 0,
+    "uMax": 1,
+    "vMin": 0,
+    "vMax": 1,
+    "uSegments": 128,
+    "vSegments": 64
+  },
+  "dmension_version": "2.0",
+  "security": {
+    "cryptographicHash": "eb9c472ddb2eb9ab231e5bb515207b8db21bdcb9ba4777eb8121814ea3f39bb4",
+    "verificationCode": "UUON-D13MON4-V1",
+    "timestamp": "2026-06-10T20:33:51.857Z",
+    "author": "UUON Foundation Inc.",
+    "organization": "Dmension Mathematical Universe",
+    "copyright": "2024 UUON Foundation Inc. All Rights Reserved.",
+    "license": "CC BY-NC 4.0",
+    "integrityVersion": "2.0",
+    "genesisAnchor": "cf114022b5e4e1d6fdeb36890f35f605857cf2de93b53ebcb9c8e5652413ca04",
+    "fixedAt": "2026-06-16T00:42:41.729Z"
+  },
+  "scene_bounds": {
+    "aabb_min": [
+      -2,
+      -2,
+      -1
+    ],
+    "aabb_max": [
+      2,
+      2,
+      3
+    ],
+    "center": [
+      0,
+      0,
+      1
+    ],
+    "scale": 5
+  }
+}

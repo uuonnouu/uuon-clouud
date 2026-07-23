@@ -1,0 +1,40 @@
+Here's what the diagnostic tells us:
+
+The issue is on the Δmension side, not ours. Here's the breakdown:
+
+DNS: Resolves correctly to 34.117.33.233 (Google Cloud / Replit infrastructure)
+TLS/SSL: Connects and handshakes successfully
+HTTP: Server responds, but EVERY endpoint returns 404 Not Found — including the root /
+Response: Plain text "Not Found" with no HTML — this is a framework-level catch-all, not a missing page
+This means the Δmension app's deployment container is running, but its routes aren't registered — either the app is still booting up, or the deployment didn't load the routes correctly.
+
+Now let me set up the auto-retry so it keeps checking:
+Now let me add an auto-retry background check that logs when Δmension comes online:
+Now start the monitor on server boot. Let me find where the server starts:
+Now let me also add the diagnostic endpoint so you can check it anytime:
+Here's the full diagnostic report:
+
+Diagnosis: The issue is 100% on the Δmension side.
+
+What we tested	Result
+DNS resolution	Working — resolves to 34.117.33.233
+TLS connection	Working — secure handshake completes
+HTTP response	Server is running and responding
+/ (root)	404 Not Found
+/api	404 Not Found
+/api/bridge/status	404 Not Found
+/api/health	404 Not Found
+/api/shapes	404 Not Found
+Verdict: The Δmension deployment container is running, but none of its routes are registered — not even the homepage. The deployment likely didn't finish building properly, or it's still booting up.
+
+What's running on this side:
+
+Auto-retry monitor is active — it checks every 30 seconds and will log the moment Δmension comes online
+It will keep trying for up to 120 attempts (about 1 hour)
+You can check the live status anytime at /api/dmension/diagnostic
+What you can do on the Δmension side:
+
+Open the Δmension app in Replit and check if the deployment completed successfully
+Look at the deployment logs for any build errors
+If it shows "Published" but all routes are 404, try redeploying one more time
+The moment Δmension's routes come online, you'll see [DMENSION] Connected in the logs here — no action needed on this end.

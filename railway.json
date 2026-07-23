@@ -1,15 +1,15 @@
 {
   "$schema": "https://railway.com/railway.schema.json",
   "build": {
-    "builder": "DOCKERFILE",
-    "dockerfilePath": "Dockerfile",
+    "builder": "RAILPACK",
+    "buildCommand": "npm run build",
     "buildEnvironment": "V3"
   },
   "deploy": {
     "runtime": "V2",
     "numReplicas": 1,
-    "startCommand": "npm start",
-    "healthcheckPath": "/api/health",
+    "startCommand": "node dist/index.js",
+    "healthcheckPath": "/health",
     "sleepApplication": false,
     "useLegacyStacker": false,
     "ipv6EgressEnabled": false,
@@ -19,7 +19,6 @@
       }
     },
     "restartPolicyType": "ON_FAILURE",
-    "healthcheckTimeout": 30,
     "restartPolicyMaxRetries": 10
   }
 }

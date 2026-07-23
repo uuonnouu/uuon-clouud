@@ -1,0 +1,136 @@
+
+View Diagnosis
+Search build logs
+
+You reached the start of the range
+Jun 1, 2026, 10:24 PM
+scheduling build on Metal builder "production-builderv3-us-west1-3djd"
+
+stage-0
+FROM ghcr.io/railwayapp/nixpacks:ubuntu-1745885067@sha256:d45c89d80e13d7ad0fd555b5130f22a866d9dd10e861f589932303ef2314c7de
+19ms
+unpacking archive
+431.2 MB
+1.9s
+using build driver nixpacks-v1.41.0
+ 
+╔══════════════════════════════ Nixpacks v1.41.0 ══════════════════════════════╗
+║ setup      │ nodejs_24, npm-9_x, openssl                                     ║
+║──────────────────────────────────────────────────────────────────────────────║
+║ caddy      │ pkgs: caddy                                                     ║
+║            │ cmds: caddy fmt --overwrite /assets/Caddyfile                   ║
+║──────────────────────────────────────────────────────────────────────────────║
+║ install    │ npm ci                                                          ║
+║──────────────────────────────────────────────────────────────────────────────║
+║ build      │ npm install --cache /tmp/.npm --include=dev && npm run          ║
+║            │ build:client && npm run build:server                            ║
+║──────────────────────────────────────────────────────────────────────────────║
+║ start      │ NODE_ENV=production node dist/index.js                          ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+ 
+ 
+Saved output to:
+  snapshot-target-unpack
+
+internal
+load build definition from Dockerfile
+0ms
+
+internal
+load metadata for ghcr.io/railwayapp/nixpacks:ubuntu-1745885067
+325ms
+
+internal
+load .dockerignore
+0ms
+UndefinedVar: Usage of undefined variable '$NIXPACKS_PATH' (line 24)(https://docs.docker.com/go/dockerfile/rule/undefined-var/)
+ details: Variables should be defined before their use
+
+internal
+load build context
+0ms
+
+stage-0
+RUN nix-env -if .nixpacks/nixpkgs-ba913eda2df8eb72147259189d55932012df6301.nix && nix-collect-garbage -d cached
+0ms
+
+stage-0
+RUN nix-env -if .nixpacks/nixpkgs-23f9169c4ccce521379e602cc82ed873a1f1b52b.nix && nix-collect-garbage -d cached
+0ms
+
+stage-0
+COPY .nixpacks/nixpkgs-23f9169c4ccce521379e602cc82ed873a1f1b52b.nix .nixpacks/nixpkgs-23f9169c4ccce521379e602cc82ed873a1f1b52b.nix cached
+0ms
+
+stage-0
+WORKDIR /app/ cached
+0ms
+
+stage-0
+COPY .nixpacks/nixpkgs-ba913eda2df8eb72147259189d55932012df6301.nix .nixpacks/nixpkgs-ba913eda2df8eb72147259189d55932012df6301.nix cached
+0ms
+
+stage-0
+COPY .nixpacks/assets /assets/ cached
+0ms
+
+stage-0
+COPY . /app/.
+951ms
+
+stage-0
+RUN  caddy fmt --overwrite /assets/Caddyfile
+641ms
+
+stage-0
+COPY . /app/.
+117ms
+
+stage-0
+RUN npm ci
+9s
+Run `npm audit` for details.
+uploading snapshot
+211.1 MB
+8.5s
+
+stage-0
+COPY . /app/.
+32s
+
+stage-0
+RUN npm install --cache /tmp/.npm --include=dev && npm run build:client && npm run build:server
+5s
+added 95 packages, removed 1 package, and audited 959 packages in 3s
+114 packages are looking for funding
+  run `npm fund` for details
+9 vulnerabilities (8 moderate, 1 high)
+To address issues that do not require attention, run:
+  npm audit fix
+To address all issues possible (including breaking changes), run:
+  npm audit fix --force
+Some issues need review, and may require choosing
+a different dependency.
+Run `npm audit` for details.
+npm notice
+npm notice New minor version of npm available! 11.6.1 -> 11.16.0
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v11.16.0
+npm notice To update run: npm install -g npm@11.16.0
+npm notice
+> rest-express@1.0.0 build:client
+> vite build --mode production
+vite v6.4.3 building for production...
+✓ 0 modules transformed.
+✗ Build failed in 12ms
+error during build:
+Could not resolve entry module "index.html".
+    at getRollupError (file:///app/node_modules/rollup/dist/es/shared/parseAst.js:317:41)
+    at error (file:///app/node_modules/rollup/dist/es/shared/parseAst.js:313:42)
+    at ModuleLoader.loadEntryModule (file:///app/node_modules/rollup/dist/es/shared/node-entry.js:22140:20)
+    at async Promise.all (index 0)
+npm notice
+npm notice New minor version of npm available! 11.6.1 -> 11.16.0
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v11.16.0
+npm notice To update run: npm install -g npm@11.16.0
+npm notice
+Build Failed: build daemon returned an error < failed to solve: process "/bin/bash -ol pipefail -c npm install --cache /tmp/.npm --include=dev && npm run build:client 

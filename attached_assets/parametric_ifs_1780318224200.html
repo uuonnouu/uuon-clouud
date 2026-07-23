@@ -1,0 +1,905 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>UUON -- Parametric IFS Discovery Engine v1.000</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@300;400;600;700&display=swap');
+:root{
+  --void:#04080f;--teal:#00E5CC;--gold:#C9A84C;
+  --violet:#7B5EA7;--panel:#060c17;
+  --dim:rgba(0,229,204,0.35);--border:rgba(0,229,204,0.10);
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--void);color:var(--teal);font-family:'Share Tech Mono',monospace;height:100vh;overflow:hidden;display:flex;flex-direction:column;}
+header{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;padding:8px 16px;border-bottom:1px solid var(--border);background:var(--panel);flex-shrink:0;}
+.logo{font-family:'Rajdhani',sans-serif;font-weight:700;font-size:12px;letter-spacing:5px;color:var(--gold);}
+.logo em{color:var(--teal);font-style:normal;}
+.etitle{font-family:'Rajdhani',sans-serif;font-size:11px;letter-spacing:4px;color:var(--dim);text-align:center;}
+.ver{text-align:right;font-size:9px;color:rgba(201,168,76,0.55);letter-spacing:2px;}
+.ws{display:flex;flex:1;overflow:hidden;}
+.ca{flex:1;position:relative;background:#000;}
+canvas{width:100%;height:100%;display:block;cursor:crosshair;}
+canvas:active{cursor:grabbing;}
+.hud{position:absolute;top:12px;left:14px;font-size:9px;color:var(--dim);line-height:2.1;pointer-events:none;}
+.hud .v{color:var(--teal);}.hud .g{color:var(--gold);}.hud .vi{color:var(--violet);}
+.fps-tag{position:absolute;top:12px;right:14px;font-size:9px;color:var(--dim);pointer-events:none;text-align:right;line-height:2.1;}
+.fps-tag .v{color:var(--teal);}
+/* Shape DNA readout */
+.dna{position:absolute;bottom:14px;left:14px;font-size:8px;color:rgba(0,229,204,0.3);pointer-events:none;line-height:1.8;letter-spacing:1px;max-width:280px;}
+.dna .dv{color:var(--teal);}
+.panel{width:260px;flex-shrink:0;background:var(--panel);border-left:1px solid var(--border);overflow-y:auto;scrollbar-width:thin;scrollbar-color:rgba(0,229,204,0.08) transparent;}
+.ps{padding:12px 14px;border-bottom:1px solid var(--border);}
+.sl{font-family:'Rajdhani',sans-serif;font-size:9px;letter-spacing:5px;color:var(--gold);opacity:.7;text-transform:uppercase;margin-bottom:10px;}
+.cr{margin-bottom:11px;}
+.cl{display:flex;justify-content:space-between;font-size:9px;color:var(--dim);margin-bottom:4px;}
+.cl .cv{color:var(--teal);}.cl .cg{color:var(--gold);}
+input[type=range]{width:100%;height:1px;-webkit-appearance:none;background:rgba(0,229,204,0.14);outline:none;cursor:pointer;}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:8px;height:8px;border-radius:50%;background:var(--teal);box-shadow:0 0 5px rgba(0,229,204,0.7);cursor:pointer;transition:transform .1s;}
+input[type=range]::-webkit-slider-thumb:hover{transform:scale(1.6);}
+input[type=range].gold::-webkit-slider-thumb{background:var(--gold);box-shadow:0 0 5px rgba(201,168,76,0.7);}
+input[type=range].violet::-webkit-slider-thumb{background:var(--violet);}
+.bg{display:flex;gap:3px;flex-wrap:wrap;margin-bottom:4px;}
+.b{font-family:'Share Tech Mono',monospace;font-size:8.5px;padding:3px 7px;background:transparent;border:1px solid rgba(0,229,204,0.12);color:rgba(0,229,204,0.35);cursor:pointer;transition:all .12s;}
+.b:hover{border-color:var(--teal);color:var(--teal);}
+.b.on{background:rgba(0,229,204,0.07);border-color:var(--teal);color:var(--teal);}
+.ir{display:flex;justify-content:space-between;font-size:8.5px;color:var(--dim);margin-bottom:5px;line-height:1.6;}
+.ir .iv{color:var(--teal);}.ir .ig{color:var(--gold);}
+.ab{width:100%;padding:7px;font-family:'Share Tech Mono',monospace;font-size:8.5px;letter-spacing:2px;background:transparent;border:1px solid var(--border);color:var(--teal);cursor:pointer;transition:all .18s;text-transform:uppercase;margin-bottom:5px;}
+.ab:hover{background:rgba(0,229,204,0.06);border-color:var(--teal);}
+.ab.gb{border-color:rgba(201,168,76,0.2);color:var(--gold);}
+.ab.gb:hover{background:rgba(201,168,76,0.06);border-color:var(--gold);}
+.ab.vb{border-color:rgba(123,94,167,0.3);color:var(--violet);}
+.ab.vb:hover{background:rgba(123,94,167,0.08);border-color:var(--violet);}
+/* Saved shapes list */
+.shape-list{max-height:120px;overflow-y:auto;margin-top:6px;}
+.shape-item{font-size:8px;color:var(--dim);padding:4px 6px;border-bottom:1px solid rgba(0,229,204,0.05);cursor:pointer;display:flex;justify-content:space-between;}
+.shape-item:hover{background:rgba(0,229,204,0.04);color:var(--teal);}
+.shape-item .si-name{color:var(--gold);}
+footer{padding:5px 16px;border-top:1px solid var(--border);background:var(--panel);display:flex;justify-content:space-between;align-items:center;font-size:8px;color:var(--dim);flex-shrink:0;}
+.fi{display:flex;gap:14px;}
+.fi span b{color:var(--teal);font-weight:normal;}
+</style>
+</head>
+<body>
+<header>
+  <div class="logo">UUON <em>Foundation</em></div>
+  <div class="etitle">Parametric IFS Discovery Engine v1.000</div>
+  <div class="ver">MENGER-KLEINIAN KERNEL</div>
+</header>
+<div class="ws">
+  <div class="ca">
+    <canvas id="c"></canvas>
+    <div class="hud">
+      <div>FOLD   <span class="g" id="hFT">NONE</span></div>
+      <div>MI     <span class="v" id="hMI">4</span></div>
+      <div>SC     <span class="v" id="hSC">3.00</span></div>
+      <div>FI     <span class="v" id="hFI">1</span></div>
+      <div>FSC    <span class="g" id="hFSC">2.00</span></div>
+      <div>BL     <span class="vi" id="hBL">0.00</span></div>
+    </div>
+    <!-- Shape DNA -- the parameter fingerprint of the current shape -->
+    <div class="dna" id="dnaDisplay">
+      <div>SHAPE DNA</div>
+      <div id="dnaStr">--</div>
+    </div>
+    <div class="fps-tag">
+      <div>FPS <span class="v" id="fpsEl">--</span></div>
+      <div>RES <span class="v" id="resEl">--</span></div>
+    </div>
+  </div>
+
+  <div class="panel">
+
+    <!-- FOLD TYPE -- the primary shape variable -->
+    <div class="ps">
+      <div class="sl">Fold Type</div>
+      <div class="bg" id="ftg">
+        <button class="b on" data-v="0">NONE</button>
+        <button class="b"    data-v="1">BOX</button>
+        <button class="b"    data-v="2">KLEINIAN</button>
+        <button class="b"    data-v="3">LATTICE</button>
+        <button class="b"    data-v="4">TETRA</button>
+      </div>
+      <div style="font-size:8px;color:rgba(0,229,204,0.25);margin-top:6px;line-height:1.7" id="foldDesc">
+        Pure Menger IFS. Base attractor. Hausdorff dim 2.727.
+      </div>
+    </div>
+
+    <!-- MENGER PARAMETERS -- the base IFS -->
+    <div class="ps">
+      <div class="sl">Menger IFS</div>
+      <div class="cr"><div class="cl">Iterations <span class="cv" id="miV">4</span></div>
+        <input type="range" id="miS" min="1" max="6" step="1" value="4"></div>
+      <div class="cr"><div class="cl">Scale <span class="cv" id="scV">3.00</span></div>
+        <input type="range" id="scS" min="2.0" max="5.0" step="0.02" value="3.0"></div>
+      <div class="cr"><div class="cl">Offset X <span class="cv" id="oxV">1.00</span></div>
+        <input type="range" id="oxS" min="0.2" max="2.5" step="0.01" value="1.0"></div>
+      <div class="cr"><div class="cl">Offset Y <span class="cv" id="oyV">1.00</span></div>
+        <input type="range" id="oyS" min="0.2" max="2.5" step="0.01" value="1.0"></div>
+    </div>
+
+    <!-- FOLD PARAMETERS -- the pretransform -->
+    <div class="ps">
+      <div class="sl">Fold Pretransform</div>
+      <div class="cr"><div class="cl">Fold iterations <span class="cv" id="fiV">1</span></div>
+        <input type="range" id="fiS" min="1" max="8" step="1" value="1"></div>
+      <div class="cr"><div class="cl">Fold size <span class="cg" id="fsV">1.00</span></div>
+        <input type="range" class="gold" id="fsS" min="0.1" max="3.0" step="0.01" value="1.0"></div>
+      <div class="cr"><div class="cl">Fold scale <span class="cv" id="fscV">2.00</span></div>
+        <input type="range" id="fscS" min="1.0" max="4.0" step="0.02" value="2.0"></div>
+      <div class="cr"><div class="cl">Min radius <span class="cv" id="mrV">0.50</span></div>
+        <input type="range" id="mrS" min="0.01" max="2.0" step="0.01" value="0.5"></div>
+      <div class="cr"><div class="cl">Blend <span class="cv" id="blV">0.00</span></div>
+        <input type="range" id="blS" min="0.0" max="1.0" step="0.005" value="0.0"></div>
+    </div>
+
+    <!-- CONTAINER -->
+    <div class="ps">
+      <div class="sl">Container</div>
+      <div class="bg" id="cong">
+        <button class="b on" data-v="0">OPEN</button>
+        <button class="b"    data-v="1">SPHERE</button>
+        <button class="b"    data-v="2">CUBE</button>
+      </div>
+      <div class="cr" style="margin-top:10px">
+        <div class="cl">Container size <span class="cv" id="csV">2.50</span></div>
+        <input type="range" id="csS" min="0.5" max="6.0" step="0.05" value="2.5">
+      </div>
+    </div>
+
+    <!-- DISCOVERY TOOLS -->
+    <div class="ps">
+      <div class="sl">Discovery</div>
+      <button class="ab vb" id="randomBtn">RANDOM EXPLORE</button>
+      <button class="ab vb" id="chaosBtn">CHAOS BOUNDARY</button>
+      <button class="ab" id="morphBtn">MORPH: OFF</button>
+      <div class="cr" style="margin-top:6px">
+        <div class="cl">Morph speed <span class="cv" id="mspV">0.30</span></div>
+        <input type="range" id="mspS" min="0.05" max="2.0" step="0.05" value="0.3">
+      </div>
+    </div>
+
+    <!-- SHAPE LIBRARY -->
+    <div class="ps">
+      <div class="sl">Shape Library</div>
+      <button class="ab gb" id="saveBtn">SAVE CURRENT SHAPE</button>
+      <button class="ab" id="clearBtn">CLEAR LIBRARY</button>
+      <div class="shape-list" id="shapeList"></div>
+    </div>
+
+    <!-- SHADING -->
+    <div class="ps">
+      <div class="sl">Shading</div>
+      <div class="bg" id="cmg">
+        <button class="b on" data-v="0">IRID</button>
+        <button class="b"    data-v="1">TRAP</button>
+        <button class="b"    data-v="2">NORMAL</button>
+        <button class="b"    data-v="3">DEPTH</button>
+      </div>
+      <div class="cr" style="margin-top:8px">
+        <div class="cl">Brightness <span class="cv" id="brV">1.40</span></div>
+        <input type="range" id="brS" min="0.5" max="3.0" step="0.05" value="1.4">
+      </div>
+      <div class="cr"><div class="cl">Specular <span class="cv" id="spV">0.70</span></div>
+        <input type="range" id="spS" min="0" max="2.0" step="0.05" value="0.7"></div>
+      <div class="cr"><div class="cl">Light Az <span class="cv" id="laV">45</span></div>
+        <input type="range" id="laS" min="0" max="360" step="1" value="45"></div>
+      <div class="cr"><div class="cl">Light El <span class="cv" id="leV">35</span></div>
+        <input type="range" id="leS" min="-80" max="80" step="1" value="35"></div>
+      <div class="cr"><div class="cl">Steps <span class="cv" id="rsV">140</span></div>
+        <input type="range" id="rsS" min="48" max="220" step="4" value="140"></div>
+    </div>
+
+    <!-- CAMERA -->
+    <div class="ps">
+      <div class="sl">Camera</div>
+      <div class="cr"><div class="cl">Distance <span class="cv" id="dvV">5.00</span></div>
+        <input type="range" id="dvS" min="1.0" max="14.0" step="0.1" value="5.0"></div>
+      <div class="cr"><div class="cl">FOV <span class="cv" id="fovV">55</span></div>
+        <input type="range" id="fovS" min="25" max="90" step="1" value="55"></div>
+      <div class="cr"><div class="cl">Auto-Rotate</div>
+        <div class="bg" id="arg">
+          <button class="b on" data-v="1">ON</button>
+          <button class="b"    data-v="0">OFF</button>
+        </div>
+      </div>
+      <div class="cr"><div class="cl">Speed <span class="cv" id="rspV">0.20</span></div>
+        <input type="range" id="rspS" min="0.02" max="1.0" step="0.02" value="0.2"></div>
+    </div>
+
+    <!-- ACTIONS -->
+    <div class="ps">
+      <button class="ab" id="resetBtn">RESET VIEW</button>
+      <button class="ab gb" id="shotBtn">PNG EXPORT</button>
+    </div>
+
+  </div>
+</div>
+<footer>
+  <div class="fi"><span><b>DRAG</b> rotate</span><span><b>SCROLL</b> zoom</span><span><b>SHIFT+DRAG</b> light</span></div>
+  <div>UUON Foundation -- Parametric IFS Discovery Engine v1.000</div>
+</footer>
+
+<script>
+const canvas = document.getElementById('c');
+const gl = canvas.getContext('webgl', { antialias:false, preserveDrawingBuffer:true });
+
+const VS = `attribute vec2 p; void main(){ gl_Position=vec4(p,0.0,1.0); }`;
+
+// ============================================================
+// THE MENGER-KLEINIAN IFS KERNEL
+// This is the extractable, portable core.
+// Everything above this line is scaffolding.
+// Everything below this is the shape engine.
+// ============================================================
+const FS = `
+precision highp float;
+
+// ── Uniforms (the shape parameter space) ─────────────────────────────────────
+uniform vec2  uR;
+uniform float uTime;
+
+// MENGER IFS parameters
+uniform int   uMI;    // iterations: 1-6. More = finer detail, slower.
+uniform float uSC;    // scale: 2.0-5.0. Controls self-similarity ratio.
+uniform float uOX;    // offset X: 0.2-2.5. Horizontal void spacing.
+uniform float uOY;    // offset Y: 0.2-2.5. Vertical void spacing. OX!=OY = asymmetric.
+
+// FOLD pretransform parameters
+uniform int   uFT;    // fold type: 0=none 1=box 2=kleinian 3=lattice 4=tetra
+uniform int   uFI;    // fold iterations: 1-8. More iterations = more fold influence.
+uniform float uFS;    // fold size: 0.1-3.0. The fold threshold / inversion radius.
+uniform float uFSC;   // fold scale: 1.0-4.0. Scale applied after each fold.
+uniform float uMR;    // min radius: 0.01-2.0. Sphere fold floor (prevents singularity).
+uniform float uBL;    // blend: 0.0-1.0.
+                      // 0.0 = pure fold attractor fed into Menger
+                      // 1.0 = original position fed into Menger (fold has no effect)
+                      // 0.5 = equal compound -- most interesting zone
+
+// Container
+uniform int   uCON;   // 0=open 1=sphere 2=cube
+uniform float uCS;    // container size
+
+// Shading
+uniform int   uCM;
+uniform float uBright;
+uniform float uSP;
+uniform float uLA;
+uniform float uLE;
+uniform int   uRS;
+uniform float uDV;
+uniform float uFOV;
+uniform vec2  uCAM;
+
+#define PI  3.14159265359
+#define TAU 6.28318530718
+#define PHI 1.61803398875
+#define EPS 0.0007
+#define FAR 20.0
+
+// ============================================================
+// FOLD FUNCTIONS
+// These are the pretransforms. Each one applies a different
+// geometric transformation to the point before the Menger IFS
+// runs. The compound attractor is the Menger IFS operating
+// inside the transformed space.
+// ============================================================
+
+// BOX FOLD: clamp then reflect
+// p -> 2*clamp(p,-s,s) - p
+// Creates Mandelbox-type folding. The fold size s controls
+// where the reflection plane sits. Points outside [-s,s]
+// reflect back inward. Result: periodic attractor.
+vec3 boxFold(vec3 p, float s) {
+  return clamp(p, -s, s) * 2.0 - p;
+}
+
+// SPHERE FOLD: inversion in a sphere
+// Points inside minR sphere: scale up by (fixR/minR)^2
+// Points between minR and fixR: invert r -> fixR^2/r
+// Points outside fixR: unchanged
+// Creates Kleinian-type folding. This is conformal (angle-preserving).
+// The fold is from 19th century complex analysis (Mobius, Klein, Poincare).
+vec3 sphereFold(vec3 p, float minR, float fixR) {
+  float r2 = max(dot(p,p), 0.0001); // floor prevents div-by-zero
+  if(r2 < minR*minR)      return p * (fixR*fixR)/(minR*minR);
+  else if(r2 < fixR*fixR) return p * (fixR*fixR)/r2;
+  return p;
+}
+
+// LATTICE FOLD: modular wrapping
+// Maps all of R3 into a periodic lattice cell [-s, s]^3
+// Then applies scale. Creates infinite repeating structure.
+vec3 latticeFold(vec3 p, float s) {
+  float s2 = 2.0*s;
+  return mod(p + vec3(s), s2) - vec3(s);
+}
+
+// TETRAHEDRAL FOLD: 4-fold symmetry group (Td, 24 operations)
+// Reflects p across the 4 planes of the tetrahedral fundamental domain.
+// The if-swap sequence is the standard Td reduction algorithm.
+vec3 tetraFold(vec3 p) {
+  if(p.x+p.y < 0.0) p.xy = -p.yx;
+  if(p.x+p.z < 0.0) p.xz = -p.zx;
+  if(p.y+p.z < 0.0) p.yz = -p.zy;
+  if(p.x-p.y < 0.0) p.xy =  p.yx;
+  return abs(p);
+}
+
+// ============================================================
+// COMPOUND IFS DISTANCE ESTIMATOR
+// This is the shape. Everything else is rendering infrastructure.
+//
+// How it works:
+// 1. Apply fold pretransform (fi iterations)
+// 2. Blend folded point with original position (uBL)
+// 3. Run Menger IFS on the blended point
+// 4. Return distance + orbit trap
+//
+// The compound attractor is the limit set of steps 1+3 combined.
+// It has self-similarity at both the Menger scale and the fold scale.
+// ============================================================
+vec2 ifsDE(vec3 pos) {
+  vec3 p = pos;
+  float scale = 1.0;
+  float trap  = 1e10;
+
+  // ── Step 1: Fold pretransform ─────────────────────────────────────────────
+  // Each fold type operates differently but all produce a pretransformed
+  // point that the Menger IFS then iterates. The fold is the "outer" IFS,
+  // the Menger is the "inner" IFS. Together = compound IFS.
+  for(int i=0; i<8; i++){
+    if(i >= uFI) break;
+
+    if(uFT == 1) {
+      // BOX: fold then sphere-invert, then scale
+      p = boxFold(p, uFS);
+      p = sphereFold(p, uMR, 1.0);
+      p = p * uFSC;
+      scale *= uFSC;
+    }
+    else if(uFT == 2) {
+      // KLEINIAN: box-fold then sphere-invert with larger radius, additive orbit
+      // The additive pos term creates the distinctive Kleinian bubble structure
+      p = boxFold(p, uFS);
+      p = sphereFold(p, uMR, uFS);
+      p = p * uFSC + pos;  // additive orbit -- key to Kleinian geometry
+      scale *= uFSC;
+    }
+    else if(uFT == 3) {
+      // LATTICE: wrap into periodic cell, then scale
+      p = latticeFold(p, uFS);
+      p = p * uFSC;
+      scale *= uFSC;
+    }
+    else if(uFT == 4) {
+      // TETRA: reduce to tetrahedral domain, offset, scale
+      p = tetraFold(p);
+      p = p * uFSC - vec3(uFS);
+      scale *= uFSC;
+    }
+    else break; // uFT==0: no fold, skip loop entirely
+
+    trap = min(trap, length(p));
+  }
+
+  // ── Step 2: Symmetric blend ───────────────────────────────────────────────
+  // This is the key control for compound IFS exploration.
+  // At uBL=0.0: the Menger IFS sees the fully folded point
+  //             -> maximum fold influence -> most complex compound structure
+  // At uBL=1.0: the Menger IFS sees the original position
+  //             -> fold has no effect -> pure Menger Sponge
+  // At uBL=0.5: equal mix -> hybrid attractor, usually most interesting
+  // Moving uBL slowly from 0 to 1 morphs between the two attractors.
+  vec3 pm = mix(p, pos, uBL);
+
+  // ── Step 3: Menger IFS ────────────────────────────────────────────────────
+  // The Knighty method: abs-fold + sort + scale-and-offset
+  // This produces the cross-cylinder DE which IS the Menger Sponge.
+  // OX != OY creates asymmetric void spacing (warp/weft effect).
+  vec3 q  = pm;
+  float ms = 1.0;
+
+  for(int i=0; i<6; i++){
+    if(i >= uMI) break;
+
+    // Abs fold: octant reduction (maps all of R3 into positive octant)
+    q = abs(q);
+
+    // Sort descending: the key step that creates 3-axis cross symmetry
+    // Without this sort, you get 3 separate cylinders instead of their intersection
+    if(q.x < q.y) q.xy = q.yx;
+    if(q.x < q.z) q.xz = q.zx;
+    if(q.y < q.z) q.yz = q.zy;
+
+    // Scale and offset: the IFS contraction
+    // OX controls horizontal void size, OY controls vertical
+    // When OX=OY: cubic voids (standard Menger)
+    // When OX!=OY: rectangular voids (anisotropic Menger)
+    q.x = uSC*q.x - uOX*(uSC-1.0);
+    q.y = uSC*q.y - uOY*(uSC-1.0);
+    q.z = uSC*q.z - uOX*(uSC-1.0);
+    ms *= uSC;
+
+    trap = min(trap, min(length(q.xy),length(q.xz)) / ms);
+  }
+
+  // Cross-cylinder DE:
+  // Three infinite square prisms along X, Y, Z axes.
+  // Their intersection is the Menger Sponge complement.
+  // min() of the three = distance to nearest cylinder surface.
+  float cyl = min(min(length(q.xy), length(q.xz)), length(q.yz));
+  float d   = (cyl - 1.0) / ms;
+
+  // ── Step 4: Container intersection ───────────────────────────────────────
+  // d = max(IFS, container) = geometric intersection
+  // Only render geometry inside both the IFS attractor AND the container.
+  if(uCON == 1) {
+    // Sphere
+    d = max(d, length(pos) - uCS);
+  } else if(uCON == 2) {
+    // Cube
+    vec3 bp = abs(pos) - vec3(uCS);
+    float cubeD = length(max(bp,0.0)) + min(max(bp.x,max(bp.y,bp.z)),0.0);
+    d = max(d, cubeD);
+  } else {
+    // Open: soft guide only -- lets attractor breathe
+    float guideR = max(uFS * uFSC * 1.2, 2.0);
+    vec3 bp = abs(pos) - vec3(guideR);
+    float guideD = length(max(bp,0.0)) + min(max(bp.x,max(bp.y,bp.z)),0.0);
+    d = max(d, guideD * 0.12);
+  }
+
+  return vec2(d, clamp(trap * 0.5, 0.0, 1.0));
+}
+
+// ============================================================
+// RENDERING (scaffolding -- not part of the IFS kernel)
+// ============================================================
+
+float sd(vec3 p){ return ifsDE(p).x; }
+
+vec3 calcNormal(vec3 p){
+  vec2 e=vec2(EPS*3.0,0.0);
+  return normalize(vec3(sd(p+e.xyy)-sd(p-e.xyy),sd(p+e.yxy)-sd(p-e.yxy),sd(p+e.yyx)-sd(p-e.yyx)));
+}
+
+float calcAO(vec3 p,vec3 n){
+  float occ=0.0,w=1.0;
+  for(int i=1;i<=8;i++){float h=0.015+0.22*float(i)/8.0;occ+=max(0.0,h-sd(p+n*h))*w;w*=0.45;}
+  return clamp(1.0-5.0*occ,0.0,1.0);
+}
+
+mat3 camMat(vec3 ro,vec3 ta){
+  vec3 f=normalize(ta-ro),r=normalize(cross(vec3(0,1,0),f));
+  return mat3(r,cross(f,r),f);
+}
+
+vec3 iridColor(float trap,float NdotV,vec3 p){
+  float fresnel=pow(1.0-NdotV,2.5);
+  float phase=NdotV*3.4+trap*2.1+p.x*0.5+p.z*0.35+uTime*0.035;
+  vec3 ir;
+  ir.r=0.55+0.55*cos(TAU*(phase+0.0));
+  ir.g=0.55+0.55*cos(TAU*(phase+0.333));
+  ir.b=0.55+0.55*cos(TAU*(phase+0.667));
+  ir=clamp(ir*1.3,0.0,1.0);
+  float sh=0.5+0.5*sin(trap*18.0+phase*3.2);
+  ir=mix(ir,ir*vec3(1.4,0.8,1.6),sh*0.4);
+  vec3 dark=vec3(0.02,0.03,0.055);
+  vec3 under=mix(vec3(0.0,0.9,0.8),vec3(0.9,0.72,0.2),trap);
+  return mix(mix(dark,ir,0.72+0.28*fresnel),under*1.2,(1.0-fresnel)*0.22);
+}
+
+void main(){
+  vec2 uv=(gl_FragCoord.xy-0.5*uR)/uR.y;
+  float ct=uCAM.x,cp2=uCAM.y;
+  vec3 ro=vec3(uDV*sin(cp2)*cos(ct),uDV*sin(ct),uDV*cos(cp2)*cos(ct));
+  mat3 cam=camMat(ro,vec3(0.0));
+  vec3 rd=normalize(cam*vec3(uv*tan(radians(uFOV*0.5)),1.0));
+  float la=radians(uLA),le=radians(uLE);
+  vec3 ld=normalize(vec3(cos(le)*cos(la),sin(le),cos(le)*sin(la)));
+
+  float t=0.01,trap=0.0;
+  bool hit=false;
+  for(int s=0;s<220;s++){
+    if(float(s)>=float(uRS)) break;
+    vec3 p=ro+rd*t;
+    vec2 res=ifsDE(p);
+    float d=res.x; trap=res.y;
+    if(d<EPS*(1.0+t*0.2)){hit=true;break;}
+    if(t>FAR) break;
+    t+=max(d*0.45,EPS*2.0);
+  }
+
+  vec3 bg=vec3(0.008,0.012,0.025);
+  bg*=1.0-dot(uv,uv)*0.28;
+  vec3 col=bg;
+
+  if(hit){
+    vec3 p=ro+rd*t;
+    vec3 n=calcNormal(p);
+    float occ=calcAO(p,n);
+    float NdotV=max(0.0,dot(n,-rd));
+    float diff=max(0.0,dot(n,ld));
+    vec3 h2=normalize(ld-rd);
+    float spec=pow(max(0.0,dot(n,h2)),90.0)*uSP;
+    float glow=pow(max(0.0,dot(n,normalize(ld-rd))),8.0)*uSP*0.3;
+
+    vec3 base;
+    if(uCM==0)      base=iridColor(trap,NdotV,p);
+    else if(uCM==1) base=mix(vec3(0.0,0.9,0.8),vec3(0.9,0.72,0.2),smoothstep(0.1,0.8,trap));
+    else if(uCM==2) base=n*0.5+0.5;
+    else            base=mix(vec3(0.0,0.9,0.8),vec3(0.9,0.72,0.2),clamp(t/6.0,0.0,1.0));
+
+    col  = base*0.11*occ;
+    col += base*diff*occ*0.92;
+    col += base*glow;
+    col += vec3(1.0,0.97,0.88)*spec;
+    float sh=clamp(sd(p+ld*0.04)*22.0,0.0,1.0);
+    col*=mix(0.45,1.0,sh);
+    col=mix(col,bg,clamp((t-3.0)/FAR,0.0,0.18));
+  }
+
+  col*=uBright;
+  col=pow(max(col,0.0),vec3(0.42));
+  col*=1.0-dot(uv,uv)*0.48;
+  gl_FragColor=vec4(col,1.0);
+}
+`;
+
+// ============================================================
+// JS ENGINE (scaffolding)
+// ============================================================
+
+function mkS(type,src){
+  var s=gl.createShader(type);gl.shaderSource(s,src);gl.compileShader(s);
+  if(!gl.getShaderParameter(s,gl.COMPILE_STATUS))console.error(gl.getShaderInfoLog(s));
+  return s;
+}
+var prog=gl.createProgram();
+gl.attachShader(prog,mkS(gl.VERTEX_SHADER,VS));
+gl.attachShader(prog,mkS(gl.FRAGMENT_SHADER,FS));
+gl.linkProgram(prog);gl.useProgram(prog);
+var buf=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,buf);
+gl.bufferData(gl.ARRAY_BUFFER,new Float32Array([-1,-1,1,-1,-1,1,-1,1,1,-1,1,1]),gl.STATIC_DRAW);
+var ap=gl.getAttribLocation(prog,'p');gl.enableVertexAttribArray(ap);gl.vertexAttribPointer(ap,2,gl.FLOAT,false,0,0);
+
+var U={};
+['uR','uTime','uMI','uSC','uOX','uOY','uFT','uFI','uFS','uFSC','uMR','uBL',
+ 'uCON','uCS','uCM','uBright','uSP','uLA','uLE','uRS','uDV','uFOV','uCAM']
+.forEach(function(n){U[n]=gl.getUniformLocation(prog,n);});
+
+// -- State ---------------------------------------------------------------------
+var S={
+  mi:4, sc:3.0, ox:1.0, oy:1.0,
+  ft:0, fi:1, fs:1.0, fsc:2.0, mr:0.5, bl:0.0,
+  con:0, cs:2.5,
+  cm:0, bright:1.4, sp:0.7, la:45, le:35, rs:140,
+  dv:5.0, fov:55,
+  autoRot:true, rotSpeed:0.2,
+  camTheta:0.3, camPhi:0.0,
+  t:0, lastTs:0,
+  morph:false, morphSpeed:0.3
+};
+
+var FOLD_DESC = [
+  'Pure Menger IFS. Base attractor. Hausdorff dim 2.727.',
+  'Box fold (Mandelbox-type). Clamp-reflect. Creates bulbous compound forms. Stable below fsc 2.0.',
+  'Kleinian sphere inversion. Conformal fold from 19th century complex analysis. Creates bubble/limit set geometry.',
+  'Lattice fold. Periodic wrapping into cubic cell. Creates infinite repeating compound lattice.',
+  'Tetrahedral fold. Td symmetry group (24 ops). Creates 4-fold angular compound forms.',
+];
+
+// -- Shape DNA -- compact parameter fingerprint --------------------------------
+// Format: ft:mi:sc:ox:oy:fi:fs:fsc:mr:bl
+// This uniquely identifies any shape in the parameter space.
+// Two shapes with the same DNA are identical.
+function getDNA() {
+  return [
+    'ft'+S.ft,
+    'mi'+S.mi,
+    'sc'+S.sc.toFixed(2),
+    'ox'+S.ox.toFixed(2),
+    'oy'+S.oy.toFixed(2),
+    'fi'+S.fi,
+    'fs'+S.fs.toFixed(2),
+    'fsc'+S.fsc.toFixed(2),
+    'mr'+S.mr.toFixed(2),
+    'bl'+S.bl.toFixed(3),
+  ].join('|');
+}
+
+function setFromDNA(dna) {
+  var parts = dna.split('|');
+  parts.forEach(function(p){
+    if(p.startsWith('ft'))  S.ft=parseInt(p.slice(2));
+    if(p.startsWith('mi'))  S.mi=parseInt(p.slice(2));
+    if(p.startsWith('sc'))  S.sc=parseFloat(p.slice(2));
+    if(p.startsWith('ox'))  S.ox=parseFloat(p.slice(2));
+    if(p.startsWith('oy'))  S.oy=parseFloat(p.slice(2));
+    if(p.startsWith('fi'))  S.fi=parseInt(p.slice(2));
+    if(p.startsWith('fs'))  S.fs=parseFloat(p.slice(2));
+    if(p.startsWith('fsc')) S.fsc=parseFloat(p.slice(3));
+    if(p.startsWith('mr'))  S.mr=parseFloat(p.slice(2));
+    if(p.startsWith('bl'))  S.bl=parseFloat(p.slice(2));
+  });
+  syncAll();
+}
+
+function updateDNA() {
+  document.getElementById('dnaStr').textContent = getDNA().replace(/\|/g,' | ');
+}
+
+// -- Shape library -------------------------------------------------------------
+var savedShapes = [];
+
+function renderShapeList() {
+  var list = document.getElementById('shapeList');
+  list.innerHTML = '';
+  if(savedShapes.length===0){
+    list.innerHTML='<div style="font-size:8px;color:rgba(0,229,204,0.2);padding:6px">No shapes saved yet</div>';
+    return;
+  }
+  savedShapes.forEach(function(shape, i){
+    var item = document.createElement('div');
+    item.className = 'shape-item';
+    item.innerHTML = '<span class="si-name">'+shape.name+'</span><span>'+shape.dna.split('|').slice(0,3).join(' ')+'</span>';
+    item.addEventListener('click', function(){
+      setFromDNA(shape.dna);
+      syncBtn('ftg', S.ft);
+      document.getElementById('foldDesc').textContent = FOLD_DESC[S.ft];
+    });
+    list.appendChild(item);
+  });
+}
+
+document.getElementById('saveBtn').addEventListener('click',function(){
+  var name = 'Shape '+(savedShapes.length+1)+' [ft'+S.ft+' mi'+S.mi+']';
+  savedShapes.push({name:name, dna:getDNA()});
+  renderShapeList();
+});
+
+document.getElementById('clearBtn').addEventListener('click',function(){
+  savedShapes=[];renderShapeList();
+});
+
+// -- Discovery: Random explore with chaos guards -------------------------------
+// Safe ranges derived empirically from chaos analysis:
+// fsc > 2.0 with fi > 3 produces chaos (unbounded orbits)
+// fsc > 1.85 with ft=2 (Kleinian) causes singularities
+// mi > 5 with rs > 140 causes severe performance degradation
+function safeRandom() {
+  var ft = [0,0,1,1,2,3,4][Math.floor(Math.random()*7)];
+  var fi = ft===0 ? 1 : 1+Math.floor(Math.random()*3);
+  var fsc_max = ft===2 ? 1.8 : ft===0 ? 2.0 : 2.2;
+  return {
+    ft:ft, mi:2+Math.floor(Math.random()*3), fi:fi,
+    sc:2.5+Math.random()*1.5, ox:0.7+Math.random()*0.8, oy:0.7+Math.random()*0.8,
+    fs:0.3+Math.random()*1.4, fsc:1.4+Math.random()*(fsc_max-1.4),
+    mr:0.2+Math.random()*0.6, bl:Math.random()*0.5,
+    con:S.con, cs:S.cs,
+    cm:Math.floor(Math.random()*4),
+    bright:1.2+Math.random()*0.6, sp:0.4+Math.random()*0.9,
+    la:Math.random()*360, le:10+Math.random()*50,
+    rs:S.rs, dv:S.dv, fov:S.fov,
+  };
+}
+
+// CHAOS BOUNDARY: deliberately push toward the edge of stability
+// These are the parameter regions where the most unusual shapes appear
+// fsc right at the stability limit for each fold type
+function chaosRandom() {
+  var ft = [1,2,3,4][Math.floor(Math.random()*4)]; // always use a fold
+  var fi = 2+Math.floor(Math.random()*2);
+  var fsc_edge = ft===2 ? 1.75+Math.random()*0.08 : 1.85+Math.random()*0.12; // near but under chaos
+  return {
+    ft:ft, mi:3+Math.floor(Math.random()*2), fi:fi,
+    sc:2.8+Math.random()*0.8, ox:0.8+Math.random()*0.6, oy:0.8+Math.random()*0.6,
+    fs:0.5+Math.random()*1.0, fsc:fsc_edge,
+    mr:0.3+Math.random()*0.4, bl:Math.random()*0.3,
+    con:S.con, cs:S.cs,
+    cm:Math.floor(Math.random()*4),
+    bright:1.3+Math.random()*0.5, sp:0.5+Math.random()*1.0,
+    la:Math.random()*360, le:10+Math.random()*60,
+    rs:S.rs, dv:S.dv, fov:S.fov,
+  };
+}
+
+function applySnapshot(snap) {
+  Object.assign(S, snap);
+  syncAll();
+  syncBtn('ftg', S.ft);
+  syncBtn('cong', S.con);
+  syncBtn('cmg', S.cm);
+  document.getElementById('foldDesc').textContent = FOLD_DESC[S.ft];
+}
+
+document.getElementById('randomBtn').addEventListener('click',function(){
+  applySnapshot(safeRandom());
+});
+document.getElementById('chaosBtn').addEventListener('click',function(){
+  applySnapshot(chaosRandom());
+});
+
+// -- Morph: smooth interpolation through parameter space -----------------------
+var morphFrom=null, morphTo=null, morphT=1.0;
+document.getElementById('morphBtn').addEventListener('click',function(){
+  S.morph=!S.morph;
+  this.textContent='MORPH: '+(S.morph?'ON':'OFF');
+  this.classList.toggle('on',S.morph);
+  if(S.morph&&morphT>=1.0){
+    morphFrom=JSON.parse(JSON.stringify(S));
+    morphTo=safeRandom(); morphTo.ft=S.ft; // hold fold type during morph
+    morphT=0.0;
+  }
+});
+
+document.getElementById('mspS').addEventListener('input',function(){
+  S.morphSpeed=parseFloat(this.value);
+  document.getElementById('mspV').textContent=S.morphSpeed.toFixed(2);
+});
+
+function morphStep(dt){
+  if(!S.morph) return;
+  morphT+=dt*S.morphSpeed/6.0;
+  if(morphT>=1.0){
+    Object.assign(S,morphTo);
+    syncAll();
+    morphFrom=JSON.parse(JSON.stringify(S));
+    morphTo=safeRandom(); morphTo.ft=S.ft;
+    morphT=0.0;
+    return;
+  }
+  if(!morphFrom||!morphTo) return;
+  var e=0.5-0.5*Math.cos(morphT*Math.PI);
+  function l(a,b,t){return a+(b-a)*t;}
+  S.sc=l(morphFrom.sc,morphTo.sc,e);    S.ox=l(morphFrom.ox,morphTo.ox,e);
+  S.oy=l(morphFrom.oy,morphTo.oy,e);    S.fs=l(morphFrom.fs,morphTo.fs,e);
+  S.fsc=l(morphFrom.fsc,morphTo.fsc,e); S.mr=l(morphFrom.mr,morphTo.mr,e);
+  S.bl=l(morphFrom.bl,morphTo.bl,e);    S.sp=l(morphFrom.sp,morphTo.sp,e);
+  S.la=l(morphFrom.la,morphTo.la,e);
+}
+
+// -- Input ---------------------------------------------------------------------
+var drag=false,lx=0,ly=0,shiftDrag=false;
+canvas.addEventListener('mousedown',function(e){
+  drag=true;lx=e.clientX;ly=e.clientY;shiftDrag=e.shiftKey;
+  if(!shiftDrag){S.autoRot=false;syncBtn('arg',0);}
+});
+window.addEventListener('mouseup',function(){drag=false;});
+window.addEventListener('mousemove',function(e){
+  if(!drag)return;
+  var dx=(e.clientX-lx)*0.006,dy=(e.clientY-ly)*0.006;
+  lx=e.clientX;ly=e.clientY;
+  if(shiftDrag){S.la=(S.la+dx*40+360)%360;sld('laS','la','laV',0);}
+  else{S.camPhi+=dx;S.camTheta=Math.max(-1.3,Math.min(1.3,S.camTheta+dy));}
+});
+canvas.addEventListener('wheel',function(e){
+  e.preventDefault();S.dv=Math.max(1.0,Math.min(14.0,S.dv+e.deltaY*0.006));
+  syncS('dvS','dv','dvV',2);
+},{passive:false});
+var lt2=null;
+canvas.addEventListener('touchstart',function(e){lt2=e.touches[0];S.autoRot=false;},{passive:true});
+canvas.addEventListener('touchmove',function(e){
+  if(!lt2)return;
+  S.camPhi+=(e.touches[0].clientX-lt2.clientX)*0.006;
+  S.camTheta=Math.max(-1.3,Math.min(1.3,S.camTheta+(e.touches[0].clientY-lt2.clientY)*0.006));
+  lt2=e.touches[0];
+},{passive:true});
+
+// -- Helpers -------------------------------------------------------------------
+function syncS(sid,key,did,dec){
+  var el=document.getElementById(sid);if(!el)return;el.value=S[key];
+  var d=document.getElementById(did);if(!d)return;
+  d.textContent=(dec>0&&typeof S[key]==='number')?S[key].toFixed(dec):S[key];
+}
+function syncBtn(gid,val){
+  document.querySelectorAll('#'+gid+' .b').forEach(function(b){
+    b.classList.toggle('on',parseInt(b.dataset.v)===val);
+  });
+}
+function sld(sid,key,did,dec){
+  document.getElementById(sid).addEventListener('input',function(){
+    S[key]=parseFloat(this.value);
+    var d=document.getElementById(did);if(d)d.textContent=(dec>0)?S[key].toFixed(dec):S[key];
+    syncHUD(); updateDNA();
+  });
+}
+function bg3(cid,key,cb){
+  document.getElementById(cid).querySelectorAll('.b').forEach(function(b){
+    b.addEventListener('click',function(){S[key]=parseInt(b.dataset.v);syncBtn(cid,S[key]);if(cb)cb(S[key]);});
+  });
+}
+
+function syncAll(){
+  var pairs=[['miS','mi','miV',0],['scS','sc','scV',2],['oxS','ox','oxV',2],['oyS','oy','oyV',2],
+             ['fiS','fi','fiV',0],['fsS','fs','fsV',2],['fscS','fsc','fscV',2],['mrS','mr','mrV',2],
+             ['blS','bl','blV',3],['csS','cs','csV',2],['dvS','dv','dvV',2],['fovS','fov','fovV',0],
+             ['spS','sp','spV',2],['laS','la','laV',0],['leS','le','leV',0],['rsS','rs','rsV',0],
+             ['brS','bright','brV',2]];
+  pairs.forEach(function(r){syncS(r[0],r[1],r[2],r[3]);});
+  syncHUD(); updateDNA();
+}
+
+// Wire all sliders
+sld('miS','mi','miV',0);   sld('scS','sc','scV',2);
+sld('oxS','ox','oxV',2);   sld('oyS','oy','oyV',2);
+sld('fiS','fi','fiV',0);   sld('fsS','fs','fsV',2);
+sld('fscS','fsc','fscV',2);sld('mrS','mr','mrV',2);
+sld('blS','bl','blV',3);   sld('csS','cs','csV',2);
+sld('dvS','dv','dvV',2);   sld('fovS','fov','fovV',0);
+sld('spS','sp','spV',2);   sld('laS','la','laV',0);
+sld('leS','le','leV',0);   sld('rsS','rs','rsV',0);
+sld('brS','bright','brV',2);
+
+// Wire button groups
+bg3('ftg','ft',function(v){
+  document.getElementById('foldDesc').textContent=FOLD_DESC[v];
+  syncHUD(); updateDNA();
+});
+bg3('cmg','cm');
+bg3('arg','autoRot');
+bg3('cong','con');
+
+document.getElementById('resetBtn').addEventListener('click',function(){
+  S.camTheta=0.3;S.camPhi=0;S.dv=5.0;syncS('dvS','dv','dvV',2);
+});
+document.getElementById('shotBtn').addEventListener('click',function(){
+  var a=document.createElement('a');a.href=canvas.toDataURL('image/png');
+  a.download='IFS_discovery_'+getDNA().replace(/[|:]/g,'_').slice(0,40)+'_'+Date.now()+'.png';
+  a.style.display='none';document.body.appendChild(a);a.click();
+  setTimeout(function(){document.body.removeChild(a);},200);
+});
+
+// -- HUD -----------------------------------------------------------------------
+function syncHUD(){
+  document.getElementById('hFT').textContent=['NONE','BOX','KLEINIAN','LATTICE','TETRA'][S.ft];
+  document.getElementById('hMI').textContent=S.mi;
+  document.getElementById('hSC').textContent=S.sc.toFixed(2);
+  document.getElementById('hFI').textContent=S.fi;
+  document.getElementById('hFSC').textContent=S.fsc.toFixed(2);
+  document.getElementById('hBL').textContent=S.bl.toFixed(3);
+}
+
+// -- Render loop ---------------------------------------------------------------
+var lastTs=0,ffc=0,fft=0;
+function frame(ts){
+  var dt=Math.min((ts-lastTs)/1000,0.05);lastTs=ts;S.t+=dt;
+  ffc++;fft+=dt;
+  if(fft>=0.5){document.getElementById('fpsEl').textContent=(ffc/fft).toFixed(1);ffc=0;fft=0;}
+
+  var dpr=Math.min(window.devicePixelRatio,1.5);
+  var w=canvas.clientWidth*dpr|0,h=canvas.clientHeight*dpr|0;
+  if(canvas.width!==w||canvas.height!==h){canvas.width=w;canvas.height=h;gl.viewport(0,0,w,h);}
+  document.getElementById('resEl').textContent=w+'x'+h;
+
+  if(S.autoRot) S.camPhi+=dt*S.rotSpeed*0.4;
+  morphStep(dt);
+
+  gl.uniform2f(U.uR,canvas.width,canvas.height);
+  gl.uniform1f(U.uTime,S.t);
+  gl.uniform1i(U.uMI,S.mi);    gl.uniform1f(U.uSC,S.sc);
+  gl.uniform1f(U.uOX,S.ox);    gl.uniform1f(U.uOY,S.oy);
+  gl.uniform1i(U.uFT,S.ft);    gl.uniform1i(U.uFI,S.fi);
+  gl.uniform1f(U.uFS,S.fs);    gl.uniform1f(U.uFSC,S.fsc);
+  gl.uniform1f(U.uMR,S.mr);    gl.uniform1f(U.uBL,S.bl);
+  gl.uniform1i(U.uCON,S.con);  gl.uniform1f(U.uCS,S.cs);
+  gl.uniform1i(U.uCM,S.cm);    gl.uniform1f(U.uBright,S.bright);
+  gl.uniform1f(U.uSP,S.sp);    gl.uniform1f(U.uLA,S.la);
+  gl.uniform1f(U.uLE,S.le);    gl.uniform1i(U.uRS,S.rs);
+  gl.uniform1f(U.uDV,S.dv);    gl.uniform1f(U.uFOV,S.fov);
+  gl.uniform2f(U.uCAM,S.camTheta,S.camPhi);
+  gl.drawArrays(gl.TRIANGLES,0,6);
+  requestAnimationFrame(frame);
+}
+
+// Init
+renderShapeList();
+syncHUD();
+updateDNA();
+requestAnimationFrame(frame);
+</script>
+</body>
+</html>

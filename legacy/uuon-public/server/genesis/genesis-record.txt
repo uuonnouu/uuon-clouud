@@ -1,0 +1,20 @@
+UUON CHAIN — GENESIS RECORD
+============================
+Date:        2026-06-05T04:42:25.659Z
+Chain:       UUON Chain (Δmension / UUON Foundation)
+Merkle Root: 0xc306d8c5e313a8108c263f7ef80376b741718258c8bb3e3ce47f08f730191e24
+Blocks:      12,335
+Transactions:14,986
+Tokens:      118 Whistler Waves
+
+TOKEN ALLOCATION
+-----------------
+115  SOCIAL_IMPACT_RESERVE   — gap-closing programs (TBD)
+  1  UUON_CHAIN_OPERATIONS   — powers the chain forever
+  1  DMENSION_FOUNDER        — founder reward
+  1  PUBLIC_GIFT             — public giveaway
+
+ANCHOR
+------
+Bitcoin OTS Pool: a.pool.opentimestamps.org
+Verify at:        https://opentimestamps.org

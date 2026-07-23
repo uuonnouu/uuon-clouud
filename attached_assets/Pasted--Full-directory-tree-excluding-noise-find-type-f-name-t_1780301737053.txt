@@ -1,0 +1,1024 @@
+# Full directory tree, excluding noise
+find . -type f \( -name "*.ts" -o -name "*.tsx" \) \
+  ! -path "*/node_modules/*" ! -path "*/.git/*" ! -path "*/dist/*" \
+  | sort | head -100
+./client/src/App.tsx
+./client/src/components/AboutPages.tsx
+./client/src/components/AccessibilityControls.tsx
+./client/src/components/AccessibilityToggle.tsx
+./client/src/components/ActiveParameterIndicators.tsx
+./client/src/components/AdvancedEffectsRenderer.tsx
+./client/src/components/AdvancedVisualizationSuite.tsx
+./client/src/components/AIAssistantPanel.tsx
+./client/src/components/AnimationExportModal.tsx
+./client/src/components/AnimationExportPanel.tsx
+./client/src/components/APIConnectivityPanel.tsx
+./client/src/components/AppFooter.tsx
+./client/src/components/ARVRExportPanel.tsx
+./client/src/components/AssetManagementPanel.tsx
+./client/src/components/atomic/AlphaRadiation.tsx
+./client/src/components/atomic/Antimatter.tsx
+./client/src/components/atomic/BetaRadiation.tsx
+./client/src/components/atomic/BlackHoleEdge.tsx
+./client/src/components/atomic/BlackHoleJets.tsx
+./client/src/components/atomic/BlackHole.tsx
+./client/src/components/atomic/BohrModel.tsx
+./client/src/components/atomic/Brain.tsx
+./client/src/components/atomic/CosmicRadiation.tsx
+./client/src/components/atomic/ElectromagneticRadiation.tsx
+./client/src/components/atomic/ElectronCloud.tsx
+./client/src/components/atomic/Electron.tsx
+./client/src/components/AtomicExplorer.tsx
+./client/src/components/atomic/Eye.tsx
+./client/src/components/atomic/GammaRadiation.tsx
+./client/src/components/atomic/GravitationalLensing.tsx
+./client/src/components/atomic/GravitationalWaves.tsx
+./client/src/components/atomic/Heart.tsx
+./client/src/components/atomic/HiggsBoson.tsx
+./client/src/components/atomic/Kidneys.tsx
+./client/src/components/atomic/Liver.tsx
+./client/src/components/atomic/Lungs.tsx
+./client/src/components/atomic/NeutronRadiation.tsx
+./client/src/components/atomic/Neutron.tsx
+./client/src/components/atomic/Nucleus.tsx
+./client/src/components/atomic/Photon.tsx
+./client/src/components/atomic/Proton.tsx
+./client/src/components/atomic/QuantumStrings.tsx
+./client/src/components/atomic/Quark.tsx
+./client/src/components/atomic/RutherfordModel.tsx
+./client/src/components/AtomicSelector.tsx
+./client/src/components/atomic/Singularity.tsx
+./client/src/components/atomic/SpacetimeGrain.tsx
+./client/src/components/atomic/Spine.tsx
+./client/src/components/atomic/Stomach.tsx
+./client/src/components/atomic/ThomsonModel.tsx
+./client/src/components/atomic/TimeDilation.tsx
+./client/src/components/AtomicVisualization.tsx
+./client/src/components/atomic/WhiteHole.tsx
+./client/src/components/atomic/Wormhole.tsx
+./client/src/components/AttachedAssetsBrowser.tsx
+./client/src/components/AuthorshipVerificationPanel.tsx
+./client/src/components/AutonomousContractPanel.tsx
+./client/src/components/BiblicalAnalysisPanel.tsx
+./client/src/components/BlockchainAlgorithmsPanel.tsx
+./client/src/components/CanvasOverlayControls.tsx
+./client/src/components/ChangelogViewer.tsx
+./client/src/components/ChromaticAberration.tsx
+./client/src/components/ClaudeDiscoveryPanel.tsx
+./client/src/components/CollaborativeSharing.tsx
+./client/src/components/ColorToShapeConverter.tsx
+./client/src/components/CommunityFeatures.tsx
+./client/src/components/ComprehensiveParameterPanel.tsx
+./client/src/components/CopyrightNotice.tsx
+./client/src/components/CustomPlot.tsx
+./client/src/components/D3Chart.tsx
+./client/src/components/DepthEffects.tsx
+./client/src/components/DevelopmentSyncIndicator.tsx
+./client/src/components/DimensionalVisualizer.tsx
+./client/src/components/DynamicEffects.tsx
+./client/src/components/DynamicMaterialPanel.tsx
+./client/src/components/EmbeddedEngine.tsx
+./client/src/components/EmojiShapeConverter.tsx
+./client/src/components/EnergyStoragePanel.tsx
+./client/src/components/EnergySystemExplanation.tsx
+./client/src/components/EngineeringPBRPanel.tsx
+./client/src/components/EnhancedAnatomyRenderer.tsx
+./client/src/components/EnhancedInteractionControls.tsx
+./client/src/components/EnhancedMathErrorBoundary.tsx
+./client/src/components/EquationDisplay.tsx
+./client/src/components/ExpandedControlPanel.tsx
+./client/src/components/ExportPasswordModal.tsx
+./client/src/components/FormulaBenefitsPage.tsx
+./client/src/components/FormulaExplorer.tsx
+./client/src/components/FormulaMappingPanel.tsx
+./client/src/components/FractalBiosystem.tsx
+./client/src/components/FractalFormulaPanel.tsx
+./client/src/components/GeometricIdentityPanel.tsx
+./client/src/components/GMod6ControlPanel.tsx
+./client/src/components/GroundPlane.tsx
+./client/src/components/HypercomputationPanel.tsx
+./client/src/components/IFSCanvas.tsx
+./client/src/components/IFSControlPanel.tsx
+./client/src/components/InteractiveControls.tsx
+./client/src/components/InteractivePhysicsGrid.tsx
+./client/src/components/InteractivePhysicsPanel.tsx………. # File counts by type
+find . ! -path "*/node_modules/*" ! -path "*/.git/*" -type f | \
+  sed 's/.*\.//' | sort | uniq -c | sort -rn | head -20
+
+# Lines of code by file type
+find . ! -path "*/node_modules/*" -name "*.ts" -o -name "*.tsx" | \
+  xargs wc -l 2>/dev/null | sort -rn | head -30
+  11601 py
+   8470 pyc
+   3461 bin
+   2443 pyi
+   1398 json
+   1125 dat
+   1124 txt
+    834 js
+    620 ts
+    396 so
+    385 tsx
+    327 body
+    258 map
+    222 md
+    219 mat
+    207 xml
+    159 dist-info/WHEEL
+    159 dist-info/RECORD
+    159 dist-info/METADATA
+    137 stub
+  340403 total
+    9080 ./client/src/lib/cleanMathEngine.ts
+    8968 ./client/src/lib/unifiedShapes.ts
+    3123 ./client/src/lib/shapeCategories.ts
+    2630 ./client/src/lib/completeMissingShapesLibrary.ts
+    2507 ./client/src/lib/dnaStructures.ts
+    2417 ./client/src/lib/proceduralPatterns.ts
+    2412 ./client/src/components/ParametricSurface.tsx
+    2133 ./client/src/lib/ancientCivilizationShapes.ts
+    1984 ./client/src/lib/alchemicalSymbolShapes.ts
+    1954 ./client/src/components/ExpandedControlPanel.tsx
+    1945 ./client/src/lib/neuralRepresentationsEngine.ts
+    1941 ./client/src/lib/scientificExpansionShapes.ts
+    1932 ./node_modules/@jupyterlab/apputils/src/sessioncontext.tsx
+    1905 ./client/src/components/MathVisualizer.tsx
+    1900 ./client/src/lib/moduloAlgorithms.ts
+    1761 ./client/src/lib/fourDimensionalShapes.ts
+    1644 ./client/src/lib/materialPresets.ts
+    1640 ./client/src/lib/humanAnatomyShapes.ts
+    1598 ./client/src/lib/crossLearningEngine.ts
+    1503 ./server/database-seeder.ts
+    1495 ./client/src/lib/engineeringPBRMaterialSystem.ts
+    1482 ./client/src/lib/parametricLibraryPack.ts
+    1465 ./client/src/lib/aiMlAlgorithmsLibrary.ts
+    1406 ./node_modules/@jupyterlab/ui-components/src/components/toolbar.tsx
+    1403 ./client/src/lib/quantumParametricFunctions.ts
+    1370 ./shared/schema.ts
+    1360 ./server/services/queensBridgeService.ts
+    1359 ./client/src/lib/chaosTheoryShapes.ts…..# Files with "engine" "system" "manager" "controller" in the name
+find . ! -path "*/node_modules/*" -type f -name "*.ts" -o -name "*.tsx" | \
+  grep -iE "(engine|system|manager|controller|hub|authority|processor)" | sort
+./client/src/components/EmbeddedEngine.tsx
+./client/src/components/EnergySystemExplanation.tsx
+./client/src/components/EngineeringPBRPanel.tsx
+./client/src/components/FractalBiosystem.tsx
+./client/src/components/ParticleTrailSystem.tsx
+./client/src/components/SimpleMathEngine.tsx
+./client/src/components/SystemHealthDashboard.tsx
+./client/src/components/SystemInfoModal.tsx
+./client/src/components/SystemInterconnectionPanel.tsx
+./client/src/components/SystemReadinessIndicator.tsx
+./client/src/lib/advancedVisualProcessor.ts
+./client/src/lib/anatomy-engine-v2.ts
+./client/src/lib/animation/AnimationEngine.ts
+./client/src/lib/animation/CurveEngine.ts
+./client/src/lib/antiReverseEngineering.ts
+./client/src/lib/arVrExportEngine.ts
+./client/src/lib/attractorSystems.ts
+./client/src/lib/blockchainAlgorithmsEngine.ts
+./client/src/lib/cleanMathEngine.ts
+./client/src/lib/crossLearningEngine.ts
+./client/src/lib/cryptoEngine.ts
+./client/src/lib/customTextureManager.ts
+./client/src/lib/d13mon4HashEngine.ts
+./client/src/lib/dualMirrorEnergySystem.ts
+./client/src/lib/engineeringPBRMaterialSystem.ts
+./client/src/lib/errorRecoverySystem.ts
+./client/src/lib/fieldTheoryEngine.ts
+./client/src/lib/flowAnimationSystem.ts
+./client/src/lib/foundationalPatternSystem.ts
+./client/src/lib/foundationalSystemInitializer.ts
+./client/src/lib/fractalMappingEngine.ts
+./client/src/lib/frontendCleanupSystem.ts
+./client/src/lib/gipIdentityEngine.ts
+./client/src/lib/gpuParticleSystem.ts
+./client/src/lib/hdrColorSystem.ts
+./client/src/lib/identityAuthority.ts
+./client/src/lib/internalAnalysisEngine.ts
+./client/src/lib/kfoldValidationEngine.ts
+./client/src/lib/latticeNetworkEngine.ts
+./client/src/lib/memoryManager.ts
+./client/src/lib/mlLeverageEngine.ts
+./client/src/lib/neuralRepresentationsEngine.ts
+./client/src/lib/optimizationEngines.ts
+./client/src/lib/parameterAuthority.ts
+./client/src/lib/parameterProcessor.ts
+./client/src/lib/perspectiveMathematicsEngine.ts
+./client/src/lib/physicalGeometryProcessor.ts
+./client/src/lib/physicsAnimationEngine.ts
+./client/src/lib/physicsEngine.ts
+./client/src/lib/piPhiConstantsEngine.ts
+./client/src/lib/preloadManager.ts
+./client/src/lib/reactiveMaterialEngine.ts
+./client/src/lib/renderingConfigManager.ts
+./client/src/lib/settingsPreservationEngine.ts
+./client/src/lib/shapeDiscoveryEngine.ts
+./client/src/lib/shapeDynamicsEngine.ts
+./client/src/lib/shapeFusionEngine.ts
+./client/src/lib/shapeRecommendationEngine.ts
+./client/src/lib/shapeSensitivityEngine.ts
+./client/src/lib/smartFlowManager.ts
+./client/src/lib/spectralColorEngine.ts
+./client/src/lib/streamProcessingEngine.ts
+./client/src/lib/systemIntegrationHub.ts
+./client/src/lib/systemIntegrationOrchestrator.ts
+./client/src/lib/systemMaintenance.ts
+./client/src/lib/systemSpecs.ts
+./client/src/lib/tensorAlgebraEngine.ts
+./client/src/lib/thermalEngineeringShapes.ts
+./client/src/lib/thermalSystemSummary.ts
+./client/src/lib/unifiedAnimationSystem.ts
+./client/src/lib/unifiedColorSystem.ts
+./client/src/lib/universalLexiconEngine.ts
+./client/src/lib/uuon-gmod6-engine.ts
+./client/src/lib/uuonMeshEngine.ts
+./client/src/lib/uvMorphingEngine.ts
+./client/src/lib/versatileExportEngine.ts
+./client/src/lib/voronoiSystems.ts
+./client/src/lib/waveAlgorithmsEngine.ts
+./client/src/lib/weatherSystems.ts
+./client/src/lib/wireGenesisEngine.ts
+./client/src/pages/FractalBiosystemVisualizer.tsx
+./client/src/shapes/generative/attractorSystems.ts
+./client/src/shapes/generative/voronoiSystems.ts
+./client/src/systems/index.ts
+./client/src/systems/programmingMatrix.ts
+./client/src/systems/shapeCategories.ts
+./client/src/systems/shapeRegistryValidator.ts
+./client/src/utils/fractalBiosystemExport.ts
+./human-anatomy-engine.ts
+./scripts/push-to-github.ts
+./server/3d-mapping-engine.ts
+./server/algorithmic-feeding-system.ts
+./server/algorithm-recovery-system.ts
+./server/certificate-storage-manager.ts
+./server/comprehensive-data-preservation-engine.ts
+./server/core-automation-engine.ts
+./server/cpu-efficient-database-manager.ts
+./server/domain-weighting-system.ts
+./server/enhanced-shape-dynamics-engine.ts
+./server/geometry-engine.ts
+./server/hypercomputation-engine.ts
+./server/mathematical-completeness-engine.ts
+./server/mathematical-proof-engine.ts
+./server/perfection-verification-system.ts
+./server/permanent-stability-manager.ts
+./server/placeholder-integration-system.ts
+./server/quantum-physics-processor.ts
+./server/ram-optimization-engine.ts
+./server/routes/github.ts
+./server/routes/system-health.ts
+./server/routes/system-metrics.ts
+./server/routes/system-performance.ts
+./server/routes/thermal-engineering-integration.ts
+./server/routes/token-ecosystem.ts
+./server/services/githubService (copy).ts
+./server/services/githubService.ts
+./server/shape-relationship-engine.ts
+./server/storage-optimization-engine.ts
+./server/system-health-verifier.ts
+./server/system-optimization-manager.ts
+./server/system-sync-monitor.ts
+./server/tesla-369-completion-system.ts
+./server/unified-live-metrics-engine.ts
+./server/unified-math-system.ts
+./unified-geometry-engine.ts…..# Lines with actual math equations (sin, cos, Math, parametric)
+grep -rn "Math\.\|sin(\|cos(\|sqrt(\|PI\b" \
+  --include="*.ts" --include="*.tsx" \
+  --exclude-dir=node_modules . | \
+  grep -v "//.*Math" | wc -l
+
+# Show them with context
+grep -rn "Math\.\|sin(\|cos(\|sqrt(" \
+  --include="*.ts" --include="*.tsx" \
+  --exclude-dir=node_modules . | \
+  grep -v "node_modules" | head -50
+23295
+./.local/skills/artifacts/artifacts/mockup-sandbox/files/src/components/ui/sidebar.tsx:612:    return `${Math.floor(Math.random() * 40) + 50}%`
+./.local/skills/artifacts/artifacts/react-vite/files/src/components/ui/sidebar.tsx:612:    return `${Math.floor(Math.random() * 40) + 50}%`
+./.local/skills/artifacts/artifacts/slides/files/src/App.tsx:98:      if (Math.abs(dx) >= 10 || Math.abs(dy) >= 10) return;
+./.local/skills/artifacts/artifacts/slides/files/src/App.tsx:167:    width: Math.min(window.innerWidth, window.innerHeight * (16 / 9)),
+./.local/skills/artifacts/artifacts/slides/files/src/App.tsx:168:    height: Math.min(window.innerHeight, window.innerWidth * (9 / 16)),
+./.local/skills/artifacts/artifacts/slides/files/src/App.tsx:174:        width: Math.min(window.innerWidth, window.innerHeight * (16 / 9)),
+./.local/skills/artifacts/artifacts/slides/files/src/App.tsx:175:        height: Math.min(window.innerHeight, window.innerWidth * (9 / 16)),
+./client/src/components/ui/sidebar.tsx:671:    return `${Math.floor(Math.random() * 40) + 50}%`;
+./client/src/components/CustomPlot.tsx:69:        const normalizedZ = Math.max(0, Math.min(1, (z + 2) / 4)); // Normalize height
+./client/src/components/CustomPlot.tsx:78:          const phase = z * Math.PI;
+./client/src/components/CustomPlot.tsx:79:          colors[i] = Math.sin(phase) * 0.5 + 0.5; // R
+./client/src/components/CustomPlot.tsx:80:          colors[i + 1] = Math.cos(phase) * 0.5 + 0.5; // G
+./client/src/components/CustomPlot.tsx:81:          colors[i + 2] = Math.sin(phase * 2) * 0.5 + 0.5; // B
+./client/src/components/DimensionalVisualizer.tsx:28:      const intensity = Math.min(point.value / 1000, 1);
+./client/src/components/DimensionalVisualizer.tsx:74:          const harmonic = Math.abs(ratio - 1);
+./client/src/components/GroundPlane.tsx:6:      rotation={[-Math.PI / 2, 0, 0]} 
+./client/src/components/PatternRenderer.tsx:25:    const energy = Math.abs(parameters.a) + Math.abs(parameters.b) + Math.abs(parameters.c);
+./client/src/components/PatternRenderer.tsx:78:      const angle = (i / 10) * Math.PI * 2;
+./client/src/components/PatternRenderer.tsx:80:      const px = Math.cos(angle) * radius;
+./client/src/components/PatternRenderer.tsx:81:      const py = Math.sin(angle) * radius;
+./client/src/components/PatternRenderer.tsx:110:    const energyMultiplier = Math.min(0.0002, energy * 0.0001);
+./client/src/components/PatternRenderer.tsx:149:    const sqrt2 = Math.sqrt(2);
+./client/src/components/PatternRenderer.tsx:259:  const positionSum = Math.abs(x) + Math.abs(y) + Math.abs(z);
+./client/src/components/PatternRenderer.tsx:263:  const cyclePosition = Math.floor((positionSum * 5 + time * 2) % 50);
+./client/src/components/PatternRenderer.tsx:291:    r = Math.min(1.0, (baseR + 0.11) * 2.5); // Boosted brightness
+./client/src/components/PatternRenderer.tsx:292:    g = Math.min(1.0, (baseG + 0.11) * 2.5);
+./client/src/components/PatternRenderer.tsx:293:    b = Math.min(1.0, (baseB + 0.11) * 2.5);
+./client/src/components/PatternRenderer.tsx:296:    r = Math.min(1.0, (baseR + 0.22) * 2.5);
+./client/src/components/PatternRenderer.tsx:297:    g = Math.min(1.0, (baseG + 0.22) * 2.5);
+./client/src/components/PatternRenderer.tsx:298:    b = Math.min(1.0, (baseB + 0.22) * 2.5);
+./client/src/components/PatternRenderer.tsx:301:    r = Math.min(1.0, (baseR + (letterValue * 0.11)) * 2.2);
+./client/src/components/PatternRenderer.tsx:302:    g = Math.min(1.0, (baseG + (letterValue * 0.11)) * 2.2);
+./client/src/components/PatternRenderer.tsx:303:    b = Math.min(1.0, (baseB + (letterValue * 0.11)) * 2.2);
+./client/src/components/PatternRenderer.tsx:325:  const energyFactor = Math.min(energy / 5000, 1.0);
+./client/src/components/PatternRenderer.tsx:341:    const pulse = Math.sin(time * 8) * 0.4 + 0.6;
+./client/src/components/PatternRenderer.tsx:350:    Math.max(0.05, Math.min(1, r)),
+./client/src/components/PatternRenderer.tsx:351:    Math.max(0.05, Math.min(1, g)),
+./client/src/components/PatternRenderer.tsx:352:    Math.max(0.05, Math.min(1, b))
+./client/src/components/PatternRenderer.tsx:358:  const positionSum = Math.abs(x) + Math.abs(y) + Math.abs(z);
+./client/src/components/PatternRenderer.tsx:362:  const cyclePosition = Math.floor((positionSum * 5 + time * 2) % 50);
+./client/src/components/PatternRenderer.tsx:393:    const doubleDigit = Math.floor(letterValue / 2);
+./client/src/components/PatternRenderer.tsx:419:  const energyFactor = Math.min(energy / 5000, 1.0);
+./client/src/components/PatternRenderer.tsx:435:    const pulse = Math.sin(time * 8) * 0.4 + 0.6;
+./client/src/components/PatternRenderer.tsx:444:    Math.max(0.05, Math.min(1, r)),
+./client/src/components/PatternRenderer.tsx:445:    Math.max(0.05, Math.min(1, g)),
+./client/src/components/PatternRenderer.tsx:446:    Math.max(0.05, Math.min(1, b))
+./client/src/components/PatternRenderer.tsx:454:  const distance = Math.sqrt(x * x + y * y + z * z);
+./client/src/components/PatternRenderer.tsx:459:  const surfaceArea = 4 * Math.PI * (distance * distance + 0.01); // +0.01 prevents division by zero
+./client/src/components/PatternRenderer.tsx:473:    g = Math.min(1.0, (temperature - 1000) / 2300);
+./client/src/components/PatternRenderer.tsx:479:    b = Math.min(1.0, (temperature - 3300) / 1700);
+~/workspace$ …..# Every route defined in the backend
+grep -rn "app\.\(get\|post\|put\|delete\|patch\)\|router\.\(get\|post\|put\|delete\)" \
+  --include="*.ts" \
+  --exclude-dir=node_modules . | sort
+./server/ai-routes.ts:121:router.get('/ai/patterns/:shape', async (req, res) => {
+./server/ai-routes.ts:145:router.get('/ai/recommendations/:shape', async (req, res) => {
+./server/ai-routes.ts:163:router.post('/ai/feedback', async (req, res) => {
+./server/ai-routes.ts:185:router.post('/ai/chat', async (req, res) => {
+./server/ai-routes.ts:28:router.post('/recommend', async (req, res) => {
+./server/ai-routes.ts:39:router.post('/ai/analyze', async (req, res) => {
+./server/ai-routes.ts:7:router.get('/health', async (req, res) => {
+./server/automated-legal-generator.ts:230:router.get('/legal/generate/:type', (req, res) => {
+./server/automated-legal-generator.ts:261:router.get('/legal/compliance-status', (req, res) => {
+./server/autonomous-intelligence-routes.ts:108:router.get('/health', (req, res) => {
+./server/autonomous-intelligence-routes.ts:14:router.get('/metrics', (req, res) => {
+./server/autonomous-intelligence-routes.ts:36:router.post('/metrics', (req, res) => {
+./server/autonomous-intelligence-routes.ts:72:router.get('/recommendations', (req, res) => {
+./server/foundational-pattern-api.ts:111:router.get('/pattern/:index', (req: Request, res: Response) => {
+./server/foundational-pattern-api.ts:137:router.get('/pattern/batch/:start/:count', (req: Request, res: Response) => {
+./server/foundational-pattern-api.ts:167:router.post('/token-hash', (req: Request, res: Response) => {
+./server/foundational-pattern-api.ts:197:router.post('/load-balance', (req: Request, res: Response) => {
+./server/foundational-pattern-api.ts:236:router.post('/adaptive-sample', (req: Request, res: Response) => {
+./server/foundational-pattern-api.ts:275:router.get('/cache-stats', (_req: Request, res: Response) => {
+./server/foundational-pattern-api.ts:290:router.post('/prewarm', (req: Request, res: Response) => {
+./server/foundational-pattern-api.ts:318:router.get('/golden/:n', (req: Request, res: Response) => {
+./server/foundational-pattern-api.ts:347:router.get('/fibonacci/:count', (req: Request, res: Response) => {
+./server/frontend-communication.ts:17:router.post('/test-connection', async (req: Request, res: Response) => {
+./server/frontend-communication.ts:60:router.get('/validate-endpoints', (req: Request, res: Response) => {
+./server/frontend-communication.ts:84:router.get('/realtime-test', (req: Request, res: Response) => {
+./server/index.ts:138:app.post('/api/verify-team-access', (req, res) => {
+./server/index.ts:169:app.get('/api/sdk-info', (req, res) => {
+./server/index.ts:217:app.get('/sitemap*.xml', (req, res) => {
+./server/index.ts:283:app.get('/api/migration-status', (req, res) => {
+./server/index.ts:352:app.get('*', (req, res) => {
+./server/ml-routes.ts:109:router.post('/ml/extract-features', async (req, res) => {
+./server/ml-routes.ts:10:router.post('/ml/generate-training-data', async (req, res) => {
+./server/ml-routes.ts:138:router.post('/ml/automl', async (req, res) => {
+./server/ml-routes.ts:190:router.get('/ml/benchmarks', async (req, res) => {
+./server/ml-routes.ts:235:router.post('/ml/generate-framework', async (req, res) => {
+./server/ml-routes.ts:249:router.post('/ml/consciousness-training', async (req, res) => {
+./server/ml-routes.ts:265:router.get('/ml/leadership-metrics', (req, res) => {
+./server/ml-routes.ts:46:router.post('/ml/create-model', async (req, res) => {
+./server/ml-routes.ts:72:router.post('/ml/predict', async (req, res) => {
+./server/performance-monitor.ts:103:router.get('/performance', (req: Request, res: Response) => {
+./server/performance-monitor.ts:116:router.get('/performance/stats', (req: Request, res: Response) => {
+./server/proof-testing-routes.ts:29:router.post('/generate-certificate', async (req: Request, res: Response) => {
+./server/proof-testing-routes.ts:57:router.post('/test-shape/:shapeId', async (req: Request, res: Response) => {
+./server/proof-testing-routes.ts:8:router.post('/run-proof-tests', async (req: Request, res: Response) => {
+./server/routes/about-sitemap.ts:193:router.get('/sitemap-about.xml', (req, res) => {
+./server/routes/about-sitemap.ts:215:router.get('/sitemap-dna.xml', (req, res) => {
+./server/routes/about-sitemap.ts:245:router.get('/about-metadata', (req, res) => {
+./server/routes/about-sitemap.ts:347:router.get('/dna-library', (req, res) => {
+./server/routes/agent-coordination.ts:100:router.post('/data-governance/store', (req, res) => {
+./server/routes/agent-coordination.ts:115:router.get('/data-governance/retrieve/:dataType/:identifier', (req, res) => {
+./server/routes/agent-coordination.ts:134:router.get('/build/report', (req, res) => {
+./server/routes/agent-coordination.ts:148:router.get('/build/target/:targetName', (req, res) => {
+./server/routes/agent-coordination.ts:163:router.post('/build/target/:targetName', async (req, res) => {
+./server/routes/agent-coordination.ts:178:router.post('/build/all', async (req, res) => {
+./server/routes/agent-coordination.ts:19:router.get('/architecture/report', (req, res) => {
+./server/routes/agent-coordination.ts:201:router.post('/build/publish/:targetName', async (req, res) => {
+./server/routes/agent-coordination.ts:222:router.get('/observability/health', (req, res) => {
+./server/routes/agent-coordination.ts:236:router.get('/observability/metrics', (req, res) => {
+./server/routes/agent-coordination.ts:254:router.get('/observability/validation', (req, res) => {
+./server/routes/agent-coordination.ts:268:router.post('/observability/metric', (req, res) => {
+./server/routes/agent-coordination.ts:287:router.get('/status', (req, res) => {
+./server/routes/agent-coordination.ts:326:router.get('/dashboard', (req, res) => {
+./server/routes/agent-coordination.ts:33:router.get('/architecture/structure', (req, res) => {
+./server/routes/agent-coordination.ts:365:router.get('/sitemap/status', async (req, res) => {
+./server/routes/agent-coordination.ts:401:router.post('/sitemap/regenerate', async (req, res) => {
+./server/routes/agent-coordination.ts:430:router.post('/deployment/optimize', async (req, res) => {
+./server/routes/agent-coordination.ts:465:router.get('/deployment/readiness', (req, res) => {
+./server/routes/agent-coordination.ts:47:router.post('/architecture/validate-module', (req, res) => {
+./server/routes/agent-coordination.ts:62:router.post('/architecture/request-feature', (req, res) => {
+./server/routes/agent-coordination.ts:81:router.get('/data-governance/report', (req, res) => {
+./server/routes/ai-agent-integration.ts:105:router.post('/generate-content', (req: Request, res: Response) => {
+./server/routes/ai-agent-integration.ts:146:router.get('/content-status/:jobId', (req: Request, res: Response) => {
+./server/routes/ai-agent-integration.ts:177:router.get('/ai-prompts/:category', (req: Request, res: Response) => {
+./server/routes/ai-agent-integration.ts:207:router.get('/triggers/discover', (req: Request, res: Response) => {
+./server/routes/ai-agent-integration.ts:323:router.post('/triggers/:id/activate', (req: Request, res: Response) => {
+./server/routes/ai-agent-integration.ts:363:router.post('/validate-workflow', (req: Request, res: Response) => {
+./server/routes/ai-agent-integration.ts:38:router.post('/shapes/:id/analyze', (req: Request, res: Response) => {
+./server/routes/ai-agent-integration.ts:405:router.get('/triggers/status', (req: Request, res: Response) => {
+./server/routes/ai-agent-integration.ts:449:router.get('/shapes/:id/ai-context', (req: Request, res: Response) => {
+./server/routes/ai-agent-integration.ts:9:router.get('/health', (req: Request, res: Response) => {
+./server/routes/ai-analysis.ts:109:router.post('/audit', async (req: Request, res: Response) => {
+./server/routes/ai-analysis.ts:210:router.post('/shape-summary', async (req: Request, res: Response) => {
+./server/routes/ai-analysis.ts:289:router.post('/generate-equation', async (req: Request, res: Response) => {
+./server/routes/ai-analysis.ts:357:router.post('/fix-suggestion', async (req: Request, res: Response) => {
+./server/routes/ai-analysis.ts:419:router.post('/discover', async (req: Request, res: Response) => {
+./server/routes/ai-analysis.ts:489:router.post('/journey', async (req: Request, res: Response) => {
+./server/routes/ai-analysis.ts:562:router.post('/connect', async (req: Request, res: Response) => {
+./server/routes/ai-analysis.ts:624:router.get('/spark', async (_req: Request, res: Response) => {
+./server/routes/ai-analysis.ts:680:router.post('/reference-image', aiLimiter, async (req: Request, res: Response) => {
+./server/routes/ai-analysis.ts:735:router.post('/fix-shape', aiLimiter, async (req: Request, res: Response) => {
+./server/routes/ai-analysis.ts:790:router.get('/health', (_req: Request, res: Response) => {
+./server/routes/ai-ml-models.ts:114:router.get('/category/:category', async (req, res) => {
+./server/routes/ai-ml-models.ts:143:router.get('/download/:id', async (req, res) => {
+./server/routes/ai-ml-models.ts:14:router.get('/models', async (req, res) => {
+./server/routes/ai-ml-models.ts:190:router.get('/search', async (req, res) => {
+./server/routes/ai-ml-models.ts:228:router.get('/stats', async (req, res) => {
+./server/routes/ai-ml-models.ts:80:router.get('/model/:id', async (req, res) => {
+./server/routes/api-connectivity-checker.ts:19:router.get('/status', async (req: Request, res: Response) => {
+./server/routes/api-connectivity-checker.ts:214:router.post('/quick-fix', async (req: Request, res: Response) => {
+./server/routes/api-status.ts:6:router.get('/', (req, res) => {
+./server/routes/auth.ts:10:router.post('/register', async (req, res) => {
+./server/routes/auth.ts:110:router.get('/me', (req, res) => {
+./server/routes/auth.ts:125:router.get('/check-admin', (req, res) => {
+./server/routes/auth.ts:59:router.post('/login', async (req, res) => {
+./server/routes/auth.ts:97:router.post('/logout', (req: any, res) => {
+./server/routes/biblical-analysis.ts:119:router.get('/analyze-dynamic-gaps', (req, res) => {
+./server/routes/biblical-analysis.ts:250:router.get('/search-gap-patterns/:keyword', (req, res) => {
+./server/routes/biblical-analysis.ts:303:router.get('/dynamic-bridging-analysis', (req, res) => {
+./server/routes/changelog.ts:27:router.get('/report', async (req, res) => {
+./server/routes/changelog.ts:37:router.get('/export', async (req, res) => {
+./server/routes/changelog.ts:7:router.post('/log-change', async (req, res) => {
+./server/routes/comprehensive-database-tracker.ts:142:router.get('/token-growth-analytics', async (req: Request, res: Response) => {
+./server/routes/comprehensive-database-tracker.ts:15:router.get('/comprehensive-token-count', async (req: Request, res: Response) => {
+./server/routes/compute.ts:107:router.post('/dual', async (req: Request, res: Response) => {
+./server/routes/compute.ts:157:router.post('/surface', async (req: Request, res: Response) => {
+./server/routes/compute.ts:18:router.post('/wolfram', async (req: Request, res: Response) => {
+./server/routes/compute.ts:256:router.get('/status', (req: Request, res: Response) => {
+./server/routes/compute.ts:283:router.post('/enhanced-shape-dynamics', async (req, res) => {
+./server/routes/compute.ts:343:router.post('/export-enhanced-dynamics', async (req, res) => {
+./server/routes/compute.ts:54:router.post('/quantum/random', async (req: Request, res: Response) => {
+./server/routes/compute.ts:73:router.post('/quantum/interference', async (req: Request, res: Response) => {
+./server/routes/consciousness-embodiment.ts:141:router.post('/parameter-experience', async (req, res) => {
+./server/routes/consciousness-embodiment.ts:228:router.get('/consciousness-report', async (req, res) => {
+./server/routes/consciousness-embodiment.ts:25:router.get('/consciousness-status', (req, res) => {
+./server/routes/consciousness-embodiment.ts:290:router.post('/batch-embody', async (req, res) => {
+./server/routes/consciousness-embodiment.ts:357:router.get('/export-consciousness', async (req, res) => {
+./server/routes/consciousness-embodiment.ts:78:router.post('/embody-concept', async (req, res) => {
+./server/routes/consciousness-network.ts:97:router.get('/consciousness-insights/:shapeId', (req, res) => {
+./server/routes/coordination.ts:47:router.get('/status', (req: Request, res: Response) => {
+./server/routes/coordination.ts:8:router.post('/coordinate', async (req: Request, res: Response) => {
+./server/routes/database-diagnostics.ts:117:router.get('/optimization-suggestions', async (req: Request, res: Response) => {
+./server/routes/database-diagnostics.ts:21:router.get('/diagnostics', async (req: Request, res: Response) => {
+./server/routes/database-efficiency.ts:11:router.get('/stats', (req: Request, res: Response) => {
+./server/routes/database-efficiency.ts:37:router.post('/force-process', async (req: Request, res: Response) => {
+./server/routes/database-efficiency.ts:62:router.post('/update-shape', async (req: Request, res: Response) => {
+./server/routes/database-efficiency.ts:90:router.get('/storage-optimization', async (req: Request, res: Response) => {
+./server/routes/deployment-optimization.ts:29:router.get('/savings-estimate', async (req, res) => {
+./server/routes/deployment-optimization.ts:47:router.get('/storage-usage', async (req, res) => {
+./server/routes/deployment-optimization.ts:86:router.post('/cleanup-unused', async (req, res) => {
+./server/routes/deployment-optimization.ts:9:router.post('/optimize-deployment', async (req, res) => {
+./server/routes/deployment-status.ts:116:router.post('/test-connections', async (req, res) => {
+./server/routes/deployment-status.ts:11:router.get('/', async (req, res) => {
+./server/routes/deployment-status.ts:41:router.post('/optimize', async (req, res) => {
+./server/routes/deployment-status.ts:67:router.get('/status', (req, res) => {
+./server/routes/educational-integration.ts:122:router.get('/curriculum/modules', (_req: Request, res: Response) => {
+./server/routes/educational-integration.ts:132:router.get('/curriculum/module/:id', (req: Request, res: Response) => {
+./server/routes/educational-integration.ts:154:router.get('/lms/integrations', (_req: Request, res: Response) => {
+./server/routes/educational-integration.ts:197:router.post('/lms/grade-passback', (req: Request, res: Response) => {
+./server/routes/educational-integration.ts:216:router.get('/interactive/activities', (_req: Request, res: Response) => {
+./server/routes/educational-integration.ts:264:router.get('/standards/alignment', (_req: Request, res: Response) => {
+./server/routes/educational-integration.ts:303:router.get('/analytics/classroom/:classId', (req: Request, res: Response) => {
+./server/routes/educational-integration.ts:338:router.get('/accessibility', (_req: Request, res: Response) => {
+./server/routes/emergency.ts:11:router.post('/pause', (req: Request, res: Response) => {
+./server/routes/emergency.ts:43:router.post('/resume', (req: Request, res: Response) => {
+./server/routes/emergency.ts:62:router.get('/status', (req: Request, res: Response) => {
+./server/routes/enterprise-api.ts:189:router.get('/tiers', (_req: Request, res: Response) => {
+./server/routes/enterprise-api.ts:203:router.post('/request-trial', (req: Request, res: Response) => {
+./server/routes/enterprise-api.ts:245:router.get('/usage', rateLimitMiddleware, (req: Request, res: Response) => {
+./server/routes/enterprise-api.ts:270:router.post('/shapes/generate', rateLimitMiddleware, (req: Request, res: Response) => {
+./server/routes/enterprise-api.ts:292:router.get('/shapes/library', rateLimitMiddleware, (req: Request, res: Response) => {
+./server/routes/enterprise-api.ts:317:router.get('/docs', (_req: Request, res: Response) => {
+./server/routes/enterprise-api.ts:356:router.get('/health', (_req: Request, res: Response) => {
+./server/routes/essential-shapes-api.ts:122:router.get('/essential-core', (req: Request, res: Response) => {
+./server/routes/essential-shapes-api.ts:142:router.get('/essential-core/shape/:shapeId', (req: Request, res: Response) => {
+./server/routes/essential-shapes-api.ts:168:router.get('/essential-core/algorithms', (req: Request, res: Response) => {
+./server/routes/essential-shapes-api.ts:191:router.get('/essential-core/learn/:system', (req: Request, res: Response) => {
+./server/routes/external-integration-api.ts:127:router.post('/wolfram/query', async (req: Request, res: Response) => {
+./server/routes/external-integration-api.ts:189:router.post('/nasa/astronomical-data', async (req: Request, res: Response) => {
+./server/routes/external-integration-api.ts:265:router.post('/math/compute', async (req: Request, res: Response) => {
+./server/routes/external-integration-api.ts:321:router.post('/patterns/analyze', async (req: Request, res: Response) => {
+./server/routes/external-integration-api.ts:34:router.post('/quantum/circuit', async (req: Request, res: Response) => {
+./server/routes/external-integration-api.ts:373:router.get('/osdr/studies', async (req: Request, res: Response) => {
+./server/routes/external-integration-api.ts:397:router.get('/osdr/study/:id', async (req: Request, res: Response) => {
+./server/routes/external-integration-api.ts:419:router.get('/osdr/search', async (req: Request, res: Response) => {
+./server/routes/external-integration-api.ts:435:router.get('/osdr/missions', async (req: Request, res: Response) => {
+./server/routes/external-integration-api.ts:445:router.get('/osdr/organisms', async (req: Request, res: Response) => {
+./server/routes/external-integration-api.ts:455:router.get('/osdr/vehicles', async (req: Request, res: Response) => {
+./server/routes/external-integration-api.ts:500:router.get('/status', (req: Request, res: Response) => {
+./server/routes/formula-mapping.ts:11:router.post('/analyze/:formulaId', (req, res) => {
+./server/routes/formula-mapping.ts:152:router.get('/summary', (req, res) => {
+./server/routes/formula-mapping.ts:195:router.post('/fuse', (req, res) => {
+./server/routes/formula-mapping.ts:273:router.get('/fusion-presets', (req, res) => {
+./server/routes/formula-mapping.ts:48:router.post('/report', (req, res) => {
+./server/routes/formula-mapping.ts:92:router.post('/compatibility', (req, res) => {
+./server/routes/frontend-agent-backend-measures.ts:148:router.post('/measure-agent-performance', async (req: Request, res: Response) => {
+./server/routes/frontend-agent-backend-measures.ts:197:router.get('/industry-impact', async (req: Request, res: Response) => {
+./server/routes/frontend-agent-backend-measures.ts:270:router.get('/agent-system-health', async (req: Request, res: Response) => {
+./server/routes/frontend-agent-backend-measures.ts:40:router.get('/system-evaluation', async (req: Request, res: Response) => {
+./server/routes/fusedShapes.ts:142:router.get('/:shapeId', async (req: Request, res: Response) => {
+./server/routes/fusedShapes.ts:171:router.delete('/:shapeId', async (req: Request, res: Response) => {
+./server/routes/fusedShapes.ts:8:router.post('/', async (req: Request, res: Response) => {
+./server/routes/fusedShapes.ts:94:router.get('/', async (_req: Request, res: Response) => {
+./server/routes/github.ts:115:router.post('/create-repo', async (req, res) => {
+./server/routes/github.ts:138:router.post('/push-file', async (req, res) => {
+./server/routes/github.ts:162:router.post('/push-full-repo', async (req, res) => {
+./server/routes/github.ts:75:router.get('/user', async (req, res) => {
+./server/routes/github.ts:93:router.get('/repos', async (req, res) => {
+./server/routes/health.ts:10:router.get('/', async (req, res) => {
+./server/routes/lattice-health.ts:18:router.get('/health', async (req, res) => {
+./server/routes/lexicon-extraction.ts:367:router.post('/extract-consciousness-entities', async (req, res) => {
+./server/routes/lexicon-extraction.ts:409:router.post('/generate-consciousness-lexicon', async (req, res) => {
+./server/routes/lexicon.ts:278:router.get('/stats', (req: Request, res: Response) => {
+./server/routes/lexicon.ts:289:router.get('/term/:termId', (req: Request, res: Response) => {
+./server/routes/lexicon.ts:300:router.get('/search', (req: Request, res: Response) => {
+./server/routes/lexicon.ts:321:router.get('/formula/:formulaId', (req: Request, res: Response) => {
+./server/routes/lexicon.ts:343:router.get('/formulas', (req: Request, res: Response) => {
+./server/routes/lexicon.ts:354:router.get('/taxonomy', (req: Request, res: Response) => {
+./server/routes/lexicon.ts:358:router.get('/seo/:termId', (req: Request, res: Response) => {
+./server/routes/lexicon.ts:380:router.get('/translate/:termId/:lang', (req: Request, res: Response) => {
+./server/routes/lexicon.ts:402:router.get('/export', (req: Request, res: Response) => {
+./server/routes/lexicon.ts:420:router.get('/export/lexicon', (req: Request, res: Response) => {
+./server/routes/lexicon.ts:443:router.get('/export/formulas', (req: Request, res: Response) => {
+./server/routes/lexicon.ts:460:router.get('/export/taxonomy', (req: Request, res: Response) => {
+./server/routes/lexicon.ts:492:router.get('/export/seo', (req: Request, res: Response) => {
+./server/routes/lexicon.ts:522:router.get('/mission', (req: Request, res: Response) => {
+./server/routes/lexicon.ts:554:router.get('/related/:termId', (req: Request, res: Response) => {
+./server/routes/lexicon.ts:588:router.get('/consciousness/stats', (req: Request, res: Response) => {
+./server/routes/lexicon.ts:609:router.get('/consciousness/categories', (req: Request, res: Response) => {
+./server/routes/lexicon.ts:617:router.get('/consciousness/category/:categoryId', (req: Request, res: Response) => {
+./server/routes/lexicon.ts:638:router.post('/consciousness/interact', (req: Request, res: Response) => {
+./server/routes/lexicon.ts:662:router.get('/consciousness/evolution', (req: Request, res: Response) => {
+./server/routes/lexicon.ts:674:router.get('/consciousness/memory/:termId', (req: Request, res: Response) => {
+./server/routes/lexicon.ts:695:router.get('/consciousness/export', (req: Request, res: Response) => {
+./server/routes/lexicon.ts:718:router.get('/physical-embodiment/:termId', (req: Request, res: Response) => {
+./server/routes/mathematical-consciousness-integration.ts:134:router.get('/consciousness-os-status', async (req, res) => {
+./server/routes/mathematical-consciousness-integration.ts:179:router.post('/test-consciousness', async (req, res) => {
+./server/routes/mathematical-consciousness-integration.ts:225:router.post('/generate-consciousness-docs', async (req, res) => {
+./server/routes/mathematical-consciousness-integration.ts:26:router.post('/initialize-consciousness-os', async (req, res) => {
+./server/routes/ml-data-management.ts:104:router.post('/uuon-store-asset', upload.single('asset'), async (req, res) => {
+./server/routes/ml-data-management.ts:10:router.post('/uuon-store-model', upload.single('model'), async (req, res) => {
+./server/routes/ml-data-management.ts:134:router.get('/uuon-load-asset/:assetName', async (req, res) => {
+./server/routes/ml-data-management.ts:179:router.get('/uuon-storage-stats', async (req, res) => {
+./server/routes/ml-data-management.ts:196:router.post('/uuon-cleanup', async (req, res) => {
+./server/routes/ml-data-management.ts:212:router.post('/uuon-migrate-assets', async (req, res) => {
+./server/routes/ml-data-management.ts:38:router.get('/uuon-load-model/:modelName', async (req, res) => {
+./server/routes/ml-data-management.ts:61:router.post('/uuon-store-embeddings', async (req, res) => {
+./server/routes/ml-data-management.ts:80:router.get('/uuon-embeddings/:shapeType', async (req, res) => {
+./server/routes/new-year-2026-revenue-activation.ts:106:router.get('/sdk-portal-config', async (req: Request, res: Response) => {
+./server/routes/new-year-2026-revenue-activation.ts:13:router.get('/revenue-dashboard', async (req: Request, res: Response) => {
+./server/routes/new-year-2026-revenue-activation.ts:141:router.post('/accelerate-token-growth', async (req: Request, res: Response) => {
+./server/routes/new-year-2026-revenue-activation.ts:69:router.get('/optimization-plan', async (req: Request, res: Response) => {
+./server/routes/nft-minting.ts:1036:router.post('/quick-mint', async (req: Request, res: Response) => {
+./server/routes/nft-minting.ts:328:router.post('/mint', async (req: Request, res: Response) => {
+./server/routes/nft-minting.ts:457:router.get('/smart-contract/:network', (req: Request, res: Response) => {
+./server/routes/nft-minting.ts:552:router.get('/marketplace-metadata/:tokenId', (req: Request, res: Response) => {
+./server/routes/nft-minting.ts:582:router.get('/valuation/:category', (req: Request, res: Response) => {
+./server/routes/nft-minting.ts:632:router.get('/batch-estimate', (req: Request, res: Response) => {
+./server/routes/nft-minting.ts:666:router.get('/user-nfts/:walletAddress', async (req: Request, res: Response) => {
+./server/routes/nft-minting.ts:719:router.post('/connect-wallet', async (req: Request, res: Response) => {
+./server/routes/nft-minting.ts:753:router.get('/pinata-status', (req: Request, res: Response) => {
+./server/routes/nft-minting.ts:770:router.post('/upload-to-ipfs', async (req: Request, res: Response) => {
+./server/routes/nft-minting.ts:805:router.post('/upload-file-to-ipfs', upload.single('file'), async (req: Request, res: Response) => {
+./server/routes/nft-minting.ts:853:router.get('/connection-test', async (req: Request, res: Response) => {
+./server/routes/nft-minting.ts:913:router.get('/tw-status', (req: Request, res: Response) => {
+./server/routes/nft-minting.ts:929:router.post('/thirdweb-mint', async (req: Request, res: Response) => {
+./server/routes/ontology-integration.ts:27:router.get('/formula-weight/:formulaId/:domain', (req, res) => {
+./server/routes/ontology-integration.ts:9:router.get('/variable-translation/:symbol/:fromDomain/:toDomain', (req, res) => {
+./server/routes/ontology.ts:113:router.get('/report', (req: Request, res: Response) => {
+./server/routes/ontology.ts:126:router.get('/lookup/:symbol', (req: Request, res: Response) => {
+./server/routes/ontology.ts:14:router.get('/variables', (req: Request, res: Response) => {
+./server/routes/ontology.ts:37:router.get('/domains', (req: Request, res: Response) => {
+./server/routes/ontology.ts:49:router.post('/translate', (req: Request, res: Response) => {
+./server/routes/ontology.ts:71:router.post('/validate-formula', (req: Request, res: Response) => {
+./server/routes/ontology.ts:95:router.get('/unified-table', (req: Request, res: Response) => {
+./server/routes/page-routes.ts:30:  router.get(route, (req, res) => {
+./server/routes/page-routes.ts:36:router.get('/shape/:shapeType', (req, res) => {
+./server/routes/page-routes.ts:41:router.get('/category/:category', (req, res) => {
+./server/routes/paypal.ts:121:router.post('/capture-order/:orderId', async (req, res) => {
+./server/routes/paypal.ts:148:router.post('/sdk-subscription', async (req, res) => {
+./server/routes/paypal.ts:220:router.get('/sdk-success', async (req, res) => {
+./server/routes/paypal.ts:267:router.get('/success', (req, res) => {
+./server/routes/paypal.ts:283:router.get('/cancel', (req, res) => {
+./server/routes/paypal.ts:38:router.post('/create-order', async (req, res) => {
+./server/routes/paypal.ts:96:router.get('/check-order/:orderId', async (req, res) => {
+./server/routes/pricing-api.ts:160:router.get('/', (req, res) => {
+./server/routes/pricing-api.ts:175:router.get('/tier/:tierName', (req, res) => {
+./server/routes/pricing-api.ts:196:router.get('/shapes', (req, res) => {
+./server/routes/pricing-api.ts:207:router.post('/calculator', (req, res) => {
+./server/routes/proof-testing.ts:48:router.get('/certificates', async (req: Request, res: Response) => {
+./server/routes/proof-testing.ts:71:router.get('/certificates/:certId', async (req: Request, res: Response) => {
+./server/routes/proof-testing.ts:8:router.post('/prove', async (req: Request, res: Response) => {
+./server/routes/proof-testing.ts:96:router.get('/certificates/stats', async (req: Request, res: Response) => {
+./server/routes/pr-testing.ts:127:router.post('/pr/security-test', (req, res) => {
+./server/routes/pr-testing.ts:187:router.get('/pr/connectivity', async (req, res) => {
+./server/routes/pr-testing.ts:235:router.get('/pr/memory', (req, res) => {
+./server/routes/pr-testing.ts:268:router.get('/pr/test-suite', async (req, res) => {
+./server/routes/pr-testing.ts:40:router.post('/pr/validate-parameters', (req, res) => {
+./server/routes/pr-testing.ts:87:router.post('/pr/benchmark', (req, res) => {
+./server/routes/pr-testing.ts:9:router.get('/pr/health', (req, res) => {
+./server/routes/public-api-gateway.ts:118:router.post('/verify-batch', validateAPIAccess, async (req, res) => {
+./server/routes/public-api-gateway.ts:162:router.get('/pricing', (req, res) => {
+./server/routes/public-api-gateway.ts:177:router.post('/subscribe', async (req, res) => {
+./server/routes/public-api-gateway.ts:79:router.post('/verify-surface', validateAPIAccess, async (req, res) => {
+./server/routes/quantum-algorithms.ts:156:router.post('/pce-maxcut', async (req, res) => {
+./server/routes/quantum-algorithms.ts:229:router.post('/estimate/pce', (req, res) => {
+./server/routes/quantum-algorithms.ts:263:router.get('/jobs/:jobId', (req, res) => {
+./server/routes/quantum-algorithms.ts:26:router.post('/shors', async (req, res) => {
+./server/routes/quantum-algorithms.ts:275:router.get('/jobs', (req, res) => {
+./server/routes/quantum-algorithms.ts:285:router.get('/backends', (req, res) => {
+./server/routes/quantum-algorithms.ts:320:router.post('/estimate/shors', (req, res) => {
+./server/routes/quantum-algorithms.ts:348:router.post('/estimate/grovers', (req, res) => {
+./server/routes/quantum-algorithms.ts:374:router.post('/mpf', async (req, res) => {
+./server/routes/quantum-algorithms.ts:84:router.post('/grovers', async (req, res) => {
+./server/routes/quantum-computing.ts:112:router.get('/jobs', (req, res) => {
+./server/routes/quantum-computing.ts:125:router.post('/migrate-assets', async (req, res) => {
+./server/routes/quantum-computing.ts:24:router.post('/qaoa', async (req, res) => {
+./server/routes/quantum-computing.ts:46:router.post('/shor', async (req, res) => {
+./server/routes/quantum-computing.ts:68:router.post('/grover', async (req, res) => {
+./server/routes/quantum-computing.ts:8:router.post('/initialize', async (req, res) => {
+./server/routes/quantum-computing.ts:90:router.get('/jobs/:jobId', (req, res) => {
+./server/routes/quantum-formulas.ts:107:router.post('/grover-algorithm', (req, res) => {
+./server/routes/quantum-formulas.ts:138:router.post('/error-correction', (req, res) => {
+./server/routes/quantum-formulas.ts:171:router.post('/quantum-sensing', (req, res) => {
+./server/routes/quantum-formulas.ts:201:router.post('/decoherence', (req, res) => {
+./server/routes/quantum-formulas.ts:239:router.post('/topological', (req, res) => {
+./server/routes/quantum-formulas.ts:57:router.post('/bloch-sphere', (req, res) => {
+./server/routes/quantum-formulas.ts:84:router.get('/bell-states', (req, res) => {
+./server/routes/quantum-formulas.ts:8:router.get('/formulas', (req, res) => {
+./server/routes/quantum-research.ts:35:router.get('/document/:name', async (req, res) => {
+./server/routes/quantum-research.ts:70:router.get('/search/:query', async (req, res) => {
+./server/routes/quantum-research.ts:8:router.get('/documents/:category?', async (req, res) => {
+./server/routes/quantum.ts:115:router.get('/probability-distribution', async (req, res) => {
+./server/routes/quantum.ts:131:router.post('/runtime/setup', async (req, res) => {
+./server/routes/quantum.ts:163:router.get('/runtime/backends', async (req, res) => {
+./server/routes/quantum.ts:16:router.get('/status', async (req, res) => {
+./server/routes/quantum.ts:177:router.post('/runtime/bell-state', async (req, res) => {
+./server/routes/quantum.ts:199:router.post('/runtime/circuit', async (req, res) => {
+./server/routes/quantum.ts:219:router.get('/runtime/job/:jobId', async (req, res) => {
+./server/routes/quantum.ts:234:router.post('/runtime/notebook', async (req, res) => {
+./server/routes/quantum.ts:252:router.get('/runtime/status', async (req, res) => {
+./server/routes/quantum.ts:30:router.get('/backends', async (req, res) => {
+./server/routes/quantum.ts:44:router.post('/bell-state', async (req, res) => {
+./server/routes/quantum.ts:60:router.post('/bloch-sphere', async (req, res) => {
+./server/routes/quantum.ts:80:router.post('/ghz-state', async (req, res) => {
+./server/routes/queens-bridge.ts:107:router.post('/krylov', async (req, res) => {
+./server/routes/queens-bridge.ts:11:router.post('/submit', async (req, res) => {
+./server/routes/queens-bridge.ts:168:router.post('/optimize', async (req, res) => {
+./server/routes/queens-bridge.ts:242:router.post('/qaoa', async (req, res) => {
+./server/routes/queens-bridge.ts:301:router.get('/qaoa/templates', (req, res) => {
+./server/routes/queens-bridge.ts:363:router.get('/health', async (req, res) => {
+./server/routes/queens-bridge.ts:377:router.get('/templates', (req, res) => {
+./server/routes/queens-bridge.ts:64:router.get('/status/:jobId', async (req, res) => {
+./server/routes/ram-optimization.ts:13:router.get('/metrics', async (req, res) => {
+./server/routes/ram-optimization.ts:38:router.get('/report', async (req, res) => {
+./server/routes/ram-optimization.ts:59:router.get('/health', async (req, res) => {
+./server/routes/sdk-info.ts:6:router.get('/', async (req, res) => {
+./server/routes/secure-compute.ts:163:router.post('/secure-compute', computeLimit, verifyUserAccess, logComputeRequest, async (req: Request, res: Response) => {
+./server/routes/secure-compute.ts:272:router.post('/api/compute/protected/:shapeId', async (req, res) => {
+./server/routes/secure-compute.ts:335:router.get('/status', (req: Request, res: Response) => {
+./server/routes/secure-compute.ts:355:router.post('/deduplicate', async (req: Request, res: Response) => {
+./server/routes/secure-compute.ts:86:router.post('/compute', rateLimit, async (req: Request, res: Response) => {
+./server/routes/shape-learning-api.ts:104:router.get('/learn/efficiency-tips', (req: Request, res: Response) => {
+./server/routes/shape-learning-api.ts:83:router.get('/learn/algorithm/:algorithmName', (req: Request, res: Response) => {
+./server/routes/shape-pages.ts:120:router.get('/proofs/:category', async (req, res) => {
+./server/routes/shape-pages.ts:138:router.get('/proof/:shapeType', async (req, res) => {
+./server/routes/shape-pages.ts:160:router.get('/api/shape-urls', async (req, res) => {
+./server/routes/shape-pages.ts:40:router.get('/api/shape-data/:shapeType', async (req, res) => {
+./server/routes/shape-pages.ts:81:router.get('/proofs', async (req, res) => {
+./server/routes/shape-pages.ts:8:router.get('/shape/:shapeType', async (req, res) => {
+./server/routes/sitemap-framework.ts:31:router.get('/generate/:type', async (req, res) => {
+./server/routes/sitemap-framework.ts:55:router.post('/auto-generate', async (req, res) => {
+./server/routes/sitemap-framework.ts:76:router.get('/seo-metadata/:type/:id', async (req, res) => {
+./server/routes/sitemap-framework.ts:8:router.get('/generate-complete-ecosystem', async (req, res) => {
+./server/routes/sitemap-generator.ts:115:router.get('/sitemap-:category-shapes.xml', async (req, res) => {
+./server/routes/sitemap-generator.ts:144:router.get('/sitemap-seo-index.xml', (req, res) => {
+./server/routes/sitemap-generator.ts:152:router.get('/sitemap-seo-:category.xml', (req, res) => {
+./server/routes/sitemap-generator.ts:167:router.get('/api/seo-metadata', (req, res) => {
+./server/routes/sitemap-generator.ts:184:router.get('/api/seo-publication/:category', (req, res) => {
+./server/routes/sitemap-generator.ts:251:router.get('/api/seo-publications', (req, res) => {
+./server/routes/sitemap-generator.ts:91:router.get('/sitemap-all-shapes.xml', async (req, res) => {
+./server/routes/sitemap-generator.ts:9:router.get('/generate-shape-sitemaps', async (req, res) => {
+./server/routes/sitemap-hierarchy.ts:700:router.get('/', (req, res) => {
+./server/routes/sketchfab.ts:8:router.post('/upload', async (req, res) => {
+./server/routes/standardized-sitemaps.ts:27:router.get('/sitemap-:type.xml', async (req, res) => {
+./server/routes/standardized-sitemaps.ts:52:router.get('/sitemap-metadata', async (req, res) => {
+./server/routes/standardized-sitemaps.ts:9:router.get('/generate-standardized-sitemaps', async (req, res) => {
+./server/routes/storage-optimization.ts:10:router.post('/initialize', async (req: Request, res: Response) => {
+./server/routes/storage-optimization.ts:31:router.get('/report', async (req: Request, res: Response) => {
+./server/routes/storage-optimization.ts:52:router.post('/optimize-mathematical', async (req: Request, res: Response) => {
+./server/routes/storage-optimization.ts:73:router.get('/metrics', (req: Request, res: Response) => {
+./server/routes/symbiotic-consciousness-growth.ts:131:router.get('/ecosystem-status', (req, res) => {
+./server/routes/symbiotic-consciousness-growth.ts:24:router.post('/initialize-symbiotic-growth', async (req, res) => {
+./server/routes/symbiotic-consciousness-growth.ts:88:router.post('/nurture-growth', async (req, res) => {
+./server/routes/symbol.ts:108:router.post('/uuon-symbol/:name/render3d', async (req: Request, res: Response) => {
+./server/routes/symbol.ts:168:router.post('/uuon-symbols/render3d/batch', async (req: Request, res: Response) => {
+./server/routes/symbol.ts:227:router.get('/uuon-symbol/:name/formats', (req: Request, res: Response) => {
+./server/routes/symbol.ts:23:router.get('/uuon-symbol/:name', (req: Request, res: Response) => {
+./server/routes/symbol.ts:271:router.get('/uuon-symbols/stats', (req: Request, res: Response) => {
+./server/routes/symbol.ts:54:router.get('/uuon-symbols', (req: Request, res: Response) => {
+./server/routes/symbol.ts:87:router.get('/uuon-symbol/categories', (req: Request, res: Response) => {
+./server/routes/system-health.ts:10:router.get('/', async (req, res) => {
+./server/routes/system-health.ts:50:router.get('/quick', async (req, res) => {
+./server/routes/system-metrics.ts:61:router.get('/growth-tracking', async (req, res) => {
+./server/routes/system-metrics.ts:8:router.get('/competitive-metrics', async (req, res) => {
+./server/routes/system-performance.ts:146:router.get('/metrics', async (req, res) => {
+./server/routes/system-performance.ts:219:router.post('/optimize', async (req, res) => {
+./server/routes/system-performance.ts:258:router.get('/health-summary', async (req, res) => {
+./server/routes/system-performance.ts:85:router.get('/status', async (req, res) => {
+./server/routes/team-access.ts:29:router.post('/verify-team-access', (req: Request, res: Response) => {
+./server/routes/team-access.ts:83:router.get('/protected-shape-info', (req: Request, res: Response) => {
+./server/routes/team-access.ts:94:router.get('/protected-categories', (req: Request, res: Response) => {
+./server/routes/testing-sprites-api.ts:146:router.get('/', (req, res) => {
+./server/routes/testing-sprites-api.ts:165:router.post('/submit-test', async (req, res) => {
+./server/routes/testing-sprites-api.ts:229:router.post('/purchase-credits', async (req, res) => {
+./server/routes/testing-sprites-api.ts:278:router.get('/competitive-analysis', (req, res) => {
+./server/routes/testing-sprites-api.ts:306:router.get('/enterprise-consultation', (req, res) => {
+./server/routes/thermal-engineering-integration.ts:175:router.get('/patterns', (req: Request, res: Response) => {
+./server/routes/thermal-engineering-integration.ts:188:router.get('/cross-domain-dna', (req: Request, res: Response) => {
+./server/routes/thermal-engineering-integration.ts:202:router.get('/harmonic-sequence/:depth', (req: Request, res: Response) => {
+./server/routes/thermal-engineering-integration.ts:222:router.get('/omega-approach', (req: Request, res: Response) => {
+./server/routes/thermal-engineering-integration.ts:236:router.post('/generate-surface', (req: Request, res: Response) => {
+./server/routes/thermal-engineering-integration.ts:263:router.get('/beyond-darwin-summary', (req: Request, res: Response) => {
+./server/routes/thermal-engineering-integration.ts:351:router.post('/datacenter/optimize', (req: Request, res: Response) => {
+./server/routes/thermal-engineering-integration.ts:398:router.get('/datacenter/cooling-types', (_req: Request, res: Response) => {
+./server/routes/thermal-engineering-integration.ts:451:router.post('/datacenter/thermal-simulation', (req: Request, res: Response) => {
+./server/routes/thirdweb-ai-integration.ts:138:router.get('/supported-chains', async (req: Request, res: Response) => {
+./server/routes/thirdweb-ai-integration.ts:28:router.post('/ai-mint', async (req: Request, res: Response) => {
+./server/routes/thirdweb-ai-integration.ts:93:router.post('/ai-query', async (req: Request, res: Response) => {
+./server/routes/token-ecosystem.ts:108:router.get('/high-value-tokens', async (req, res) => {
+./server/routes/token-ecosystem.ts:138:router.get('/search', async (req, res) => {
+./server/routes/token-ecosystem.ts:13:router.get('/ecosystem-overview', async (req, res) => {
+./server/routes/token-ecosystem.ts:170:router.get('/morph-manifold', async (req, res) => {
+./server/routes/token-ecosystem.ts:202:router.get('/morph-manifold/:shapeType', async (req, res) => {
+./server/routes/token-ecosystem.ts:244:router.post('/admin/complete-token-sweep', async (req, res) => {
+./server/routes/token-ecosystem.ts:289:router.get('/morph-manifold/filter/phi', async (req, res) => {
+./server/routes/token-ecosystem.ts:311:router.post('/admin/seed-all-shapes', async (req, res) => {
+./server/routes/token-ecosystem.ts:408:router.post('/generate-interaction', async (req, res) => {
+./server/routes/token-ecosystem.ts:459:router.post('/bulk-sync', async (req, res) => {
+./server/routes/token-ecosystem.ts:58:router.get('/benefits/:category', async (req, res) => {
+./server/routes/token-ledger.ts:114:router.get('/:tokenId', async (req: Request, res: Response) => {
+./server/routes/token-ledger.ts:139:router.get('/:tokenId/proof', async (req: Request, res: Response) => {
+./server/routes/token-ledger.ts:164:router.get('/:tokenId/transactions', async (req: Request, res: Response) => {
+./server/routes/token-ledger.ts:185:router.post('/:tokenId/energy', async (req: Request, res: Response) => {
+./server/routes/token-ledger.ts:218:router.post('/:tokenId/transfer', async (req: Request, res: Response) => {
+./server/routes/token-ledger.ts:250:router.get('/shape/:shapeType', async (req: Request, res: Response) => {
+./server/routes/token-ledger.ts:271:router.post('/stockpile', async (req: Request, res: Response) => {
+./server/routes/token-ledger.ts:369:router.post('/verify', async (req: Request, res: Response) => {
+./server/routes/token-ledger.ts:410:router.post('/stockpile', async (req: Request, res: Response) => {
+./server/routes/token-ledger.ts:460:router.get('/stockpile', async (req: Request, res: Response) => {
+./server/routes/token-ledger.ts:57:router.get('/list', async (req: Request, res: Response) => {
+./server/routes/token-ledger.ts:6:router.post('/mint', async (req: Request, res: Response) => {
+./server/routes/token-ledger.ts:79:router.get('/stats', async (req: Request, res: Response) => {
+./server/routes/token-ledger.ts:96:router.get('/leaderboard', async (req: Request, res: Response) => {
+./server/routes/tracking.ts:125:router.post('/batch', async (req, res) => {
+./server/routes/tracking.ts:27:router.post('/parameter-change', async (req, res) => {
+./server/routes/tracking.ts:44:router.post('/export', async (req, res) => {
+./server/routes/tracking.ts:87:router.get('/stats', async (req, res) => {
+./server/routes/tracking.ts:9:router.post('/view', async (req, res) => {
+./server/routes.ts:124:  app.get('/api/shapes/analyze/:type', async (req, res) => {
+./server/routes.ts:141:  app.post('/api/verify-export', async (req: any, res: any) => {
+./server/routes.ts:181:  app.post('/api/parameters/optimize', async (req: any, res: any) => {
+./server/routes/unified-math.ts:122:router.get('/unified/category/:category', (req: Request, res: Response) => {
+./server/routes/unified-math.ts:165:router.post('/unified/render3d', async (req: Request, res: Response) => {
+./server/routes/unified-math.ts:212:router.get('/unified/constants', (req: Request, res: Response) => {
+./server/routes/unified-math.ts:233:router.get('/unified/emojis', (req: Request, res: Response) => {
+./server/routes/unified-math.ts:256:router.post('/unified/batch-render', async (req: Request, res: Response) => {
+./server/routes/unified-math.ts:26:router.get('/unified/symbols', (req: Request, res: Response) => {
+./server/routes/unified-math.ts:311:router.get('/unified/stats', (req: Request, res: Response) => {
+./server/routes/unified-math.ts:57:router.get('/unified/symbol/:key', (req: Request, res: Response) => {
+./server/routes/unified-math.ts:89:router.post('/unified/parse', (req: Request, res: Response) => {
+./server/routes/uuon-cloud-bridge.ts:100:router.post('/push/embeddings', async (req: Request, res: Response) => {
+./server/routes/uuon-cloud-bridge.ts:121:router.get('/pull/shapes', async (req: Request, res: Response) => {
+./server/routes/uuon-cloud-bridge.ts:140:router.get('/pull/ml-updates', async (_req: Request, res: Response) => {
+./server/routes/uuon-cloud-bridge.ts:153:router.post('/sync', async (req: Request, res: Response) => {
+./server/routes/uuon-cloud-bridge.ts:174:router.post('/receive/shape', (req: Request, res: Response) => {
+./server/routes/uuon-cloud-bridge.ts:204:router.post('/receive/ml', (req: Request, res: Response) => {
+./server/routes/uuon-cloud-bridge.ts:236:router.get('/log', (_req: Request, res: Response) => {
+./server/routes/uuon-cloud-bridge.ts:42:router.get('/status', async (_req: Request, res: Response) => {
+./server/routes/uuon-cloud-bridge.ts:70:router.post('/push/shape', async (req: Request, res: Response) => {
+./server/routes/uuon-schema.ts:40:router.post('/initialize', async (req: Request, res: Response) => {
+./server/routes/uuon-schema.ts:60:router.post('/sync-from-tokens', async (req: Request, res: Response) => {
+./server/routes/uuon-schema.ts:81:router.get('/economy-overview', async (req: Request, res: Response) => {
+./server/routes/uuon-schema.ts:8:router.get('/status', async (req: Request, res: Response) => {
+./server/routes/weighting.ts:103:router.post('/fusion-score', (req: Request, res: Response) => {
+./server/routes/weighting.ts:129:router.post('/register', (req: Request, res: Response) => {
+./server/routes/weighting.ts:156:router.get('/report/:domain', (req: Request, res: Response) => {
+./server/routes/weighting.ts:171:router.get('/statistics', (req: Request, res: Response) => {
+./server/routes/weighting.ts:19:router.get('/profiles', (req: Request, res: Response) => {
+./server/routes/weighting.ts:31:router.get('/categories', (req: Request, res: Response) => {
+./server/routes/weighting.ts:42:router.get('/registry', (req: Request, res: Response) => {
+./server/routes/weighting.ts:54:router.post('/calculate', (req: Request, res: Response) => {
+./server/routes/weighting.ts:80:router.post('/rank', (req: Request, res: Response) => {
+./server/routes/workflow-integration-api.ts:191:router.get('/shapes', (req: Request, res: Response) => {
+./server/routes/workflow-integration-api.ts:219:router.get('/shapes/:id', (req: Request, res: Response) => {
+./server/routes/workflow-integration-api.ts:230:router.get('/shapes/:id/formula', (req: Request, res: Response) => {
+./server/routes/workflow-integration-api.ts:247:router.get('/shapes/:id/applications', (req: Request, res: Response) => {
+./server/routes/workflow-integration-api.ts:261:router.get('/categories', (req: Request, res: Response) => {
+./server/routes/workflow-integration-api.ts:278:router.post('/export/queue', (req: Request, res: Response) => {
+./server/routes/workflow-integration-api.ts:306:router.post('/export/batch', (req: Request, res: Response) => {
+./server/routes/workflow-integration-api.ts:341:router.get('/export/status/:id', (req: Request, res: Response) => {
+./server/routes/workflow-integration-api.ts:352:router.get('/export/queue', (req: Request, res: Response) => {
+./server/routes/workflow-integration-api.ts:366:router.get('/marketing/angles/:shapeId', (req: Request, res: Response) => {
+./server/routes/workflow-integration-api.ts:384:router.get('/educational/content/:shapeId', (req: Request, res: Response) => {
+./server/routes/workflow-integration-api.ts:400:router.post('/results', (req: Request, res: Response) => {
+./server/routes/workflow-integration-api.ts:435:router.get('/results', (req: Request, res: Response) => {
+./server/routes/workflow-integration-api.ts:457:router.get('/results/:id', (req: Request, res: Response) => {
+./server/routes/workflow-integration-api.ts:490:router.get('/health', (req: Request, res: Response) => {
+./server/shape-routes.ts:10:router.get('/shapes/:shapeName/defaults', async (req, res) => {
+./server/shape-routes.ts:111:router.get('/parameters', async (req, res) => {
+./server/shape-routes.ts:128:router.get('/parameters/:paramName', async (req, res) => {
+./server/shape-routes.ts:149:router.post('/admin/seed', async (req, res) => {
+./server/shape-routes.ts:165:router.post('/admin/clear-cache', async (req, res) => {
+./server/shape-routes.ts:181:router.get('/:shapeId', async (req, res) => {
+./server/shape-routes.ts:222:router.post('/generate-export-tokens', async (req, res) => {
+./server/shape-routes.ts:244:router.post('/admin/generate-missing-tokens', async (req, res) => {
+./server/shape-routes.ts:28:router.get('/shapes/:shapeName/formula', async (req, res) => {
+./server/shape-routes.ts:50:router.get('/shapes', async (req, res) => {
+./server/shape-routes.ts:73:router.get('/shapes/category/:category', async (req, res) => {
+./server/shape-routes.ts:92:router.get('/shapes/:shapeName/presets', async (req, res) => {
+./server/showcase-routes.ts:106:router.post('/add-sketchfab', (req, res) => {
+./server/showcase-routes.ts:137:router.post('/add-model', (req, res) => {
+./server/showcase-routes.ts:168:router.delete('/items/:id', (req, res) => {
+./server/showcase-routes.ts:199:router.get('/items/:id', (req, res) => {
+./server/showcase-routes.ts:66:router.get('/items', (req, res) => {
+./server/showcase-routes.ts:74:router.post('/upload-html', upload.single('file'), (req, res) => {
+./server/unified-sdk-implementation.ts:193:    this.router.post('/unified/:module/:operation', async (req, res) => {
+./server/unified-sdk-implementation.ts:249:    this.router.get('/health', (req, res) => {
+./server/unified-sdk-implementation.ts:268:    this.router.get('/discover', (req, res) => {
+./server/unified-sdk-implementation.ts:289:    this.router.get('/governance/metrics', (req, res) => {
+./server/unified-sdk-implementation.ts:302:    this.router.get('/governance/retention', (req, res) => {
+./server/unified-sdk-implementation.ts:318:    this.router.get('/governance/schemas', (req, res) => {
+./server/unified-sdk-implementation.ts:332:    this.router.get('/governance/security', (req, res) => {
+./server/verification-routes.ts:165:router.get('/verification-capabilities', (req: Request, res: Response) => {
+./server/verification-routes.ts:53:router.post('/verify-surface', validateAPIKey, async (req: Request, res: Response) => {
+./server/verification-routes.ts:72:router.post('/verify-batch', validateAPIKey, async (req: Request, res: Response) => {…. What the project actually depends on
+cat package.json | python3 -c "
+import json,sys
+p = json.load(sys.stdin)
+print('=== DEPENDENCIES ===')
+for k,v in p.get('dependencies',{}).items(): print(f'  {k}: {v}')
+print()
+print('=== DEV DEPENDENCIES ===')
+for k,v in p.get('devDependencies',{}).items(): print(f'  {k}: {v}')
+"
+=== DEPENDENCIES ===
+  @anthropic-ai/sdk: ^0.78.0
+  @babel/core: ^7.28.5
+  @fontsource/inter: ^5.2.5
+  @jridgewell/trace-mapping: ^0.3.25
+  @jupyterlab/toc: ^6.5.0
+  @neondatabase/serverless: ^0.10.4
+  @octokit/rest: ^22.0.0
+  @radix-ui/react-accordion: ^1.2.1
+  @radix-ui/react-alert-dialog: ^1.1.2
+  @radix-ui/react-aspect-ratio: ^1.1.0
+  @radix-ui/react-avatar: ^1.1.1
+  @radix-ui/react-checkbox: ^1.1.2
+  @radix-ui/react-collapsible: ^1.1.1
+  @radix-ui/react-context-menu: ^2.2.2
+  @radix-ui/react-dialog: ^1.1.2
+  @radix-ui/react-dropdown-menu: ^2.1.2
+  @radix-ui/react-hover-card: ^1.1.2
+  @radix-ui/react-label: ^2.1.0
+  @radix-ui/react-menubar: ^1.1.2
+  @radix-ui/react-navigation-menu: ^1.2.1
+  @radix-ui/react-popover: ^1.1.2
+  @radix-ui/react-progress: ^1.1.0
+  @radix-ui/react-radio-group: ^1.2.1
+  @radix-ui/react-scroll-area: ^1.2.0
+  @radix-ui/react-select: ^2.1.2
+  @radix-ui/react-separator: ^1.1.0
+  @radix-ui/react-slider: ^1.2.1
+  @radix-ui/react-slot: ^1.1.0
+  @radix-ui/react-switch: ^1.1.1
+  @radix-ui/react-tabs: ^1.1.1
+  @radix-ui/react-toast: ^1.2.2
+  @radix-ui/react-toggle: ^1.1.0
+  @radix-ui/react-toggle-group: ^1.1.0
+  @radix-ui/react-tooltip: ^1.1.3
+  @react-three/drei: ^9.92.7
+  @react-three/fiber: ^8.15.12
+  @react-three/postprocessing: ^2.16.2
+  @replit/object-storage: ^1.0.0
+  @replit/vite-plugin-runtime-error-modal: ^0.0.3
+  @tailwindcss/typography: ^0.5.19
+  @tanstack/react-query: ^5.60.5
+  @types/bcrypt: ^6.0.0
+  @types/cors: ^2.8.19
+  @types/jsonwebtoken: ^9.0.10
+  @types/multer: ^2.0.0
+  @use-gesture/react: ^10.3.1
+  @vitejs/plugin-react: ^5.1.1
+  aria-hidden: ^1.2.6
+  autoprefixer: ^10.4.22
+  axios: ^1.13.2
+  bcrypt: ^6.0.0
+  browserslist: ^4.28.0
+  caniuse-lite: ^1.0.30001757
+  chalk: ^5.6.2
+  class-variance-authority: ^0.7.0
+  clsx: ^2.1.1
+  cmdk: ^1.0.0
+  connect-pg-simple: ^10.0.0
+  cors: ^2.8.5
+  cross-spawn: ^7.0.6
+  d3: ^7.9.0
+  date-fns: ^3.6.0
+  drizzle-kit: ^0.18.1
+  drizzle-orm: ^0.39.3
+  drizzle-zod: ^0.7.0
+  embla-carousel-react: ^8.3.0
+  express: ^4.21.2
+  express-rate-limit: ^8.2.1
+  express-session: ^1.18.1
+  form-data: ^4.0.4
+  framer-motion: ^11.13.1
+  gl-matrix: ^3.4.3
+  glob: ^13.0.0
+  graphemer: ^1.4.0
+  gsap: ^3.13.0
+  helmet: ^8.1.0
+  howler: ^2.2.4
+  input-otp: ^1.2.4
+  jsonwebtoken: ^9.0.3
+  jszip: ^3.10.1
+  jupyter-notebook: ^0.0.0
+  jupyterlab: ^0.0.1
+  lucide-react: ^0.460.0
+  memorystore: ^1.6.7
+  meshline: ^3.3.1
+  multer: ^2.0.2
+  nanoid: ^5.1.6
+  next-themes: ^0.4.5
+  node-fetch: ^3.3.2
+  openai: ^6.15.0
+  passport: ^0.7.0
+  passport-local: ^1.0.0
+  path-to-regexp: ^8.3.0
+  postcss: ^8.5.6
+  postprocessing: ^6.37.4
+  python-shell: ^5.0.0
+  r3f-perf: ^7.2.3
+  react: ^18.3.1
+  react-day-picker: ^8.10.1
+  react-dom: ^18.3.1
+  react-helmet-async: ^2.0.5
+  react-hook-form: ^7.53.1
+  react-resizable-panels: ^2.1.4
+  react-router-dom: ^6.26.0
+  react-syntax-highlighter: ^16.1.0
+  react-use-gesture: ^9.1.3
+  recharts: ^2.13.0
+  sonner: ^1.7.1
+  tailwind-merge: ^2.5.4
+  tailwind-scrollbar: ^3.1.0
+  tailwindcss: ^3.4.17
+  tailwindcss-animate: ^1.0.7
+  terser: ^5.44.1
+  three: ^0.160.1
+  three-gltf-exporter: ^0.0.1
+  tsx: ^4.21.0
+  typescript: ^5.9.3
+  validator: ^13.15.23
+  vaul: ^1.1.0
+  vite-plugin-glsl: ^1.5.5
+  wouter: ^3.3.5
+  ws: ^8.18.0
+  zod: ^3.23.8
+  zod-validation-error: ^3.4.0
+  zustand: ^5.0.3
+
+=== DEV DEPENDENCIES ===
+  @types/connect-pg-simple: ^7.0.3
+  @types/express: 4.17.21
+  @types/express-session: ^1.18.0
+  @types/node: ^20.19.24
+  @types/passport: ^1.0.16
+  @types/passport-local: ^1.0.38
+  @types/react: ^18.3.11
+  @types/react-dom: ^18.3.1
+  @types/ws: ^8.5.13
+  esbuild: ^0.27.2
+  vite: ^6.4.1….

@@ -1,0 +1,31 @@
+agents:
+
+- name: architecture_agent
+  task: Map entire platform architecture
+
+- name: engine_agent
+  task: Discover mathematical and computational engines
+
+- name: geometry_agent
+  task: Analyze topology, surfaces, 3D and 4D systems
+
+- name: ai_agent
+  task: Discover training datasets and AI opportunities
+
+- name: database_agent
+  task: Analyze database and data structures
+
+- name: api_agent
+  task: Find service extraction opportunities
+
+- name: security_agent
+  task: Audit security architecture
+
+- name: bug_agent
+  task: Locate implementation problems
+
+- name: documentation_agent
+  task: Organize technical knowledge
+
+- name: business_agent
+  task: Identify infrastructure products

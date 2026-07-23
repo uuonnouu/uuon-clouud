@@ -1,0 +1,51 @@
+{
+  "source": "Δmension Mathematical Universe",
+  "shapeId": "lattice_kyber_ntru",
+  "shapeName": "Lattice-Based - Kyber/NTRU Polynomial Lattice",
+  "exportDate": "2026-06-10T19:26:45.882Z",
+  "parameters": {
+    "a": 1,
+    "b": 1,
+    "c": 1,
+    "d": 256,
+    "e": 3329,
+    "f": 0.5,
+    "uMin": 0,
+    "uMax": 1,
+    "vMin": 0,
+    "vMax": 1,
+    "uSegments": 128,
+    "vSegments": 64
+  },
+  "dmension_version": "2.0",
+  "security": {
+    "cryptographicHash": "b863f7ab2e5ffa9478c26d3c7655edcf55a157cb034db91e23d038819dbafd80",
+    "verificationCode": "UUON-D13MON4-V1",
+    "timestamp": "2026-06-10T19:26:45.882Z",
+    "author": "UUON Foundation Inc.",
+    "organization": "Dmension Mathematical Universe",
+    "copyright": "2024 UUON Foundation Inc. All Rights Reserved.",
+    "license": "CC BY-NC 4.0",
+    "integrityVersion": "2.0",
+    "genesisAnchor": "cf114022b5e4e1d6fdeb36890f35f605857cf2de93b53ebcb9c8e5652413ca04",
+    "fixedAt": "2026-06-16T00:42:41.727Z"
+  },
+  "scene_bounds": {
+    "aabb_min": [
+      -1.220120906829834,
+      -1.8484270572662354,
+      -1.7626922130584717
+    ],
+    "aabb_max": [
+      1.425154447555542,
+      2.0493836402893066,
+      2.362922430038452
+    ],
+    "center": [
+      0.102516770362854,
+      0.10047829151153564,
+      0.30011510848999023
+    ],
+    "scale": 4.125614643096924
+  }
+}

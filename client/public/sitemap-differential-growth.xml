@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
+  
+  <!-- Differential Growth Category Overview -->
+  <url>
+    <loc>https://uuon-foundation.com/shapes/differential-growth</loc>
+    <lastmod>2025-12-31</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+    <image:image>
+      <image:loc>https://uuon-foundation.com/previews/differential-growth.png</image:loc>
+      <image:title>Differential Growth Algorithms - Biological Pattern Formation</image:title>
+      <image:caption>Cellular expansion and reaction-diffusion algorithms simulating biological growth patterns</image:caption>
+    </image:image>
+  </url>
+
+  <!-- Coral Growth - Branching organic structure -->
+  <url>
+    <loc>https://uuon-foundation.com/shape/coral_growth</loc>
+    <lastmod>2025-12-31</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://uuon-foundation.com/previews/coral_growth.png</image:loc>
+      <image:title>Coral Growth - Differential Expansion Algorithm</image:title>
+      <image:caption>Mathematical: r(t) = r_0 + integral(growth_rate * sin(theta) dt). Branching organic structure with differential cellular expansion.</image:caption>
+    </image:image>
+  </url>
+
+  <!-- Brain Cortex Folding - Gyri and Sulci -->
+  <url>
+    <loc>https://uuon-foundation.com/shape/brain_cortex_folding</loc>
+    <lastmod>2025-12-31</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://uuon-foundation.com/previews/brain_cortex_folding.png</image:loc>
+      <image:title>Brain Cortex Folding - Gyri and Sulci Formation</image:title>
+      <image:caption>Mathematical: z = a*sin(b*u)*cos(c*v) + fold_depth*sin(freq*u*v). Cortical folding patterns mimicking cerebral cortex development.</image:caption>
+    </image:image>
+  </url>
+
+  <!-- Lichen Expansion - Radial growth patterns -->
+  <url>
+    <loc>https://uuon-foundation.com/shape/lichen_expansion</loc>
+    <lastmod>2025-12-31</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://uuon-foundation.com/previews/lichen_expansion.png</image:loc>
+      <image:title>Lichen Expansion - Radial Growth Algorithm</image:title>
+      <image:caption>Mathematical: r(theta,t) = r_0 * (1 + epsilon*sin(n*theta + omega*t)). Radial growth with fractal edge patterns.</image:caption>
+    </image:image>
+  </url>
+
+  <!-- Cellular Membrane - Lipid bilayer dynamics -->
+  <url>
+    <loc>https://uuon-foundation.com/shape/cellular_membrane</loc>
+    <lastmod>2025-12-31</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://uuon-foundation.com/previews/cellular_membrane.png</image:loc>
+      <image:title>Cellular Membrane - Lipid Bilayer Dynamics</image:title>
+      <image:caption>Mathematical: H = (1/2)*kappa*(2H - C_0)^2 + kappa_G*K. Helfrich energy model for membrane curvature.</image:caption>
+    </image:image>
+  </url>
+
+  <!-- Reaction-Diffusion Pattern -->
+  <url>
+    <loc>https://uuon-foundation.com/shape/reaction_diffusion_pattern</loc>
+    <lastmod>2025-12-31</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://uuon-foundation.com/previews/reaction_diffusion.png</image:loc>
+      <image:title>Reaction-Diffusion Pattern - Turing Morphogenesis</image:title>
+      <image:caption>Mathematical: du/dt = D_u*nabla^2*u + f(u,v), dv/dt = D_v*nabla^2*v + g(u,v). Alan Turing's morphogenesis model.</image:caption>
+    </image:image>
+  </url>
+
+  <!-- Mathematical Fragment -->
+  <url>
+    <loc>https://uuon-foundation.com/shape/mathematical_fragment</loc>
+    <lastmod>2025-12-31</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+</urlset>

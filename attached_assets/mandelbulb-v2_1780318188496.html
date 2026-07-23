@@ -1,0 +1,1096 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>UUON — Mandelbulb Engine v2.000«</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@300;400;600;700&display=swap');
+
+:root {
+  --void: #04080f;
+  --teal: #00E5CC;
+  --gold: #C9A84C;
+  --violet: #7B5EA7;
+  --electric: #3A7BFF;
+  --dim: #0a1020;
+  --panel: #070d18;
+  --border: rgba(0,229,204,0.12);
+  --border-gold: rgba(201,168,76,0.2);
+  --text-dim: rgba(0,229,204,0.4);
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+
+body {
+  background: var(--void);
+  color: var(--teal);
+  font-family: 'Share Tech Mono', monospace;
+  height: 100vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 9px 18px;
+  border-bottom: 1px solid var(--border);
+  background: var(--panel);
+  flex-shrink: 0;
+}
+
+.logo {
+  font-family: 'Rajdhani', sans-serif;
+  font-weight: 700;
+  font-size: 13px;
+  letter-spacing: 4px;
+  color: var(--gold);
+}
+.logo span { color: var(--teal); }
+
+.engine-id {
+  font-size: 10px;
+  letter-spacing: 5px;
+  color: var(--text-dim);
+  font-family: 'Rajdhani', sans-serif;
+  text-transform: uppercase;
+}
+
+.version-badge {
+  font-size: 9px;
+  color: var(--gold);
+  opacity: 0.65;
+}
+
+.workspace {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+}
+
+/* CANVAS */
+.canvas-area {
+  flex: 1;
+  position: relative;
+  background: #000;
+}
+
+canvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+  cursor: grab;
+}
+canvas:active { cursor: grabbing; }
+
+/* OVERLAYS */
+.hud {
+  position: absolute;
+  top: 12px;
+  left: 14px;
+  font-size: 9px;
+  color: var(--text-dim);
+  line-height: 2.0;
+  pointer-events: none;
+}
+.hud .v { color: var(--teal); }
+.hud .g { color: var(--gold); }
+
+.crosshair {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%,-50%);
+  pointer-events: none;
+  opacity: 0.2;
+}
+.crosshair::before, .crosshair::after {
+  content: '';
+  position: absolute;
+  background: var(--teal);
+}
+.crosshair::before { width: 12px; height: 1px; top: 0; left: -6px; }
+.crosshair::after  { width: 1px; height: 12px; top: -6px; left: 0; }
+
+.render-tag {
+  position: absolute;
+  bottom: 12px;
+  left: 14px;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 9px;
+  color: var(--text-dim);
+}
+
+.dot {
+  width: 5px; height: 5px;
+  border-radius: 50%;
+  background: var(--teal);
+  animation: blink 1.8s ease-in-out infinite;
+}
+
+@keyframes blink {
+  0%,100% { opacity:1; transform:scale(1); }
+  50% { opacity:0.25; transform:scale(0.6); }
+}
+
+/* PANEL */
+.panel {
+  width: 236px;
+  flex-shrink: 0;
+  background: var(--panel);
+  border-left: 1px solid var(--border);
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) transparent;
+}
+
+.ps {
+  padding: 13px 15px;
+  border-bottom: 1px solid var(--border);
+}
+
+.sl {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 10px;
+  letter-spacing: 4px;
+  color: var(--gold);
+  text-transform: uppercase;
+  opacity: 0.75;
+  margin-bottom: 11px;
+}
+
+.cr { margin-bottom: 12px; }
+
+.cl {
+  display: flex;
+  justify-content: space-between;
+  font-size: 9px;
+  color: var(--text-dim);
+  margin-bottom: 4px;
+}
+.cl .cv { color: var(--teal); font-size: 10px; }
+
+input[type=range] {
+  width: 100%;
+  height: 1px;
+  -webkit-appearance: none;
+  background: rgba(0,229,204,0.18);
+  border-radius: 1px;
+  outline: none;
+  cursor: pointer;
+}
+input[type=range]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 9px; height: 9px;
+  border-radius: 50%;
+  background: var(--teal);
+  box-shadow: 0 0 6px var(--teal);
+  cursor: pointer;
+  transition: transform 0.1s;
+}
+input[type=range]::-webkit-slider-thumb:hover { transform: scale(1.5); }
+
+.bg { display: flex; gap: 3px; flex-wrap: wrap; }
+
+.b {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 9px;
+  padding: 3px 7px;
+  background: transparent;
+  border: 1px solid rgba(0,229,204,0.15);
+  color: rgba(0,229,204,0.4);
+  cursor: pointer;
+  transition: all 0.12s;
+  letter-spacing: 1px;
+}
+.b:hover { border-color: var(--teal); color: var(--teal); }
+.b.on {
+  background: rgba(0,229,204,0.08);
+  border-color: var(--teal);
+  color: var(--teal);
+  box-shadow: 0 0 7px rgba(0,229,204,0.18);
+}
+.b.gold-on {
+  background: rgba(201,168,76,0.08);
+  border-color: var(--gold);
+  color: var(--gold);
+  box-shadow: 0 0 7px rgba(201,168,76,0.18);
+}
+
+.ab {
+  width: 100%;
+  padding: 7px;
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 2px;
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--teal);
+  cursor: pointer;
+  transition: all 0.18s;
+  text-transform: uppercase;
+  margin-bottom: 5px;
+}
+.ab:hover {
+  background: rgba(0,229,204,0.07);
+  border-color: var(--teal);
+  box-shadow: 0 0 10px rgba(0,229,204,0.12);
+}
+.ab.gb {
+  border-color: var(--border-gold);
+  color: var(--gold);
+}
+.ab.gb:hover {
+  background: rgba(201,168,76,0.07);
+  border-color: var(--gold);
+  box-shadow: 0 0 10px rgba(201,168,76,0.12);
+}
+
+/* FORMULA BOX */
+.fb {
+  background: rgba(0,0,0,0.5);
+  border: 1px solid var(--border);
+  padding: 9px;
+  font-size: 8.5px;
+  line-height: 1.9;
+  color: rgba(0,229,204,0.35);
+}
+.fb .fh { color: var(--teal); }
+.fb .fg { color: var(--gold); }
+.fb .fv { color: #7B5EA7; }
+
+/* INFO */
+.ir {
+  display: flex;
+  justify-content: space-between;
+  font-size: 9px;
+  color: var(--text-dim);
+  margin-bottom: 4px;
+  line-height: 1.6;
+}
+.ir .iv { color: var(--teal); }
+.ir .ig { color: var(--gold); }
+
+/* VARIANT INDICATOR */
+.variant-pill {
+  position: absolute;
+  top: 12px;
+  right: 14px;
+  padding: 3px 10px;
+  border: 1px solid var(--border-gold);
+  font-size: 9px;
+  color: var(--gold);
+  letter-spacing: 2px;
+  pointer-events: none;
+  background: rgba(201,168,76,0.05);
+}
+
+footer {
+  padding: 5px 18px;
+  border-top: 1px solid var(--border);
+  background: var(--panel);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 8.5px;
+  color: var(--text-dim);
+  flex-shrink: 0;
+}
+
+.fi span b { color: var(--teal); font-weight: normal; }
+.fi { display: flex; gap: 14px; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">UUON <span>Foundation</span></div>
+  <div class="engine-id">Mandelbulb Engine · v2.000«</div>
+  <div class="version-badge">Power-n Triplex Raymarcher</div>
+</header>
+
+<div class="workspace">
+  <div class="canvas-area">
+    <canvas id="c"></canvas>
+    <div class="crosshair"></div>
+
+    <div class="hud">
+      <div>n = <span class="v" id="hPow">8</span> &nbsp; iters = <span class="v" id="hIter">7</span></div>
+      <div>steps = <span class="v" id="hSteps">110</span> &nbsp; bail = <span class="g" id="hBail">2.000</span></div>
+      <div>variant = <span class="g" id="hVar">STANDARD</span></div>
+      <div>section = <span class="v" id="hSec">NONE</span></div>
+      <div>fps = <span class="v" id="hFps">--</span></div>
+    </div>
+
+    <div class="variant-pill" id="variantPill">STANDARD</div>
+
+    <div class="render-tag">
+      <div class="dot"></div>
+      <span>RENDERING</span>
+    </div>
+  </div>
+
+  <!-- PANEL -->
+  <div class="panel">
+
+    <!-- GEOMETRY -->
+    <div class="ps">
+      <div class="sl">Geometry</div>
+
+      <div class="cr">
+        <div class="cl">Power (n) <span class="cv" id="pv">8</span></div>
+        <input type="range" id="ps" min="2" max="16" step="0.25" value="8">
+      </div>
+
+      <div class="cr">
+        <div class="cl">Presets</div>
+        <div class="bg" id="ppg">
+          <button class="b" data-v="2">2</button>
+          <button class="b" data-v="3">3</button>
+          <button class="b" data-v="4">4</button>
+          <button class="b on" data-v="8">8</button>
+          <button class="b" data-v="12">12</button>
+          <button class="b" data-v="16">16</button>
+        </div>
+      </div>
+
+      <div class="cr">
+        <div class="cl">Iterations <span class="cv" id="iv">7</span></div>
+        <input type="range" id="is" min="2" max="14" step="1" value="7">
+      </div>
+
+      <div class="cr">
+        <div class="cl">Ray Steps <span class="cv" id="sv">110</span></div>
+        <input type="range" id="ss" min="48" max="200" step="4" value="110">
+      </div>
+
+      <div class="cr">
+        <div class="cl">Bailout <span class="cv" id="bv">2.0</span></div>
+        <input type="range" id="bs" min="1.5" max="5.0" step="0.05" value="2.0">
+      </div>
+    </div>
+
+    <!-- FORMULA VARIANT -->
+    <div class="ps">
+      <div class="sl">Formula Variant</div>
+      <div class="bg" id="fvg">
+        <button class="b on" data-v="0">STANDARD</button>
+        <button class="b" data-v="1">SPIKEY</button>
+        <button class="b" data-v="2">SLICEY</button>
+        <button class="b" data-v="3">HILLY</button>
+        <button class="b" data-v="4">SMOOTH</button>
+      </div>
+      <div class="fb" style="margin-top:9px" id="formulaDisplay">
+        <div><span class="fg">Standard Nylander/White</span></div>
+        <div>r = √(x²+y²+z²)</div>
+        <div>θ = atan2(√(x²+y²), z)</div>
+        <div>φ = atan2(y,x)</div>
+        <div style="margin-top:4px"><span class="fh">x' = rⁿ sin(nθ) cos(nφ)</span></div>
+        <div><span class="fh">y' = rⁿ sin(nθ) sin(nφ)</span></div>
+        <div><span class="fh">z' = rⁿ cos(nθ)</span></div>
+      </div>
+    </div>
+
+    <!-- CROSS SECTION -->
+    <div class="ps">
+      <div class="sl">Cross Section</div>
+      <div class="cr">
+        <div class="cl">Cut Axis</div>
+        <div class="bg" id="axg">
+          <button class="b on" data-v="0">NONE</button>
+          <button class="b" data-v="1">X</button>
+          <button class="b" data-v="2">Y</button>
+          <button class="b" data-v="3">Z</button>
+        </div>
+      </div>
+      <div class="cr">
+        <div class="cl">Cut Position <span class="cv" id="cpv">0.0</span></div>
+        <input type="range" id="cps" min="-1.2" max="1.2" step="0.02" value="0.0">
+      </div>
+    </div>
+
+    <!-- CAMERA -->
+    <div class="ps">
+      <div class="sl">Camera</div>
+      <div class="cr">
+        <div class="cl">Distance <span class="cv" id="dv">2.6</span></div>
+        <input type="range" id="ds" min="1.1" max="5.5" step="0.05" value="2.6">
+      </div>
+      <div class="cr">
+        <div class="cl">FOV <span class="cv" id="fv">58</span>°</div>
+        <input type="range" id="fs" min="25" max="90" step="1" value="58">
+      </div>
+    </div>
+
+    <!-- SHADING -->
+    <div class="ps">
+      <div class="sl">Shading</div>
+
+      <div class="cr">
+        <div class="cl">Color Mode</div>
+        <div class="bg" id="cmg">
+          <button class="b on" data-v="0">ORBIT</button>
+          <button class="b" data-v="1">ITER</button>
+          <button class="b" data-v="2">DEPTH</button>
+          <button class="b" data-v="3">NORMAL</button>
+          <button class="b" data-v="4">VOID</button>
+        </div>
+      </div>
+
+      <div class="cr">
+        <div class="cl">Palette</div>
+        <div class="bg" id="palg">
+          <button class="b on" data-v="0">TEAL/GOLD</button>
+          <button class="b" data-v="1">EMBER</button>
+          <button class="b" data-v="2">ICE</button>
+          <button class="b" data-v="3">VOID</button>
+        </div>
+      </div>
+
+      <div class="cr">
+        <div class="cl">Ambient Occlusion <span class="cv" id="aov">ON</span></div>
+        <div class="bg" id="aog">
+          <button class="b on" data-v="1">ON</button>
+          <button class="b" data-v="0">OFF</button>
+        </div>
+      </div>
+
+      <div class="cr">
+        <div class="cl">Specular <span class="cv" id="spv">0.7</span></div>
+        <input type="range" id="sps" min="0" max="2.0" step="0.05" value="0.7">
+      </div>
+
+      <div class="cr">
+        <div class="cl">Light Azimuth <span class="cv" id="lav">45</span>°</div>
+        <input type="range" id="las" min="0" max="360" step="1" value="45">
+      </div>
+
+      <div class="cr">
+        <div class="cl">Light Elevation <span class="cv" id="lev">40</span>°</div>
+        <input type="range" id="les" min="-80" max="80" step="1" value="40">
+      </div>
+
+      <div class="cr">
+        <div class="cl">Glow <span class="cv" id="glv">0.3</span></div>
+        <input type="range" id="gls" min="0" max="1.0" step="0.05" value="0.3">
+      </div>
+    </div>
+
+    <!-- ANIMATION -->
+    <div class="ps">
+      <div class="sl">Animation</div>
+      <div class="cr">
+        <div class="cl">Auto-Rotate</div>
+        <div class="bg" id="arg">
+          <button class="b on" data-v="1">ON</button>
+          <button class="b" data-v="0">OFF</button>
+        </div>
+      </div>
+      <div class="cr">
+        <div class="cl">Speed <span class="cv" id="rsv">0.25</span></div>
+        <input type="range" id="rss" min="0.02" max="1.2" step="0.02" value="0.25">
+      </div>
+      <div class="cr">
+        <div class="cl">Morph Power</div>
+        <div class="bg" id="mpg">
+          <button class="b" data-v="1">ON</button>
+          <button class="b on" data-v="0">OFF</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- INFO -->
+    <div class="ps">
+      <div class="sl">Data</div>
+      <div class="ir"><span>Vol P8</span><span class="ig">≈ 2.945</span></div>
+      <div class="ir"><span>Vol P2</span><span class="ig">≈ 0.869</span></div>
+      <div class="ir"><span>FPS</span><span class="iv" id="fps2">--</span></div>
+      <div class="ir"><span>Res</span><span class="iv" id="res2">--</span></div>
+      <div class="ir"><span>Src</span><span class="ig">Skytopia / Nylander</span></div>
+    </div>
+
+    <!-- ACTIONS -->
+    <div class="ps">
+      <button class="ab" id="resetBtn">↺ RESET VIEW</button>
+      <button class="ab gb" id="shotBtn">⬇ SCREENSHOT</button>
+    </div>
+
+  </div><!-- /panel -->
+</div><!-- /workspace -->
+
+<footer>
+  <div class="fi">
+    <span><b>DRAG</b> rotate</span>
+    <span><b>SCROLL</b> zoom</span>
+    <span><b>SHIFT+DRAG</b> light</span>
+  </div>
+  <div>UUON Foundation · Kassel · Mandelbulb Triplex Engine v2.000«</div>
+</footer>
+
+<script>
+// ══════════════════════════════════════════════
+// UUON MANDELBULB ENGINE v2.000«
+// Triplex spherical raymarcher
+// Formula variants: Standard / Spikey / Slicey / Hilly / Smooth
+// Cross-section: X/Y/Z plane cut
+// Coloring: Orbit trap / Iter / Depth / Normal / Void
+// AO: 8-tap cone sampling
+// Ref: skytopia.com/project/fractal/2mandelbulb.html
+//      Paul Nylander / David Makin DE
+// ══════════════════════════════════════════════
+
+const canvas = document.getElementById('c');
+const gl = canvas.getContext('webgl', { antialias: false, preserveDrawingBuffer: true });
+
+const VS = `
+attribute vec2 p;
+void main(){ gl_Position=vec4(p,0.0,1.0); }
+`;
+
+const FS = `
+precision highp float;
+
+uniform vec2  uR;
+uniform float uTime;
+uniform float uPow;
+uniform int   uIter;
+uniform int   uSteps;
+uniform float uBail;
+uniform float uDist;
+uniform float uFov;
+uniform vec2  uCam;
+uniform int   uColor;
+uniform int   uPal;
+uniform int   uAO;
+uniform float uSpec;
+uniform float uLightAz;
+uniform float uLightEl;
+uniform float uGlow;
+uniform int   uVariant;
+uniform int   uCutAxis;
+uniform float uCutPos;
+
+#define PI   3.14159265359
+#define EPS  0.0003
+#define FAR  20.0
+
+// ── Triplex power (variant-aware) ──────────────
+vec3 triplexPow(vec3 z, float n, int variant) {
+  float r = length(z);
+  if(r < 0.0001) return z;
+
+  float theta, phi;
+  float rn = pow(r, n);
+
+  // Variant modifies the formula as per Skytopia docs
+  if(variant == 1) {
+    // SPIKEY: swap cos(theta) → x
+    theta = acos(clamp(z.z/r, -1.0, 1.0));
+    phi   = atan(z.y, z.x);
+    float nt = n*theta, np = n*phi;
+    return rn * vec3(
+      cos(nt)*cos(np),    // swapped: cos(theta) for x
+      sin(nt)*sin(np),
+      cos(nt)
+    );
+  } else if(variant == 2) {
+    // SLICEY: newy = r*sin(theta)*tan(phi)
+    theta = acos(clamp(z.z/r, -1.0, 1.0));
+    phi   = atan(z.y, z.x);
+    float nt = n*theta, np = n*phi;
+    return rn * vec3(
+      sin(nt)*cos(np),
+      sin(nt)*tan(np),   // tan instead of sin
+      cos(nt)
+    );
+  } else if(variant == 3) {
+    // HILLY: use r^(n*0.5) for radius → softer bulbing
+    theta = acos(clamp(z.z/r, -1.0, 1.0));
+    phi   = atan(z.y, z.x);
+    float rh = pow(r, n * 0.6); // lower power on radius
+    float nt = n*theta, np = n*phi;
+    return rh * vec3(sin(nt)*cos(np), sin(nt)*sin(np), cos(nt));
+  } else if(variant == 4) {
+    // SMOOTH: higher power on radius → sharper but smoother surface
+    theta = acos(clamp(z.z/r, -1.0, 1.0));
+    phi   = atan(z.y, z.x);
+    float rs = pow(r, n * 1.4);
+    float nt = n*theta, np = n*phi;
+    return rs * vec3(sin(nt)*cos(np), sin(nt)*sin(np), cos(nt));
+  } else {
+    // STANDARD (Nylander/White)
+    theta = acos(clamp(z.z/r, -1.0, 1.0));
+    phi   = atan(z.y, z.x);
+    float nt = n*theta, np = n*phi;
+    return rn * vec3(sin(nt)*cos(np), sin(nt)*sin(np), cos(nt));
+  }
+}
+
+// ── Distance Estimator (David Makin / Nylander) ─
+// Returns vec2(distance, orbitTrap)
+vec2 DE(vec3 pos) {
+  vec3  z    = pos;
+  float dr   = 1.0;
+  float r    = 0.0;
+  float trap = 1e10;
+
+  for(int i=0; i<14; i++) {
+    if(i >= uIter) break;
+    r = length(z);
+    if(r > uBail) break;
+
+    // Accumulate orbit trap (min distance to axes + origin)
+    float t1 = length(z);
+    float t2 = abs(z.x);
+    float t3 = abs(z.y) + abs(z.z);
+    trap = min(trap, min(t1, min(t2*1.5, t3)));
+
+    // Derivative accumulation
+    dr = pow(r, uPow - 1.0) * uPow * dr + 1.0;
+
+    z = triplexPow(z, uPow, uVariant) + pos;
+  }
+
+  float d = (r > 0.0001) ? 0.5 * log(r) * r / dr : 0.0;
+  return vec2(d, trap);
+}
+
+// ── Cross-section clip ───────────────────────
+bool clipped(vec3 p) {
+  if(uCutAxis == 0) return false;
+  if(uCutAxis == 1) return p.x > uCutPos;
+  if(uCutAxis == 2) return p.y > uCutPos;
+  if(uCutAxis == 3) return p.z > uCutPos;
+  return false;
+}
+
+// ── Scene distance ───────────────────────────
+float sceneDist(vec3 p) {
+  if(clipped(p)) return FAR;
+  return DE(p).x;
+}
+
+vec2 sceneDE(vec3 p) {
+  if(clipped(p)) return vec2(FAR, 0.0);
+  return DE(p);
+}
+
+// ── Normal ──────────────────────────────────
+vec3 normal(vec3 p) {
+  vec2 e = vec2(EPS*2.0, 0.0);
+  return normalize(vec3(
+    sceneDist(p+e.xyy) - sceneDist(p-e.xyy),
+    sceneDist(p+e.yxy) - sceneDist(p-e.yxy),
+    sceneDist(p+e.yyx) - sceneDist(p-e.yyx)
+  ));
+}
+
+// ── AO (8-tap cone) ─────────────────────────
+float ao(vec3 p, vec3 n) {
+  float occ = 0.0, wt = 1.0;
+  for(int i=1; i<=8; i++) {
+    float h = 0.012 + 0.18 * float(i) / 8.0;
+    float d = sceneDist(p + n * h);
+    occ += max(0.0, h - d) * wt;
+    wt *= 0.5;
+  }
+  return clamp(1.0 - 4.5 * occ, 0.0, 1.0);
+}
+
+// ── Camera ──────────────────────────────────
+mat3 camMat(vec3 ro, vec3 ta) {
+  vec3 f = normalize(ta - ro);
+  vec3 r = normalize(cross(vec3(0.0,1.0,0.0), f));
+  vec3 u = cross(f, r);
+  return mat3(r, u, f);
+}
+
+// ── Palettes ────────────────────────────────
+// teal=0, ember=1, ice=2, void=3
+vec3 palBase(float trap, float iter, int pal) {
+  vec3 teal   = vec3(0.0, 0.898, 0.8);
+  vec3 gold   = vec3(0.788, 0.659, 0.298);
+  vec3 violet = vec3(0.48, 0.37, 0.66);
+
+  if(pal == 0) { // TEAL/GOLD (UUON)
+    vec3 c = mix(teal, gold, smoothstep(0.3, 1.4, trap));
+    c = mix(c, violet, pow(sin(trap*2.1)*0.5+0.5, 2.0)*0.6);
+    return c;
+  } else if(pal == 1) { // EMBER
+    vec3 deep = vec3(0.08, 0.02, 0.0);
+    vec3 fire = vec3(1.0, 0.45, 0.05);
+    vec3 lava = vec3(1.0, 0.9, 0.2);
+    vec3 c = mix(deep, fire, smoothstep(0.0, 0.8, trap));
+    return mix(c, lava, smoothstep(0.6, 1.4, trap));
+  } else if(pal == 2) { // ICE
+    vec3 dark = vec3(0.0, 0.02, 0.05);
+    vec3 ice  = vec3(0.4, 0.85, 1.0);
+    vec3 wht  = vec3(0.9, 0.97, 1.0);
+    vec3 c = mix(dark, ice, smoothstep(0.0, 1.0, trap));
+    return mix(c, wht, pow(smoothstep(0.7, 1.5, trap), 1.5));
+  } else { // VOID
+    return vec3(0.01, 0.02, 0.04);
+  }
+}
+
+vec3 iterColor(float t, int pal) {
+  if(pal == 1) {
+    float f = fract(t*0.08);
+    return mix(vec3(0.08,0.01,0.0), vec3(1.0,0.4,0.0), f);
+  } else if(pal == 2) {
+    float f = fract(t*0.07);
+    return mix(vec3(0.0,0.02,0.06), vec3(0.3,0.8,1.0), f);
+  }
+  float f = fract(t*0.06);
+  vec3 a = vec3(0.01,0.04,0.08);
+  vec3 b = vec3(0.0,0.898,0.8);
+  return mix(a, b, f);
+}
+
+// ── Main ─────────────────────────────────────
+void main() {
+  vec2 uv = (gl_FragCoord.xy - 0.5*uR) / uR.y;
+
+  // Camera setup
+  float ct = uCam.x, cp = uCam.y;
+  float cd = uDist;
+  vec3 ro = vec3(cd*sin(cp)*cos(ct), cd*sin(ct), cd*cos(cp)*cos(ct));
+  vec3 ta = vec3(0.0);
+  mat3 cam = camMat(ro, ta);
+  float fscale = tan(radians(uFov*0.5));
+  vec3 rd = normalize(cam * vec3(uv*fscale, 1.0));
+
+  // Light
+  float la = radians(uLightAz);
+  float le = radians(uLightEl);
+  vec3 ld = normalize(vec3(cos(le)*cos(la), sin(le), cos(le)*sin(la)));
+
+  // Raymarching
+  float t = 0.02;
+  float trap = 1e10;
+  bool hit = false;
+  float iterF = 0.0;
+
+  for(int s=0; s<200; s++) {
+    if(s >= uSteps) break;
+    vec3 p = ro + rd * t;
+    vec2 res = sceneDE(p);
+    float d = res.x;
+    trap = res.y;
+
+    if(d < EPS*(1.0 + t*0.4)) {
+      hit = true;
+      iterF = float(s);
+      break;
+    }
+    if(t > FAR) break;
+    t += max(d * 0.65, EPS);
+  }
+
+  // Background
+  vec3 bg = vec3(0.013, 0.025, 0.05);
+  float bgV = 1.0 - dot(uv, uv)*0.35;
+  bg *= bgV;
+
+  // Glow halo (near miss)
+  vec3 col = bg;
+
+  if(hit) {
+    vec3 p  = ro + rd * t;
+    vec3 n  = normal(p);
+    float occ = (uAO == 1) ? ao(p, n) : 1.0;
+
+    // Diffuse + back-scatter
+    float diff  = max(0.0, dot(n, ld));
+    float back  = max(0.0, dot(n, -ld)) * 0.08;
+    float rim   = pow(1.0 - max(0.0, dot(n, -rd)), 3.0) * 0.15;
+
+    // Specular
+    vec3 h = normalize(ld - rd);
+    float spec = pow(max(0.0, dot(n, h)), 80.0) * uSpec;
+
+    // Base colour by mode
+    vec3 base;
+    if(uColor == 0)      base = palBase(trap, iterF, uPal);
+    else if(uColor == 1) base = iterColor(iterF, uPal);
+    else if(uColor == 2) base = mix(vec3(0.0,0.898,0.8), vec3(0.788,0.659,0.298), clamp(t/4.0,0.0,1.0));
+    else if(uColor == 3) base = n*0.5+0.5;
+    else                 base = vec3(0.01, 0.03, 0.05);
+
+    // Assemble lighting
+    vec3 amb = base * 0.10 * occ;
+    col = amb
+        + base * (diff * 0.75 + back) * occ
+        + vec3(1.0, 0.95, 0.82) * spec
+        + base * rim * occ;
+
+    // Soft shadow approximation (cheap)
+    float shadow = clamp(sceneDist(p + ld*0.05)*20.0, 0.0, 1.0);
+    col *= mix(0.55, 1.0, shadow);
+
+    // Depth fog
+    col = mix(col, bg, clamp((t-2.0)/FAR, 0.0, 0.35));
+
+    // Cross-section interior coloring
+    if(uCutAxis != 0) {
+      // Tint interior face
+      float inside = clamp(1.0-abs(dot(n, vec3(
+        float(uCutAxis==1), float(uCutAxis==2), float(uCutAxis==3)
+      ))), 0.0, 1.0);
+      col = mix(col, vec3(0.788,0.659,0.298)*0.5*occ, inside*0.6);
+    }
+
+  } else if(uGlow > 0.0) {
+    // Glow: march was close but missed
+    // Simple halo from near-orbit
+    float minD = 1e10;
+    float gt = 0.02;
+    for(int gs=0; gs<40; gs++) {
+      vec3 gp = ro + rd * gt;
+      float gd = DE(gp).x;
+      minD = min(minD, gd);
+      gt += gd * 0.7 + 0.01;
+      if(gt > FAR*0.5) break;
+    }
+    float glow = exp(-minD * 8.0) * uGlow;
+    vec3 glowCol = vec3(0.0, 0.898, 0.8) * 0.6;
+    col += glowCol * glow;
+  }
+
+  // Gamma + vignette
+  col = pow(max(col, 0.0), vec3(0.454));
+  col *= 1.0 - dot(uv, uv)*0.55;
+
+  gl_FragColor = vec4(col, 1.0);
+}
+`;
+
+// ─── Compile ───────────────────────────────────
+function shader(type, src) {
+  const s = gl.createShader(type);
+  gl.shaderSource(s, src);
+  gl.compileShader(s);
+  if (!gl.getShaderParameter(s, gl.COMPILE_STATUS))
+    console.error(gl.getShaderInfoLog(s));
+  return s;
+}
+
+const prog = gl.createProgram();
+gl.attachShader(prog, shader(gl.VERTEX_SHADER, VS));
+gl.attachShader(prog, shader(gl.FRAGMENT_SHADER, FS));
+gl.linkProgram(prog);
+if (!gl.getProgramParameter(prog, gl.LINK_STATUS))
+  console.error(gl.getProgramInfoLog(prog));
+gl.useProgram(prog);
+
+const buf = gl.createBuffer();
+gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1,-1,1,-1,-1,1,-1,1,1,-1,1,1]), gl.STATIC_DRAW);
+const ap = gl.getAttribLocation(prog, 'p');
+gl.enableVertexAttribArray(ap);
+gl.vertexAttribPointer(ap, 2, gl.FLOAT, false, 0, 0);
+
+// Uniforms
+const U = {};
+['uR','uTime','uPow','uIter','uSteps','uBail','uDist','uFov','uCam',
+ 'uColor','uPal','uAO','uSpec','uLightAz','uLightEl','uGlow',
+ 'uVariant','uCutAxis','uCutPos']
+.forEach(n => U[n] = gl.getUniformLocation(prog, n));
+
+// ─── State ────────────────────────────────────
+const S = {
+  power:8, iters:7, steps:110, bailout:2.0,
+  dist:2.6, fov:58,
+  colorMode:0, palette:0, ao:1, spec:0.7,
+  lightAz:45, lightEl:40, glow:0.3,
+  variant:0, cutAxis:0, cutPos:0.0,
+  autoRot:true, rotSpeed:0.25, morphPow:false,
+  camTheta:0.28, camPhi:0.0,
+  t:0, lt:0, fc:0, ft:0
+};
+
+const variantNames = ['STANDARD','SPIKEY','SLICEY','HILLY','SMOOTH'];
+const variantFormulas = [
+  ['Standard Nylander/White', 'r = √(x²+y²+z²)', 'θ = atan2(√(x²+y²), z)', 'φ = atan2(y,x)', "x' = rⁿ sin(nθ) cos(nφ)", "y' = rⁿ sin(nθ) sin(nφ)", "z' = rⁿ cos(nθ)"],
+  ['Spikey (cos θ → x)', 'Same spherical coords', "x' = rⁿ cos(nθ) cos(nφ)", "y' = rⁿ sin(nθ) sin(nφ)", "z' = rⁿ cos(nθ)", '→ pronged spiky geometry'],
+  ['Slicey (tan φ → y)', 'Same spherical coords', "x' = rⁿ sin(nθ) cos(nφ)", "y' = rⁿ sin(nθ) tan(nφ)", "z' = rⁿ cos(nθ)", '→ blade-cut appearance'],
+  ['Hilly (r^0.6n)', 'Softer radius exponent', "rh = r^(n·0.6)", "x' = rh sin(nθ) cos(nφ)", "y' = rh sin(nθ) sin(nφ)", "z' = rh cos(nθ)"],
+  ['Smooth (r^1.4n)', 'Sharper radius exponent', "rh = r^(n·1.4)", "x' = rh sin(nθ) cos(nφ)", "y' = rh sin(nθ) sin(nφ)", "z' = rh cos(nθ)"],
+];
+
+// ─── Resize ───────────────────────────────────
+function resize() {
+  const dpr = Math.min(window.devicePixelRatio, 1.5);
+  const w = canvas.clientWidth*dpr|0;
+  const h = canvas.clientHeight*dpr|0;
+  if (canvas.width!==w||canvas.height!==h) {
+    canvas.width=w; canvas.height=h;
+    gl.viewport(0,0,w,h);
+  }
+  document.getElementById('res2').textContent = `${w}×${h}`;
+}
+
+// ─── Drag ──────────────────────────────────────
+let drag=false, lx=0, ly=0, shift=false;
+canvas.addEventListener('mousedown', e=>{
+  drag=true; lx=e.clientX; ly=e.clientY; shift=e.shiftKey;
+  if (!shift) {
+    S.autoRot=false;
+    document.querySelectorAll('#arg .b').forEach(b=>b.classList.remove('on'));
+    document.querySelector('#arg .b[data-v="0"]').classList.add('on');
+  }
+});
+window.addEventListener('mouseup', ()=>drag=false);
+window.addEventListener('mousemove', e=>{
+  if (!drag) return;
+  const dx=(e.clientX-lx)*0.006, dy=(e.clientY-ly)*0.006;
+  lx=e.clientX; ly=e.clientY;
+  if (shift) {
+    S.lightAz=(S.lightAz+dx*40+360)%360;
+    document.getElementById('lav').textContent=S.lightAz.toFixed(0);
+    document.getElementById('las').value=S.lightAz;
+  } else {
+    S.camPhi+=dx;
+    S.camTheta=Math.max(-1.4,Math.min(1.4,S.camTheta+dy));
+  }
+});
+canvas.addEventListener('wheel', e=>{
+  e.preventDefault();
+  S.dist=Math.max(1.1,Math.min(5.5,S.dist+e.deltaY*0.003));
+  document.getElementById('dv').textContent=S.dist.toFixed(2);
+  document.getElementById('ds').value=S.dist;
+},{passive:false});
+
+// Touch
+let lt2=null;
+canvas.addEventListener('touchstart',e=>{lt2=e.touches[0];S.autoRot=false;},{passive:true});
+canvas.addEventListener('touchmove',e=>{
+  if(!lt2)return;
+  S.camPhi+=(e.touches[0].clientX-lt2.clientX)*0.006;
+  S.camTheta=Math.max(-1.4,Math.min(1.4,S.camTheta+(e.touches[0].clientY-lt2.clientY)*0.006));
+  lt2=e.touches[0];
+},{passive:true});
+
+// ─── Controls ─────────────────────────────────
+function sl(sid, key, did, dec) {
+  document.getElementById(sid).addEventListener('input', function(){
+    S[key]=parseFloat(this.value);
+    document.getElementById(did).textContent=dec!==undefined?S[key].toFixed(dec):S[key];
+    syncHUD();
+  });
+}
+sl('ps','power','pv',2); sl('is','iters','iv',0); sl('ss','steps','sv',0);
+sl('bs','bailout','bv',1); sl('ds','dist','dv',2); sl('fs','fov','fv',0);
+sl('sps','spec','spv',2); sl('las','lightAz','lav',0); sl('les','lightEl','lev',0);
+sl('gls','glow','glv',2); sl('rss','rotSpeed','rsv',2);
+sl('cps','cutPos','cpv',2);
+
+function btnGroup(cid, key, onChange) {
+  document.getElementById(cid).querySelectorAll('.b').forEach(b=>{
+    b.addEventListener('click',()=>{
+      S[key]=parseInt(b.dataset.v);
+      document.getElementById(cid).querySelectorAll('.b').forEach(x=>x.classList.remove('on'));
+      b.classList.add('on');
+      if(onChange) onChange(S[key]);
+    });
+  });
+}
+
+btnGroup('ppg','power', v=>{
+  S.power=v;
+  document.getElementById('ps').value=v;
+  document.getElementById('pv').textContent=v;
+  syncHUD();
+});
+
+btnGroup('fvg','variant', v=>{
+  // Update formula display
+  const fd=document.getElementById('formulaDisplay');
+  const lines=variantFormulas[v];
+  fd.innerHTML='<div><span class="fg">'+lines[0]+'</span></div>'
+    + lines.slice(1).map((l,i)=>'<div><span class="f'+(i>=lines.length-4?'h':'')+'">'+l+'</span></div>').join('');
+  document.getElementById('variantPill').textContent=variantNames[v];
+  document.getElementById('hVar').textContent=variantNames[v];
+});
+
+btnGroup('axg','cutAxis', v=>{
+  document.getElementById('hSec').textContent = v===0?'NONE':'CUT-'+['','X','Y','Z'][v];
+});
+
+btnGroup('cmg','colorMode');
+btnGroup('palg','palette');
+btnGroup('aog','ao', v=>{ document.getElementById('aov').textContent=v?'ON':'OFF'; });
+btnGroup('arg','autoRot');
+btnGroup('mpg','morphPow');
+
+document.getElementById('resetBtn').addEventListener('click',()=>{
+  S.camTheta=0.28; S.camPhi=0; S.dist=2.6;
+  document.getElementById('ds').value=2.6;
+  document.getElementById('dv').textContent='2.6';
+});
+
+document.getElementById('shotBtn').addEventListener('click',()=>{
+  const a=document.createElement('a');
+  a.download=`mandelbulb_v${variantNames[S.variant].toLowerCase()}_p${S.power}_${Date.now()}.png`;
+  a.href=canvas.toDataURL(); a.click();
+});
+
+function syncHUD() {
+  document.getElementById('hPow').textContent=S.power;
+  document.getElementById('hIter').textContent=S.iters;
+  document.getElementById('hSteps').textContent=S.steps;
+  document.getElementById('hBail').textContent=S.bailout.toFixed(3);
+}
+
+// ─── Render ────────────────────────────────────
+let lastTs=0;
+function frame(ts) {
+  const dt=Math.min((ts-lastTs)/1000, 0.05);
+  lastTs=ts;
+  S.t+=dt;
+  S.fc++; S.ft+=dt;
+  if(S.ft>=0.5){
+    const fps=(S.fc/S.ft).toFixed(1);
+    document.getElementById('hFps').textContent=fps;
+    document.getElementById('fps2').textContent=fps;
+    S.fc=0; S.ft=0;
+  }
+
+  resize();
+  if(S.autoRot) S.camPhi+=dt*S.rotSpeed*0.4;
+
+  let rPow=S.power;
+  if(S.morphPow) rPow=2+(S.power-2)*(0.5+0.5*Math.sin(S.t*0.35));
+
+  gl.uniform2f(U.uR, canvas.width, canvas.height);
+  gl.uniform1f(U.uTime, S.t);
+  gl.uniform1f(U.uPow, rPow);
+  gl.uniform1i(U.uIter, S.iters);
+  gl.uniform1i(U.uSteps, S.steps);
+  gl.uniform1f(U.uBail, S.bailout);
+  gl.uniform1f(U.uDist, S.dist);
+  gl.uniform1f(U.uFov, S.fov);
+  gl.uniform2f(U.uCam, S.camTheta, S.camPhi);
+  gl.uniform1i(U.uColor, S.colorMode);
+  gl.uniform1i(U.uPal, S.palette);
+  gl.uniform1i(U.uAO, S.ao);
+  gl.uniform1f(U.uSpec, S.spec);
+  gl.uniform1f(U.uLightAz, S.lightAz);
+  gl.uniform1f(U.uLightEl, S.lightEl);
+  gl.uniform1f(U.uGlow, S.glow);
+  gl.uniform1i(U.uVariant, S.variant);
+  gl.uniform1i(U.uCutAxis, S.cutAxis);
+  gl.uniform1f(U.uCutPos, S.cutPos);
+
+  gl.drawArrays(gl.TRIANGLES, 0, 6);
+  requestAnimationFrame(frame);
+}
+requestAnimationFrame(frame);
+</script>
+</body>
+</html>

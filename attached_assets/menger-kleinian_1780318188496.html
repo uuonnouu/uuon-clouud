@@ -1,0 +1,1895 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>queuePIT -- Menger-Kleinian IFS Engine v1.000</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@300;400;600;700&display=swap');
+:root {
+  --void:#04080f; --teal:#00E5CC; --gold:#C9A84C;
+  --violet:#7B5EA7; --panel:#060c17;
+  --dim:rgba(0,229,204,0.35); --border:rgba(0,229,204,0.10);
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--void);color:var(--teal);font-family:'Share Tech Mono',monospace;height:100vh;overflow:hidden;display:flex;flex-direction:column;}
+header{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;padding:8px 16px;border-bottom:1px solid var(--border);background:var(--panel);flex-shrink:0;}
+.logo{font-family:'Rajdhani',sans-serif;font-weight:700;font-size:12px;letter-spacing:5px;color:var(--gold);}
+.logo em{color:var(--teal);font-style:normal;}
+.etitle{font-family:'Rajdhani',sans-serif;font-size:11px;letter-spacing:4px;color:var(--dim);text-align:center;}
+.ver{text-align:right;font-size:9px;color:rgba(201,168,76,0.55);letter-spacing:2px;}
+.ws{display:flex;flex:1;overflow:hidden;}
+.ca{flex:1;position:relative;background:#000;}
+canvas{width:100%;height:100%;display:block;cursor:crosshair;}
+canvas:active{cursor:grabbing;}
+.hud{position:absolute;top:12px;left:14px;font-size:9px;color:var(--dim);line-height:2.2;pointer-events:none;letter-spacing:1px;}
+.hud .v{color:var(--teal);} .hud .g{color:var(--gold);} .hud .vi{color:var(--violet);}
+.fps-tag{position:absolute;top:12px;right:14px;font-size:9px;color:var(--dim);text-align:right;line-height:2.1;pointer-events:none;}
+.fps-tag .v{color:var(--teal);}
+.ifs-bars{position:absolute;bottom:14px;left:14px;display:flex;flex-direction:column;gap:4px;pointer-events:none;}
+.ibar{display:flex;align-items:center;gap:7px;font-size:8px;color:var(--dim);letter-spacing:1px;}
+.ibar-track{height:2px;border-radius:1px;transition:width 0.4s ease;}
+.ibar-track.m{background:var(--teal);}
+.ibar-track.f{background:var(--gold);}
+.ibar-track.h{background:var(--violet);}
+.panel{width:244px;flex-shrink:0;background:var(--panel);border-left:1px solid var(--border);overflow-y:auto;scrollbar-width:thin;scrollbar-color:rgba(0,229,204,0.08) transparent;}
+.ps{padding:12px 14px;border-bottom:1px solid var(--border);}
+.sl{font-family:'Rajdhani',sans-serif;font-size:9px;letter-spacing:5px;color:var(--gold);opacity:.7;text-transform:uppercase;margin-bottom:10px;}
+.cr{margin-bottom:11px;}
+.cl{display:flex;justify-content:space-between;font-size:9px;color:var(--dim);margin-bottom:4px;}
+.cl .cv{color:var(--teal);} .cl .cg{color:var(--gold);}
+input[type=range]{width:100%;height:1px;-webkit-appearance:none;background:rgba(0,229,204,0.14);outline:none;cursor:pointer;}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:8px;height:8px;border-radius:50%;background:var(--teal);box-shadow:0 0 5px rgba(0,229,204,0.7);cursor:pointer;transition:transform .1s;}
+input[type=range]::-webkit-slider-thumb:hover{transform:scale(1.6);}
+input[type=range].gold::-webkit-slider-thumb{background:var(--gold);box-shadow:0 0 5px rgba(201,168,76,0.7);}
+.bg{display:flex;gap:3px;flex-wrap:wrap;}
+.b{font-family:'Share Tech Mono',monospace;font-size:8.5px;padding:3px 7px;background:transparent;border:1px solid rgba(0,229,204,0.12);color:rgba(0,229,204,0.35);cursor:pointer;transition:all .12s;letter-spacing:.5px;}
+.b:hover{border-color:var(--teal);color:var(--teal);}
+.b.on{background:rgba(0,229,204,0.07);border-color:var(--teal);color:var(--teal);box-shadow:0 0 6px rgba(0,229,204,0.15);}
+.b.gon{background:rgba(201,168,76,0.07);border-color:var(--gold);color:var(--gold);}
+.pgrid{display:grid;grid-template-columns:1fr 1fr;gap:4px;margin-bottom:2px;}
+.pc{padding:6px 7px;border:1px solid rgba(0,229,204,0.10);cursor:pointer;transition:all .15s;background:transparent;}
+.pc:hover{border-color:var(--teal);background:rgba(0,229,204,0.04);}
+.pc.on{border-color:var(--gold);background:rgba(201,168,76,0.05);}
+.pc .pn{font-family:'Rajdhani',sans-serif;font-size:10px;color:var(--gold);letter-spacing:2px;}
+.pc .pd{font-size:7.5px;color:var(--dim);margin-top:2px;line-height:1.4;}
+.fb{background:rgba(0,0,0,0.5);border:1px solid rgba(0,229,204,0.08);padding:8px 9px;font-size:8px;line-height:1.9;color:rgba(0,229,204,0.28);margin-top:8px;}
+.fb .fh{color:var(--teal);} .fb .fg{color:var(--gold);} .fb .fv{color:var(--violet);}
+.ir{display:flex;justify-content:space-between;font-size:8.5px;color:var(--dim);margin-bottom:4px;line-height:1.7;}
+.ir .iv{color:var(--teal);} .ir .ig{color:var(--gold);}
+.ab{width:100%;padding:7px;font-family:'Share Tech Mono',monospace;font-size:8.5px;letter-spacing:2px;background:transparent;border:1px solid var(--border);color:var(--teal);cursor:pointer;transition:all .18s;text-transform:uppercase;margin-bottom:5px;}
+.ab:hover{background:rgba(0,229,204,0.06);border-color:var(--teal);box-shadow:0 0 10px rgba(0,229,204,0.12);}
+.ab.gb{border-color:rgba(201,168,76,0.2);color:var(--gold);}
+.ab.gb:hover{background:rgba(201,168,76,0.06);border-color:var(--gold);}
+footer{padding:5px 16px;border-top:1px solid var(--border);background:var(--panel);display:flex;justify-content:space-between;align-items:center;font-size:8px;color:var(--dim);flex-shrink:0;letter-spacing:1px;}
+.fi{display:flex;gap:14px;}
+.fi span b{color:var(--teal);font-weight:normal;}
+
+/* extras */
+.export-progress{position:absolute;bottom:42px;left:14px;font-size:9px;color:rgba(0,229,204,0.5);pointer-events:none;letter-spacing:1px;}
+.export-progress .bar{display:inline-block;height:2px;background:var(--teal);margin-left:6px;vertical-align:middle;transition:width 0.3s;}
+/* Algorithm DNA bar */
+.dna-bar{position:absolute;bottom:0;left:0;right:0;background:rgba(4,8,15,0.85);border-top:1px solid rgba(0,229,204,0.2);padding:5px 12px 6px;display:flex;flex-direction:column;gap:2px;pointer-events:none;z-index:10;}
+.dna-row1{display:flex;justify-content:space-between;align-items:center;}
+.dna-engine{font-family:'Rajdhani',sans-serif;font-size:9px;font-weight:700;letter-spacing:4px;color:var(--gold);}
+.dna-ts{font-size:8px;color:rgba(0,229,204,0.3);letter-spacing:1px;}
+.dna-zoom{font-size:8px;color:rgba(123,94,167,0.7);letter-spacing:2px;}
+.dna-string{font-family:'Share Tech Mono',monospace;font-size:8.5px;color:rgba(0,229,204,0.7);letter-spacing:0.5px;line-height:1.4;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+</style>
+</head>
+<body>
+<header>
+  <div class="logo">UUON <em>Foundation</em></div>
+  <div class="etitle">queuePIT -- Menger-Kleinian IFS Engine v1.000</div>
+  <div class="ver">COMPOUND IFS RAYMARCHER</div>
+</header>
+<div class="ws">
+  <div class="ca">
+    <canvas id="c"></canvas>
+    <div class="hud">
+      <div>MENGER iter  <span class="v" id="hMI">5</span></div>
+      <div>MENGER scale <span class="v" id="hSC">3.00</span></div>
+      <div>FOLD   type  <span class="g" id="hFT">NONE</span></div>
+      <div>FOLD   iter  <span class="v" id="hFI">1</span></div>
+      <div>FOLD   size  <span class="g" id="hFS">1.00</span></div>
+      <div>BLEND        <span class="vi" id="hBL">0.00</span></div>
+    </div>
+    <div class="ifs-bars">
+      <div class="ibar"><span style="width:52px">MENGER</span><div class="ibar-track m" id="bM" style="width:80px"></div><span class="v" id="bMv">5</span></div>
+      <div class="ibar"><span style="width:52px">FOLD</span><div class="ibar-track f" id="bF" style="width:0px"></div><span class="g" id="bFv">-</span></div>
+      <div class="ibar"><span style="width:52px">HYBRID</span><div class="ibar-track h" id="bH" style="width:0px"></div><span style="color:var(--violet)" id="bHv">0%</span></div>
+    </div>
+    <div class="export-progress" id="expProg" style="display:none">
+      <span id="expMsg">COMPUTING</span><span class="bar" id="expBar" style="width:0px"></span>
+    </div>
+    <!-- Algorithm DNA bar -- embedded in canvas, captured in every screenshot -->
+    <div class="dna-bar" id="dnaBar">
+      <div class="dna-row1">
+        <span class="dna-engine">UUON queuePIT v1.000</span>
+        <span class="dna-zoom" id="dnaZoom">zoom 1.0x</span>
+        <span class="dna-ts" id="dnaTime">--</span>
+      </div>
+      <div class="dna-string" id="dnaStr">initializing...</div>
+    </div>
+    <div class="fps-tag">
+      <div>FPS <span class="v" id="fpsEl">--</span></div>
+      <div>RES <span class="v" id="resEl">--</span></div>
+      <div>STEPS <span class="v" id="stepsEl">140</span></div>
+    </div>
+  </div>
+  <div class="panel">
+    <!-- PRESETS -->
+    <div class="ps">
+      <div class="sl">Presets</div>
+      <div class="bg" style="margin-bottom:8px">
+        <button class="b" id="randomBtn" style="flex:1;color:#C9A84C;border-color:rgba(201,168,76,0.3)">RANDOM</button>
+        <button class="b" id="morphBtn" style="flex:1">MORPH: OFF</button>
+      </div>
+      <div class="pgrid" id="presetGrid">
+        <div class="pc on"  data-p="0"><div class="pn">SPONGE</div><div class="pd">Pure Menger<br>5 iterations</div></div>
+        <div class="pc"     data-p="1"><div class="pn">BOX</div><div class="pd">Box fold<br>stable hybrid</div></div>
+        <div class="pc"     data-p="2"><div class="pn">KLEINIAN</div><div class="pd">Sphere fold<br>conservative</div></div>
+        <div class="pc"     data-p="3"><div class="pn">LATTICE</div><div class="pd">Lattice fold<br>small size</div></div>
+        <div class="pc"     data-p="4"><div class="pn">TETRA</div><div class="pd">Tetrahedral<br>angular IFS</div></div>
+        <div class="pc"     data-p="5"><div class="pn">DEEP</div><div class="pd">Max compound<br>high iter</div></div>
+      </div>
+    </div>
+    <!-- MENGER -->
+    <div class="ps">
+      <div class="sl">Menger IFS</div>
+      <div class="cr"><div class="cl">Iterations <span class="cv" id="miV">5</span></div><input type="range" id="miS" min="1" max="6" step="1" value="5"></div>
+      <div class="cr"><div class="cl">Scale <span class="cv" id="scV">3.00</span></div><input type="range" id="scS" min="2.0" max="4.5" step="0.02" value="3.0"></div>
+      <div class="cr"><div class="cl">Offset X <span class="cv" id="oxV">1.00</span></div><input type="range" id="oxS" min="0.3" max="2.0" step="0.01" value="1.0"></div>
+      <div class="cr"><div class="cl">Offset Y <span class="cv" id="oyV">1.00</span></div><input type="range" id="oyS" min="0.3" max="2.0" step="0.01" value="1.0"></div>
+      <div class="cr"><div class="cl">Offset Z <span class="cv" id="ozV">1.00</span></div><input type="range" id="ozS" min="0.3" max="2.0" step="0.01" value="1.0"></div>
+      <div class="fb">
+        <div><span class="fg">Menger IFS (Knighty method):</span></div>
+        <div>p = abs(p); sort desc;</div>
+        <div><span class="fh">p = s*p - o*(s-1)</span></div>
+        <div><span class="fv">DE = min(|p.xy|,|p.xz|,|p.yz|) / ms</span></div>
+      </div>
+    </div>
+    <!-- FOLD -->
+    <div class="ps">
+      <div class="sl">Fold Pretransform</div>
+      <div class="cr"><div class="cl">Type</div>
+        <div class="bg" id="ftg">
+          <button class="b on" data-v="0">NONE</button>
+          <button class="b" data-v="1">BOX</button>
+          <button class="b" data-v="2">SPHERE</button>
+          <button class="b" data-v="3">LATTICE</button>
+          <button class="b" data-v="4">TETRA</button>
+          <button class="b"    data-v="5">ICOSA</button>
+        </div>
+      </div>
+      <div class="cr"><div class="cl">Fold Iterations <span class="cv" id="fiV">1</span></div><input type="range" id="fiS" min="1" max="10" step="1" value="1"></div>
+      <div class="cr"><div class="cl">Fold Size <span class="cg" id="fsV">1.00</span></div><input type="range" class="gold" id="fsS" min="0.2" max="3.0" step="0.02" value="1.0"></div>
+      <div class="cr"><div class="cl">Fold Scale <span class="cv" id="fscV">2.00</span></div><input type="range" id="fscS" min="1.0" max="4.0" step="0.02" value="2.0"></div>
+      <div class="cr"><div class="cl">Min Radius <span class="cv" id="mrV">0.50</span></div><input type="range" id="mrS" min="0.05" max="2.0" step="0.02" value="0.5"></div>
+      <div class="cr"><div class="cl">Blend <span class="cv" id="blV">0.00</span></div><input type="range" id="blS" min="0.0" max="1.0" step="0.01" value="0.0"></div>
+      <div class="cr"><div class="cl">Twist <span class="cv" id="twV">0.000</span></div><input type="range" id="twS" min="0.0" max="3.14159" step="0.005" value="0.0"></div>
+      <div class="cr"><div class="cl">Orbit Trap</div>
+        <div class="bg" id="trpg">
+          <button class="b on" data-v="0">CYL</button>
+          <button class="b" data-v="1">SPHERE</button>
+          <button class="b" data-v="2">CROSS</button>
+          <button class="b" data-v="3">POINT</button>
+        </div>
+      </div>
+      <div class="fb" id="foldFormula">
+        <div><span class="fg">No pretransform active</span></div>
+        <div>Pure Menger IFS only</div>
+      </div>
+    </div>
+    <!-- SHADING -->
+    <div class="ps">
+      <div class="sl">4D Hypersponge</div>
+      <div class="cr">
+        <div class="bg" id="fdg">
+          <button class="b on" data-v="0">3D</button>
+          <button class="b"    data-v="1">4D ON</button>
+        </div>
+      </div>
+      <div class="cr"><div class="cl">W axis <span class="vi" id="wV">0.000</span></div><input type="range" class="violet" id="wS" min="0.0" max="6.2832" step="0.005" value="0.0"></div>
+      <div style="font-size:8px;color:rgba(0,229,204,0.2);margin-top:2px;margin-bottom:8px;line-height:1.6">
+        W rotates the 3D hyperplane slice through the 4D attractor.<br>
+        Each angle reveals geometry with no 3D analog.<br>
+        Golden angle: W=2.399 rad
+      </div>
+      <div class="sl">Shading</div>
+      <div class="cr"><div class="cl">Color Mode</div>
+        <div class="bg" id="cmg">
+          <button class="b on" data-v="0">IRID</button>
+          <button class="b" data-v="1">TRAP</button>
+          <button class="b" data-v="2">ITER</button>
+          <button class="b" data-v="3">NORMAL</button>
+          <button class="b" data-v="4">DEPTH</button>
+          <button class="b" data-v="5">AO</button>
+        </div>
+      </div>
+      <div class="cr"><div class="cl">Palette</div>
+        <div class="bg" id="palg">
+          <button class="b on" data-v="0">UUON</button>
+          <button class="b" data-v="1">EMBER</button>
+          <button class="b" data-v="2">ICE</button>
+          <button class="b" data-v="3">VOID</button>
+        </div>
+      </div>
+      <div class="cr"><div class="cl">AO Quality</div>
+        <div class="bg" id="aog">
+          <button class="b" data-v="4">LOW</button>
+          <button class="b on" data-v="8">MED</button>
+          <button class="b" data-v="12">HIGH</button>
+        </div>
+      </div>
+      <div class="cr"><div class="cl">Specular <span class="cv" id="spV">0.60</span></div><input type="range" id="spS" min="0" max="2.0" step="0.05" value="0.6"></div>
+      <div class="cr"><div class="cl">Light Azimuth <span class="cv" id="laV">45</span></div><input type="range" id="laS" min="0" max="360" step="1" value="45"></div>
+      <div class="cr"><div class="cl">Light Elevation <span class="cv" id="leV">35</span></div><input type="range" id="leS" min="-80" max="80" step="1" value="35"></div>
+      <div class="cr"><div class="cl">Ray Steps <span class="cv" id="rsV">140</span></div><input type="range" id="rsS" min="48" max="220" step="4" value="140"></div>
+    </div>
+    <!-- CAMERA -->
+    <div class="ps">
+      <div class="sl">Camera</div>
+      <div class="cr"><div class="cl">Brightness <span class="cv" id="brightV">1.40</span></div><input type="range" id="brightS" min="0.5" max="3.0" step="0.05" value="1.4"></div>
+      <div class="cr"><div class="cl">Distance <span class="cv" id="dvV">4.50</span></div><input type="range" id="dvS" min="1.0" max="12.0" step="0.1" value="4.5"></div>
+      <div class="cr"><div class="cl">FOV <span class="cv" id="fovV">55</span></div><input type="range" id="fovS" min="25" max="90" step="1" value="55"></div>
+      <div class="cr"><div class="cl">Mode</div>
+        <div class="bg" id="cineG">
+          <button class="b on" data-v="0">NORMAL</button>
+          <button class="b"    data-v="1">CINEMATIC</button>
+        </div>
+      </div>
+      <div class="cr"><div class="cl">Auto-Rotate</div>
+        <div class="bg" id="arg">
+          <button class="b on" data-v="1">ON</button>
+          <button class="b" data-v="0">OFF</button>
+        </div>
+      </div>
+      <div class="cr"><div class="cl">Speed <span class="cv" id="rspV">0.20</span></div><input type="range" id="rspS" min="0.02" max="1.0" step="0.02" value="0.2"></div>
+    </div>
+    <!-- DATA -->
+    <div class="ps">
+      <div class="sl">IFS Data</div>
+      <div class="ir"><span>Hausdorff dim</span><span class="ig">2.727</span></div>
+      <div class="ir"><span>Volume</span><span class="ig">0 (Cantor)</span></div>
+      <div class="ir"><span>Fold class</span><span class="iv" id="foldClass">-</span></div>
+      <div class="ir"><span>IFS type</span><span class="iv" id="ifsType">Single</span></div>
+      <div class="ir"><span>Dual-scale</span><span class="iv" id="dualScale">No</span></div>
+    </div>
+    <!-- EXPORT -->
+    <div class="ps">
+      <div class="sl">Actions</div>
+      <button class="ab" id="resetBtn">RESET VIEW</button>
+      <div class="sl" style="margin-top:10px">Image</div>
+      <button class="ab gb" id="shotBtn">PNG 1x</button>
+      <button class="ab gb" id="shot2xBtn">PNG 2x HI-RES</button>
+      <button class="ab gb" id="shotWebpBtn">WEBP</button>
+      <div class="sl" style="margin-top:10px">3D Mesh</div>
+      <button class="ab gb" id="shotObjBtn">OBJ / STL / GLB EXPORT</button>
+      <div class="cr" style="margin-top:8px">
+        <div class="cl">MC Resolution <span class="cv" id="mcResV">64</span></div>
+        <input type="range" id="mcResS" min="32" max="128" step="8" value="64">
+      </div>
+      <div style="font-size:8px;color:rgba(0,229,204,0.3);margin-top:4px;line-height:1.6" id="mcStatus">Pure Menger mesh. RES 64 ~3s</div>
+    </div>
+  </div>
+</div>
+<footer>
+  <div class="fi"><span><b>DRAG</b> rotate</span><span><b>SCROLL</b> zoom</span><span><b>SHIFT+DRAG</b> light</span></div>
+  <div>UUON Foundation -- Kassel -- queuePIT Menger-Kleinian IFS v1.000</div>
+</footer>
+<script>
+// ============================================================
+// queuePIT -- Menger-Kleinian Compound IFS Engine v1.000
+// UUON Foundation -- Kassel
+// ============================================================
+const canvas = document.getElementById('c');
+const gl = canvas.getContext('webgl', { antialias:false, preserveDrawingBuffer:true });
+
+const VS = `
+attribute vec2 p;
+void main(){ gl_Position=vec4(p,0.0,1.0); }
+`;
+const FS = `
+precision highp float;
+
+uniform vec2  uR;
+uniform float uTime;
+uniform int   uMI;      // Menger iterations
+uniform float uSC;      // Menger scale
+uniform float uOX;      // offset X
+uniform float uOY;      // offset Y
+uniform int   uFT;      // fold type: 0=none,1=box,2=sphere,3=lattice,4=tetra,5=icosa
+uniform int   uFI;      // fold iterations
+uniform float uFS;      // fold size
+uniform float uFSC;     // fold scale
+uniform float uMR;      // min radius (sphere fold)
+uniform float uBL;      // blend 0=menger, 1=fold
+uniform int   uCM;      // color mode
+uniform int   uPAL;     // palette
+uniform int   uAOQ;     // AO taps
+uniform float uSP;      // specular
+uniform float uLA;      // light azimuth
+uniform float uLE;      // light elevation
+uniform int   uRS;      // ray steps
+uniform float uDV;      // camera distance
+uniform float uFOV;     // fov
+uniform vec2  uCAM;     // camera theta/phi
+uniform int   uAR;      // auto rotate
+uniform float uBright;   // brightness 0.5-2.5
+uniform float uAnimAmt;  // morph animation 0-1te (unused here, done in JS)
+uniform float uOZ;      // offset Z (was hardcoded to uOX)
+uniform float uTWIST;   // torsion angle per Menger iteration (radians)
+uniform int   uTRAP;    // orbit trap: 0=cylinder 1=sphere 2=cross 3=point
+uniform float uW;       // 4D projection angle: 0=3D Menger, PI=antipodal section
+uniform int   u4D;      // 4D mode: 0=off(pure 3D) 1=on
+
+#define EPS  0.0008
+#define FAR  20.0
+#define PI   3.14159265359
+
+// -- Box Fold --------------------------------------
+vec3 boxFold(vec3 p, float s) {
+  return clamp(p, -s, s) * 2.0 - p;
+}
+
+// -- Sphere Fold (Kleinian) -------------------------
+// Inversion in sphere - the core of Kleinian group limit sets
+vec3 sphereFold(vec3 p, float minR, float fixedR) {
+  float r2 = max(dot(p, p), 0.0001); // floor prevents div-by-zero at origin
+  if (r2 < minR * minR) {
+    float k = (fixedR * fixedR) / (minR * minR);
+    p *= k;
+  } else if (r2 < fixedR * fixedR) {
+    float k = (fixedR * fixedR) / r2;
+    p *= k;
+  }
+  return p;
+}
+
+// -- Lattice Fold ----------------------------------
+vec3 latticeFold(vec3 p, float s) {
+  // Fold around lattice planes - creates a cross/grid pattern
+  p = mod(p, 2.0*s) - s;
+  return p;
+}
+
+// -- Tetrahedral Fold ------------------------------
+// Folds space by the symmetry planes of a tetrahedron
+vec3 tetraFold(vec3 p) {
+  if (p.x + p.y < 0.0) p.xy = -p.yx;
+  if (p.x + p.z < 0.0) p.xz = -p.zx;
+  if (p.y + p.z < 0.0) p.yz = -p.zy;
+  if (p.x - p.y < 0.0) p.xy = p.yx;
+  return p;
+}
+
+// ICOSAHEDRAL FOLD: Ih symmetry group (120 operations)
+// Reduces any point to the icosahedral fundamental domain.
+// Uses the three mirror planes of the icosahedron defined by
+// the golden ratio PHI = (1+sqrt(5))/2.
+// This is the symmetry group of the virus capsid, fullerene C60,
+// and quasicrystals. The fold has 5-fold axes -- incompatible
+// with periodic tiling, generating quasicrystalline attractors.
+vec3 icosaFold(vec3 p) {
+  const float PHI_F = 1.61803398875;
+  // Six mirror planes of the icosahedron
+  // Each plane: dot(p, n) < 0 -> reflect
+  // Normals derived from icosahedral vertex positions
+  vec3 n1 = normalize(vec3(1.0, PHI_F, 0.0));
+  vec3 n2 = normalize(vec3(-1.0, PHI_F, 0.0));
+  vec3 n3 = normalize(vec3(0.0, 1.0, PHI_F));
+  vec3 n4 = normalize(vec3(0.0, -1.0, PHI_F));
+  vec3 n5 = normalize(vec3(PHI_F, 0.0, 1.0));
+  vec3 n6 = normalize(vec3(-PHI_F, 0.0, 1.0));
+  // Apply reflections iteratively to reduce to fundamental domain
+  // Three passes for full Ih reduction
+  for (int iter = 0; iter < 3; iter++) {
+    if (dot(p, n1) < 0.0) p -= 2.0*dot(p,n1)*n1;
+    if (dot(p, n2) < 0.0) p -= 2.0*dot(p,n2)*n2;
+    if (dot(p, n3) < 0.0) p -= 2.0*dot(p,n3)*n3;
+    if (dot(p, n4) < 0.0) p -= 2.0*dot(p,n4)*n4;
+    if (dot(p, n5) < 0.0) p -= 2.0*dot(p,n5)*n5;
+    if (dot(p, n6) < 0.0) p -= 2.0*dot(p,n6)*n6;
+  }
+  return abs(p);
+}
+
+// -- Menger Sponge IFS step ------------------------
+// Knighty method: fold + scale + cross-cylinder DE
+vec2 mengerStep(vec3 p, float s, vec2 offset) {
+  // Absolute value fold - octahedral symmetry
+  p = abs(p);
+  // Sort components descending -> cross-fold
+  if (p.x < p.y) p.xy = p.yx;
+  if (p.x < p.z) p.xz = p.zx;
+  if (p.y < p.z) p.yz = p.zy;
+  // Scale and offset
+  p = s * p - offset.xyy * (s - 1.0);
+  // Return modified point and z for tracking
+  return vec2(p.x, p.z);
+}
+
+// -- Full Menger DE --------------------------------
+// Returns (distance, orbit_trap)
+// ============================================================
+// 4D MENGER HYPERSPONGE DISTANCE ESTIMATOR
+// World-first real-time 4D compound IFS renderer
+// UUON Foundation -- Kassel
+//
+// Architecture:
+// 1. Apply 3D fold pretransform to pos (existing fold system)
+// 2. Blend folded point with original (blend control)
+// 3. Lift blended point into 4D via stereographic projection
+//    using uW as the projection angle
+// 4. Run 4D Menger IFS (6 sort comparisons, 4 offset axes,
+//    6 cylinder families)
+// 5. Project back to scalar distance via 4D cross-cylinder DE
+//
+// The W parameter is NOT camera rotation.
+// It controls which 3D hyperplane slice of the 4D attractor
+// is being rendered. Different W values reveal completely
+// different cross-sectional geometry -- forms that have no
+// 3D analog and cannot be reached by any 3D parameter.
+//
+// Hausdorff dimension of 4D Menger: ~3.585
+// (vs 2.727 for 3D -- denser, more structured)
+// ============================================================
+vec2 mengerDE(vec3 pos) {
+  vec3 p = pos;
+  float trap = 1e10;
+  float scale = 1.0;
+
+  // ── Fold pretransform (3D, applied before 4D lift) ────────────────────────
+  if (uFT == 1) {
+    for (int i = 0; i < 10; i++) {
+      if (i >= uFI) break;
+      p = boxFold(p, uFS);
+      p = sphereFold(p, uMR, 1.0);
+      p = p * uFSC;
+      scale *= uFSC;
+      trap = min(trap, length(p));
+    }
+  } else if (uFT == 2) {
+    for (int i = 0; i < 10; i++) {
+      if (i >= uFI) break;
+      p = boxFold(p, uFS);
+      p = sphereFold(p, uMR, uFS);
+      p = p * uFSC + pos;
+      scale *= uFSC;
+      trap = min(trap, length(p));
+    }
+  } else if (uFT == 3) {
+    for (int i = 0; i < 10; i++) {
+      if (i >= uFI) break;
+      p = latticeFold(p, uFS);
+      p = p * uFSC;
+      scale *= uFSC;
+      trap = min(trap, length(p));
+    }
+  } else if (uFT == 4) {
+    for (int i = 0; i < 10; i++) {
+      if (i >= uFI) break;
+      p = tetraFold(p);
+      p = p * uFSC - vec3(uFS);
+      scale *= uFSC;
+      trap = min(trap, length(p));
+    }
+  } else if (uFT == 5) {
+    // ICOSAHEDRAL: Ih group (120 ops), 5-fold axes, quasicrystalline
+    // Stable range: fsc 1.4-1.75, fi 1-2
+    // Produces virus capsid and fullerene-adjacent attractors
+    for (int i = 0; i < 10; i++) {
+      if (i >= uFI) break;
+      p = icosaFold(p);
+      p = p * uFSC - vec3(uFS * 0.618); // phi-scaled offset
+      scale *= uFSC;
+      trap = min(trap, length(p));
+    }
+  }
+
+  // ── Symmetric blend ───────────────────────────────────────────────────────
+  vec3 pm = mix(p, pos, uBL);
+
+  // ── 4D Menger IFS ─────────────────────────────────────────────────────────
+  float ms = 1.0;
+
+  if (u4D == 1) {
+    // LIFT: stereographic projection of 3D point into 4D
+    // The W coordinate encodes a great-circle rotation through 4D space.
+    // Physically: think of the 3D space as a hyperplane cutting the 4D object.
+    // uW rotates that hyperplane. Each angle gives a different cross-section.
+    // The sin/cos decomposition preserves distances (isometric lift).
+    float r = length(pm);
+    float w0 = cos(uW) * r + sin(uW);          // W from projection angle
+    vec4 q4 = vec4(pm * cos(uW), w0);           // 4D point
+
+    for (int i = 0; i < 6; i++) {
+      if (i >= uMI) break;
+
+      // 4D abs fold: octant reduction in 4D (16 octants vs 8)
+      q4 = abs(q4);
+
+      // 4D sort descending: 6 pairwise comparisons for 4 components
+      // This is the key step -- creates 24-fold symmetry (vs 6 in 3D)
+      // Each different ordering corresponds to one of 24 tetrahedral chambers
+      if (q4.x < q4.y) q4.xy = q4.yx;
+      if (q4.x < q4.z) q4.xz = q4.zx;
+      if (q4.x < q4.w) q4.xw = q4.wx;
+      if (q4.y < q4.z) q4.yz = q4.zy;
+      if (q4.y < q4.w) q4.yw = q4.wy;
+      if (q4.z < q4.w) q4.zw = q4.wz;
+
+      // 4D scale and offset -- W axis uses OX as its offset
+      // The 4th offset could be made independent (uOW) in future
+      q4 = q4 * uSC - vec4(uOX, uOY, uOZ, uOX) * (uSC - 1.0);
+      ms *= uSC;
+
+      // 4D torsion: rotation in the XW plane (not XY as in 3D)
+      // This creates a helical structure that wraps through 4D space
+      if (uTWIST > 0.001) {
+        float ca = cos(uTWIST * float(i+1));
+        float sa = sin(uTWIST * float(i+1));
+        float qx2 = q4.x*ca - q4.w*sa;
+        float qw2 = q4.x*sa + q4.w*ca;
+        q4.x = qx2; q4.w = qw2;
+      }
+
+      // 4D orbit trap
+      float t;
+      if (uTRAP == 1) {
+        t = length(q4);                          // 4D sphere trap
+      } else if (uTRAP == 2) {
+        t = min(min(abs(q4.x),abs(q4.y)),min(abs(q4.z),abs(q4.w)));
+      } else if (uTRAP == 3) {
+        t = length(q4 - vec4(0.5,0.5,0.5,0.5)); // 4D point trap
+      } else {
+        // 4D cylinder trap -- 6 axis-pair families
+        t = min(min(length(q4.xy),length(q4.xz)),
+            min(min(length(q4.xw),length(q4.yz)),
+            min(length(q4.yw),length(q4.zw))));
+      }
+      trap = min(trap, t / ms);
+    }
+
+    // 4D cross-cylinder DE:
+    // In 3D: 3 cylinder families (xy, xz, yz)
+    // In 4D: 6 cylinder families (xy, xz, xw, yz, yw, zw)
+    // Their intersection is the 4D Menger Hypersponge complement.
+    // The DE is the minimum distance to any of the 6 infinite square prisms.
+    float cyl4 = min(
+      min(min(length(q4.xy), length(q4.xz)), length(q4.xw)),
+      min(min(length(q4.yz), length(q4.yw)), length(q4.zw))
+    );
+    float d = (cyl4 - 1.0) / ms;
+
+    // Outer guide
+    float guideR = max(uFS * uFSC, 2.0);
+    vec3 boxP = abs(pos) - vec3(guideR);
+    float boxD = length(max(boxP,0.0)) + min(max(boxP.x,max(boxP.y,boxP.z)),0.0);
+    d = max(d, boxD * 0.15);
+
+    return vec2(d, clamp(trap * 0.5, 0.0, 1.0));
+
+  } else {
+    // ── Standard 3D Menger IFS (u4D == 0) ───────────────────────────────────
+    vec3 q = pm;
+    for (int i = 0; i < 6; i++) {
+      if (i >= uMI) break;
+      q = abs(q);
+      if (q.x < q.y) q.xy = q.yx;
+      if (q.x < q.z) q.xz = q.zx;
+      if (q.y < q.z) q.yz = q.zy;
+      q = q * uSC - vec3(uOX, uOY, uOZ) * (uSC - 1.0);
+      if (uTWIST > 0.001) {
+        float ca = cos(uTWIST * float(i+1));
+        float sa = sin(uTWIST * float(i+1));
+        float qx2 = q.x*ca - q.y*sa;
+        float qy2 = q.x*sa + q.y*ca;
+        q.x = qx2; q.y = qy2;
+      }
+      ms *= uSC;
+      float t;
+      if      (uTRAP==1) t = length(q);
+      else if (uTRAP==2) t = min(min(abs(q.x),abs(q.y)),abs(q.z));
+      else if (uTRAP==3) t = length(q - vec3(0.5,0.5,0.5));
+      else               t = min(min(length(q.xy),length(q.xz)),length(q.yz));
+      trap = min(trap, t / ms);
+    }
+    float cyl = min(min(length(q.xy),length(q.xz)),length(q.yz));
+    float d = (cyl - 1.0) / ms;
+    float guideR = max(uFS * uFSC, 2.0);
+    vec3 boxP = abs(pos) - vec3(guideR);
+    float boxD = length(max(boxP,0.0)) + min(max(boxP.x,max(boxP.y,boxP.z)),0.0);
+    d = max(d, boxD * 0.15);
+    return vec2(d, clamp(trap * 0.5, 0.0, 1.0));
+  }
+}
+
+float sceneDist(vec3 p) { return mengerDE(p).x; }
+
+// -- Normal via finite differences -----------------
+vec3 calcNormal(vec3 p) {
+  vec2 e = vec2(EPS * 3.0, 0.0);
+  return normalize(vec3(
+    sceneDist(p + e.xyy) - sceneDist(p - e.xyy),
+    sceneDist(p + e.yxy) - sceneDist(p - e.yxy),
+    sceneDist(p + e.yyx) - sceneDist(p - e.yyx)
+  ));
+}
+
+// -- Ambient Occlusion -----------------------------
+float calcAO(vec3 p, vec3 n) {
+  float occ = 0.0, w = 1.0;
+  for (int i = 1; i <= 12; i++) {
+    if (i > uAOQ) break;
+    float h = 0.015 + 0.22 * float(i) / 12.0;
+    float d = sceneDist(p + n * h);
+    occ += max(0.0, h - d) * w;
+    w *= 0.45;
+  }
+  return clamp(1.0 - 5.0 * occ, 0.0, 1.0);
+}
+
+// -- Camera ----------------------------------------
+mat3 camMat(vec3 ro, vec3 ta) {
+  vec3 f = normalize(ta - ro);
+  vec3 r = normalize(cross(vec3(0.0,1.0,0.0), f));
+  vec3 u = cross(f, r);
+  return mat3(r, u, f);
+}
+
+// -- Color palettes --------------------------------
+vec3 palette(float trap, float iterF, float depth, int pal) {
+  vec3 teal   = vec3(0.0, 0.898, 0.8);
+  vec3 gold   = vec3(0.788, 0.659, 0.298);
+  vec3 violet = vec3(0.48, 0.37, 0.66);
+  vec3 black  = vec3(0.01, 0.02, 0.04);
+
+  if (pal == 0) { // UUON
+    vec3 c = mix(black, teal, smoothstep(0.0, 0.5, trap));
+    c = mix(c, gold, smoothstep(0.3, 0.9, trap));
+    c = mix(c, violet, pow(sin(trap * PI), 2.0) * 0.5);
+    return c;
+  } else if (pal == 1) { // EMBER
+    vec3 c = mix(vec3(0.06,0.01,0.0), vec3(0.9,0.3,0.0), smoothstep(0.0,0.6,trap));
+    return mix(c, vec3(1.0,0.85,0.1), smoothstep(0.5,1.0,trap));
+  } else if (pal == 2) { // ICE
+    vec3 c = mix(vec3(0.0,0.01,0.04), vec3(0.2,0.7,0.9), smoothstep(0.0,0.7,trap));
+    return mix(c, vec3(0.85,0.95,1.0), smoothstep(0.6,1.0,trap));
+  } else { // VOID
+    return mix(black, vec3(0.02,0.03,0.05), trap);
+  }
+}
+
+// -- Main -----------------------------------------
+void main() {
+  vec2 uv = (gl_FragCoord.xy - 0.5 * uR) / uR.y;
+
+  // Camera
+  float ct = uCAM.x, cp = uCAM.y;
+  vec3 ro = vec3(uDV * sin(cp)*cos(ct), uDV * sin(ct), uDV * cos(cp)*cos(ct));
+  vec3 ta = vec3(0.0);
+  mat3 cam = camMat(ro, ta);
+  vec3 rd  = normalize(cam * vec3(uv * tan(radians(uFOV*0.5)), 1.0));
+
+  // Light direction
+  float la = radians(uLA), le = radians(uLE);
+  vec3 ld = normalize(vec3(cos(le)*cos(la), sin(le), cos(le)*sin(la)));
+
+  // -- Raymarch ------------------------------------
+  // WebGL1: loop bound must be compile-time constant (220)
+  // uRS controls quality via early-exit guard
+  float t = 0.001;
+  float trap = 0.0;
+  float iterF = 0.0;
+  bool hit = false;
+  float stepsF = 0.0;
+
+  for (int s = 0; s < 220; s++) {
+    if (s >= uRS) break;
+    vec3 p = ro + rd * t;
+    vec2 res = mengerDE(p);
+    float d = res.x;
+    trap = res.y;
+    stepsF = float(s);
+
+    if (d < EPS * (1.0 + t * 0.3)) {
+      hit = true;
+      iterF = float(s) / 220.0;
+      break;
+    }
+    if (t > FAR) break;
+    t += max(d * 0.40, EPS * 2.0); // conservative - DE is not true SDF
+  }
+
+  // Background
+  vec3 bg = vec3(0.012, 0.022, 0.045);
+  bg *= 1.0 - dot(uv, uv) * 0.3;
+  vec3 col = bg;
+
+  if (hit) {
+    vec3 p  = ro + rd * t;
+    vec3 n  = calcNormal(p);
+    float ao = calcAO(p, n);
+
+    // Lighting
+    float diff = max(0.0, dot(n, ld));
+    float back = max(0.0, dot(n, -ld)) * 0.06;
+    float rim  = pow(1.0 - max(0.0, dot(n, -rd)), 4.0) * 0.12;
+    vec3  h    = normalize(ld - rd);
+    float spec = pow(max(0.0, dot(n, h)), 64.0) * uSP;
+
+    // Base color by mode
+    vec3 base;
+    if (uCM == 0) {
+      // IRIDESCENT: thin-film interference -- richer, brighter
+      float NdotV    = max(0.0, dot(n, -rd));
+      float fresnel  = pow(1.0 - NdotV, 2.5);
+      // Phase: view angle + orbit trap + spatial + time animation
+      float phase    = NdotV * 3.4 + trap * 2.1 + p.x * 0.5 + p.z * 0.35 + uTime * 0.04;
+      // Full spectral decomposition -- amplified saturation
+      vec3 ir;
+      ir.r = 0.55 + 0.55 * cos(6.2832 * (phase + 0.000));
+      ir.g = 0.55 + 0.55 * cos(6.2832 * (phase + 0.333));
+      ir.b = 0.55 + 0.55 * cos(6.2832 * (phase + 0.667));
+      ir = clamp(ir * 1.3, 0.0, 1.0);
+      // Shimmer layer -- curvature proxy via trap frequency
+      float shimmer  = 0.5 + 0.5 * sin(trap * 18.0 + phase * 3.2);
+      ir = mix(ir, ir * vec3(1.4, 0.8, 1.6), shimmer * 0.45);
+      // UUON teal/gold undertone bleeds through
+      vec3 undertone = mix(vec3(0.0,0.9,0.8), vec3(0.9,0.72,0.2), trap);
+      vec3 dark      = vec3(0.02, 0.03, 0.055);
+      base = mix(dark, ir, 0.72 + 0.28 * fresnel);
+      base = mix(base, undertone * 1.2, (1.0 - fresnel) * 0.22);
+      base *= 1.0 + 0.3 * shimmer * fresnel;  // glancing angle glint
+    } else if (uCM == 1) {
+      base = palette(trap, iterF, t, uPAL);
+    } else if (uCM == 2) {
+      base = palette(iterF, iterF, t, uPAL);
+    } else if (uCM == 3) {
+      base = n * 0.5 + 0.5;
+    } else if (uCM == 4) {
+      base = mix(vec3(0.0,0.9,0.8), vec3(0.79,0.66,0.3), clamp(t/5.0,0.0,1.0));
+    } else {
+      base = vec3(ao);
+    }
+
+    // Assemble -- boosted for richness
+    col  = base * 0.12 * ao;           // ambient (up from 0.08)
+    col += base * diff * ao * 0.95;    // diffuse (up from 0.80)
+    col += base * back * ao * 1.2;     // back scatter
+    col += base * rim  * ao * 1.4;     // rim glow (boosted)
+    col += vec3(1.0,0.97,0.88) * spec; // specular
+
+    // Specular glow bloom -- soft halo around highlight
+    float glow = pow(max(0.0, dot(n, normalize(ld - rd))), 8.0) * uSP * 0.4;
+    col += base * glow;
+
+    // Soft shadow
+    float sh = clamp(sceneDist(p + ld * 0.04) * 25.0, 0.0, 1.0);
+    col *= mix(0.55, 1.0, sh);
+
+    // Depth fog -- lighter (0.25 not 0.4) to keep shapes visible
+    col = mix(col, bg, clamp((t - 2.5) / FAR, 0.0, 0.25));
+  }
+
+  // Brightness control + gamma
+  col *= uBright;
+  col = pow(max(col, 0.0), vec3(0.42));  // slightly lighter gamma
+  col *= 1.0 - dot(uv, uv) * 0.5;
+
+  gl_FragColor = vec4(col, 1.0);
+}
+`;
+
+// Module-level refs for offscreen export
+const VS_SRC = VS;
+const FS_SRC = FS;
+
+function mkShader(type, src) {
+  var s = gl.createShader(type);
+  gl.shaderSource(s, src); gl.compileShader(s);
+  if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)) console.error(gl.getShaderInfoLog(s));
+  return s;
+}
+var prog = gl.createProgram();
+gl.attachShader(prog, mkShader(gl.VERTEX_SHADER, VS));
+gl.attachShader(prog, mkShader(gl.FRAGMENT_SHADER, FS));
+gl.linkProgram(prog);
+gl.useProgram(prog);
+
+var buf = gl.createBuffer();
+gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1,-1,1,-1,-1,1,-1,1,1,-1,1,1]), gl.STATIC_DRAW);
+var ap = gl.getAttribLocation(prog, 'p');
+gl.enableVertexAttribArray(ap);
+gl.vertexAttribPointer(ap, 2, gl.FLOAT, false, 0, 0);
+
+var U = {};
+['uR','uTime','uMI','uSC','uOX','uOY','uOZ','uFT','uFI','uFS','uFSC','uMR','uBL',
+ 'uCM','uPAL','uAOQ','uSP','uLA','uLE','uRS','uDV','uFOV','uCAM','uAR','uBright','uAnimAmt','uTWIST','uTRAP','uW','u4D']
+.forEach(function(n){ U[n] = gl.getUniformLocation(prog, n); });
+
+// -- State --------------------------------------------------------------------
+var S = {
+  mi:5, sc:3.0, ox:1.0, oy:1.0, oz:1.0, twist:0.0, trap:0, w4d:0.0, mode4d:0,
+  ft:0, fi:1, fs:1.0, fsc:2.0, mr:0.5, bl:0.0,
+  cm:0, pal:0, aoq:8, sp:0.6,
+  la:45, le:35, rs:140,
+  dv:4.5, fov:55, bright:1.4,
+  w4d:0.0, mode4d:0,
+  morph:false, morphAmt:0.0, morphSpeed:0.3, morphTarget:0,
+  autoRot:true, rotSpeed:0.2, cinematic:0,
+  camTheta:0.35, camPhi:0.0,
+  t:0, lastTs:0, fc:0, ft2:0
+};
+
+// -- Complete preset snapshots -- ALL 19 params, no carryover -----------------
+var PRESETS = [
+  // SPONGE: pure Menger mi=5
+  { mi:5, sc:3.0, ox:1.0, oy:1.0, oz:1.0, twist:0.0, trap:0, w4d:0.0, mode4d:0,
+    ft:0, fi:1, fs:1.0, fsc:2.0, mr:0.5, bl:0.0,
+    dv:4.5, fov:55, sp:0.6, la:45, le:35, rs:140, aoq:8, cm:0, pal:0 },
+  // BOX: fi=3, fsc=1.75 -- stable compound IFS
+  { mi:4, sc:3.0, ox:1.0, oy:1.0, oz:1.0, twist:0.0, trap:0, w4d:0.0, mode4d:0,
+    ft:1, fi:3, fs:1.0, fsc:1.75, mr:0.5, bl:0.2,
+    dv:5.5, fov:55, sp:0.7, la:45, le:35, rs:140, aoq:8, cm:0, pal:0 },
+  // KLEINIAN: fi=2, fsc=1.6 -- sphere fold safe limits
+  { mi:3, sc:3.0, ox:1.0, oy:1.0, oz:1.0, twist:0.0, trap:1, w4d:0.0, mode4d:0,
+    ft:2, fi:2, fs:1.0, fsc:1.6, mr:0.5, bl:0.15,
+    dv:6.0, fov:55, sp:0.6, la:60, le:30, rs:130, aoq:8, cm:0, pal:0 },
+  // LATTICE: fs=0.5 small -- prevents wrap artifacts
+  { mi:4, sc:3.0, ox:1.0, oy:1.0, oz:0.7, twist:0.0, trap:0, w4d:0.0, mode4d:0,
+    ft:3, fi:2, fs:0.5, fsc:1.7, mr:0.5, bl:0.1,
+    dv:5.5, fov:55, sp:0.5, la:45, le:35, rs:130, aoq:8, cm:0, pal:0 },
+  // TETRA: fi=2, conservative
+  { mi:3, sc:3.0, ox:1.0, oy:1.0, oz:1.0, twist:0.0, trap:2, w4d:0.0, mode4d:0,
+    ft:4, fi:2, fs:0.8, fsc:1.75, mr:0.5, bl:0.15,
+    dv:6.0, fov:55, sp:0.6, la:30, le:40, rs:130, aoq:8, cm:0, pal:0 },
+  // DEEP: fi=4, fsc=1.7 -- max compound
+  { mi:5, sc:3.0, ox:1.0, oy:1.0, oz:1.0, twist:0.0, trap:0, w4d:0.0, mode4d:0,
+    ft:1, fi:4, fs:0.9, fsc:1.7, mr:0.5, bl:0.3,
+    dv:7.0, fov:50, sp:0.8, la:45, le:35, rs:160, aoq:12, cm:0, pal:0 },
+];
+
+var FOLD_NAMES = ['NONE','Box','Kleinian','Lattice','Tetrahedral'];
+var FOLD_FORMULAS = [
+  ['No pretransform','Pure Menger IFS only'],
+  ['Box Fold (Mandelbox):','p = clamp(p,-s,s)*2 - p','p = sphereFold(p,minR,fixR)','p = p*scale + pos'],
+  ['Sphere Fold (Kleinian):','p = boxFold(p,s)','r2 = dot(p,p)','p *= fixR^2/max(r2,minR^2)'],
+  ['Lattice Fold:','p = mod(p, 2s) - s','p *= scale'],
+  ['Tetrahedral Fold (Td):','if p.x+p.y<0: swap','if p.x+p.z<0: swap','p -= fs; p *= scale'],
+];
+
+// -- Resize -------------------------------------------------------------------
+function resize() {
+  var dpr = Math.min(window.devicePixelRatio, 1.5);
+  var w = canvas.clientWidth * dpr | 0;
+  var h = canvas.clientHeight * dpr | 0;
+  if (canvas.width !== w || canvas.height !== h) {
+    canvas.width = w; canvas.height = h;
+    gl.viewport(0, 0, w, h);
+  }
+  document.getElementById('resEl').textContent = w + 'x' + h;
+}
+
+// -- Input --------------------------------------------------------------------
+var drag=false, lx=0, ly=0, shiftDrag=false;
+canvas.addEventListener('mousedown', function(e){
+  drag=true; lx=e.clientX; ly=e.clientY; shiftDrag=e.shiftKey;
+  if (!shiftDrag) { S.autoRot=false; syncBtn('arg',0); }
+});
+window.addEventListener('mouseup', function(){ drag=false; });
+window.addEventListener('mousemove', function(e){
+  if (!drag) return;
+  var dx=(e.clientX-lx)*0.006, dy=(e.clientY-ly)*0.006;
+  lx=e.clientX; ly=e.clientY;
+  if (shiftDrag) { S.la=(S.la+dx*40+360)%360; syncSlider('laS','la','laV',0); }
+  else {
+    S.camPhi+=dx;
+    S.camTheta=Math.max(-1.3,Math.min(1.3,S.camTheta+dy));
+  }
+});
+canvas.addEventListener('wheel', function(e){
+  e.preventDefault();
+  S.dv=Math.max(1.0,Math.min(12.0,S.dv+e.deltaY*0.005));
+  syncSlider('dvS','dv','dvV',2);
+},{passive:false});
+var lt2=null;
+canvas.addEventListener('touchstart',function(e){lt2=e.touches[0];S.autoRot=false;},{passive:true});
+canvas.addEventListener('touchmove',function(e){
+  if(!lt2)return;
+  S.camPhi+=(e.touches[0].clientX-lt2.clientX)*0.006;
+  S.camTheta=Math.max(-1.3,Math.min(1.3,S.camTheta+(e.touches[0].clientY-lt2.clientY)*0.006));
+  lt2=e.touches[0];
+},{passive:true});
+
+// -- Slider / button helpers --------------------------------------------------
+function syncSlider(sid, key, did, dec) {
+  var el = document.getElementById(sid); if (!el) return;
+  el.value = S[key];
+  var d = document.getElementById(did); if (!d) return;
+  d.textContent = (dec > 0 && typeof S[key]==='number') ? S[key].toFixed(dec) : S[key];
+}
+
+function syncBtn(gid, val) {
+  document.querySelectorAll('#'+gid+' .b').forEach(function(b){
+    b.classList.toggle('on', parseInt(b.dataset.v)===val);
+  });
+}
+
+function sl(sid, key, did, dec) {
+  document.getElementById(sid).addEventListener('input', function(){
+    S[key]=parseFloat(this.value);
+    var d=document.getElementById(did);
+    if(d) d.textContent=(dec>0)?S[key].toFixed(dec):S[key];
+    syncHUD();
+  });
+}
+
+function bg(cid, key, cb) {
+  document.getElementById(cid).querySelectorAll('.b').forEach(function(b){
+    b.addEventListener('click', function(){
+      S[key]=parseInt(b.dataset.v);
+      syncBtn(cid, S[key]);
+      if(cb) cb(S[key]);
+    });
+  });
+}
+
+// Wire sliders
+// Menger iterations -- auto-cap ray steps to prevent bottleneck
+document.getElementById('miS').addEventListener('input', function(){
+  S.mi = parseFloat(this.value);
+  document.getElementById('miV').textContent = S.mi;
+  // Each extra MI iteration roughly doubles raymarch cost
+  // Cap RS automatically when MI is high
+  if (S.mi >= 6 && S.rs > 120) {
+    S.rs = 120;
+    syncSlider('rsS','rs','rsV',0);
+    document.getElementById('mcStatus').textContent = 'RS auto-capped at 120 for mi=6';
+  }
+  syncHUD();
+});
+sl('scS','sc','scV',2);
+sl('brightS','bright','brightV',2);
+sl('oxS','ox','oxV',2); sl('oyS','oy','oyV',2);
+sl('ozS','oz','ozV',2);
+sl('twS','twist','twV',3);
+sl('wS','w4d','wV',3);
+sl('fiS','fi','fiV',0); sl('fsS','fs','fsV',2);
+sl('fscS','fsc','fscV',2); sl('mrS','mr','mrV',2);
+sl('blS','bl','blV',2); sl('dvS','dv','dvV',2);
+sl('fovS','fov','fovV',0); sl('spS','sp','spV',2);
+sl('laS','la','laV',0); sl('leS','le','leV',0);
+sl('rsS','rs','rsV',0); sl('rspS','rotSpeed','rspV',2);
+
+// Wire button groups
+bg('ftg','ft', function(v){
+  document.getElementById('hFT').textContent = FOLD_NAMES[v];
+  var lines = FOLD_FORMULAS[v];
+  var fb = document.getElementById('foldFormula');
+  fb.innerHTML = '<div><span class="fg">'+lines[0]+'</span></div>'
+    + lines.slice(1).map(function(l){return '<div>'+l+'</div>';}).join('');
+  document.getElementById('foldClass').textContent = v===0 ? '-' : FOLD_NAMES[v];
+  document.getElementById('ifsType').textContent = v===0 ? 'Single' : 'Compound';
+  document.getElementById('dualScale').textContent = v===0 ? 'No' : 'Yes';
+});
+bg('cmg','cm');
+bg('trpg','trap');
+bg('fdg','mode4d',function(v){
+  document.getElementById('wS').style.opacity=v?'1':'0.3';
+});
+bg('palg','pal');
+bg('aog','aoq');
+bg('arg','autoRot');
+bg('cineG','cinematic',function(v){
+  if(v===1){
+    // CINEMATIC: optimised for screen recording
+    // Lower DPR for smoother playback, slower rotation, longer morph hold
+    S.rotSpeed=0.12;
+    document.getElementById('rspS').value=0.12;
+    document.getElementById('rspV').textContent='0.12';
+    MORPH_DURATION=14.0;
+  } else {
+    S.rotSpeed=0.2;
+    document.getElementById('rspS').value=0.2;
+    document.getElementById('rspV').textContent='0.20';
+    MORPH_DURATION=12.0;
+  }
+});
+
+// -- Preset handler -- HARD RESET, all 19 params, no carryover ----------------
+document.getElementById('presetGrid').querySelectorAll('.pc').forEach(function(card){
+  card.addEventListener('click', function(){
+    var p = PRESETS[parseInt(card.dataset.p)];
+    // Hard assign every param
+    S.mi=p.mi; S.sc=p.sc; S.ox=p.ox; S.oy=p.oy; S.oz=p.oz||1.0;
+    S.ft=p.ft; S.fi=p.fi; S.fs=p.fs; S.fsc=p.fsc;
+    S.mr=p.mr; S.bl=p.bl; S.dv=p.dv; S.fov=p.fov;
+    S.sp=p.sp; S.la=p.la; S.le=p.le; S.rs=p.rs;
+    S.aoq=p.aoq; S.cm=p.cm; S.pal=p.pal;
+    // Sync every slider
+    [['miS','mi','miV',0],['scS','sc','scV',2],['oxS','ox','oxV',2],['oyS','oy','oyV',2],['ozS','oz','ozV',2],['twS','twist','twV',3],['wS','w4d','wV',3],
+     ['fiS','fi','fiV',0],['fsS','fs','fsV',2],['fscS','fsc','fscV',2],['mrS','mr','mrV',2],
+     ['blS','bl','blV',2],['dvS','dv','dvV',2],['fovS','fov','fovV',0],['spS','sp','spV',2],
+     ['laS','la','laV',0],['leS','le','leV',0],['rsS','rs','rsV',0]
+    ].forEach(function(r){ syncSlider(r[0],r[1],r[2],r[3]); });
+    // Sync all button groups
+    [['ftg','ft'],['cmg','cm'],['palg','pal'],['aog','aoq']].forEach(function(g){
+      syncBtn(g[0],S[g[1]]);
+    });
+    // Trigger fold type callback to update formula display
+    document.querySelector('#ftg .b[data-v="'+S.ft+'"]').click();
+    document.querySelectorAll('.pc').forEach(function(c){c.classList.remove('on');});
+    card.classList.add('on');
+    syncHUD();
+  });
+});
+
+document.getElementById('resetBtn').addEventListener('click', function(){
+  S.camTheta=0.35; S.camPhi=0; S.dv=4.5;
+  syncSlider('dvS','dv','dvV',2);
+});
+
+// -- HUD sync -----------------------------------------------------------------
+function syncHUD() {
+  document.getElementById('hMI').textContent = S.mi;
+  document.getElementById('hSC').textContent = S.sc.toFixed(2);
+  document.getElementById('hFI').textContent = S.fi;
+  document.getElementById('hFS').textContent = S.fs.toFixed(2);
+  document.getElementById('hBL').textContent = S.bl.toFixed(2);
+  var mw = (S.mi/6)*100, fw = S.ft===0?0:(S.fi/10)*100, hw = S.ft===0?0:S.bl*100;
+  document.getElementById('bM').style.width=mw+'px';
+  document.getElementById('bF').style.width=fw+'px';
+  document.getElementById('bH').style.width=hw+'px';
+  document.getElementById('bMv').textContent=S.mi;
+  document.getElementById('bFv').textContent=S.ft===0?'-':S.fi;
+  document.getElementById('bHv').textContent=(S.bl*100).toFixed(0)+'%';
+  document.getElementById('stepsEl').textContent=S.rs;
+}
+
+// -- MC Resolution slider ------------------------------------------------------
+var MC_RES = 64;
+
+
+// Marching cubes lookup tables (Paul Bourke, 256 entries each)
+var MC_EDGES=[0x0,0x109,0x243,0x34a,0x48c,0x585,0x6cf,0x7c6,0x8c6,0x9cf,0xa85,0xb8c,0xc4a,0xd43,0xe09,0xf00,0x190,0x99,0x3d3,0x2da,0x5bc,0x4b5,0x7ff,0x6f6,0x9f6,0x8ff,0xbb5,0xabc,0xdda,0xcd3,0xff9,0xef0,0x230,0x339,0x73,0x17a,0x65c,0x755,0x41f,0x516,0xa16,0xb1f,0x855,0x95c,0xe7a,0xf73,0xc39,0xd30,0x3a0,0x2a9,0x1e3,0xea,0x7cc,0x6c5,0x58f,0x486,0xb86,0xa8f,0x9c5,0x8cc,0xfea,0xef3,0xdb9,0xcb0,0x460,0x569,0x623,0x72a,0x4c,0x145,0x20f,0x306,0xc06,0xd0f,0xe45,0xf4c,0x86a,0x963,0xa29,0xb20,0x5b0,0x4b9,0x7f3,0x6fa,0x19c,0x95,0x3df,0x2d6,0xdd6,0xcdf,0xf95,0xe9c,0x9fa,0x8f3,0xbb9,0xab0,0x650,0x759,0x413,0x51a,0x27c,0x375,0x3f,0x136,0xf36,0xe3f,0xd75,0xc7c,0xb1a,0xa13,0x959,0x850,0x7c0,0x6c9,0x583,0x48a,0x3ec,0x2e5,0x1af,0xa6,0xfa6,0xeaf,0xde5,0xcec,0xb8a,0xa83,0x9c9,0x8c0,0x8c0,0x9c9,0xa83,0xb8a,0xcec,0xde5,0xeaf,0xfa6,0xa6,0x1af,0x2e5,0x3ec,0x48a,0x583,0x6c9,0x7c0,0x850,0x959,0xa13,0xb1a,0xc7c,0xd75,0xe3f,0xf36,0x136,0x3f,0x375,0x27c,0x51a,0x413,0x759,0x650,0xab0,0xbb9,0x8f3,0x9fa,0xe9c,0xf95,0xcdf,0xdd6,0x2d6,0x3df,0x95,0x19c,0x6fa,0x7f3,0x4b9,0x5b0,0xb20,0xa29,0x963,0x86a,0xf4c,0xe45,0xd0f,0xc06,0x306,0x20f,0x145,0x4c,0x72a,0x623,0x569,0x460,0xcb0,0xdb9,0xef3,0xfea,0x8cc,0x9c5,0xa8f,0xb86,0x486,0x58f,0x6c5,0x7cc,0xea,0x1e3,0x2a9,0x3a0,0xd30,0xc39,0xf73,0xe7a,0x95c,0x855,0xb1f,0xa16,0x516,0x41f,0x755,0x65c,0x17a,0x73,0x339,0x230,0xef0,0xff9,0xcd3,0xdda,0xabc,0xbb5,0x8ff,0x9f6,0x6f6,0x7ff,0x4b5,0x5bc,0x2da,0x3d3,0x99,0x190,0xf00,0xe09,0xd43,0xc4a,0xb8c,0xa85,0x9cf,0x8c6,0x7c6,0x6cf,0x585,0x48c,0x34a,0x243,0x109,0x0];
+var MC_TRIS=[[-1],[0,8,3,-1],[0,1,9,-1],[1,8,3,9,8,1,-1],[1,2,10,-1],[0,8,3,1,2,10,-1],[9,2,10,0,2,9,-1],[2,8,3,2,10,8,10,9,8,-1],[3,11,2,-1],[0,11,2,8,11,0,-1],[1,9,0,2,3,11,-1],[1,11,2,1,9,11,9,8,11,-1],[3,10,1,11,10,3,-1],[0,10,1,0,8,10,8,11,10,-1],[3,9,0,3,11,9,11,10,9,-1],[9,8,10,10,8,11,-1],[4,7,8,-1],[4,3,0,7,3,4,-1],[0,1,9,8,4,7,-1],[4,1,9,4,7,1,7,3,1,-1],[1,2,10,8,4,7,-1],[3,4,7,3,0,4,1,2,10,-1],[9,2,10,9,0,2,8,4,7,-1],[2,10,9,2,9,7,2,7,3,7,9,4,-1],[8,4,7,3,11,2,-1],[11,4,7,11,2,4,2,0,4,-1],[9,0,1,8,4,7,2,3,11,-1],[4,7,11,9,4,11,9,11,2,9,2,1,-1],[3,10,1,3,11,10,7,8,4,-1],[1,11,10,1,4,11,1,0,4,7,11,4,-1],[4,7,8,9,0,11,9,11,10,11,0,3,-1],[4,7,11,4,11,9,9,11,10,-1],[9,5,4,-1],[9,5,4,0,8,3,-1],[0,5,4,1,5,0,-1],[8,5,4,8,3,5,3,1,5,-1],[1,2,10,9,5,4,-1],[3,0,8,1,2,10,4,9,5,-1],[5,2,10,5,4,2,4,0,2,-1],[2,10,5,3,2,5,3,5,4,3,4,8,-1],[9,5,4,2,3,11,-1],[0,11,2,0,8,11,4,9,5,-1],[0,5,4,1,5,0,2,3,11,-1],[2,1,5,2,5,8,2,8,11,4,8,5,-1],[10,3,11,10,1,3,9,5,4,-1],[4,9,5,0,8,1,8,10,1,8,11,10,-1],[5,4,0,5,0,11,5,11,10,11,0,3,-1],[5,4,8,5,8,10,10,8,11,-1],[9,7,8,5,7,9,-1],[9,3,0,9,5,3,5,7,3,-1],[0,7,8,0,1,7,1,5,7,-1],[1,5,3,3,5,7,-1],[9,7,8,9,5,7,10,1,2,-1],[10,1,2,9,5,0,5,3,0,5,7,3,-1],[8,0,2,8,2,5,8,5,7,10,5,2,-1],[2,10,5,2,5,3,3,5,7,-1],[7,9,5,7,8,9,3,11,2,-1],[9,5,7,9,7,2,9,2,0,2,7,11,-1],[2,3,11,0,1,8,1,7,8,1,5,7,-1],[11,2,1,11,1,7,7,1,5,-1],[9,5,8,8,5,7,10,1,3,10,3,11,-1],[5,7,0,5,0,9,7,11,0,1,0,10,11,10,0,-1],[11,10,0,11,0,3,10,5,0,8,0,7,5,7,0,-1],[11,10,5,7,11,5,-1],[10,6,5,-1],[0,8,3,5,10,6,-1],[9,0,1,5,10,6,-1],[1,8,3,1,9,8,5,10,6,-1],[1,6,5,2,6,1,-1],[1,6,5,1,2,6,3,0,8,-1],[9,6,5,9,0,6,0,2,6,-1],[5,9,8,5,8,2,5,2,6,3,2,8,-1],[2,3,11,10,6,5,-1],[11,0,8,11,2,0,10,6,5,-1],[0,1,9,2,3,11,5,10,6,-1],[5,10,6,1,9,2,9,11,2,9,8,11,-1],[6,3,11,6,5,3,5,1,3,-1],[0,8,11,0,11,5,0,5,1,5,11,6,-1],[3,11,6,0,3,6,0,6,5,0,5,9,-1],[6,5,9,6,9,11,11,9,8,-1],[5,10,6,4,7,8,-1],[4,3,0,4,7,3,6,5,10,-1],[1,9,0,5,10,6,8,4,7,-1],[10,6,5,1,9,7,1,7,3,7,9,4,-1],[6,1,2,6,5,1,4,7,8,-1],[1,2,5,5,2,6,3,0,4,3,4,7,-1],[8,4,7,9,0,5,0,6,5,0,2,6,-1],[7,3,9,7,9,4,3,2,9,5,9,6,2,6,9,-1],[3,11,2,7,8,4,10,6,5,-1],[5,10,6,4,7,2,4,2,0,2,7,11,-1],[0,1,9,4,7,8,2,3,11,5,10,6,-1],[9,2,1,9,11,2,9,4,11,7,11,4,5,10,6,-1],[8,4,7,3,11,5,3,5,1,5,11,6,-1],[5,1,11,5,11,6,1,0,11,7,11,4,0,4,11,-1],[0,5,9,0,6,5,0,3,6,11,6,3,8,4,7,-1],[6,5,9,6,9,11,4,7,9,7,11,9,-1],[10,4,9,6,4,10,-1],[4,10,6,4,9,10,0,8,3,-1],[10,0,1,10,6,0,6,4,0,-1],[8,3,1,8,1,6,8,6,4,6,1,10,-1],[1,4,9,1,2,4,2,6,4,-1],[3,0,8,1,2,9,2,4,9,2,6,4,-1],[0,2,4,4,2,6,-1],[8,3,2,8,2,4,4,2,6,-1],[10,4,9,10,6,4,11,2,3,-1],[0,8,2,2,8,11,4,9,10,4,10,6,-1],[3,11,2,0,1,6,0,6,4,6,1,10,-1],[6,4,1,6,1,10,4,8,1,2,1,11,8,11,1,-1],[9,6,4,9,3,6,9,1,3,11,6,3,-1],[8,11,1,8,1,0,11,6,1,9,1,4,6,4,1,-1],[3,11,6,3,6,0,0,6,4,-1],[6,4,8,11,6,8,-1],[7,10,6,7,8,10,8,9,10,-1],[0,7,3,0,10,7,0,9,10,6,7,10,-1],[10,6,7,1,10,7,1,7,8,1,8,0,-1],[10,6,7,10,7,1,1,7,3,-1],[1,2,6,1,6,8,1,8,9,8,6,7,-1],[2,6,9,2,9,1,6,7,9,0,9,3,7,3,9,-1],[7,8,0,7,0,6,6,0,2,-1],[7,3,2,6,7,2,-1],[2,3,11,10,6,8,10,8,9,8,6,7,-1],[2,0,7,2,7,11,0,9,7,6,7,10,9,10,7,-1],[1,8,0,1,7,8,1,10,7,6,7,10,2,3,11,-1],[11,2,1,11,1,7,10,6,1,6,7,1,-1],[8,9,6,8,6,7,9,1,6,11,6,3,1,3,6,-1],[0,9,1,11,6,7,-1],[7,8,0,7,0,6,3,11,0,11,6,0,-1],[7,11,6,-1],[7,6,11,-1],[3,0,8,11,7,6,-1],[0,1,9,11,7,6,-1],[8,1,9,8,3,1,11,7,6,-1],[10,1,2,6,11,7,-1],[1,2,10,3,0,8,6,11,7,-1],[2,9,0,2,10,9,6,11,7,-1],[6,11,7,2,10,3,10,8,3,10,9,8,-1],[7,2,3,6,2,7,-1],[7,0,8,7,6,0,6,2,0,-1],[2,7,6,2,3,7,0,1,9,-1],[1,6,2,1,8,6,1,9,8,8,7,6,-1],[10,7,6,10,1,7,1,3,7,-1],[10,7,6,1,7,10,1,8,7,1,0,8,-1],[0,3,7,0,7,10,0,10,9,6,10,7,-1],[7,6,10,7,10,8,8,10,9,-1],[6,8,4,11,8,6,-1],[3,6,11,3,0,6,0,4,6,-1],[8,6,11,8,4,6,9,0,1,-1],[9,4,6,9,6,3,9,3,1,11,3,6,-1],[6,8,4,6,11,8,2,10,1,-1],[1,2,10,3,0,11,0,6,11,0,4,6,-1],[4,11,8,4,6,11,0,2,9,2,10,9,-1],[10,9,3,10,3,2,9,4,3,11,3,6,4,6,3,-1],[8,2,3,8,4,2,4,6,2,-1],[0,4,2,4,6,2,-1],[1,9,0,2,3,4,2,4,6,4,3,8,-1],[1,9,4,1,4,2,2,4,6,-1],[10,1,3,10,3,6,6,3,8,6,8,4,-1],[10,1,0,10,0,6,6,0,4,-1],[4,6,3,4,3,8,6,10,3,0,3,9,10,9,3,-1],[10,9,4,6,10,4,-1],[4,9,5,7,6,11,-1],[0,8,3,4,9,5,11,7,6,-1],[5,0,1,5,4,0,7,6,11,-1],[11,7,6,8,3,4,3,5,4,3,1,5,-1],[9,5,4,10,1,2,7,6,11,-1],[6,11,7,1,2,10,0,8,3,4,9,5,-1],[7,6,11,5,4,10,4,2,10,4,0,2,-1],[3,4,8,3,5,4,3,2,5,10,5,2,11,7,6,-1],[7,2,3,7,6,2,5,4,9,-1],[9,5,4,0,8,6,0,6,2,6,8,7,-1],[3,6,2,3,7,6,1,5,0,5,4,0,-1],[6,2,8,6,8,7,2,1,8,4,8,5,1,5,8,-1],[9,5,4,10,1,6,1,7,6,1,3,7,-1],[1,6,10,1,7,6,1,0,7,8,7,0,9,5,4,-1],[4,0,10,4,10,5,0,3,10,6,10,7,3,7,10,-1],[7,6,10,7,10,8,5,4,10,4,8,10,-1],[6,9,5,6,11,9,11,8,9,-1],[3,6,11,0,6,3,0,5,6,0,9,5,-1],[0,11,8,0,5,11,0,1,5,5,6,11,-1],[6,11,3,6,3,5,5,3,1,-1],[1,2,10,9,5,11,9,11,8,11,5,6,-1],[0,11,3,0,6,11,0,9,6,5,6,9,1,2,10,-1],[11,8,5,11,5,6,8,0,5,10,5,2,0,2,5,-1],[6,11,3,6,3,5,2,10,3,10,5,3,-1],[5,8,9,5,2,8,5,6,2,3,8,2,-1],[9,5,6,9,6,0,0,6,2,-1],[1,5,8,1,8,0,5,6,8,3,8,2,6,2,8,-1],[1,5,6,2,1,6,-1],[1,3,6,1,6,10,3,8,6,5,6,9,8,9,6,-1],[10,1,0,10,0,6,9,5,0,5,6,0,-1],[0,3,8,5,6,10,-1],[10,5,6,-1],[11,5,10,7,5,11,-1],[11,5,10,11,7,5,8,3,0,-1],[5,11,7,5,10,11,1,9,0,-1],[10,7,5,10,11,7,9,8,1,8,3,1,-1],[11,1,2,11,7,1,7,5,1,-1],[0,8,3,1,2,7,1,7,5,7,2,11,-1],[9,7,5,9,2,7,9,0,2,2,11,7,-1],[7,5,2,7,2,11,5,9,2,3,2,8,9,8,2,-1],[2,5,10,2,3,5,3,7,5,-1],[8,2,0,8,5,2,8,7,5,10,2,5,-1],[9,0,1,2,3,5,2,5,10,5,3,7,-1],[1,10,2,5,8,7,5,9,8,7,8,3,-1],[5,3,7,5,1,3,-1],[0,8,7,0,7,1,1,7,5,-1],[9,0,3,9,3,5,5,3,7,-1],[9,8,7,5,9,7,-1],[5,8,4,5,10,8,10,11,8,-1],[5,0,4,5,11,0,5,10,11,11,3,0,-1],[0,1,9,8,4,10,8,10,11,10,4,5,-1],[10,11,4,10,4,5,11,3,4,9,4,1,3,1,4,-1],[2,5,1,2,8,5,2,11,8,4,5,8,-1],[0,4,11,0,11,3,4,5,11,2,11,1,5,1,11,-1],[0,2,5,0,5,9,2,11,5,4,5,8,11,8,5,-1],[9,4,5,2,11,3,-1],[2,5,10,3,5,2,3,4,5,3,8,4,-1],[5,10,2,5,2,4,4,2,0,-1],[3,10,2,3,5,10,3,8,5,4,5,8,0,1,9,-1],[5,10,2,5,2,4,1,9,2,9,4,2,-1],[8,4,5,8,5,3,3,5,1,-1],[0,4,5,1,0,5,-1],[8,4,5,8,5,3,9,0,5,0,3,5,-1],[9,4,5,-1],[4,11,7,4,9,11,9,10,11,-1],[0,8,3,4,9,7,9,11,7,9,10,11,-1],[1,10,11,1,11,4,1,4,0,7,4,11,-1],[3,1,4,3,4,8,1,10,4,7,4,11,10,11,4,-1],[4,11,7,9,11,4,9,2,11,9,1,2,-1],[9,7,4,9,11,7,9,1,11,2,11,1,0,8,3,-1],[11,7,4,11,4,2,2,4,0,-1],[11,7,4,8,3,2,-1],[2,9,10,2,7,9,2,3,7,7,4,9,-1],[9,10,7,9,7,4,10,2,7,8,7,0,2,0,7,-1],[3,7,10,3,10,2,7,4,10,1,10,0,4,0,10,-1],[1,10,2,8,7,4,-1],[4,9,1,4,1,7,7,1,3,-1],[4,9,1,4,1,7,0,8,1,8,7,1,-1],[4,0,3,7,4,3,-1],[4,8,7,-1],[9,10,8,10,11,8,-1],[3,0,9,3,9,11,11,9,10,-1],[0,1,10,0,10,8,8,10,11,-1],[3,1,10,11,3,10,-1],[1,2,11,1,11,9,9,11,8,-1],[3,0,9,3,9,11,1,2,9,2,11,9,-1],[0,2,11,8,0,11,-1],[3,2,11,-1],[2,3,8,2,8,10,10,8,9,-1],[9,10,2,0,9,2,-1],[2,3,8,2,8,10,0,1,8,1,10,8,-1],[1,10,2,-1],[1,3,8,9,1,8,-1],[0,9,1,-1],[0,3,8,-1],[-1]];
+
+// ============================================================
+// UUON EXPORT PIPELINE v2.0
+// Fold-aware CPU DE, adaptive GLIM, dynamic bounds,
+// per-vertex normals, OBJ + Binary STL + GLB output
+// ============================================================
+
+// -- Fold-aware CPU distance estimator ----------------------------------------
+// Mirrors the GLSL DE exactly for each fold type
+// Takes explicit snapshot params -- never reads live S during export
+
+function cpuBoxFold(p, s) {
+  return [
+    Math.max(-s, Math.min(s, p[0])) * 2.0 - p[0],
+    Math.max(-s, Math.min(s, p[1])) * 2.0 - p[1],
+    Math.max(-s, Math.min(s, p[2])) * 2.0 - p[2],
+  ];
+}
+
+function cpuSphereFold(p, minR, fixR) {
+  var r2 = Math.max(p[0]*p[0]+p[1]*p[1]+p[2]*p[2], 0.0001);
+  var k = 1.0;
+  if (r2 < minR*minR)      k = (fixR*fixR)/(minR*minR);
+  else if (r2 < fixR*fixR) k = (fixR*fixR)/r2;
+  return [p[0]*k, p[1]*k, p[2]*k];
+}
+
+function cpuLatticeFold(p, s) {
+  var s2 = 2.0*s;
+  return [
+    ((p[0]%s2)+s2)%s2-s,
+    ((p[1]%s2)+s2)%s2-s,
+    ((p[2]%s2)+s2)%s2-s,
+  ];
+}
+
+function cpuTetraFold(p) {
+  var x=p[0],y=p[1],z=p[2];
+  if(x+y<0){var t=x;x=-y;y=-t;}
+  if(x+z<0){var t=x;x=-z;z=-t;}
+  if(y+z<0){var t=y;y=-z;z=-t;}
+  if(x-y<0){var t=x;x=y;y=t;}
+  return [x,y,z];
+}
+
+function cpuIcosaFold(p, phi) {
+  p=[Math.abs(p[0]),Math.abs(p[1]),Math.abs(p[2])];
+  var n1=[1.0,phi,0.0], n2=[phi,0.0,1.0], n3=[0.0,1.0,phi];
+  function norm(v){var l=Math.sqrt(v[0]*v[0]+v[1]*v[1]+v[2]*v[2]);return[v[0]/l,v[1]/l,v[2]/l];}
+  function dot(a,b){return a[0]*b[0]+a[1]*b[1]+a[2]*b[2];}
+  function reflect(v,n){var d=dot(v,n);return[v[0]-2*d*n[0],v[1]-2*d*n[1],v[2]-2*d*n[2]];}
+  n1=norm(n1);n2=norm(n2);n3=norm(n3);
+  if(dot(p,n1)<0)p=reflect(p,n1);
+  p=[Math.abs(p[0]),Math.abs(p[1]),Math.abs(p[2])];
+  if(dot(p,n2)<0)p=reflect(p,n2);
+  p=[Math.abs(p[0]),Math.abs(p[1]),Math.abs(p[2])];
+  if(dot(p,n3)<0)p=reflect(p,n3);
+  p=[Math.abs(p[0]),Math.abs(p[1]),Math.abs(p[2])];
+  if(p[0]<p[1]){var t=p[0];p[0]=p[1];p[1]=t;}
+  if(p[0]<p[2]){var t=p[0];p[0]=p[2];p[2]=t;}
+  var nf=norm([1.0,-phi,0.0]);
+  if(dot(p,nf)>0)p=reflect(p,nf);
+  return [Math.abs(p[0]),Math.abs(p[1]),Math.abs(p[2])];
+}
+
+function cpuOctaFold(p) {
+  p=[Math.abs(p[0]),Math.abs(p[1]),Math.abs(p[2])];
+  if(p[0]<p[1]){var t=p[0];p[0]=p[1];p[1]=t;}
+  if(p[0]<p[2]){var t=p[0];p[0]=p[2];p[2]=t;}
+  if(p[1]<p[2]){var t=p[1];p[1]=p[2];p[2]=t;}
+  return p;
+}
+
+function cpuDodecaFold(p, phi) {
+  p=[Math.abs(p[0]),Math.abs(p[1]),Math.abs(p[2])];
+  var ip=1.0/phi;
+  function norm(v){var l=Math.sqrt(v[0]*v[0]+v[1]*v[1]+v[2]*v[2]);return[v[0]/l,v[1]/l,v[2]/l];}
+  function dot(a,b){return a[0]*b[0]+a[1]*b[1]+a[2]*b[2];}
+  var d1=norm([1,1,1]),d2=norm([0,ip,phi]),d3=norm([ip,phi,0]),d4=norm([phi,0,ip]);
+  function foldIn(v,n){var c=dot(v,n);if(c>1.0){return[v[0]-2*(c-1)*n[0],v[1]-2*(c-1)*n[1],v[2]-2*(c-1)*n[2]];}return v;}
+  p=foldIn(p,d1);p=foldIn(p,d2);p=foldIn(p,d3);p=foldIn(p,d4);
+  p=[Math.abs(p[0]),Math.abs(p[1]),Math.abs(p[2])];
+  if(p[0]<p[1]){var t=p[0];p[0]=p[1];p[1]=t;}
+  if(p[0]<p[2]){var t=p[0];p[0]=p[2];p[2]=t;}
+  return p;
+}
+
+// Fold-aware distance estimator
+// snap = {mi, sc, ox, oy, ft, fi, fs, fsc, mr, bl, ph}
+function foldAwareDEcpu(px, py, pz, snap) {
+  var p=[px,py,pz], pos=[px,py,pz];
+  var scale=1.0, trap=1e10;
+  var ft=snap.ft||0, fi=snap.fi||1, fs=snap.fs||1.0;
+  var fsc=snap.fsc||1.7, mr=snap.mr||0.5, bl=snap.bl||0;
+  var ph=snap.ph||1.618;
+
+  // Apply fold pretransform
+  for(var i=0;i<fi;i++){
+    if(ft===0||ft===4){ // queuePIT: 0=none,1=box,2=kleinian,3=lattice,4=tetra
+      if(ft===0) break;
+      if(ft===1){p=cpuBoxFold(p,fs);p=cpuSphereFold(p,mr,1.0);p=[p[0]*fsc,p[1]*fsc,p[2]*fsc];scale*=fsc;} else if(snap.ft===5){var PHI_C=1.61803398875,lN=Math.sqrt(1+PHI_C*PHI_C),n1x=1/lN,n1y=PHI_C/lN,n1z=0,n2x=-1/lN,n2y=PHI_C/lN,n2z=0,n3x=0,n3y=1/lN,n3z=PHI_C/lN,n4x=0,n4y=-1/lN,n4z=PHI_C/lN,n5x=PHI_C/lN,n5y=0,n5z=1/lN,n6x=-PHI_C/lN,n6y=0,n6z=1/lN;for(var fI2=0;fI2<Math.min(snap.fi,2);fI2++){for(var it2=0;it2<3;it2++){var dc=px*n1x+py*n1y+pz*n1z;if(dc<0){px-=2*dc*n1x;py-=2*dc*n1y;pz-=2*dc*n1z;}dc=px*n2x+py*n2y+pz*n2z;if(dc<0){px-=2*dc*n2x;py-=2*dc*n2y;pz-=2*dc*n2z;}dc=px*n3x+py*n3y+pz*n3z;if(dc<0){px-=2*dc*n3x;py-=2*dc*n3y;pz-=2*dc*n3z;}dc=px*n4x+py*n4y+pz*n4z;if(dc<0){px-=2*dc*n4x;py-=2*dc*n4y;pz-=2*dc*n4z;}dc=px*n5x+py*n5y+pz*n5z;if(dc<0){px-=2*dc*n5x;py-=2*dc*n5y;pz-=2*dc*n5z;}dc=px*n6x+py*n6y+pz*n6z;if(dc<0){px-=2*dc*n6x;py-=2*dc*n6y;pz-=2*dc*n6z;}}px=Math.abs(px)*snap.fsc-(snap.fs||1.0)*0.618;py=Math.abs(py)*snap.fsc-(snap.fs||1.0)*0.618;pz=Math.abs(pz)*snap.fsc-(snap.fs||1.0)*0.618;}}
+      else if(ft===2){p=cpuBoxFold(p,fs);p=cpuSphereFold(p,mr,fs);p=[p[0]*fsc+pos[0],p[1]*fsc+pos[1],p[2]*fsc+pos[2]];scale*=fsc;}
+      else if(ft===3){p=cpuLatticeFold(p,fs);p=[p[0]*fsc,p[1]*fsc,p[2]*fsc];scale*=fsc;}
+      else if(ft===4){p=cpuTetraFold(p);p=[p[0]*fsc-fs,p[1]*fsc-fs,p[2]*fsc-fs];scale*=fsc;}
+    } else { // Platonic v2: 0=icosa,1=octa,2=dodeca,3=tetra,4=none
+      if(ft===4) break;
+      if(ft===0)      p=cpuIcosaFold(p,ph);
+      else if(ft===1) p=cpuOctaFold(p);
+      else if(ft===2) p=cpuDodecaFold(p,ph);
+      else if(ft===3) p=cpuTetraFold(p);
+      p=[p[0]*fsc,p[1]*fsc,p[2]*fsc];
+      scale*=fsc;
+    }
+    trap=Math.min(trap,Math.sqrt(p[0]*p[0]+p[1]*p[1]+p[2]*p[2]));
+  }
+
+  // Symmetric blend
+  var pm=[
+    p[0]+(pos[0]-p[0])*bl,
+    p[1]+(pos[1]-p[1])*bl,
+    p[2]+(pos[2]-p[2])*bl
+  ];
+
+  // Menger cross-cylinder IFS
+  var sc=snap.sc||3.0, ox=snap.ox||1.0, oy=snap.oy||1.0;
+  var mi=snap.mi||3;
+  var qx=pm[0],qy=pm[1],qz=pm[2],ms=1.0;
+  for(var i=0;i<mi;i++){
+    qx=Math.abs(qx);qy=Math.abs(qy);qz=Math.abs(qz);
+    if(qx<qy){var t=qx;qx=qy;qy=t;}
+    if(qx<qz){var t=qx;qx=qz;qz=t;}
+    if(qy<qz){var t=qy;qy=qz;qz=t;}
+    qx=sc*qx-ox*(sc-1.0);
+    qy=sc*qy-oy*(sc-1.0);
+    qz=sc*qz-ox*(sc-1.0);
+    ms*=sc;
+  }
+  var dxy=Math.sqrt(qx*qx+qy*qy),dxz=Math.sqrt(qx*qx+qz*qz),dyz=Math.sqrt(qy*qy+qz*qz);
+  var cyl=Math.min(dxy,Math.min(dxz,dyz));
+  var d=(cyl-1.0)/ms;
+
+  // Dynamic outer guide -- scales with fold parameters, never clips attractor
+  // Guide must match GLSL exactly: guideR = max(fs*fsc, 2.0)
+  // The RANGE scan already handles the outer boundary
+  // This inner guide just prevents the DE from returning extreme values
+  var guideR = Math.max((snap.fs||1.0)*(snap.fsc||1.7), 2.0) * 1.15;
+  var bx=Math.abs(px)-guideR,by=Math.abs(py)-guideR,bz=Math.abs(pz)-guideR;
+  var boxD=Math.sqrt(Math.max(bx,0)*Math.max(bx,0)+Math.max(by,0)*Math.max(by,0)+Math.max(bz,0)*Math.max(bz,0))
+           +Math.min(Math.max(bx,Math.max(by,bz)),0);
+  return Math.max(d, boxD*0.1);
+}
+
+// -- Gradient-based normal computation ----------------------------------------
+// Per-vertex normals via finite differences on the CPU DE
+// h calibrated to step size for accuracy without aliasing
+function computeVertexNormals(verts, snap, step) {
+  var h = step * 0.5;
+  var normals = new Float32Array(verts.length); // xyz per vertex
+  for(var i=0;i<verts.length;i+=3){
+    var x=verts[i],y=verts[i+1],z=verts[i+2];
+    var nx=foldAwareDEcpu(x+h,y,z,snap)-foldAwareDEcpu(x-h,y,z,snap);
+    var ny=foldAwareDEcpu(x,y+h,z,snap)-foldAwareDEcpu(x,y-h,z,snap);
+    var nz=foldAwareDEcpu(x,y,z+h,snap)-foldAwareDEcpu(x,y,z-h,snap);
+    var len=Math.sqrt(nx*nx+ny*ny+nz*nz);
+    if(len<1e-10){nx=0;ny=1;nz=0;}else{nx/=len;ny/=len;nz/=len;}
+    normals[i]=nx;normals[i+1]=ny;normals[i+2]=nz;
+  }
+  return normals;
+}
+
+// -- Marching cubes with adaptive GLIM ----------------------------------------
+function runMarchingCubes(field, valid, N, RANGE, ISO, step, MAXF) {
+  var s2=(N+1)*(N+1),s1=N+1;
+  var verts=[],faces=[];
+  var eMap=[[0,1],[1,2],[2,3],[3,0],[4,5],[5,6],[6,7],[7,4],[0,4],[1,5],[2,6],[3,7]];
+
+  for(var iz=0;iz<N;iz++){for(var iy=0;iy<N;iy++){for(var ix=0;ix<N;ix++){
+    var i000=iz*s2+iy*s1+ix, i100=iz*s2+iy*s1+ix+1;
+    var i110=iz*s2+(iy+1)*s1+ix+1, i010=iz*s2+(iy+1)*s1+ix;
+    var i001=(iz+1)*s2+iy*s1+ix, i101=(iz+1)*s2+iy*s1+ix+1;
+    var i111=(iz+1)*s2+(iy+1)*s1+ix+1, i011=(iz+1)*s2+(iy+1)*s1+ix;
+    if(!valid[i000]||!valid[i100]||!valid[i110]||!valid[i010]||
+       !valid[i001]||!valid[i101]||!valid[i111]||!valid[i011]) continue;
+    var v0=field[i000],v1=field[i100],v2=field[i110],v3=field[i010];
+    var v4=field[i001],v5=field[i101],v6=field[i111],v7=field[i011];
+    var minV=Math.min(v0,v1,v2,v3,v4,v5,v6,v7);
+    var maxV=Math.max(v0,v1,v2,v3,v4,v5,v6,v7);
+    // Adaptive GLIM: based on local field range, not fixed multiplier
+    // Cells spanning the surface have minV<ISO<maxV -- always include those
+    // Cells entirely inside/outside with high gradient = discontinuity -- reject
+    var spansSurface = (minV < ISO && maxV > ISO);
+    var GLIM_local = spansSurface ? step*20.0 : step*6.0;
+    if((maxV-minV)>GLIM_local) continue;
+    var x0=-RANGE+ix*step,y0=-RANGE+iy*step,z0=-RANGE+iz*step;
+    var cx=[x0,x0+step,x0+step,x0,x0,x0+step,x0+step,x0];
+    var cy=[y0,y0,y0+step,y0+step,y0,y0,y0+step,y0+step];
+    var cz=[z0,z0,z0,z0,z0+step,z0+step,z0+step,z0+step];
+    var cv=[v0,v1,v2,v3,v4,v5,v6,v7];
+    var cubeIdx=0;
+    for(var k=0;k<8;k++) if(cv[k]<ISO) cubeIdx|=(1<<k);
+    if(cubeIdx===0||cubeIdx===255) continue;
+    var eMask=MC_EDGES[cubeIdx];
+    var ev=new Array(12);
+    for(var e=0;e<12;e++){
+      if(!(eMask&(1<<e))) continue;
+      var a=eMap[e][0],b=eMap[e][1];
+      var denom=cv[b]-cv[a];
+      if(Math.abs(denom)<1e-10){ev[e]=[cx[a],cy[a],cz[a]];continue;}
+      var tt=Math.max(0,Math.min(1,(ISO-cv[a])/denom));
+      ev[e]=[cx[a]+tt*(cx[b]-cx[a]),cy[a]+tt*(cy[b]-cy[a]),cz[a]+tt*(cz[b]-cz[a])];
+    }
+    var trs=MC_TRIS[cubeIdx]; if(!trs) continue;
+    for(var t2=0;t2+2<trs.length;t2+=3){
+      if(trs[t2]===-1||trs[t2+1]===-1||trs[t2+2]===-1) break;
+      var ea=ev[trs[t2]],eb=ev[trs[t2+1]],ec=ev[trs[t2+2]];
+      if(!ea||!eb||!ec) continue;
+      var abx=eb[0]-ea[0],aby=eb[1]-ea[1],abz=eb[2]-ea[2];
+      var acx=ec[0]-ea[0],acy=ec[1]-ea[1],acz=ec[2]-ea[2];
+      var area2=(aby*acz-abz*acy)**2+(abz*acx-abx*acz)**2+(abx*acy-aby*acx)**2;
+      if(area2<1e-20) continue;
+      var vb2=verts.length/3;
+      verts.push(ea[0],ea[1],ea[2],eb[0],eb[1],eb[2],ec[0],ec[1],ec[2]);
+      faces.push(vb2+1,vb2+2,vb2+3);
+    }
+  }}}
+  return {verts:verts,faces:faces};
+}
+
+// -- OBJ export with vertex normals -------------------------------------------
+function buildOBJ(verts, faces, normals, snap, N, ISO, RANGE) {
+  var lines=[
+    '# UUON Foundation -- Kassel',
+    '# Engine: queuePIT / Platonic IFS v2.0',
+    '# Fold-aware CPU DE, per-vertex normals',
+    '# mi='+snap.mi+' ft='+snap.ft+' fi='+snap.fi+' fsc='+(snap.fsc||1.7).toFixed(3),
+    '# ISO='+ISO.toFixed(6)+' RANGE='+RANGE.toFixed(3)+' RES='+N,
+    '# Generated: '+new Date().toISOString(),
+    'o UUON_IFS_Attractor',
+  ];
+  for(var i=0;i<verts.length;i+=3)
+    lines.push('v '+verts[i].toFixed(6)+' '+verts[i+1].toFixed(6)+' '+verts[i+2].toFixed(6));
+  if(normals){
+    for(var i=0;i<normals.length;i+=3)
+      lines.push('vn '+normals[i].toFixed(6)+' '+normals[i+1].toFixed(6)+' '+normals[i+2].toFixed(6));
+    for(var i=0;i<faces.length;i+=3)
+      lines.push('f '+faces[i]+'//'+faces[i]+' '+faces[i+1]+'//'+faces[i+1]+' '+faces[i+2]+'//'+faces[i+2]);
+  } else {
+    for(var i=0;i<faces.length;i+=3)
+      lines.push('f '+faces[i]+' '+faces[i+1]+' '+faces[i+2]);
+  }
+  return lines.join('\n');
+}
+
+// -- Binary STL export ---------------------------------------------------------
+function buildSTL(verts, faces) {
+  var triCount = faces.length/3;
+  var bufSize  = 80 + 4 + triCount*(12+12+12+12+2);
+  var buf      = new ArrayBuffer(bufSize);
+  var dv       = new DataView(buf);
+  // 80-byte header
+  var header   = 'UUON IFS Attractor -- Binary STL';
+  for(var i=0;i<80;i++) dv.setUint8(i, i<header.length ? header.charCodeAt(i) : 0);
+  // Triangle count
+  dv.setUint32(80, triCount, true);
+  var offset = 84;
+  for(var f=0;f<faces.length;f+=3){
+    var ai=(faces[f  ]-1)*3, bi=(faces[f+1]-1)*3, ci=(faces[f+2]-1)*3;
+    var ax=verts[ai],ay=verts[ai+1],az=verts[ai+2];
+    var bx=verts[bi],by=verts[bi+1],bz=verts[bi+2];
+    var cx=verts[ci],cy=verts[ci+1],cz=verts[ci+2];
+    // Face normal from cross product
+    var ex=bx-ax,ey=by-ay,ez=bz-az;
+    var fx=cx-ax,fy=cy-ay,fz=cz-az;
+    var nx=ey*fz-ez*fy, ny=ez*fx-ex*fz, nz=ex*fy-ey*fx;
+    var nl=Math.sqrt(nx*nx+ny*ny+nz*nz)||1;
+    nx/=nl;ny/=nl;nz/=nl;
+    dv.setFloat32(offset,   nx, true); dv.setFloat32(offset+4, ny, true); dv.setFloat32(offset+8, nz, true);
+    dv.setFloat32(offset+12,ax, true); dv.setFloat32(offset+16,ay, true); dv.setFloat32(offset+20,az, true);
+    dv.setFloat32(offset+24,bx, true); dv.setFloat32(offset+28,by, true); dv.setFloat32(offset+32,bz, true);
+    dv.setFloat32(offset+36,cx, true); dv.setFloat32(offset+40,cy, true); dv.setFloat32(offset+44,cz, true);
+    dv.setUint16(offset+48, 0, true);
+    offset+=50;
+  }
+  return buf;
+}
+
+// -- GLB export (binary GLTF 2.0) ---------------------------------------------
+function buildGLB(verts, faces, normals) {
+  // Build buffers
+  var idxArr  = new Uint32Array(faces.length);
+  for(var i=0;i<faces.length;i++) idxArr[i]=faces[i]-1; // convert to 0-indexed
+  var posArr  = new Float32Array(verts);
+  var nrmArr  = normals ? new Float32Array(normals) : null;
+
+  // Pad to 4-byte alignment
+  function pad4(n){return Math.ceil(n/4)*4;}
+  var idxBytes=idxArr.byteLength, posBytes=posArr.byteLength;
+  var nrmBytes=nrmArr?nrmArr.byteLength:0;
+  var idxPad=pad4(idxBytes), posPad=pad4(posBytes), nrmPad=nrmArr?pad4(nrmBytes):0;
+  var totalBin=idxPad+posPad+nrmPad;
+
+  // Compute bounding box
+  var minP=[Infinity,Infinity,Infinity], maxP=[-Infinity,-Infinity,-Infinity];
+  for(var i=0;i<verts.length;i+=3){
+    for(var j=0;j<3;j++){
+      minP[j]=Math.min(minP[j],verts[i+j]);
+      maxP[j]=Math.max(maxP[j],verts[i+j]);
+    }
+  }
+
+  var accessors=[
+    {bufferView:0,componentType:5125,count:faces.length,type:'SCALAR'},
+    {bufferView:1,componentType:5126,count:verts.length/3,type:'VEC3',
+     min:minP,max:maxP},
+  ];
+  var bufViews=[
+    {buffer:0,byteOffset:0,byteLength:idxBytes,target:34963},
+    {buffer:0,byteOffset:idxPad,byteLength:posBytes,target:34962},
+  ];
+  var primitiveAttribs={POSITION:1};
+  if(nrmArr){
+    accessors.push({bufferView:2,componentType:5126,count:normals.length/3,type:'VEC3'});
+    bufViews.push({buffer:0,byteOffset:idxPad+posPad,byteLength:nrmBytes,target:34962});
+    primitiveAttribs.NORMAL=2;
+  }
+
+  var gltf={
+    asset:{version:'2.0',generator:'UUON Foundation Platonic IFS'},
+    scene:0,scenes:[{nodes:[0]}],nodes:[{mesh:0}],
+    meshes:[{name:'IFS_Attractor',primitives:[{attributes:primitiveAttribs,indices:0,mode:4}]}],
+    accessors:accessors,bufferViews:bufViews,
+    buffers:[{byteLength:totalBin}],
+  };
+
+  var jsonStr=JSON.stringify(gltf);
+  var jsonBytes=new TextEncoder().encode(jsonStr);
+  var jsonPad=pad4(jsonBytes.length);
+
+  // Pack GLB: header + JSON chunk + BIN chunk
+  var glbSize=12+(8+jsonPad)+(8+totalBin);
+  var glbBuf=new ArrayBuffer(glbSize);
+  var dv=new DataView(glbBuf);
+  // GLB header
+  dv.setUint32(0,0x46546C67,true); // magic 'glTF'
+  dv.setUint32(4,2,true);          // version
+  dv.setUint32(8,glbSize,true);
+  // JSON chunk
+  dv.setUint32(12,jsonPad,true);
+  dv.setUint32(16,0x4E4F534A,true); // 'JSON'
+  var u8=new Uint8Array(glbBuf);
+  u8.set(jsonBytes,20);
+  for(var i=20+jsonBytes.length;i<20+jsonPad;i++) u8[i]=0x20; // pad with spaces
+  // BIN chunk
+  var binOff=20+jsonPad;
+  dv.setUint32(binOff,totalBin,true);
+  dv.setUint32(binOff+4,0x004E4942,true); // 'BIN'
+  u8.set(new Uint8Array(idxArr.buffer),binOff+8);
+  u8.set(new Uint8Array(posArr.buffer),binOff+8+idxPad);
+  if(nrmArr) u8.set(new Uint8Array(nrmArr.buffer),binOff+8+idxPad+posPad);
+  return glbBuf;
+}
+
+// -- Export modal --------------------------------------------------------------
+function showExportModal(verts, faces, normals, snap, N, ISO, RANGE) {
+  var old=document.getElementById('exportModal');
+  if(old) old.parentNode.removeChild(old);
+
+  var triCount=faces.length/3, vertCount=verts.length/3;
+  var objText=buildOBJ(verts,faces,normals,snap,N,ISO,RANGE);
+  var stlBuf=buildSTL(verts,faces);
+  var glbBuf=buildGLB(verts,faces,normals);
+
+  function makeBlobBtn(buf, mime, ext, label, col) {
+    var blob=new Blob([buf],{type:mime});
+    var url=URL.createObjectURL(blob);
+    var fname='UUON_IFS_mi'+snap.mi+'_ft'+(snap.ft||0)+'_res'+N+'_'+Date.now()+'.'+ext;
+    var a=document.createElement('a');
+    a.href=url; a.download=fname;
+    a.style.cssText='flex:1;min-width:90px;padding:9px;background:rgba('+col+',0.07);border:1px solid rgba('+col+',0.35);color:rgb('+col+');font-family:Share Tech Mono,monospace;font-size:9px;letter-spacing:2px;cursor:pointer;text-align:center;text-decoration:none;display:flex;align-items:center;justify-content:center;text-transform:uppercase';
+    a.textContent=label;
+    a.addEventListener('click',function(){setTimeout(function(){URL.revokeObjectURL(url);},8000);});
+    return a;
+  }
+
+  var ov=document.createElement('div');
+  ov.id='exportModal';
+  ov.style.cssText='position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(4,8,15,0.95);z-index:9999;display:flex;align-items:center;justify-content:center;font-family:Share Tech Mono,monospace';
+
+  var box=document.createElement('div');
+  box.style.cssText='background:#060c17;border:1px solid rgba(0,229,204,0.3);padding:24px;width:600px;max-width:94vw;max-height:88vh;display:flex;flex-direction:column;gap:11px';
+
+  function el(tag,css,text){var e=document.createElement(tag);e.style.cssText=css;if(text!==undefined)e.textContent=text;return e;}
+
+  box.appendChild(el('div','font-family:Rajdhani,sans-serif;font-size:12px;letter-spacing:4px;color:#C9A84C','EXPORT READY'));
+
+  var infoDiv=el('div','font-size:9px;color:rgba(0,229,204,0.4);line-height:1.9');
+  infoDiv.innerHTML=
+    vertCount.toLocaleString()+' vertices  //  '+triCount.toLocaleString()+' triangles<br>'+
+    'OBJ: ~'+Math.round(objText.length/1024)+'KB  '+
+    'STL: ~'+Math.round(stlBuf.byteLength/1024)+'KB  '+
+    'GLB: ~'+Math.round(glbBuf.byteLength/1024)+'KB<br>'+
+    'mi='+snap.mi+' ft='+(snap.ft||0)+' ISO='+ISO.toFixed(5)+' RES='+N;
+  box.appendChild(infoDiv);
+
+  // OBJ preview textarea
+  var ta=el('textarea','width:100%;height:140px;background:#020508;border:1px solid rgba(0,229,204,0.1);color:rgba(0,229,204,0.5);font-family:Share Tech Mono,monospace;font-size:8px;padding:8px;resize:vertical;outline:none;box-sizing:border-box');
+  ta.value=objText; ta.readOnly=true;
+  box.appendChild(ta);
+
+  // Buttons row
+  var row=document.createElement('div');
+  row.style.cssText='display:flex;gap:7px;flex-wrap:wrap';
+
+  // Copy OBJ
+  var cpBtn=el('button','flex:1;min-width:90px;padding:9px;background:rgba(0,229,204,0.05);border:1px solid rgba(0,229,204,0.3);color:#00E5CC;font-family:Share Tech Mono,monospace;font-size:9px;letter-spacing:2px;cursor:pointer;text-transform:uppercase','COPY OBJ');
+  cpBtn.addEventListener('click',function(){
+    (navigator.clipboard?navigator.clipboard.writeText(objText):Promise.reject())
+    .catch(function(){ta.select();document.execCommand('copy');})
+    .then(function(){cpBtn.textContent='COPIED';setTimeout(function(){cpBtn.textContent='COPY OBJ';},2000);});
+  });
+  row.appendChild(cpBtn);
+
+  // Download buttons
+  row.appendChild(makeBlobBtn(objText,'text/plain','obj','DL OBJ','0,229,204'));
+  row.appendChild(makeBlobBtn(stlBuf,'model/stl','stl','DL STL','201,168,76'));
+  row.appendChild(makeBlobBtn(glbBuf,'model/gltf-binary','glb','DL GLB','123,94,167'));
+
+  var clBtn=el('button','padding:9px 14px;background:transparent;border:1px solid rgba(0,229,204,0.15);color:rgba(0,229,204,0.4);font-family:Share Tech Mono,monospace;font-size:9px;letter-spacing:2px;cursor:pointer;text-transform:uppercase','CLOSE');
+  clBtn.addEventListener('click',function(){document.body.removeChild(ov);});
+  row.appendChild(clBtn);
+  box.appendChild(row);
+
+  box.appendChild(el('div','font-size:8px;color:rgba(0,229,204,0.2);line-height:1.5',
+    'OBJ: universal DCC (Blender, Rhino, Maya)  //  STL: slicers (Cura, Bambu, Prusa)  //  GLB: web/game engines (Three.js, Unity, Unreal)'));
+
+  ov.appendChild(box);
+  document.body.appendChild(ov);
+  setTimeout(function(){ta.select();},80);
+}
+
+// -- Main export handler -------------------------------------------------------
+var MC_RES = 64;
+document.getElementById('mcResS').addEventListener('input', function(){
+  MC_RES=parseInt(this.value);
+  document.getElementById('mcResV').textContent=MC_RES;
+  var q=MC_RES<48?'coarse':MC_RES<80?'good':MC_RES<128?'fine':'ultra';
+  var s=Math.max(1,Math.round(MC_RES*MC_RES*MC_RES/60000));
+  document.getElementById('mcStatus').textContent='RES '+MC_RES+' ('+q+') ~'+s+'s';
+});
+
+document.getElementById('shotObjBtn').addEventListener('click', function(){
+  var btn=this;
+  btn.textContent='COMPUTING...'; btn.disabled=true;
+  var morphWasOn=S.morph||false; S.morph=false;
+  var ep=document.getElementById('expProg');
+  if(ep) ep.style.display='block';
+  document.getElementById('mcStatus').textContent='SCANNING bounds... mi='+snap.mi+' res='+MC_RES;
+
+  // Snapshot ALL fold params at click time -- frozen for entire export
+  var snap={
+    mi:S.mi, sc:S.sc||3.0, ox:S.ox||1.0, oy:S.oy||1.0,
+    ft:S.ft||0, fi:S.fi||1, fs:S.fs||1.0, fsc:S.fsc||1.7,
+    mr:S.mr||0.5, bl:S.bl||0, ph:S.ph||1.618,
+  };
+
+  setTimeout(function(){
+    try {
+      var N     = MC_RES;
+      // RANGE: match GLSL guideR exactly, then scan to find actual attractor extent
+      // GLSL formula: guideR = max(uFS * uFSC, 2.0)
+      // We add 20% margin to guarantee full coverage
+      var baseRange = Math.max((snap.fs||1.0)*(snap.fsc||1.7), 2.0) * 1.2;
+
+      // BOUNDARY SCAN: probe axis-aligned rays to find actual surface extent
+      // This catches cases where fold parameters shift the centroid off-origin
+      // (Kleinian additive orbit especially shifts the attractor)
+      var scanSteps = 80;
+      var scanStep  = baseRange * 2.0 / scanSteps;
+      var maxExtent = 0.0;
+      // Sample along X, Y, Z axes and 4 diagonal directions
+      var scanDirs = [
+        [1,0,0],[-1,0,0],[0,1,0],[0,-1,0],[0,0,1],[0,0,-1],
+        [1,1,0],[1,-1,0],[1,0,1],[1,0,-1],[0,1,1],[0,1,-1],
+        [1,1,1],[1,1,-1],[1,-1,1],[-1,1,1]
+      ];
+      for(var sd=0; sd<scanDirs.length; sd++){
+        var dx=scanDirs[sd][0], dy=scanDirs[sd][1], dz=scanDirs[sd][2];
+        var len=Math.sqrt(dx*dx+dy*dy+dz*dz);
+        dx/=len; dy/=len; dz/=len;
+        var prevSign = 1;
+        for(var ss=0; ss<=scanSteps; ss++){
+          var t = ss * scanStep - baseRange;
+          var v = foldAwareDEcpu(t*dx, t*dy, t*dz, snap);
+          if(!isFinite(v)) continue;
+          var curSign = v < 0 ? -1 : 1;
+          if(curSign !== prevSign) {
+            // Surface crossing found -- record distance from origin
+            maxExtent = Math.max(maxExtent, Math.abs(t) + scanStep);
+          }
+          prevSign = curSign;
+        }
+      }
+      // Use scan result if it found something, otherwise use formula
+      var RANGE = maxExtent > 0 ? maxExtent * 1.12 : baseRange;
+      // Hard minimum: never less than 1.5
+      RANGE = Math.max(RANGE, 1.5);
+      document.getElementById('mcStatus').textContent=
+        'RANGE='+RANGE.toFixed(3)+' ISO tbd -- sampling field...';
+      var step  = (2*RANGE)/N;
+      // ISO calibration: at high mi the DE values near surface are tiny
+      // ms = SC^MI, so at mi=5 ms=243, surface values ~0.004
+      // ISO must be tighter than step to catch these
+      // Formula: -(step * calibFactor) where calibFactor shrinks with mi
+      var calibFactor = Math.max(0.03, 0.12 - (snap.mi - 3) * 0.025);
+      var ISO = -(step * calibFactor);  // ALWAYS after step
+      document.getElementById('mcStatus').textContent=
+        'RANGE='+RANGE.toFixed(3)+' ISO='+ISO.toFixed(5)+' -- sampling field...';
+      var MAXF  = 10.0;
+      var sz=(N+1)*(N+1)*(N+1);
+      var s2=(N+1)*(N+1),s1=N+1;
+      var field=new Float32Array(sz), valid=new Uint8Array(sz);
+
+      var em=document.getElementById('expMsg');
+      var eb=document.getElementById('expBar');
+      if(em) em.textContent='SAMPLING';
+      if(eb) eb.style.width='0px';
+
+      // Sample field
+      for(var iz=0;iz<=N;iz++){
+        for(var iy=0;iy<=N;iy++){
+          for(var ix=0;ix<=N;ix++){
+            var fi2=iz*s2+iy*s1+ix;
+            var v=foldAwareDEcpu(-RANGE+ix*step,-RANGE+iy*step,-RANGE+iz*step,snap);
+            if(!isFinite(v)||Math.abs(v)>MAXF){field[fi2]=MAXF;valid[fi2]=0;}
+            else{field[fi2]=v;valid[fi2]=1;}
+          }
+        }
+      }
+
+      document.getElementById('mcStatus').textContent=
+        'RANGE='+RANGE.toFixed(3)+' ISO='+ISO.toFixed(5)+' -- meshing...';
+      if(em) em.textContent='MESHING';
+      if(eb) eb.style.width='60px';
+      document.getElementById('mcStatus').textContent='Meshing...';
+
+      var result=runMarchingCubes(field,valid,N,RANGE,ISO,step,MAXF);
+      var verts=result.verts, faces=result.faces;
+
+      if(faces.length===0){
+        var vc=0; for(var vi=0;vi<valid.length;vi++) if(valid[vi]) vc++;
+        var pct=Math.round(vc/sz*100);
+        document.getElementById('mcStatus').textContent=
+          pct<5?'EMPTY: field unstable ('+pct+'% valid). Lower fold scale or use PURE preset.':
+          'EMPTY: '+pct+'% valid but no surface. Try lower RES or adjust parameters.';
+        return;
+      }
+
+      if(em) em.textContent='NORMALS';
+      if(eb) eb.style.width='100px';
+      document.getElementById('mcStatus').textContent='Computing normals...';
+
+      // Per-vertex normals
+      var normals=computeVertexNormals(verts, snap, step);
+
+      if(em) em.textContent='WRITING';
+      if(eb) eb.style.width='140px';
+      document.getElementById('mcStatus').textContent=
+        'Done: '+(faces.length/3)+' tris, '+verts.length/3+' verts';
+
+      showExportModal(verts, faces, normals, snap, N, ISO, RANGE);
+
+    } catch(err){
+      document.getElementById('mcStatus').textContent='ERROR: '+(err&&err.message?err.message:String(err));
+      console.error('Export error:',err);
+    } finally {
+      btn.textContent='OBJ / STL / GLB EXPORT';
+      btn.disabled=false;
+      S.morph=morphWasOn;
+      var ep2=document.getElementById('expProg');
+      if(ep2) ep2.style.display='none';
+    }
+  },50);
+});
+
+
+
+// -- Render loop ---------------------------------------------------------------
+
+// -- Algorithm DNA display -----------------------------------------------------
+var DNA_FT = ['NONE','BOX','KLEINIAN','LATTICE','TETRA','ICOSA'];
+var DNA_TR = ['CYL','SPHERE','CROSS','POINT'];
+function updateDNA() {
+  var now=new Date();
+  var ts=now.getUTCFullYear()+'-'
+    +String(now.getUTCMonth()+1).padStart(2,'0')+'-'
+    +String(now.getUTCDate()).padStart(2,'0')+' '
+    +String(now.getUTCHours()).padStart(2,'0')+':'
+    +String(now.getUTCMinutes()).padStart(2,'0')+':'
+    +String(now.getUTCSeconds()).padStart(2,'0')+' UTC';
+  var zoom=(4.5/Math.max(S.dv,0.001)).toFixed(1)+'x';
+  var dna='ft:'+DNA_FT[S.ft]
+    +'  mi:'+S.mi
+    +'  sc:'+S.sc.toFixed(2)
+    +'  ox:'+S.ox.toFixed(2)+'/oy:'+S.oy.toFixed(2)+'/oz:'+S.oz.toFixed(2)
+    +'  fi:'+S.fi+'  fs:'+S.fs.toFixed(2)+'  fsc:'+S.fsc.toFixed(2)
+    +'  mr:'+S.mr.toFixed(2)+'  bl:'+S.bl.toFixed(3)
+    +'  tw:'+S.twist.toFixed(3)+'  trap:'+DNA_TR[S.trap]
+    +'  '+(S.mode4d?'4D W:'+S.w4d.toFixed(3):'3D')
+    +'  cm:'+S.cm+'  pal:'+S.pal;
+  var el=document.getElementById('dnaStr');
+  if(el) el.textContent=dna;
+  var te=document.getElementById('dnaTime');
+  if(te) te.textContent=ts;
+  var ze=document.getElementById('dnaZoom');
+  if(ze) ze.textContent='zoom '+zoom;
+}
+
+var lastTs=0, ffc=0, fft=0;
+// -- RANDOM preset -----------------------------------------------------------
+// Generates a random but SAFE parameter set -- bottleneck guards enforced
+function randomPreset() {
+  var folds = [0,0,1,1,2,3,4,5];  // 5=icosahedral
+  var ft = folds[Math.floor(Math.random()*folds.length)];
+  var p = {
+    mi: 3 + Math.floor(Math.random()*3),
+    sc: 2.8 + Math.random()*0.8,
+    ox: 0.8 + Math.random()*0.5,
+    oy: 0.8 + Math.random()*0.5,
+    oz: 0.8 + Math.random()*0.5,        // independent Z offset
+    twist: Math.random() < 0.3 ?         // 30% chance of twist
+      Math.random()*1.2 : 0.0,          // safe range 0-1.2 rad
+    trap: Math.floor(Math.random()*4),   // random trap geometry
+    w4d: 0.0, mode4d: 0,               // 4D off by default in random
+    ft: ft,
+    fi: ft===0 ? 1 : 1+Math.floor(Math.random()*2),
+    fs: 0.5 + Math.random()*0.8,
+    fsc: 1.5 + Math.random()*0.3,
+    mr: 0.4 + Math.random()*0.4,
+    bl: ft===0 ? 0 : Math.random()*0.25,
+    dv: 4.0 + Math.random()*2.5,
+    fov: 48 + Math.floor(Math.random()*20),
+    sp: 0.5 + Math.random()*0.8,
+    la: Math.random()*360,
+    le: 10 + Math.random()*50,
+    rs: 120 + Math.floor(Math.random()*3)*20,
+    aoq: [4,8,8,12][Math.floor(Math.random()*4)],
+    cm: Math.floor(Math.random()*6),
+    pal: Math.floor(Math.random()*4),
+  };
+  return p;
+}
+
+function applyPreset(p) {
+  S.mi=p.mi; S.sc=p.sc; S.ox=p.ox; S.oy=p.oy;
+  S.oz=p.oz!==undefined?p.oz:1.0;
+  S.twist=p.twist!==undefined?p.twist:0.0;
+  S.trap=p.trap!==undefined?p.trap:0;
+  S.w4d=p.w4d!==undefined?p.w4d:0.0;
+  S.mode4d=p.mode4d!==undefined?p.mode4d:0;
+  S.ft=p.ft; S.fi=p.fi; S.fs=p.fs; S.fsc=p.fsc;
+  S.mr=p.mr; S.bl=p.bl; S.dv=p.dv; S.fov=p.fov;
+  S.sp=p.sp; S.la=p.la; S.le=p.le; S.rs=p.rs;
+  S.aoq=p.aoq; S.cm=p.cm; S.pal=p.pal;
+  [['miS','mi','miV',0],['scS','sc','scV',2],['oxS','ox','oxV',2],['oyS','oy','oyV',2],
+   ['ozS','oz','ozV',2],['twS','twist','twV',3],
+   ['fiS','fi','fiV',0],['fsS','fs','fsV',2],['fscS','fsc','fscV',2],['mrS','mr','mrV',2],
+   ['blS','bl','blV',2],['dvS','dv','dvV',2],['fovS','fov','fovV',0],['spS','sp','spV',2],
+   ['laS','la','laV',0],['leS','le','leV',0],['rsS','rs','rsV',0]
+  ].forEach(function(r){ syncSlider(r[0],r[1],r[2],r[3]); });
+  [['ftg','ft'],['cmg','cm'],['palg','pal'],['aog','aoq'],['trpg','trap'],['fdg','mode4d']].forEach(function(g){
+    syncBtn(g[0],S[g[1]]);
+  });
+  document.querySelector('#ftg .b[data-v="'+S.ft+'"]').click();
+  syncHUD();
+}
+
+document.getElementById('randomBtn').addEventListener('click', function(){
+  applyPreset(randomPreset());
+  document.querySelectorAll('.pc').forEach(function(c){c.classList.remove('on');});
+});
+
+// -- MORPH animation -- flows through parameter space -------------------------
+// Smoothly interpolates between the current state and a random target
+// following a sinusoidal path -- continuous, organic, never jarring
+var morphFrom = null;
+var morphTo   = null;
+var morphT    = 1.0;  // 1.0 = transition complete, ready for next
+var MORPH_DURATION = 12.0; // seconds per transition -- 10s recording captures full cycle
+
+document.getElementById('morphBtn').addEventListener('click', function(){
+  S.morph = !S.morph;
+  this.textContent = 'MORPH: ' + (S.morph ? 'ON' : 'OFF');
+  this.classList.toggle('on', S.morph);
+  if (S.morph && morphT >= 1.0) {
+    morphFrom = {mi:S.mi,sc:S.sc,ox:S.ox,oy:S.oy,ft:S.ft,fi:S.fi,
+                 fs:S.fs,fsc:S.fsc,mr:S.mr,bl:S.bl,la:S.la,le:S.le};
+    morphTo   = randomPreset();
+    morphT    = 0.0;
+  }
+});
+
+function morphStep(dt) {
+  if (!S.morph) return;
+  morphT += dt / MORPH_DURATION;
+  if (morphT >= 1.0) {
+    // Arrived -- make target the new base, pick next target
+    if (morphTo) applyPreset(morphTo);
+    morphFrom = morphTo ? JSON.parse(JSON.stringify(morphTo)) : null;
+    morphTo   = randomPreset();
+    // Keep fold type same to avoid chaos -- only morph geometry params
+    morphTo.ft  = S.ft;
+    morphTo.fi  = Math.min(morphTo.fi, S.ft===0?1:2);
+    morphTo.fsc = Math.min(morphTo.fsc, 1.8);
+    morphTo.bl  = S.ft===0 ? 0 : Math.min(morphTo.bl, 0.2);
+    morphT = 0.0;
+    return;
+  }
+  if (!morphFrom || !morphTo) return;
+  // Smooth ease in-out (sine)
+  var ease = 0.5 - 0.5 * Math.cos(morphT * Math.PI);
+  function lerp(a,b,t){return a+(b-a)*t;}
+  // Only morph float params -- ft stays fixed (prevents chaos crossings)
+  // Smooth mi transition: blend between two iteration depths
+  // Use a threshold at ease=0.5 to snap mi -- creates a visible structural shift
+  S.mi = ease < 0.5 ? morphFrom.mi : morphTo.mi;
+  S.sc    = lerp(morphFrom.sc,    morphTo.sc,    ease);
+  S.ox    = lerp(morphFrom.ox,    morphTo.ox,    ease);
+  S.oy    = lerp(morphFrom.oy,    morphTo.oy,    ease);
+  S.oz    = lerp(morphFrom.oz,    morphTo.oz,    ease);
+  S.twist = lerp(morphFrom.twist, morphTo.twist, ease);
+  S.w4d   = lerp(morphFrom.w4d,   morphTo.w4d,   ease);
+  S.fs    = lerp(morphFrom.fs,    morphTo.fs,    ease);
+  S.fsc   = lerp(morphFrom.fsc,   morphTo.fsc,   ease);
+  S.mr    = lerp(morphFrom.mr,    morphTo.mr,    ease);
+  S.bl    = lerp(morphFrom.bl, morphTo.bl, ease);
+  S.sp    = lerp(morphFrom.sp,    morphTo.sp,    ease);
+  S.la    = lerp(morphFrom.la,    morphTo.la,    ease);
+  S.le    = lerp(morphFrom.le||35,  morphTo.le||35,  ease);
+  S.morphAmt = ease;
+}
+
+function frame(ts){
+  var dt=Math.min((ts-lastTs)/1000,0.05); lastTs=ts;
+  S.t+=dt; S.fc++;
+  ffc++; fft+=dt;
+  if(fft>=0.5){
+    document.getElementById('fpsEl').textContent=(ffc/fft).toFixed(1);
+    ffc=0; fft=0;
+  }
+  resize();
+  if(S.autoRot) S.camPhi+=dt*S.rotSpeed*0.4;
+  morphStep(dt);
+
+  gl.uniform2f(U.uR,canvas.width,canvas.height);
+  gl.uniform1f(U.uTime,S.t);
+  gl.uniform1i(U.uMI,S.mi); gl.uniform1f(U.uSC,S.sc);
+  gl.uniform1f(U.uOX,S.ox); gl.uniform1f(U.uOY,S.oy);
+  gl.uniform1i(U.uFT,S.ft); gl.uniform1i(U.uFI,S.fi);
+  gl.uniform1f(U.uFS,S.fs); gl.uniform1f(U.uFSC,S.fsc);
+  gl.uniform1f(U.uMR,S.mr); gl.uniform1f(U.uBL,S.bl);
+  gl.uniform1i(U.uCM,S.cm); gl.uniform1i(U.uPAL,S.pal);
+  gl.uniform1i(U.uAOQ,S.aoq); gl.uniform1f(U.uSP,S.sp);
+  gl.uniform1f(U.uLA,S.la); gl.uniform1f(U.uLE,S.le);
+  gl.uniform1i(U.uRS,S.rs); gl.uniform1f(U.uDV,S.dv);
+  gl.uniform1f(U.uFOV,S.fov);
+  gl.uniform2f(U.uCAM,S.camTheta,S.camPhi);
+  gl.uniform1i(U.uAR,S.autoRot?1:0);
+  gl.uniform1f(U.uBright,S.bright);
+  gl.uniform1f(U.uAnimAmt,S.morphAmt);
+  gl.uniform1f(U.uOZ,S.oz);
+  gl.uniform1f(U.uTWIST,S.twist);
+  gl.uniform1i(U.uTRAP,S.trap);
+  gl.uniform1f(U.uW,S.w4d);
+  gl.uniform1i(U.u4D,S.mode4d);
+  gl.drawArrays(gl.TRIANGLES,0,6);
+  updateDNA();
+  requestAnimationFrame(frame);
+}
+syncHUD();
+requestAnimationFrame(frame);
+
+// -- Composited export: DNA bar burned into every image -----------------------
+function compositedExport(glSrc, W, H, fmt) {
+  var comp=document.createElement('canvas');
+  comp.width=W; comp.height=H;
+  var ctx=comp.getContext('2d');
+  ctx.drawImage(glSrc,0,0,W,H);
+  var sc=Math.max(W/canvas.width,1);
+  var barH=Math.round(40*sc), pad=Math.round(12*sc);
+  var fs1=Math.round(9*sc), fs2=Math.round(8.5*sc);
+  ctx.fillStyle='rgba(4,8,15,0.88)';
+  ctx.fillRect(0,H-barH,W,barH);
+  ctx.strokeStyle='rgba(0,229,204,0.22)';
+  ctx.lineWidth=Math.max(1,sc);
+  ctx.beginPath();ctx.moveTo(0,H-barH);ctx.lineTo(W,H-barH);ctx.stroke();
+  ctx.font='bold '+fs1+'px Rajdhani,Arial';
+  ctx.fillStyle='#C9A84C';
+  ctx.fillText('UUON queuePIT v1.000',pad,H-barH+Math.round(15*sc));
+  var zt=document.getElementById('dnaZoom')?document.getElementById('dnaZoom').textContent:'';
+  ctx.font=fs1+'px monospace';
+  ctx.fillStyle='rgba(123,94,167,0.85)';
+  var zw=ctx.measureText(zt).width;
+  ctx.fillText(zt,W/2-zw/2,H-barH+Math.round(15*sc));
+  var tt=document.getElementById('dnaTime')?document.getElementById('dnaTime').textContent:'';
+  ctx.fillStyle='rgba(0,229,204,0.35)';
+  var tw2=ctx.measureText(tt).width;
+  ctx.fillText(tt,W-tw2-pad,H-barH+Math.round(15*sc));
+  var dt=document.getElementById('dnaStr')?document.getElementById('dnaStr').textContent:'';
+  ctx.font=fs2+'px monospace';
+  ctx.fillStyle='rgba(0,229,204,0.75)';
+  ctx.fillText(dt,pad,H-Math.round(10*sc));
+  return comp.toDataURL(fmt||'image/png',0.95);
+}
+function dnaFilename(ext) {
+  return 'UUON_'+DNA_FT[S.ft]+'_mi'+S.mi+'_'
+    +new Date().toISOString().slice(0,19).replace(/[T:]/g,'-')+'.'+ext;
+}
+document.getElementById('shotBtn').addEventListener('click',function(){
+  triggerDownload(compositedExport(canvas,canvas.width,canvas.height,'image/png'),dnaFilename('png'));
+});
+document.getElementById('shot2xBtn').addEventListener('click',function(){
+  var W=canvas.width*2,H=canvas.height*2;
+  var c2=buildOffGL(W,H);if(!c2){alert('Offscreen WebGL unavailable');return;}
+  uploadU(c2.gl,c2.U,W,H,12,200);
+  c2.gl.drawArrays(c2.gl.TRIANGLES,0,6);
+  triggerDownload(compositedExport(c2.canvas,W,H,'image/png'),dnaFilename('png'));
+  var ex=c2.gl.getExtension('WEBGL_lose_context');if(ex)ex.loseContext();
+});
+document.getElementById('shotWebpBtn').addEventListener('click',function(){
+  var d=compositedExport(canvas,canvas.width,canvas.height,'image/webp');
+  triggerDownload(d,dnaFilename(d.startsWith('data:image/webp')?'webp':'png'));
+});
+
+</script>
+</body>
+</html>

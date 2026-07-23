@@ -1,0 +1,9 @@
+- [Server startup lazy loading](server-startup-lazy-loading.md) — server imported unifiedShapes.ts (329KB + 50+ libs) at startup, causing 10-min delay; fixed by lazy-loading in 3 server modules.
+- [date-fns v3 Vite build fix](date-fns-vite-fix.md) — date-fns v3 ships no index.mjs; force CJS alias in vite.config.ts or build breaks.
+- [Deployment startup flow](deployment-startup-flow.md) — start.sh must both build AND exec server; vite is a devDep so npm install --include=dev required; build skips break deploys.
+- [Animation no-rerender rule](animation-no-rerender.md) — physicsTime/animTime must be useRef not useState; mergedParameters.time excluded from geometry useMemo deps or geometry rebuilds every frame.
+- [No-overwrite rule](no-overwrite-rule.md) — NEVER push README.md or user-maintained docs to GitHub without explicit approval; force-pushes silently overwrote user edits repeatedly.
+- [Deferred route loading](deferred-route-loading.md) — ALL routes load in loadDeferredRoutes() in server/index.ts; server/routes.ts is unused. Promise.all batch — one import error silently drops all routes in that batch.
+- [Export format routing](export-format-routing.md) — MathVisualizer handleExport only handled json/gltf/zip; glb/ply/stl/fbx/obj/nerf all silently fell through. Fix: widen to string, dispatch typed events; ParametricSurface has native PLY+STL listeners.
+- [Quantum formula NaN guard](quantum-formula-nan-guard.md) — slider params reaching extreme values can push Math.asin/sqrt outside domain; always clamp domain before trig/inverse-trig in parametric equations.
+- [UV tiling all patterns](uv-tiling-patterns.md) — all DataTexture procedural patterns need repeat.set(N,N) + wrapS/wrapT; without it one tile stretches to fill the whole UV space on any mesh.

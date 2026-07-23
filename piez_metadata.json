@@ -1,0 +1,215 @@
+{
+  "name": "UUON PIEZ \u2014 Policy Impact Visualization",
+  "symbol": "PIEZ",
+  "description": "Epic-tier UUON shape domain token. The Policy Impact Visualization uses golden ratio geometry (\u03c6=1.618...) to model effect propagation \u2014 how decisions ripple through complex systems. Holding PIEZ grants domain access to the Policy Impact rendering engine and API within the Dmension Mathematical Universe.",
+  "image": "https://ipfs.io/ipfs/bafkreifk5rgcjbtke4etapbf4vpfajaieybeywdcvy4hthui62b6plwrqy",
+  "external_url": "https://dmension.io/shapes/policy_impact_visualization",
+  "attributes": [
+    {
+      "trait_type": "Shape ID",
+      "value": "policy_impact_visualization"
+    },
+    {
+      "trait_type": "Tier",
+      "value": "Epic"
+    },
+    {
+      "trait_type": "Category",
+      "value": "Systems Mathematics"
+    },
+    {
+      "trait_type": "Token Symbol",
+      "value": "PIEZ"
+    },
+    {
+      "trait_type": "Contract",
+      "value": "0x985A1ebac4388DFb6EB4FE1171dCa9c6a5DB9cE7"
+    },
+    {
+      "trait_type": "Genesis Hash",
+      "value": "cf114022b5e4e1d6fdeb36890f35f605857cf2de93b53ebcb9c8e5652413ca04"
+    },
+    {
+      "trait_type": "Shape Hash",
+      "value": "0000000000000000000000000000000000000000000000000000000038c77c6c"
+    },
+    {
+      "trait_type": "Golden Ratio",
+      "value": "1.618033988749"
+    },
+    {
+      "trait_type": "NeRF Engine",
+      "value": "Instant-NGP HashGrid 16 levels"
+    },
+    {
+      "trait_type": "Volume Rendering",
+      "value": "True"
+    },
+    {
+      "trait_type": "License",
+      "value": "CC BY-NC 4.0"
+    },
+    {
+      "trait_type": "Author",
+      "value": "UUON Foundation Inc."
+    },
+    {
+      "trait_type": "Parameters",
+      "value": "{\"a\": 0.1, \"b\": 0.05, \"c\": 1.618033988749, \"d\": 2, \"e\": 1, \"f\": 1, \"uMin\": -25, \"uMax\": 25, \"vMin\": -25, \"vMax\": 25, \"uSegments\": 64, \"vSegments\": 64}"
+    }
+  ],
+  "nerf_config": {
+    "loss": {
+      "otype": "L2"
+    },
+    "optimizer": {
+      "otype": "Adam",
+      "learning_rate": 0.01,
+      "epsilon": 1e-15
+    },
+    "encoding": {
+      "otype": "HashGrid",
+      "n_levels": 16,
+      "n_features_per_level": 2,
+      "log2_hashmap_size": 19,
+      "base_resolution": 16,
+      "max_resolution": 2048,
+      "per_level_scale": 1.3819128799677762,
+      "interpolation": "Linear"
+    },
+    "network": {
+      "otype": "FullyFusedMLP",
+      "activation": "ReLU",
+      "output_activation": "None",
+      "n_neurons": 64,
+      "n_hidden_layers": 4
+    },
+    "dir_encoding": {
+      "otype": "SphericalHarmonics",
+      "degree": 4
+    },
+    "rgb_network": {
+      "otype": "FullyFusedMLP",
+      "activation": "ReLU",
+      "output_activation": "Sigmoid",
+      "n_neurons": 64,
+      "n_hidden_layers": 2
+    }
+  },
+  "formulas": {
+    "positional_encoding": {
+      "formula": "\u03b3(p) = [p, sin(2\u2070\u03c0p), cos(2\u2070\u03c0p), ..., sin(2^(L-1)\u03c0p), cos(2^(L-1)\u03c0p)]",
+      "latex": "\\gamma(p) = \\left[p, \\sin(2^0 \\pi p), \\cos(2^0 \\pi p), \\ldots, \\sin(2^{L-1} \\pi p), \\cos(2^{L-1} \\pi p)\\right]",
+      "description": "Fourier feature mapping that enables MLPs to learn high-frequency functions. Without positional encoding, coordinate-based MLPs are biased toward learning low-frequency functions.",
+      "parameters": [
+        {
+          "name": "Input position",
+          "symbol": "p",
+          "description": "Normalized 3D coordinate (x, y, z) \u2208 [-1, 1]\u00b3"
+        },
+        {
+          "name": "Encoding levels",
+          "symbol": "L",
+          "description": "Number of frequency octaves (typically 10 for positions, 4 for directions)"
+        },
+        {
+          "name": "Output dimension",
+          "symbol": "3 + 6L",
+          "description": "Total encoding dimension (63 for L=10)"
+        }
+      ]
+    },
+    "volume_rendering": {
+      "formula": "C(r) = \u222b_{t_n}^{t_f} T(t) \u00b7 \u03c3(r(t)) \u00b7 c(r(t), d) dt",
+      "latex": "C(\\mathbf{r}) = \\int_{t_n}^{t_f} T(t) \\cdot \\sigma(\\mathbf{r}(t)) \\cdot \\mathbf{c}(\\mathbf{r}(t), \\mathbf{d}) \\, dt",
+      "description": "The expected color along a ray, computed by integrating density-weighted radiance. T(t) is the accumulated transmittance (probability of the ray traveling to t without hitting anything).",
+      "components": [
+        {
+          "name": "Transmittance",
+          "formula": "T(t) = exp(-\u222b_{t_n}^{t} \u03c3(r(s)) ds)",
+          "description": "Accumulated probability of ray reaching point t"
+        },
+        {
+          "name": "Alpha",
+          "formula": "\u03b1_i = 1 - exp(-\u03c3_i \u00b7 \u03b4_i)",
+          "description": "Opacity of sample i based on density and step size"
+        },
+        {
+          "name": "Discrete rendering",
+          "formula": "\u0108 = \u03a3_i T_i \u00b7 \u03b1_i \u00b7 c_i",
+          "description": "Quadrature approximation of the rendering integral"
+        },
+        {
+          "name": "Weight",
+          "formula": "w_i = T_i \u00b7 \u03b1_i",
+          "description": "Contribution weight of sample i to final color"
+        }
+      ]
+    },
+    "hash_grid_encoding": {
+      "formula": "h(x) = (\u2295_i x_i \u00b7 \u03c0_i) mod T",
+      "latex": "h(\\mathbf{x}) = \\left(\\bigoplus_i x_i \\cdot \\pi_i\\right) \\mod T",
+      "description": "Multi-resolution hash encoding from Instant-NGP. Uses spatial hashing at multiple resolutions with learned feature vectors, enabling fast training and inference.",
+      "resolution_formula": "N_l = \u230aN_min \u00b7 b^l\u230b, b = exp((ln(N_max) - ln(N_min))/(L-1))"
+    },
+    "camera_projection": {
+      "intrinsic_matrix": "K = [[fx, 0, cx], [0, fy, cy], [0, 0, 1]]",
+      "projection_formula": "[u, v, 1]\u1d40 = (1/z) \u00b7 K \u00b7 [x, y, z]\u1d40",
+      "distortion_model": "x_d = x'(1 + k\u2081r\u00b2 + k\u2082r\u2074 + k\u2083r\u2076) + 2p\u2081x'y' + p\u2082(r\u00b2 + 2x'\u00b2)"
+    }
+  },
+  "shape_metadata": {
+    "source": "\u0394mension Mathematical Universe",
+    "shapeId": "policy_impact_visualization",
+    "shapeName": "\ud83d\udccb Policy Impact - Effect Propagation",
+    "exportDate": "2026-06-13T18:27:19.192Z",
+    "parameters": {
+      "a": 0.1,
+      "b": 0.05,
+      "c": 1.618033988749,
+      "d": 2,
+      "e": 1,
+      "f": 1,
+      "uMin": -25,
+      "uMax": 25,
+      "vMin": -25,
+      "vMax": 25,
+      "uSegments": 64,
+      "vSegments": 64
+    },
+    "dmension_version": "2.0",
+    "security": {
+      "cryptographicHash": "0000000000000000000000000000000000000000000000000000000038c77c6c",
+      "verificationCode": "NERF-00000000",
+      "timestamp": "2026-06-13T18:27:19.192Z",
+      "author": "UUON Foundation Inc.",
+      "organization": "\u0394mension Mathematical Universe",
+      "copyright": "\u00a9 2024 UUON Foundation Inc. All Rights Reserved.",
+      "license": "CC BY-NC 4.0",
+      "integrityVersion": "2.0"
+    },
+    "scene_bounds": {
+      "aabb_min": [
+        -999.9000244140625,
+        -999.9000244140625,
+        -76.39826965332031
+      ],
+      "aabb_max": [
+        1000.0999755859375,
+        1000.0999755859375,
+        73.605712890625
+      ],
+      "center": [
+        0.0999755859375,
+        0.0999755859375,
+        -1.3962783813476562
+      ],
+      "scale": 2000
+    }
+  },
+  "utility": {
+    "api_endpoint": "https://dmension.io/api/shapes/policy_impact_visualization",
+    "access_type": "token_gated",
+    "description": "Token holders can call the Policy Impact rendering API to model effect propagation through golden ratio geometric space"
+  }
+}
