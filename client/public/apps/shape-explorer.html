@@ -1,0 +1,784 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Shape Explorer — UUON.UUORLD</title>
+<style>
+  :root {
+    --black: #000000;
+    --panel: #0c0c0c;
+    --line: rgba(255,255,255,0.14);
+    --line-soft: rgba(255,255,255,0.07);
+    --white: #ffffff;
+    --dim: rgba(255,255,255,0.55);
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { background: var(--black); color: var(--white); }
+  body {
+    font-family: 'Arial Narrow', 'Helvetica Neue', Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    overflow: hidden;
+    height: 100vh;
+  }
+  a { color: inherit; text-decoration: none; }
+  a:focus-visible, button:focus-visible { outline: 2px solid var(--white); outline-offset: 3px; }
+
+  #canvas {
+    display: block;
+    width: 100vw;
+    height: 100vh;
+    background: var(--black);
+    cursor: grab;
+  }
+  #canvas.dragging { cursor: grabbing; }
+
+  .controls {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    background: rgba(0,0,0,0.85);
+    padding: 20px;
+    border: 1px solid var(--line);
+    max-width: 280px;
+    max-height: 92vh;
+    overflow-y: auto;
+    backdrop-filter: blur(10px);
+  }
+  .controls h2 {
+    font-size: 14px;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+    text-align: center;
+  }
+  .back-link {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--dim);
+    font-weight: 700;
+    margin-bottom: 14px;
+  }
+  .back-link:hover { color: var(--white); }
+
+  .control-group { margin-bottom: 15px; }
+  .control-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-size: 11px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--dim);
+  }
+  select, input[type="range"] {
+    width: 100%;
+    background: #050505;
+    color: var(--white);
+    border: 1px solid var(--line);
+    padding: 6px;
+  }
+  input[type="range"] { height: 24px; accent-color: var(--white); }
+  .parameter-value { float: right; color: var(--white); font-weight: 700; }
+
+  .mode-row { display: flex; gap: 1px; margin-bottom: 16px; background: var(--line); border: 1px solid var(--line); }
+  .mode-btn {
+    flex: 1;
+    background: var(--panel);
+    color: var(--dim);
+    padding: 9px 4px;
+    font-size: 10px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    font-weight: 700;
+    cursor: pointer;
+    text-align: center;
+    transition: background 0.15s, color 0.15s;
+  }
+  .mode-btn:hover { color: var(--white); }
+  .mode-btn.active { background: var(--white); color: #000; }
+
+  .info-panel {
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    background: rgba(0,0,0,0.85);
+    padding: 16px;
+    border: 1px solid var(--line);
+    max-width: 240px;
+  }
+  .info-panel h3 {
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--dim);
+    margin-bottom: 10px;
+  }
+  #shapeInfo { font-size: 12px; line-height: 1.7; }
+  #shapeInfo strong { color: var(--dim); font-weight: 600; }
+  .math-formula {
+    font-family: 'Times New Roman', serif;
+    font-style: italic;
+    color: var(--dim);
+    margin-top: 10px;
+    font-size: 12px;
+    border-top: 1px solid var(--line);
+    padding-top: 10px;
+  }
+
+  .fps {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    font-size: 11px;
+    letter-spacing: 0.06em;
+    color: var(--dim);
+    background: rgba(0,0,0,0.7);
+    padding: 7px 12px;
+    border: 1px solid var(--line);
+  }
+
+  .hint {
+    position: absolute;
+    bottom: 20px;
+    left: 20px;
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--dim);
+    background: rgba(0,0,0,0.7);
+    padding: 8px 12px;
+    border: 1px solid var(--line);
+  }
+</style>
+</head>
+<body>
+    <canvas id="canvas"></canvas>
+    <div class="fps" id="fps">60 FPS</div>
+    <div class="hint">Drag to orbit · Scroll to zoom</div>
+
+    <div class="controls">
+        <a class="back-link" href="/apps">&larr; UUON.UUORLD / Apps</a>
+        <h2>Shape Explorer</h2>
+
+        <div class="mode-row">
+            <div class="mode-btn active" data-mode="wire">Wire</div>
+            <div class="mode-btn" data-mode="points">Points</div>
+            <div class="mode-btn" data-mode="textured">Shaded</div>
+        </div>
+
+        <div class="control-group">
+            <label>Shape Type</label>
+            <select id="shapeType">
+                <option value="cube">Cube</option>
+                <option value="sphere">Sphere</option>
+                <option value="triangle">Triangle</option>
+                <option value="pyramid">Pyramid</option>
+                <option value="torus">Torus</option>
+                <option value="klein">Klein Bottle</option>
+                <option value="tesseract">Tesseract 4D</option>
+                <option value="hypersphere">Hypersphere 4D</option>
+                <option value="mobius">Möbius Strip</option>
+                <option value="helix">Helix</option>
+                <option value="octahedron">Octahedron</option>
+                <option value="cone">Cone</option>
+            </select>
+        </div>
+
+        <div class="control-group">
+            <label>Parameter A — Width <span class="parameter-value" id="paramA-val">1.0</span></label>
+            <input type="range" id="paramA" min="-10" max="10" step="0.01" value="1">
+        </div>
+
+        <div class="control-group">
+            <label>Parameter B — Height <span class="parameter-value" id="paramB-val">1.0</span></label>
+            <input type="range" id="paramB" min="-10" max="10" step="0.01" value="1">
+        </div>
+
+        <div class="control-group">
+            <label>Parameter C — Depth/Twist <span class="parameter-value" id="paramC-val">1.0</span></label>
+            <input type="range" id="paramC" min="-10" max="10" step="0.01" value="1">
+        </div>
+
+        <div class="control-group">
+            <label>Auto-Rotate Speed <span class="parameter-value" id="rotSpeed-val">1.0</span></label>
+            <input type="range" id="rotSpeed" min="0" max="5" step="0.1" value="1">
+        </div>
+
+        <div class="control-group">
+            <label>Wire Density <span class="parameter-value" id="density-val">50</span></label>
+            <input type="range" id="density" min="10" max="100" step="5" value="50">
+        </div>
+    </div>
+
+    <div class="info-panel">
+        <h3>Shape Info</h3>
+        <div id="shapeInfo">
+            <strong>Current:</strong> <span id="currentShape">Cube</span><br>
+            <strong>Vertices:</strong> <span id="vertexCount">8</span><br>
+            <strong>Dimensions:</strong> <span id="dimensions">3D</span><br>
+            <strong>Mode:</strong> <span id="renderModeLabel">Wireframe</span>
+        </div>
+        <div class="math-formula" id="mathFormula">
+            x² + y² + z² = r²
+        </div>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas);
+
+        let time = 0;
+        let currentShape = 'cube';
+        let renderMode = 'wire'; // wire | points | textured
+        let params = { a: 1, b: 1, c: 1, rotSpeed: 1, density: 50 };
+
+        // ── Mouse orbit + zoom state ──────────────────────────────────────────
+        let orbitX = 0, orbitY = 0;       // accumulated manual rotation (radians)
+        let zoom = 1;                      // 0.3 .. 3
+        let dragging = false;
+        let lastMouseX = 0, lastMouseY = 0;
+
+        canvas.addEventListener('mousedown', (e) => {
+            dragging = true;
+            canvas.classList.add('dragging');
+            lastMouseX = e.clientX;
+            lastMouseY = e.clientY;
+        });
+        window.addEventListener('mouseup', () => {
+            dragging = false;
+            canvas.classList.remove('dragging');
+        });
+        window.addEventListener('mousemove', (e) => {
+            if (!dragging) return;
+            const dx = e.clientX - lastMouseX;
+            const dy = e.clientY - lastMouseY;
+            orbitY += dx * 0.005;
+            orbitX += dy * 0.005;
+            orbitX = Math.max(-1.5, Math.min(1.5, orbitX));
+            lastMouseX = e.clientX;
+            lastMouseY = e.clientY;
+        });
+        canvas.addEventListener('wheel', (e) => {
+            e.preventDefault();
+            zoom *= e.deltaY > 0 ? 0.92 : 1.08;
+            zoom = Math.max(0.3, Math.min(3.5, zoom));
+        }, { passive: false });
+
+        // Touch support (single-finger drag, pinch-free simple zoom via two-finger distance)
+        let lastTouchX = 0, lastTouchY = 0, lastPinchDist = null;
+        canvas.addEventListener('touchstart', (e) => {
+            if (e.touches.length === 1) {
+                dragging = true;
+                lastTouchX = e.touches[0].clientX;
+                lastTouchY = e.touches[0].clientY;
+            } else if (e.touches.length === 2) {
+                lastPinchDist = Math.hypot(
+                    e.touches[0].clientX - e.touches[1].clientX,
+                    e.touches[0].clientY - e.touches[1].clientY
+                );
+            }
+        }, { passive: true });
+        canvas.addEventListener('touchmove', (e) => {
+            if (e.touches.length === 1 && dragging) {
+                const dx = e.touches[0].clientX - lastTouchX;
+                const dy = e.touches[0].clientY - lastTouchY;
+                orbitY += dx * 0.005;
+                orbitX += dy * 0.005;
+                orbitX = Math.max(-1.5, Math.min(1.5, orbitX));
+                lastTouchX = e.touches[0].clientX;
+                lastTouchY = e.touches[0].clientY;
+            } else if (e.touches.length === 2 && lastPinchDist !== null) {
+                const dist = Math.hypot(
+                    e.touches[0].clientX - e.touches[1].clientX,
+                    e.touches[0].clientY - e.touches[1].clientY
+                );
+                zoom *= dist > lastPinchDist ? 1.02 : 0.98;
+                zoom = Math.max(0.3, Math.min(3.5, zoom));
+                lastPinchDist = dist;
+            }
+        }, { passive: true });
+        canvas.addEventListener('touchend', () => { dragging = false; lastPinchDist = null; });
+
+        let frameCount = 0, lastFpsTime = performance.now();
+        const fpsEl = document.getElementById('fps');
+
+        const shapes = {
+            cube: { name: 'Cube', vertices: 8, dimensions: '3D', formula: 'x/a, y/b, z/c ∈ [-1, 1]', draw: drawCube },
+            sphere: { name: 'Sphere', vertices: '∞', dimensions: '3D', formula: '(x/a)² + (y/b)² + z² = r²', draw: drawSphere },
+            triangle: { name: 'Triangle', vertices: 3, dimensions: '2D→3D', formula: 'Σ angles = 180°, extruded by c', draw: drawTriangle },
+            pyramid: { name: 'Pyramid', vertices: 5, dimensions: '3D', formula: 'V = ⅓ × base × height, apex skew c', draw: drawPyramid },
+            torus: { name: 'Torus', vertices: '∞', dimensions: '3D', formula: '(√(x²+y²) - R)² + z² = r², twist c', draw: drawTorus },
+            klein: { name: 'Klein Bottle', vertices: '∞', dimensions: '4D → 3D', formula: 'Non-orientable surface', draw: drawKleinBottle },
+            tesseract: { name: 'Tesseract', vertices: 16, dimensions: '4D', formula: '4D hypercube, anisotropic a/b/c', draw: drawTesseract },
+            hypersphere: { name: 'Hypersphere', vertices: '∞', dimensions: '4D', formula: 'x² + y² + z² + w² = r², squash b', draw: drawHypersphere },
+            mobius: { name: 'Möbius Strip', vertices: '∞', dimensions: '3D', formula: 'Non-orientable, half-twist surface', draw: drawMobius },
+            helix: { name: 'Helix', vertices: '∞', dimensions: '3D', formula: '(r cos t, r sin t, c·t), double strand', draw: drawHelix },
+            octahedron: { name: 'Octahedron', vertices: 6, dimensions: '3D', formula: '|x|/a + |y|/b + |z|/c = 1', draw: drawOctahedron },
+            cone: { name: 'Cone', vertices: 'n+1', dimensions: '3D', formula: 'r(h) = a·(1 - h/height)', draw: drawCone }
+        };
+
+        function project3D(x, y, z) {
+            // apply manual orbit on top of the shape's own rotation
+            let r = rotateX(x, y, z, orbitX);
+            r = rotateY(r.x, r.y, r.z, orbitY);
+            const distance = 800;
+            const scale = (distance / (distance + r.z)) * zoom;
+            return {
+                x: (r.x * scale + canvas.width / 2),
+                y: (r.y * scale + canvas.height / 2),
+                depth: r.z
+            };
+        }
+
+        function rotateX(x, y, z, angle) {
+            const cos = Math.cos(angle), sin = Math.sin(angle);
+            return { x: x, y: y * cos - z * sin, z: y * sin + z * cos };
+        }
+        function rotateY(x, y, z, angle) {
+            const cos = Math.cos(angle), sin = Math.sin(angle);
+            return { x: x * cos + z * sin, y: y, z: -x * sin + z * cos };
+        }
+        function rotateZ(x, y, z, angle) {
+            const cos = Math.cos(angle), sin = Math.sin(angle);
+            return { x: x * cos - y * sin, y: x * sin + y * cos, z: z };
+        }
+
+        // Black & white depth shading — closer = brighter white, farther = dim grey
+        function depthShade(z) {
+            const norm = Math.max(0, Math.min(1, (z + 300) / 600));
+            const light = 30 + norm * 65;
+            return `hsl(0, 0%, ${light}%)`;
+        }
+
+        function plotPath(points) {
+            if (renderMode === 'points') {
+                points.forEach(p => {
+                    ctx.fillStyle = depthShade(p.depth);
+                    ctx.beginPath();
+                    ctx.arc(p.x, p.y, 1.5 + (1 - Math.min(1, Math.abs(p.depth) / 400)) * 1.6, 0, Math.PI * 2);
+                    ctx.fill();
+                });
+            } else {
+                ctx.beginPath();
+                points.forEach((p, i) => {
+                    if (renderMode === 'textured') ctx.strokeStyle = depthShade(p.depth);
+                    if (i === 0) ctx.moveTo(p.x, p.y);
+                    else ctx.lineTo(p.x, p.y);
+                });
+                ctx.stroke();
+                if (renderMode === 'textured') {
+                    points.forEach(p => {
+                        ctx.fillStyle = depthShade(p.depth);
+                        ctx.beginPath();
+                        ctx.arc(p.x, p.y, 1.8, 0, Math.PI * 2);
+                        ctx.fill();
+                    });
+                }
+            }
+        }
+
+        function setLineStyle() {
+            ctx.strokeStyle = renderMode === 'textured' ? '#fff' : 'rgba(255,255,255,0.85)';
+            ctx.lineWidth = 1;
+            ctx.shadowColor = 'rgba(255,255,255,0.4)';
+            ctx.shadowBlur = renderMode === 'textured' ? 8 : 0;
+        }
+
+        function autoRotY(z) { return time * params.rotSpeed * z; }
+
+        function drawCube() {
+            const sx = 100 * params.a, sy = 100 * params.b, sz = 100 * params.c;
+            const vertices = [
+                [-sx,-sy,-sz],[sx,-sy,-sz],[sx,sy,-sz],[-sx,sy,-sz],
+                [-sx,-sy,sz],[sx,-sy,sz],[sx,sy,sz],[-sx,sy,sz]
+            ];
+            const rv = vertices.map(v => {
+                let r = rotateX(v[0], v[1], v[2], autoRotY(0.01));
+                r = rotateY(r.x, r.y, r.z, autoRotY(0.007));
+                return project3D(r.x, r.y, r.z);
+            });
+            const edges = [[0,1],[1,2],[2,3],[3,0],[4,5],[5,6],[6,7],[7,4],[0,4],[1,5],[2,6],[3,7]];
+            setLineStyle();
+            edges.forEach(e => plotPath([rv[e[0]], rv[e[1]]]));
+        }
+
+        function drawSphere() {
+            const radius = 100 * params.a;
+            const squash = params.b;
+            const twist = params.c * 0.3;
+            const detail = Math.max(3, Math.floor(params.density / 5));
+            setLineStyle();
+            for (let i = 0; i <= detail; i++) {
+                const lat = (i / detail) * Math.PI - Math.PI / 2;
+                const y = radius * Math.sin(lat) * squash;
+                const circleRadius = radius * Math.cos(lat);
+                const pts = [];
+                for (let j = 0; j <= detail * 2; j++) {
+                    const lon = (j / (detail * 2)) * Math.PI * 2 + twist;
+                    let x = circleRadius * Math.cos(lon);
+                    let z = circleRadius * Math.sin(lon);
+                    let r = rotateY(x, y, z, autoRotY(0.01));
+                    pts.push(project3D(r.x, r.y, r.z));
+                }
+                plotPath(pts);
+            }
+            for (let i = 0; i <= detail; i++) {
+                const lon = (i / detail) * Math.PI * 2;
+                const pts = [];
+                for (let j = 0; j <= detail; j++) {
+                    const lat = (j / detail) * Math.PI - Math.PI / 2;
+                    let x = radius * Math.cos(lat) * Math.cos(lon);
+                    let y = radius * Math.sin(lat) * squash;
+                    let z = radius * Math.cos(lat) * Math.sin(lon);
+                    let r = rotateY(x, y, z, autoRotY(0.01));
+                    pts.push(project3D(r.x, r.y, r.z));
+                }
+                plotPath(pts);
+            }
+        }
+
+        function drawTriangle() {
+            const size = 150 * params.a;
+            const heightScale = params.b;
+            const extrude = params.c * 20;
+            const height = size * Math.sqrt(3) / 2 * heightScale;
+            const front = [[0, -height*2/3, -extrude], [-size/2, height/3, -extrude], [size/2, height/3, -extrude]];
+            const back  = [[0, -height*2/3, extrude], [-size/2, height/3, extrude], [size/2, height/3, extrude]];
+            const rv = (vs) => vs.map(v => {
+                const r = rotateZ(v[0], v[1], v[2], autoRotY(0.02));
+                return project3D(r.x, r.y, r.z);
+            });
+            setLineStyle();
+            const f = rv(front), b = rv(back);
+            plotPath([...f, f[0]]);
+            if (Math.abs(extrude) > 1) {
+                plotPath([...b, b[0]]);
+                for (let i = 0; i < 3; i++) plotPath([f[i], b[i]]);
+            }
+        }
+
+        function drawPyramid() {
+            const base = 120 * params.a;
+            const height = 150 * params.b;
+            const skew = 40 * params.c;
+            const vertices = [
+                [-base,-height/2,-base],[base,-height/2,-base],
+                [base,-height/2,base],[-base,-height/2,base],
+                [skew, height/2, 0]
+            ];
+            const rv = vertices.map(v => {
+                let r = rotateX(v[0], v[1], v[2], autoRotY(0.01));
+                r = rotateY(r.x, r.y, r.z, autoRotY(0.015));
+                return project3D(r.x, r.y, r.z);
+            });
+            const edges = [[0,1],[1,2],[2,3],[3,0],[0,4],[1,4],[2,4],[3,4]];
+            setLineStyle();
+            edges.forEach(e => plotPath([rv[e[0]], rv[e[1]]]));
+        }
+
+        function drawTorus() {
+            const R = 80 * params.a;
+            const r = 40 * params.b;
+            const twist = params.c * 0.5;
+            const detail = Math.max(3, Math.floor(params.density / 3));
+            setLineStyle();
+            for (let i = 0; i <= detail; i++) {
+                const u = (i / detail) * Math.PI * 2;
+                const pts = [];
+                for (let j = 0; j <= detail; j++) {
+                    const v = (j / detail) * Math.PI * 2 + u * twist * 0.1;
+                    let x = (R + r * Math.cos(v)) * Math.cos(u);
+                    let y = r * Math.sin(v);
+                    let z = (R + r * Math.cos(v)) * Math.sin(u);
+                    let rt = rotateX(x, y, z, autoRotY(0.01));
+                    rt = rotateY(rt.x, rt.y, rt.z, autoRotY(0.007));
+                    pts.push(project3D(rt.x, rt.y, rt.z));
+                }
+                plotPath(pts);
+            }
+            for (let j = 0; j <= detail; j++) {
+                const v = (j / detail) * Math.PI * 2;
+                const pts = [];
+                for (let i = 0; i <= detail; i++) {
+                    const u = (i / detail) * Math.PI * 2;
+                    let x = (R + r * Math.cos(v)) * Math.cos(u);
+                    let y = r * Math.sin(v);
+                    let z = (R + r * Math.cos(v)) * Math.sin(u);
+                    let rt = rotateX(x, y, z, autoRotY(0.01));
+                    rt = rotateY(rt.x, rt.y, rt.z, autoRotY(0.007));
+                    pts.push(project3D(rt.x, rt.y, rt.z));
+                }
+                plotPath(pts);
+            }
+        }
+
+        function drawKleinBottle() {
+            const scale = 60 * params.a;
+            const detail = Math.max(3, Math.floor(params.density / 4));
+            setLineStyle();
+            for (let i = 0; i <= detail; i++) {
+                const u = (i / detail) * Math.PI * 2;
+                const pts = [];
+                for (let j = 0; j <= detail; j++) {
+                    const v = (j / detail) * Math.PI * 2;
+                    let x = scale * (Math.cos(u) * (1 + Math.sin(u)) + Math.cos(u) * Math.cos(v) * params.c);
+                    let y = scale * (Math.sin(u) * Math.sin(v));
+                    let z = scale * (Math.sin(u) + Math.cos(u) * Math.sin(v) * params.b);
+                    let r = rotateX(x, y, z, autoRotY(0.008));
+                    r = rotateY(r.x, r.y, r.z, autoRotY(0.012));
+                    pts.push(project3D(r.x, r.y, r.z));
+                }
+                plotPath(pts);
+            }
+        }
+
+        function drawTesseract() {
+            const sx = 80 * params.a, sy = 80 * params.b, sz = 80 * (params.c || 1);
+            const vertices4D = [];
+            for (let i = 0; i < 16; i++) {
+                const x = (i & 1) ? sx : -sx;
+                const y = (i & 2) ? sy : -sy;
+                const z = (i & 4) ? sz : -sz;
+                const w = (i & 8) ? 80 : -80;
+                const perspective = 200 / (200 + w);
+                vertices4D.push([x * perspective, y * perspective, z * perspective]);
+            }
+            const rv = vertices4D.map(v => {
+                let r = rotateX(v[0], v[1], v[2], autoRotY(0.005));
+                r = rotateY(r.x, r.y, r.z, autoRotY(0.008));
+                r = rotateZ(r.x, r.y, r.z, autoRotY(0.003));
+                return project3D(r.x, r.y, r.z);
+            });
+            const edges = [];
+            for (let i = 0; i < 16; i++) for (let j = i+1; j < 16; j++) {
+                let diff = 0;
+                for (let k = 0; k < 4; k++) if (((i>>k)&1) !== ((j>>k)&1)) diff++;
+                if (diff === 1) edges.push([i,j]);
+            }
+            setLineStyle();
+            edges.forEach(e => plotPath([rv[e[0]], rv[e[1]]]));
+        }
+
+        function drawHypersphere() {
+            const radius = 80 * params.a;
+            const wSquash = params.b;
+            const phase = params.c * 0.4;
+            const detail = Math.max(3, Math.floor(params.density / 3));
+            setLineStyle();
+            for (let i = 0; i <= detail; i++) {
+                const phi = (i / detail) * Math.PI;
+                const pts = [];
+                for (let j = 0; j <= detail * 2; j++) {
+                    const theta = (j / (detail * 2)) * Math.PI * 2;
+                    const w = radius * Math.cos(phi) * wSquash;
+                    const r3 = radius * Math.sin(phi);
+                    let x = r3 * Math.cos(theta) * Math.cos(autoRotY(0.01) + phase);
+                    let y = r3 * Math.sin(theta);
+                    let z = r3 * Math.cos(theta) * Math.sin(autoRotY(0.01) + phase);
+                    const perspective = 200 / (200 + w);
+                    x *= perspective; y *= perspective; z *= perspective;
+                    let r = rotateY(x, y, z, autoRotY(0.01));
+                    pts.push(project3D(r.x, r.y, r.z));
+                }
+                plotPath(pts);
+            }
+        }
+
+        function drawMobius() {
+            const R = 100 * params.a;
+            const width = 40 * params.b;
+            const twists = params.c || 1;
+            const detail = Math.max(3, Math.floor(params.density / 2));
+            setLineStyle();
+            for (let i = 0; i <= detail; i++) {
+                const u = (i / detail) * Math.PI * 2;
+                const pts = [];
+                for (let s = -1; s <= 1; s += 2) {
+                    const v = s * width / 2;
+                    const x = (R + v * Math.cos(u * twists / 2)) * Math.cos(u);
+                    const y = (R + v * Math.cos(u * twists / 2)) * Math.sin(u);
+                    const z = v * Math.sin(u * twists / 2);
+                    let r = rotateX(x, y, z, autoRotY(0.008));
+                    r = rotateY(r.x, r.y, r.z, autoRotY(0.012));
+                    pts.push(project3D(r.x, r.y, r.z));
+                }
+                plotPath(pts);
+            }
+            // longitudinal strip edges
+            [-1, 1].forEach(s => {
+                const pts = [];
+                const v = s * width / 2;
+                for (let i = 0; i <= detail; i++) {
+                    const u = (i / detail) * Math.PI * 2;
+                    const x = (R + v * Math.cos(u * twists / 2)) * Math.cos(u);
+                    const y = (R + v * Math.cos(u * twists / 2)) * Math.sin(u);
+                    const z = v * Math.sin(u * twists / 2);
+                    let r = rotateX(x, y, z, autoRotY(0.008));
+                    r = rotateY(r.x, r.y, r.z, autoRotY(0.012));
+                    pts.push(project3D(r.x, r.y, r.z));
+                }
+                plotPath(pts);
+            });
+        }
+
+        function drawHelix() {
+            const radius = 60 * params.a;
+            const pitch = 12 * params.b;
+            const phaseOffset = params.c * Math.PI;
+            const turns = Math.max(2, Math.floor(params.density / 12));
+            const steps = turns * 24;
+            setLineStyle();
+            [0, phaseOffset + Math.PI].forEach(phase => {
+                const pts = [];
+                for (let i = 0; i <= steps; i++) {
+                    const t = (i / steps) * turns * Math.PI * 2;
+                    const x = radius * Math.cos(t + phase);
+                    const y = pitch * (i / steps) * turns - (pitch * turns) / 2;
+                    const z = radius * Math.sin(t + phase);
+                    let r = rotateX(x, y, z, autoRotY(0.006));
+                    r = rotateY(r.x, r.y, r.z, autoRotY(0.01));
+                    pts.push(project3D(r.x, r.y, r.z));
+                }
+                plotPath(pts);
+            });
+            // rungs connecting the two strands every few steps
+            const rungCount = Math.max(4, Math.floor(steps / 6));
+            for (let i = 0; i <= rungCount; i++) {
+                const t = (i / rungCount) * turns * Math.PI * 2;
+                const y = pitch * (i / rungCount) * turns - (pitch * turns) / 2;
+                const x1 = radius * Math.cos(t), z1 = radius * Math.sin(t);
+                const x2 = radius * Math.cos(t + phaseOffset + Math.PI), z2 = radius * Math.sin(t + phaseOffset + Math.PI);
+                let r1 = rotateX(x1, y, z1, autoRotY(0.006)); r1 = rotateY(r1.x, r1.y, r1.z, autoRotY(0.01));
+                let r2 = rotateX(x2, y, z2, autoRotY(0.006)); r2 = rotateY(r2.x, r2.y, r2.z, autoRotY(0.01));
+                plotPath([project3D(r1.x, r1.y, r1.z), project3D(r2.x, r2.y, r2.z)]);
+            }
+        }
+
+        function drawOctahedron() {
+            const sx = 110 * params.a, sy = 110 * params.b, sz = 110 * params.c;
+            const vertices = [
+                [sx,0,0], [-sx,0,0], [0,sy,0], [0,-sy,0], [0,0,sz], [0,0,-sz]
+            ];
+            const edges = [
+                [0,2],[0,3],[0,4],[0,5],
+                [1,2],[1,3],[1,4],[1,5],
+                [2,4],[2,5],[3,4],[3,5]
+            ];
+            const rv = vertices.map(v => {
+                let r = rotateX(v[0], v[1], v[2], autoRotY(0.01));
+                r = rotateY(r.x, r.y, r.z, autoRotY(0.013));
+                return project3D(r.x, r.y, r.z);
+            });
+            setLineStyle();
+            edges.forEach(e => plotPath([rv[e[0]], rv[e[1]]]));
+        }
+
+        function drawCone() {
+            const baseRadius = 100 * params.a;
+            const height = 160 * params.b;
+            const twist = params.c;
+            const segments = Math.max(6, Math.floor(params.density / 4));
+            setLineStyle();
+            const apex = [0, -height / 2, 0];
+            const baseRing = [];
+            for (let i = 0; i <= segments; i++) {
+                const t = (i / segments) * Math.PI * 2;
+                baseRing.push([
+                    baseRadius * Math.cos(t + twist * 0.4),
+                    height / 2,
+                    baseRadius * Math.sin(t + twist * 0.4)
+                ]);
+            }
+            const project = (v) => {
+                let r = rotateX(v[0], v[1], v[2], autoRotY(0.009));
+                r = rotateY(r.x, r.y, r.z, autoRotY(0.012));
+                return project3D(r.x, r.y, r.z);
+            };
+            plotPath(baseRing.map(project));
+            const apexP = project(apex);
+            const step = Math.max(1, Math.floor(segments / 12));
+            for (let i = 0; i < baseRing.length; i += step) {
+                plotPath([apexP, project(baseRing[i])]);
+            }
+        }
+
+        function drawBackground() {
+            ctx.fillStyle = '#000';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.strokeStyle = 'rgba(255,255,255,0.05)';
+            ctx.lineWidth = 1;
+            const spacing = 90;
+            for (let i = 0; i < canvas.width; i += spacing) {
+                ctx.beginPath(); ctx.moveTo(i, 0); ctx.lineTo(i, canvas.height); ctx.stroke();
+            }
+            for (let i = 0; i < canvas.height; i += spacing) {
+                ctx.beginPath(); ctx.moveTo(0, i); ctx.lineTo(canvas.width, i); ctx.stroke();
+            }
+        }
+
+        function animate() {
+            drawBackground();
+            shapes[currentShape].draw();
+            time++;
+            frameCount++;
+            const now = performance.now();
+            if (now - lastFpsTime > 500) {
+                fpsEl.textContent = Math.round((frameCount * 1000) / (now - lastFpsTime)) + ' FPS';
+                frameCount = 0;
+                lastFpsTime = now;
+            }
+            requestAnimationFrame(animate);
+        }
+
+        document.getElementById('shapeType').addEventListener('change', (e) => {
+            currentShape = e.target.value;
+            updateShapeInfo();
+        });
+
+        document.querySelectorAll('.mode-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                renderMode = btn.dataset.mode;
+                document.getElementById('renderModeLabel').textContent =
+                    renderMode === 'wire' ? 'Wireframe' : renderMode === 'points' ? 'Point Cloud' : 'Shaded';
+            });
+        });
+
+        ['paramA', 'paramB', 'paramC', 'rotSpeed', 'density'].forEach(param => {
+            const element = document.getElementById(param);
+            const valueElement = document.getElementById(param + '-val');
+            element.addEventListener('input', (e) => {
+                const value = parseFloat(e.target.value);
+                if (param === 'rotSpeed') params.rotSpeed = value;
+                else if (param === 'density') params.density = value;
+                else params[param.replace('param', '').toLowerCase()] = value;
+                valueElement.textContent = value.toFixed(2);
+            });
+        });
+
+        function updateShapeInfo() {
+            const shape = shapes[currentShape];
+            document.getElementById('currentShape').textContent = shape.name;
+            document.getElementById('vertexCount').textContent = shape.vertices;
+            document.getElementById('dimensions').textContent = shape.dimensions;
+            document.getElementById('mathFormula').textContent = shape.formula;
+        }
+
+        updateShapeInfo();
+        animate();
+    </script>
+</body>
+</html>

@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Δmension API — 2,876+ Mathematical 3D Shapes</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: #000; color: #e0e0e0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; line-height: 1.6; }
+  a { color: #a78bfa; text-decoration: none; }
+  a:hover { text-decoration: underline; }
+
+  .hero { background: linear-gradient(135deg, #0a0a1a 0%, #110a2e 50%, #0a0a1a 100%); padding: 80px 24px 60px; text-align: center; border-bottom: 1px solid #1e1e3f; }
+  .hero h1 { font-size: clamp(2rem, 5vw, 3.5rem); font-weight: 800; background: linear-gradient(135deg, #a78bfa, #60a5fa, #34d399); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 16px; }
+  .hero p { font-size: 1.2rem; color: #9ca3af; max-width: 640px; margin: 0 auto 32px; }
+  .badges { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; margin-bottom: 40px; }
+  .badge { background: #1a1a3e; border: 1px solid #2e2e5e; padding: 6px 16px; border-radius: 999px; font-size: 0.85rem; color: #c4b5fd; }
+  .btn { display: inline-block; background: #7c3aed; color: #fff; padding: 14px 32px; border-radius: 8px; font-weight: 700; font-size: 1rem; margin: 8px; transition: background 0.2s; }
+  .btn:hover { background: #6d28d9; text-decoration: none; }
+  .btn-outline { background: transparent; border: 2px solid #7c3aed; color: #a78bfa; }
+  .btn-outline:hover { background: #7c3aed; color: #fff; }
+
+  .section { padding: 64px 24px; max-width: 1100px; margin: 0 auto; }
+  .section h2 { font-size: 1.8rem; font-weight: 700; color: #f3f4f6; margin-bottom: 8px; }
+  .section .sub { color: #6b7280; margin-bottom: 40px; }
+
+  .grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px; }
+  .card { background: #0d0d1f; border: 1px solid #1e1e3f; border-radius: 12px; padding: 24px; }
+  .card h3 { font-size: 1.1rem; font-weight: 600; color: #e9d5ff; margin-bottom: 8px; }
+  .card p { color: #9ca3af; font-size: 0.92rem; }
+  .card .tag { display: inline-block; background: #1a1a3e; color: #a78bfa; font-size: 0.75rem; padding: 2px 10px; border-radius: 4px; margin-bottom: 10px; font-family: monospace; }
+
+  .endpoint-list { display: flex; flex-direction: column; gap: 12px; }
+  .ep { background: #0d0d1f; border: 1px solid #1e1e3f; border-radius: 8px; padding: 16px 20px; display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+  .ep .method { font-weight: 700; font-size: 0.8rem; padding: 4px 10px; border-radius: 4px; min-width: 52px; text-align: center; font-family: monospace; }
+  .get  { background: #064e3b; color: #34d399; }
+  .post { background: #1e3a5f; color: #60a5fa; }
+  .ep .path { font-family: monospace; color: #e9d5ff; font-size: 0.9rem; }
+  .ep .desc { color: #6b7280; font-size: 0.85rem; margin-left: auto; text-align: right; }
+
+  .code-block { background: #0a0a1a; border: 1px solid #1e1e3f; border-radius: 8px; padding: 20px; font-family: 'Fira Code', 'Courier New', monospace; font-size: 0.85rem; overflow-x: auto; color: #a5f3fc; line-height: 1.7; }
+  .code-block .key { color: #f9a8d4; }
+  .code-block .str { color: #86efac; }
+  .code-block .num { color: #fcd34d; }
+  .code-block .cm  { color: #6b7280; }
+
+  .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 16px; margin: 40px 0; }
+  .stat { background: #0d0d1f; border: 1px solid #1e1e3f; border-radius: 10px; padding: 24px; text-align: center; }
+  .stat .num-big { font-size: 2.4rem; font-weight: 800; color: #a78bfa; }
+  .stat .label { color: #6b7280; font-size: 0.85rem; margin-top: 4px; }
+
+  .divider { border: none; border-top: 1px solid #1a1a3a; margin: 0; }
+  footer { text-align: center; padding: 40px 24px; color: #4b5563; font-size: 0.85rem; }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <h1>Δmension Mathematical Universe API</h1>
+  <p>A parametric 3D math shape library — 107 verified categories, ~2,876 shapes. Quantum geometry, fractals, DNA structures, and beyond.</p>
+  <div class="badges">
+    <span class="badge">107 Categories</span>
+    <span class="badge">2,876+ Shapes</span>
+    <span class="badge">REST API</span>
+    <span class="badge">JSON Response</span>
+    <span class="badge">WebGL Ready</span>
+    <span class="badge">Three.js Compatible</span>
+  </div>
+  <a href="/developer" class="btn">Try It Live →</a>
+</div>
+
+<div class="section">
+  <div class="stats">
+    <div class="stat"><div class="num-big">2,876+</div><div class="label">Parametric Shapes</div></div>
+    <div class="stat"><div class="num-big">107</div><div class="label">Categories</div></div>
+    <div class="stat"><div class="num-big">26</div><div class="label">Live Parameters (A–Z)</div></div>
+    <div class="stat"><div class="num-big">6</div><div class="label">Export Formats</div></div>
+  </div>
+  <p style="color:#6b7280;font-size:0.8rem;text-align:center;">Counts pulled from the live <code>/api/shapes/categories</code> endpoint — not marketing estimates.</p>
+</div>
+
+<hr class="divider">
+
+<div class="section">
+  <h2>What you can build</h2>
+  <p class="sub">Real use cases this API actually supports today</p>
+  <div class="grid-3">
+    <div class="card">
+      <div class="tag">3D / WebGL</div>
+      <h3>Procedural Shape Generation</h3>
+      <p>Send parameters into any of 2,876+ shapes and get back vertex/normal/UV arrays ready to drop straight into Three.js or raw WebGL.</p>
+    </div>
+    <div class="card">
+      <div class="tag">Education</div>
+      <h3>Interactive Math Education</h3>
+      <p>Let students walk through wave functions, manipulate Klein bottles, and visualize topology in real time.</p>
+    </div>
+    <div class="card">
+      <div class="tag">Quantum</div>
+      <h3>Quantum Visualization</h3>
+      <p>Check live quantum simulator status and engine availability through the quantum status endpoint.</p>
+    </div>
+    <div class="card">
+      <div class="tag">Tokens</div>
+      <h3>On-Chain Shape Interactions</h3>
+      <p>Every shape interaction can mint a real UUON energy token into a live, verifiable ledger entry.</p>
+    </div>
+  </div>
+</div>
+
+<hr class="divider">
+
+<div class="section">
+  <h2>Key endpoints — live now</h2>
+  <p class="sub">Click any GET endpoint to test it live against the running server. Verified against the actual registered routes, not aspirational.</p>
+  <div class="endpoint-list">
+    <div class="ep"><span class="method get">GET</span><a class="path" href="/api/shapes/categories" target="_blank">/api/shapes/categories</a><span class="desc">All 107 categories with shape counts</span></div>
+    <div class="ep"><span class="method post">POST</span><span class="path">/api/shapes/compute</span><span class="desc">Generate 3D vertex data — see example below</span></div>
+    <div class="ep"><span class="method get">GET</span><a class="path" href="/api/engines" target="_blank">/api/engines</a><span class="desc">List available compute engines</span></div>
+    <div class="ep"><span class="method get">GET</span><a class="path" href="/api/quantum/status" target="_blank">/api/quantum/status</a><span class="desc">Quantum simulator status</span></div>
+    <div class="ep"><span class="method post">POST</span><span class="path">/api/token-ecosystem/generate-interaction</span><span class="desc">Mint a UUON energy token — writes a real ledger entry</span></div>
+    <div class="ep"><span class="method get">GET</span><a class="path" href="/api/system-performance/metrics" target="_blank">/api/system-performance/metrics</a><span class="desc">Live CPU, memory, request counts</span></div>
+    <div class="ep"><span class="method get">GET</span><a class="path" href="/api/sdk-info" target="_blank">/api/sdk-info</a><span class="desc">SDK module overview</span></div>
+    <div class="ep"><span class="method get">GET</span><a class="path" href="/api/health" target="_blank">/api/health</a><span class="desc">Health check</span></div>
+  </div>
+</div>
+
+<hr class="divider">
+
+<div class="section">
+  <h2>Coming soon</h2>
+  <p class="sub">Planned, not yet wired up. Listed honestly rather than hidden or presented as live.</p>
+  <div class="endpoint-list">
+    <div class="ep" style="opacity:0.55;"><span class="method post" style="background:#1f2937;color:#9ca3af;">POST</span><span class="path">/api/unified-math/render3d</span><span class="desc">Coming soon</span></div>
+    <div class="ep" style="opacity:0.55;"><span class="method get" style="background:#1f2937;color:#9ca3af;">GET</span><span class="path">/api/unified-math/symbols</span><span class="desc">Coming soon</span></div>
+    <div class="ep" style="opacity:0.55;"><span class="method post" style="background:#1f2937;color:#9ca3af;">POST</span><span class="path">/api/unified-math/batch-render</span><span class="desc">Coming soon</span></div>
+    <div class="ep" style="opacity:0.55;"><span class="method get" style="background:#1f2937;color:#9ca3af;">GET</span><span class="path">/api/unified-math/constants</span><span class="desc">Coming soon</span></div>
+    <div class="ep" style="opacity:0.55;"><span class="method post" style="background:#1f2937;color:#9ca3af;">POST</span><span class="path">/api/compute/fractal/render</span><span class="desc">Coming soon</span></div>
+    <div class="ep" style="opacity:0.55;"><span class="method post" style="background:#1f2937;color:#9ca3af;">POST</span><span class="path">/api/quantum/bloch-sphere</span><span class="desc">Coming soon</span></div>
+    <div class="ep" style="opacity:0.55;"><span class="method post" style="background:#1f2937;color:#9ca3af;">POST</span><span class="path">/api/ai-analysis/shapes/generate</span><span class="desc">Coming soon</span></div>
+  </div>
+</div>
+
+<hr class="divider">
+
+<div class="section">
+  <h2>Example: Render a torus</h2>
+  <p class="sub">POST to /api/shapes/compute — get back vertices, normals, and UVs</p>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;flex-wrap:wrap;">
+    <div>
+      <p style="color:#6b7280;font-size:0.85rem;margin-bottom:8px;">Request</p>
+      <div class="code-block">
+<span class="cm">// POST /api/shapes/compute</span>
+{
+  <span class="key">"shapeType"</span>: <span class="str">"torus"</span>,
+  <span class="key">"parameters"</span>: {
+    <span class="key">"a"</span>: <span class="num">2</span>,
+    <span class="key">"b"</span>: <span class="num">0.5</span>
+  },
+  <span class="key">"uSegments"</span>: <span class="num">32</span>,
+  <span class="key">"vSegments"</span>: <span class="num">16</span>
+}
+      </div>
+    </div>
+    <div>
+      <p style="color:#6b7280;font-size:0.85rem;margin-bottom:8px;">Response</p>
+      <div class="code-block">
+{
+  <span class="key">"vertices"</span>: [<span class="num">2.5</span>, <span class="num">0</span>, <span class="num">0</span>, ...],
+  <span class="key">"normals"</span>:  [<span class="num">1</span>, <span class="num">0</span>, <span class="num">0</span>, ...],
+  <span class="key">"uvs"</span>:      [<span class="num">0</span>, <span class="num">0</span>, ...]
+}
+      </div>
+    </div>
+  </div>
+</div>
+
+<hr class="divider">
+
+<div class="section" style="text-align:center;">
+  <h2>Ready to integrate?</h2>
+  <p class="sub" style="margin-bottom:32px;">Try it live in the browser — no account needed</p>
+  <a href="/developer" class="btn">Interactive API Console →</a>
+</div>
+
+<footer>
+  <p>Δmension Mathematical Universe · <a href="/developer">Developer Portal</a></p>
+  <p style="margin-top:8px;">Built on mathematics. Every shape is exact and regenerable.</p>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,29 @@
+{
+  "swarmId": "swarm-mqoh5kc9",
+  "objective": "Audit the Dmension app for parameter precision regression, duplicate-looking shapes, formula mismatches, UI overlap issues, and catalog all live engines. Read-only, no commits — report findings only.",
+  "strategy": "research",
+  "status": "initialized",
+  "agents": 7,
+  "agentPlan": [
+    {
+      "role": "Coordinator",
+      "type": "coordinator",
+      "count": 1,
+      "purpose": "Research coordination"
+    },
+    {
+      "role": "Researcher",
+      "type": "researcher",
+      "count": 4,
+      "purpose": "Data gathering"
+    },
+    {
+      "role": "Analyst",
+      "type": "analyst",
+      "count": 2,
+      "purpose": "Analysis and synthesis"
+    }
+  ],
+  "startedAt": "2026-06-22T00:25:52.436Z",
+  "parallel": true
+}

@@ -1,0 +1,349 @@
+# ΔMENSION — TASK #18: VISIBILITY, SCALE PRESETS, SHADER FIXES + CODE REDUCTION
+
+## THE THREE REAL PROBLEMS
+
+### Problem 1: Shapes don't appear without control tweaking
+Cause: UV domain wrong, default camera wrong, or default parameters produce nothing.
+Fix: Per-shape UV domain locks + smart camera auto-positioning.
+
+### Problem 2: Micro/Meso/Macro presets break shapes
+Cause: They change UV range (±25/50/100) which is the formula's parameter space, not scale.
+Fix: Presets should change A (size multiplier), not UV domain.
+
+### Problem 3: Too much redundant code / broken features cluttering the app
+Fix: Remove confirmed-dead code paths. Don't remove working features.
+
+## GOLDEN RULES
+- Do NOT touch ParametricSurface.tsx rendering math
+- Do NOT change SurfaceParameters TypeScript type
+- Do NOT remove any shape from formula_implementations
+- Do NOT touch the Three.js canvas or OrbitControls
+- Remove code only when confirmed unused
+
+---
+
+## TASK 18A — FIX SCALE PRESETS (ScalePresetPanel.tsx)
+
+The Micro/Meso/Macro presets currently set UV range which corrupts most shape formulas.
+
+Open `client/src/lib/shapeUnfoldPresets.ts` or wherever ScalePreset applies changes.
+Also check `client/src/components/ScalePresetPanel.tsx`.
+
+Find where it sets uMin/uMax/vMin/vMax and REMOVE those assignments.
+
+Instead, scale presets should ONLY change:
+- The `a` parameter (primary scale)
+- `uSegments` and `vSegments` (mesh density)
+- Camera distance via a custom event
+
+```typescript
+// WRONG — what it does now:
+const MICRO_PRESET = {
+  uMin: -25, uMax: 25, vMin: -25, vMax: 25,
+  uSegments: 128, vSegments: 128
+};
+
+// RIGHT — what it should do:
+const MICRO_PRESET = {
+  a: 0.01,          // tiny scale
+  uSegments: 128,   // high detail
+  vSegments: 128,
+  // UV domain stays at shape's natural domain — DO NOT CHANGE
+};
+
+const MESO_PRESET = {
+  a: 1.0,           // normal scale
+  uSegments: 96,
+  vSegments: 72,
+};
+
+const MACRO_PRESET = {
+  a: 100.0,         // cosmic scale
+  uSegments: 64,
+  vSegments: 48,
+};
+```
+
+After this fix, Micro/Meso/Macro will change SIZE correctly without corrupting geometry.
+
+---
+
+## TASK 18B — FIX SHAPE VISIBILITY (Default Camera + Per-Shape Defaults)
+
+### Part 1: Smart camera positioning
+In `MathVisualizer.tsx`, find `CameraAutoAdjuster` component.
+It currently sets camera to (50, 25, 60) for all shapes.
+
+Add shape-category-aware camera positioning:
+```typescript
+function CameraAutoAdjuster({ orbitRef, shapeType }) {
+  const { camera } = useThree();
+  const hasInitialized = useRef(false);
+  const prevShape = useRef('');
+
+  useEffect(() => {
+    if (!orbitRef.current) return;
+    // Reset camera when shape changes
+    if (prevShape.current === shapeType && hasInitialized.current) return;
+    prevShape.current = shapeType;
+    hasInitialized.current = true;
+
+    // Shape-category camera distances
+    const distances: Record<string, [number,number,number]> = {
+      // Tiny shapes (quantum, atomic scale)
+      'hydrogen': [3, 1.5, 4],
+      'orbital': [3, 1.5, 4],
+      'qubit': [3, 1.5, 4],
+      // Normal shapes
+      'sphere': [8, 4, 10],
+      'torus': [8, 4, 10],
+      'klein': [10, 5, 12],
+      // Large shapes (cosmic)
+      'black_hole': [20, 10, 25],
+      'schwarzschild': [20, 10, 25],
+      'gravitational': [15, 8, 20],
+      // Attractors (need wide view)
+      'lorenz': [60, 30, 80],
+      'rossler': [40, 20, 50],
+      // 4D projections
+      'tesseract': [10, 5, 12],
+      'hopf': [8, 4, 10],
+    };
+
+    // Find matching camera position
+    let pos: [number,number,number] = [50, 25, 60]; // default
+    for (const [key, camPos] of Object.entries(distances)) {
+      if (shapeType.includes(key)) {
+        pos = camPos;
+        break;
+      }
+    }
+
+    camera.position.set(...pos);
+    orbitRef.current.target.set(0, 0, 0);
+    orbitRef.current.update();
+  }, [camera, orbitRef, shapeType]);
+
+  return null;
+}
+```
+
+### Part 2: Default material fallback for invisible shapes
+In `ParametricSurface.tsx` — find where it selects material based on colorMode.
+Add a fallback: if colorMode is 'holographic' and the geometry has no normals, switch to 'solid'.
+
+Find the material selection logic and add:
+```typescript
+// If holographic would be invisible (no emissive geometry), fall back to solid
+const effectiveColorMode = colorMode === 'holographic' && !hasNormals 
+  ? 'solid' 
+  : colorMode;
+```
+
+### Part 3: Add shape-specific UV domain to formula_implementations
+Run this query to check which shapes have wrong UV domains:
+```bash
+psql $DATABASE_URL -c "
+SELECT shape_type, 
+       uv_domain->>'uMin' as umin,
+       uv_domain->>'uMax' as umax,
+       uv_domain->>'vMin' as vmin,
+       uv_domain->>'vMax' as vmax
+FROM formula_implementations
+WHERE category IN ('topology', 'fractals', 'quantum-mechanics')
+LIMIT 20;
+"
+```
+
+For shapes with uMin=0, uMax=1 that need angular domains, update:
+```bash
+psql $DATABASE_URL -c "
+UPDATE formula_implementations
+SET uv_domain = '{\"uMin\": 0, \"uMax\": 6.2832, \"vMin\": 0, \"vMax\": 3.1416}'::jsonb
+WHERE shape_type IN ('sphere', 'torus', 'klein_bottle', 'mobius_strip', 
+                     'trefoil_knot', 'figure_eight_knot', 'hopf_fibration',
+                     'clifford_torus', 'boys_surface', 'roman_surface')
+AND (uv_domain->>'uMax')::float < 2;
+"
+```
+
+---
+
+## TASK 18C — SHADER/MATERIAL CLEANUP
+
+In `ParametricSurface.tsx`, find the material/shader selection.
+
+### Fix 1: Holographic on black background
+When background is 'black' and colorMode is 'holographic', 
+add ambient light compensation or switch to a visible default:
+```typescript
+// Find where holographic material is created
+// Add minimum emissive intensity so it's always visible:
+const emissiveIntensity = backgroundMode === 'black' ? 0.4 : 0.1;
+```
+
+### Fix 2: Remove broken material modes from UI dropdown
+In `ExpandedControlPanel.tsx`, find the color mode selector.
+Mark these as "(advanced)" or hide them if they break shapes:
+- `reactive_proximity` — needs normals, hide for shapes without them
+- `dynamic_material` — experimental, move to bottom of list
+
+### Fix 3: Add "Auto" material mode
+Add a new colorMode option called 'auto' that picks the best material for the shape:
+```typescript
+function getAutoMaterial(shapeType: string, category: string): string {
+  if (category === 'fractals') return 'points';           // attractors look best as points
+  if (category === 'topology') return 'wireframe';        // topology = see the structure  
+  if (category === 'molecular-biology') return 'solid';   // organic = solid surface
+  if (category === 'cryptography') return 'holographic';  // crypto = data aesthetic
+  if (category === 'sacred-geometry') return 'holographic'; // sacred = light
+  return 'wireframe'; // default
+}
+```
+
+---
+
+## TASK 18D — CODE REDUCTION (remove fat, not features)
+
+### Step 1: Remove confirmed-dead server files
+These files exist but serve no real purpose. Check each is NOT imported in server/index.ts
+before deleting:
+
+```bash
+# Check which of these are actually mounted in index.ts
+grep -n "consciousness-embodiment\|biblical-analysis\|symbiotic-consciousness\|automated-legal\|new-year-2026" \
+  server/index.ts server/routes.ts
+
+# If NOT found, safe to delete:
+rm -f server/routes/consciousness-embodiment.ts
+rm -f server/routes/biblical-analysis.ts  
+rm -f server/routes/symbiotic-consciousness-growth.ts
+rm -f server/routes/mathematical-consciousness-integration.ts
+rm -f server/automated-legal-generator.ts
+rm -f server/routes/new-year-2026-revenue-activation.ts
+
+# Clean up root-level orphaned engines
+rm -f human-anatomy-engine.ts
+rm -f unified-geometry-engine.ts
+
+# Remove duplicate github service
+rm -f "server/services/githubService (copy).ts"
+```
+
+### Step 2: Consolidate quantum routes
+There are 5 quantum route files. Check what's actually mounted:
+```bash
+grep -n "quantum" server/index.ts | head -20
+```
+
+Keep whichever ones are mounted. Move unused ones to an `_archive` folder.
+
+### Step 3: Remove JupyterLab dependency
+```bash
+# Check if jupyter is actually used anywhere in the app code
+grep -rn "jupyter\|jupyterlab\|JupyterLab" server/ client/src/ --include="*.ts" --include="*.tsx" | grep -v node_modules
+
+# If only found in package.json and not in actual code:
+npm uninstall @jupyterlab/toc jupyter-notebook jupyterlab
+```
+This removes ~50MB from the dependency tree.
+
+### Step 4: Consolidate sitemap routes
+```bash
+grep -n "sitemap" server/index.ts | head -20
+```
+Keep the ones actually mounted. Delete the rest.
+
+### Step 5: Verify build still clean
+```bash
+npx tsc --noEmit 2>&1 | tail -5
+npm run build 2>&1 | grep -E "error|✓|built in"
+```
+
+---
+
+## TASK 18E — API HUB CLARITY
+
+The app has 90 routes but no clear API. Create one clean API index file:
+
+```bash
+cat > server/routes/api-index.ts << 'EOF'
+/**
+ * ΔMENSION API HUB — Core endpoints
+ * These are the production-ready endpoints worth documenting and exposing.
+ */
+export const API_ENDPOINTS = {
+  
+  // SHAPES — Core mathematical objects
+  'GET /api/v1/shapes': 'List all shapes with metadata',
+  'GET /api/v1/shapes/:type': 'Full shape data: formula + tokens + physics',
+  'GET /api/v1/shapes/:type/formula': 'X/Y/Z parametric equations',
+  'GET /api/v1/shapes/:type/embedding': 'ML feature vector',
+  'GET /api/v1/shapes/categories': '42 mathematical categories',
+  'POST /api/v1/shapes/compute': 'Generate geometry for rendering',
+  'POST /api/v1/shapes/similar': 'Nearest neighbors by embedding',
+  
+  // TOKENS — Semantic metadata
+  'GET /api/v1/tokens/search': 'Search 2.59M shape tokens',
+  'GET /api/v1/tokens/shape/:type': 'All tokens for one shape',
+  'GET /api/v1/tokens/top': 'Highest frequency tokens',
+  
+  // QUANTUM — IBM quantum bridge
+  'POST /api/v1/quantum/bridge': 'Shape topology → QASM circuit → IBM backend',
+  'GET /api/v1/quantum/status/:jobId': 'Poll quantum job status',
+  'GET /api/v1/quantum/results/:jobId': 'Get measurement results',
+  
+  // ML — Training data
+  'GET /api/v1/ml/dataset': 'Bulk export: formulas + embeddings + topology',
+  'GET /api/v1/ml/graph': 'Shape relationship graph (1200 edges)',
+  'POST /api/v1/ml/extract-features': 'Extract feature vector for custom shape',
+  
+  // EXPORT — 3D models
+  'POST /api/v1/export/glb': 'Export shape as GLB/GLTF',
+  'POST /api/v1/export/stl': 'Export shape as STL',
+  'GET /api/v1/export/formats': 'Available export formats',
+
+};
+EOF
+```
+
+---
+
+## VERIFICATION
+
+After all 18A-18E tasks:
+
+```bash
+# 1. Scale presets don't break shapes
+# Test: select torus, apply Micro preset, confirm torus still looks like a torus
+
+# 2. Shapes visible without tweaking
+# Test: select Lorenz attractor — should be visible immediately
+
+# 3. Build clean
+npx tsc --noEmit 2>&1 | tail -3
+npm run build 2>&1 | grep "built in"
+
+# 4. Bundle size reduced (JupyterLab removed)
+du -sh node_modules/@jupyterlab 2>/dev/null || echo "JupyterLab removed ✅"
+
+# 5. Dead routes removed
+ls server/routes/consciousness-embodiment.ts 2>/dev/null && echo "STILL EXISTS" || echo "Removed ✅"
+
+# 6. DB check - UV domains updated
+psql $DATABASE_URL -c "
+SELECT COUNT(*) FROM formula_implementations 
+WHERE (uv_domain->>'uMax')::float >= 6.0 
+AND shape_type IN ('sphere','torus','klein_bottle');
+"
+# Should return 3 (all three updated to 2π)
+```
+
+## WHAT NOT TO DO
+
+- Do NOT remove shape data from formula_implementations
+- Do NOT touch ParametricSurface.tsx geometry generation
+- Do NOT remove the IFS engine or QueensBridge
+- Do NOT remove working payment/NFT routes (even if untested)
+- Do NOT remove authentication system
+- Do NOT consolidate parameter files further (already down to 3)

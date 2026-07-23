@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard — UUON.UUORLD</title>
+<style>
+  :root { --black:#000; --line:rgba(255,255,255,0.14); --white:#fff; --dim:rgba(255,255,255,0.55); }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { background:var(--black); color:var(--white); font-family:'Arial Narrow','Helvetica Neue',Arial,sans-serif; min-height:100vh; }
+  a { color:inherit; text-decoration:none; }
+  header { padding:24px 36px; border-bottom:1px solid var(--line); display:flex; align-items:center; justify-content:space-between; }
+  .back { font-size:12px; letter-spacing:0.1em; text-transform:uppercase; color:var(--dim); font-weight:700; }
+  .back:hover { color:var(--white); }
+  .crumb { font-size:11px; letter-spacing:0.14em; text-transform:uppercase; color:var(--dim); font-weight:600; }
+  main { max-width:640px; margin:0 auto; padding:120px 32px; text-align:center; }
+  h1 { font-size:32px; font-weight:800; text-transform:uppercase; letter-spacing:0.03em; margin-bottom:18px; }
+  p.lead { color:var(--dim); font-size:14px; line-height:1.7; }
+  .tag { display:inline-block; margin-top:24px; font-size:11px; letter-spacing:0.14em; text-transform:uppercase; color:var(--dim); border:1px solid var(--line); padding:6px 14px; }
+  .cta { display:inline-block; margin-top:30px; border:1px solid var(--line); padding:14px 30px; font-weight:800; letter-spacing:0.14em; text-transform:uppercase; font-size:13px; }
+  .cta:hover { background:var(--white); color:#000; }
+</style>
+</head>
+<body>
+<header>
+  <a class="back" href="/">&larr; UUON.UUORLD</a>
+  <div class="crumb">Dashboard</div>
+</header>
+<main>
+  <h1>Dashboard</h1>
+  <p class="lead">Authenticated user tools — token balances, shape history, account settings. The session and auth backend exist; the dashboard interface itself hasn't been built yet. Listed honestly rather than faked.</p>
+  <div class="tag">Coming soon — requires sign-in</div>
+  <br>
+  <a class="cta" href="/">Back to Portal</a>
+</main>
+</body>
+</html>

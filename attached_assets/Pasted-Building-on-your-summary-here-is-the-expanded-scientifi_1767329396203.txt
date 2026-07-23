@@ -1,0 +1,12 @@
+Building on your summary, here is the expanded scientific value for each category as established in current 2026 research:
+Non-Standard DNA Forms & Topologies
+H-DNA (Triplex DNA) & i-Motif: These non-B DNA structures are highly dynamic "molecular switches." They are frequently found in the promoter regions of oncogenes (like c-MYC and BCL-2) and telomeres. Research in 2026 continues to link their stability to genomic instability, making them primary targets for novel cancer therapeutics and "epigenetic clock" research aimed at reversing cellular aging.
+DNA Knots & R-loops: These represent "topological hurdles." R-loops (DNA:RNA hybrids) are critical for gene expression but, when unregulated, cause massive genome instability and disease. DNA knots are studied in topological enzymology to understand how enzymes like topoisomerases prevent lethal "tangles" during replication, serving as key targets for both antibacterial and anticancer drugs. 
+Structural Intermediates & Organization
+Holliday Junction (HJ): These cross-like assemblies are the essential intermediates for genetic recombination and DNA repair. In 2026, they are recognized as "linchpins" for structural integrity; failure to resolve them properly leads to chromosomal aberrations and cell death. They are also the fundamental building blocks of almost all DNA origami structures.
+Topologically Associated Domains (TADs): This is the "3D blueprint" of the genome. TADs organize DNA into functional neighborhoods that allow distant enhancers to communicate with specific gene promoters. Disruption of TAD boundaries is now a known cause of developmental disorders and "rewiring" in cancer cells, making it a leading contender for future Nobel-level recognition in genomics. 
+Nanotechnology & Engineering
+DNA Origami: This technique has evolved from a laboratory curiosity into a robust bottom-up nanofabrication platform. By 2026, its applications include:
+Drug Delivery: Creating "smart pills" or nanocarriers that only open when they encounter specific disease markers.
+Advanced Catalysts: Using DNA crystals to precisely position scarce materials like iridium oxide, significantly increasing efficiency in hydrogen production.
+Nanophotonics: Precise 3D arrangement of nanoparticles to create light-harvesting systems and molecular-scale electronic circuits.

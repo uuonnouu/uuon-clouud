@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>UUON MATRIX CONTROL</title>
+    <script src="https://cloudflare.com"></script>
+    <style>
+        body { margin: 0; background: #050505; color: #00ffcc; font-family: monospace; overflow: hidden; }
+        #overlay { position: absolute; top: 20px; left: 20px; z-index: 10; background: rgba(5,5,5,0.9); padding: 20px; border: 1px solid #00ffcc; box-shadow: 0 0 10px #00ffcc; }
+        .val { color: #fff; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <div id="overlay">
+        <h1>🛸 UUON Matrix Control</h1>
+        <div>Target: <span id="name" class="val">Loading...</span></div>
+        <div>Value: <span id="val" class="val">$0.000000 USD</span></div>
+        <div>Energy: <span id="eng" style="color:#f0f">0.0e+00</span></div>
+    </div>
+    <div id="canvas"></div>
+    <script>
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 100);
+        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        document.getElementById("canvas").appendChild(renderer.domElement);
+
+        const vs = `
+            uniform float t; uniform float a; uniform float f; varying vec3 n;
+            void main() {
+                n = normal; vec3 p = position;
+                p += normal * sin(p.y * f + t) * cos(p.x * f + t) * (a * 0.01);
+                gl_Position = projectionMatrix * modelViewMatrix * vec4(p, 1.0);
+            }
+        `;
+        const fs = `
+            varying vec3 n; uniform float t;
+            void main() { gl_FragColor = vec4(0.5 + 0.5 * cos(t + n + vec3(0,2,4)), 0.9); }
+        `;
+
+        const u = { t: { value: 0 }, a: { value: 10 }, f: { value: 2 } };
+        const mat = new THREE.ShaderMaterial({ vertexShader: vs, fragmentShader: fs, uniforms: u, wireframe: true });
+        const mesh = new THREE.Mesh(new THREE.IcosahedronGeometry(2, 32), mat);
+        scene.add(mesh); camera.position.z = 5;
+
+        async function sync() {
+            try {
+                // Pointing directly to your active local workspace tunnel endpoint
+                const r = await fetch("http://localhost:3000/api/lattice/shape/1478");
+                if (!r.ok) return;
+                const d = await r.json();
+                document.getElementById("name").innerText = d.name;
+                document.getElementById("val").innerText = `$${d.valuation} USD`;
+                document.getElementById("eng").innerText = parseFloat(d.energy).toExponential(2);
+                u.a.value = parseFloat(d.valuation) * 0.02;
+                u.f.value = d.morphs ? parseFloat(d.morphs.p4_res) * 0.1 : 3;
+            } catch (e) {}
+        }
+
+        function animate() {
+            requestAnimationFrame(animate);
+            u.t.value += 0.02; mesh.rotation.y += 0.002; renderer.render(scene, camera);
+        }
+        setInterval(sync, 2000); sync(); animate();
+    </script>
+</body>
+</html>

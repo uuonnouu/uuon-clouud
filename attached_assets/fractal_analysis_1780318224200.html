@@ -1,0 +1,1053 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>UUON -- Fractal Analysis Engine v1.000</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@300;400;600;700&display=swap');
+:root{--void:#04080f;--teal:#00E5CC;--gold:#C9A84C;--violet:#7B5EA7;--panel:#060c17;--dim:rgba(0,229,204,0.35);--border:rgba(0,229,204,0.10);}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--void);color:var(--teal);font-family:'Share Tech Mono',monospace;min-height:100vh;display:flex;flex-direction:column;}
+header{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;padding:8px 16px;border-bottom:1px solid var(--border);background:var(--panel);}
+.logo{font-family:'Rajdhani',sans-serif;font-weight:700;font-size:12px;letter-spacing:5px;color:var(--gold);}
+.logo em{color:var(--teal);font-style:normal;}
+.etitle{font-family:'Rajdhani',sans-serif;font-size:11px;letter-spacing:4px;color:var(--dim);text-align:center;}
+.ver{text-align:right;font-size:9px;color:rgba(201,168,76,0.55);letter-spacing:2px;}
+.main{display:flex;flex:1;gap:0;overflow:hidden;height:calc(100vh - 42px);}
+
+/* LEFT: upload + preview */
+.left{width:340px;flex-shrink:0;background:var(--panel);border-right:1px solid var(--border);display:flex;flex-direction:column;overflow-y:auto;}
+
+/* CENTER: analysis results */
+.center{flex:1;display:flex;flex-direction:column;overflow-y:auto;padding:16px;}
+
+/* RIGHT: IFS output */
+.right{width:300px;flex-shrink:0;background:var(--panel);border-left:1px solid var(--border);display:flex;flex-direction:column;overflow-y:auto;}
+
+.section{padding:12px 14px;border-bottom:1px solid var(--border);}
+.sl{font-family:'Rajdhani',sans-serif;font-size:9px;letter-spacing:5px;color:var(--gold);opacity:.7;text-transform:uppercase;margin-bottom:10px;}
+
+/* Upload zone */
+.upload-zone{margin:14px;border:2px dashed rgba(0,229,204,0.2);padding:24px 16px;text-align:center;cursor:pointer;transition:all .2s;border-radius:2px;}
+.upload-zone:hover,.upload-zone.drag{border-color:var(--teal);background:rgba(0,229,204,0.04);}
+.upload-zone input{display:none;}
+.upload-zone .icon{font-size:32px;color:rgba(0,229,204,0.3);margin-bottom:8px;}
+.upload-zone p{font-size:9px;color:var(--dim);line-height:1.8;}
+.upload-zone .hint{font-size:8px;color:rgba(0,229,204,0.2);margin-top:6px;}
+
+/* Image preview */
+.preview-wrap{position:relative;margin:0 14px 14px;}
+#previewCanvas{width:100%;border:1px solid var(--border);display:none;}
+.preview-overlay{position:absolute;top:0;left:0;right:0;bottom:0;pointer-events:none;}
+/* box-count grid overlay */
+.scan-line{position:absolute;top:0;left:0;right:0;height:2px;background:rgba(0,229,204,0.6);transform:translateY(0);display:none;}
+
+/* Analysis canvases */
+.analysis-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;}
+.analysis-card{background:var(--panel);border:1px solid var(--border);padding:10px;}
+.analysis-card .card-title{font-size:8px;color:var(--gold);letter-spacing:2px;margin-bottom:8px;}
+.analysis-card canvas{width:100%;height:80px;display:block;}
+.analysis-card .card-val{font-size:11px;color:var(--teal);margin-top:6px;text-align:center;}
+.analysis-card .card-sub{font-size:8px;color:var(--dim);text-align:center;margin-top:2px;}
+
+/* Metric bars */
+.metric{margin-bottom:10px;}
+.metric-label{display:flex;justify-content:space-between;font-size:9px;color:var(--dim);margin-bottom:3px;}
+.metric-label .mv{color:var(--teal);}
+.metric-bar{height:3px;background:rgba(0,229,204,0.1);position:relative;}
+.metric-fill{height:100%;background:var(--teal);transition:width 0.8s ease;}
+.metric-fill.gold{background:var(--gold);}
+.metric-fill.violet{background:var(--violet);}
+
+/* IFS output panel */
+.ir{display:flex;justify-content:space-between;font-size:8.5px;color:var(--dim);margin-bottom:5px;line-height:1.7;}
+.ir .iv{color:var(--teal);}.ir .ig{color:var(--gold);}
+.dna-output{background:#020508;border:1px solid rgba(0,229,204,0.1);padding:10px;font-size:8px;color:rgba(0,229,204,0.6);line-height:1.9;word-break:break-all;margin-bottom:8px;}
+.dna-output span{color:var(--teal);}
+.ab{width:100%;padding:7px;font-family:'Share Tech Mono',monospace;font-size:8.5px;letter-spacing:2px;background:transparent;border:1px solid var(--border);color:var(--teal);cursor:pointer;transition:all .18s;text-transform:uppercase;margin-bottom:5px;}
+.ab:hover{background:rgba(0,229,204,0.06);border-color:var(--teal);}
+.ab.gb{border-color:rgba(201,168,76,0.3);color:var(--gold);}
+.ab.gb:hover{background:rgba(201,168,76,0.06);border-color:var(--gold);}
+.ab:disabled{opacity:0.3;cursor:not-allowed;}
+
+/* Status */
+.status{font-size:8px;color:rgba(0,229,204,0.4);padding:6px 14px;border-bottom:1px solid var(--border);min-height:28px;letter-spacing:1px;}
+.status.running{color:var(--teal);}
+.status.done{color:var(--gold);}
+
+/* Symmetry wheel */
+.sym-wheel{width:100%;height:100px;display:block;}
+
+/* Progress */
+.progress{height:2px;background:rgba(0,229,204,0.1);margin:0;}
+.progress-fill{height:100%;background:var(--teal);width:0%;transition:width 0.3s;}
+
+footer{padding:5px 16px;border-top:1px solid var(--border);background:var(--panel);font-size:8px;color:var(--dim);display:flex;justify-content:space-between;}
+</style>
+</head>
+<body>
+<header>
+  <div class="logo">UUON <em>Foundation</em></div>
+  <div class="etitle">Fractal Analysis Engine v1.000 -- Inverse IFS Codec Stage 1</div>
+  <div class="ver">PATH 1: SHAPE → PARAMETERS</div>
+</header>
+
+<div class="main">
+  <!-- LEFT: Upload + Preview -->
+  <div class="left">
+    <div class="section">
+      <div class="sl">Image Input</div>
+      <div class="upload-zone" id="uploadZone">
+        <div class="icon">⬡</div>
+        <p>Drop image here<br>or click to select</p>
+        <p class="hint">PNG / JPG / WEBP<br>microscopy, texture, material, fractal</p>
+        <input type="file" id="fileInput" accept="image/*">
+      </div>
+      <div class="preview-wrap">
+        <canvas id="previewCanvas"></canvas>
+        <div class="preview-overlay">
+          <div class="scan-line" id="scanLine"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="sl">Source Info</div>
+      <div class="ir"><span>Filename</span><span class="iv" id="infoName">--</span></div>
+      <div class="ir"><span>Dimensions</span><span class="iv" id="infoDims">--</span></div>
+      <div class="ir"><span>Sample size</span><span class="iv" id="infoSample">256x256</span></div>
+      <div class="ir"><span>Channels</span><span class="iv" id="infoChannels">--</span></div>
+    </div>
+
+    <div class="section">
+      <div class="sl">Analysis Controls</div>
+      <button class="ab gb" id="analyzeBtn" disabled>ANALYZE IMAGE</button>
+      <button class="ab" id="exampleBtn">LOAD EXAMPLE</button>
+      <div class="ir" style="margin-top:6px"><span>Box sizes</span><span class="iv">2,4,8,16,32,64,128</span></div>
+      <div class="ir"><span>Lacunarity windows</span><span class="iv">8,16,32,64</span></div>
+      <div class="ir"><span>FFT resolution</span><span class="iv">256 bins</span></div>
+    </div>
+  </div>
+
+  <!-- CENTER: Analysis Results -->
+  <div class="center">
+    <div class="status" id="statusBar">Load an image to begin fractal analysis</div>
+    <div class="progress"><div class="progress-fill" id="progressFill"></div></div>
+
+    <div style="margin-top:16px">
+      <!-- Metrics -->
+      <div style="background:var(--panel);border:1px solid var(--border);padding:12px;margin-bottom:12px;">
+        <div class="sl">Fractal Metrics</div>
+        <div class="metric">
+          <div class="metric-label"><span>Hausdorff Dimension</span><span class="mv" id="mHausdorff">--</span></div>
+          <div class="metric-bar"><div class="metric-fill" id="bHausdorff" style="width:0%"></div></div>
+        </div>
+        <div class="metric">
+          <div class="metric-label"><span>Lacunarity</span><span class="mv" id="mLacunarity">--</span></div>
+          <div class="metric-bar"><div class="metric-fill gold" id="bLacunarity" style="width:0%"></div></div>
+        </div>
+        <div class="metric">
+          <div class="metric-label"><span>Multifractal Width (alpha range)</span><span class="mv" id="mAlpha">--</span></div>
+          <div class="metric-bar"><div class="metric-fill violet" id="bAlpha" style="width:0%"></div></div>
+        </div>
+        <div class="metric">
+          <div class="metric-label"><span>Self-Similarity Score</span><span class="mv" id="mSelfSim">--</span></div>
+          <div class="metric-bar"><div class="metric-fill" id="bSelfSim" style="width:0%"></div></div>
+        </div>
+        <div class="metric">
+          <div class="metric-label"><span>Phi Ratio Presence</span><span class="mv" id="mPhi">--</span></div>
+          <div class="metric-bar"><div class="metric-fill gold" id="bPhi" style="width:0%"></div></div>
+        </div>
+      </div>
+
+      <!-- Charts row -->
+      <div class="analysis-grid">
+        <div class="analysis-card">
+          <div class="card-title">BOX COUNT LOG-LOG</div>
+          <canvas id="boxCanvas" height="80"></canvas>
+          <div class="card-val" id="boxDimVal">--</div>
+          <div class="card-sub">slope = -Hausdorff dim</div>
+        </div>
+        <div class="analysis-card">
+          <div class="card-title">LACUNARITY CURVE</div>
+          <canvas id="lacCanvas" height="80"></canvas>
+          <div class="card-val" id="lacVal">--</div>
+          <div class="card-sub">variance/mean^2 per scale</div>
+        </div>
+        <div class="analysis-card">
+          <div class="card-title">MULTIFRACTAL f(alpha)</div>
+          <canvas id="mfCanvas" height="80"></canvas>
+          <div class="card-val" id="mfVal">--</div>
+          <div class="card-sub">singularity spectrum</div>
+        </div>
+        <div class="analysis-card">
+          <div class="card-title">SYMMETRY ANGULAR FFT</div>
+          <canvas id="symCanvas" height="80"></canvas>
+          <div class="card-val" id="symVal">--</div>
+          <div class="card-sub">rotational order detected</div>
+        </div>
+      </div>
+
+      <!-- Interpretation -->
+      <div style="background:var(--panel);border:1px solid var(--border);padding:12px;">
+        <div class="sl">Analysis Interpretation</div>
+        <div id="interpretation" style="font-size:9px;color:var(--dim);line-height:2.0">
+          Load an image to see the fractal interpretation and IFS parameter mapping.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RIGHT: IFS Parameter Output -->
+  <div class="right">
+    <div class="section">
+      <div class="sl">IFS Parameter Map</div>
+      <div class="ir"><span>Fold type</span><span class="ig" id="outFT">--</span></div>
+      <div class="ir"><span>Menger iter</span><span class="iv" id="outMI">--</span></div>
+      <div class="ir"><span>Scale</span><span class="iv" id="outSC">--</span></div>
+      <div class="ir"><span>Offset X</span><span class="iv" id="outOX">--</span></div>
+      <div class="ir"><span>Offset Y</span><span class="iv" id="outOY">--</span></div>
+      <div class="ir"><span>Offset Z</span><span class="iv" id="outOZ">--</span></div>
+      <div class="ir"><span>Fold iter</span><span class="iv" id="outFI">--</span></div>
+      <div class="ir"><span>Fold size</span><span class="iv" id="outFS">--</span></div>
+      <div class="ir"><span>Fold scale</span><span class="iv" id="outFSC">--</span></div>
+      <div class="ir"><span>Min radius</span><span class="iv" id="outMR">--</span></div>
+      <div class="ir"><span>Blend</span><span class="iv" id="outBL">--</span></div>
+      <div class="ir"><span>Twist</span><span class="iv" id="outTW">--</span></div>
+      <div class="ir"><span>Confidence</span><span class="ig" id="outConf">--</span></div>
+    </div>
+
+    <div class="section">
+      <div class="sl">DNA Output</div>
+      <div class="dna-output" id="dnaOutput">
+        Awaiting analysis...
+      </div>
+      <button class="ab gb" id="copyDnaBtn" disabled>COPY DNA STRING</button>
+      <button class="ab" id="loadEngineBtn" disabled>OPEN IN queuePIT</button>
+    </div>
+
+    <div class="section">
+      <div class="sl">Match Quality</div>
+      <div class="ir"><span>Geometric match</span><span class="iv" id="qGeo">--</span></div>
+      <div class="ir"><span>Texture match</span><span class="iv" id="qTex">--</span></div>
+      <div class="ir"><span>Symmetry match</span><span class="iv" id="qSym">--</span></div>
+      <div class="ir"><span>Scale match</span><span class="iv" id="qScale">--</span></div>
+      <div style="margin-top:8px;font-size:8px;color:rgba(0,229,204,0.25);line-height:1.7">
+        Match quality indicates how well the IFS parameter space can represent this image's fractal structure. Organic and natural forms match best. Engineered geometry matches poorly.
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="sl">Parameter Ranges</div>
+      <div style="font-size:8px;color:rgba(0,229,204,0.25);line-height:1.8" id="rangeDisplay">
+        The IFS can approximate the target across a range of parameters. The DNA string gives the optimal center point. Explore nearby values for variations.
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <span>UUON Foundation -- Fractal Analysis Engine -- Inverse IFS Codec Stage 1</span>
+  <span>Path 1: Arbitrary geometry → 12 parameters</span>
+</footer>
+
+<script>
+// ============================================================
+// UUON FRACTAL ANALYSIS ENGINE v1.000
+// Stage 1 of Inverse IFS Codec
+// Computes fractal dimension, lacunarity, multifractal spectrum,
+// symmetry order -- maps to IFS parameter space
+// ============================================================
+
+var imgData = null;
+var W = 256, H = 256; // analysis resolution
+var analysisResults = null;
+var outputParams = null;
+
+//    Upload handling                                                            
+var uploadZone = document.getElementById('uploadZone');
+var fileInput  = document.getElementById('fileInput');
+
+uploadZone.addEventListener('click', function(){ fileInput.click(); });
+uploadZone.addEventListener('dragover', function(e){
+  e.preventDefault(); uploadZone.classList.add('drag');
+});
+uploadZone.addEventListener('dragleave', function(){
+  uploadZone.classList.remove('drag');
+});
+uploadZone.addEventListener('drop', function(e){
+  e.preventDefault(); uploadZone.classList.remove('drag');
+  var file = e.dataTransfer.files[0];
+  if(file && file.type.startsWith('image/')) loadImage(file);
+});
+fileInput.addEventListener('change', function(){
+  if(this.files[0]) loadImage(this.files[0]);
+});
+
+function loadImage(file) {
+  document.getElementById('infoName').textContent = file.name.slice(0,20);
+  var reader = new FileReader();
+  reader.onload = function(e){
+    var img = new Image();
+    img.onload = function(){
+      document.getElementById('infoDims').textContent = img.width+'x'+img.height;
+      document.getElementById('infoChannels').textContent = 'RGBA';
+      prepareImageData(img);
+    };
+    img.src = e.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+
+function prepareImageData(img) {
+  // Draw to preview canvas
+  var pc = document.getElementById('previewCanvas');
+  pc.style.display = 'block';
+  pc.width = 312; pc.height = 312;
+  var pctx = pc.getContext('2d');
+  pctx.drawImage(img, 0, 0, 312, 312);
+
+  // Extract pixel data at analysis resolution
+  var ac = document.createElement('canvas');
+  ac.width = W; ac.height = H;
+  var actx = ac.getContext('2d');
+  actx.drawImage(img, 0, 0, W, H);
+  imgData = actx.getImageData(0, 0, W, H).data;
+
+  setStatus('Image loaded. Ready to analyze.', '');
+  document.getElementById('analyzeBtn').disabled = false;
+}
+
+//    Example: generate a synthetic fractal for demonstration                    
+document.getElementById('exampleBtn').addEventListener('click', function(){
+  // Generate a synthetic Menger-like pattern as the "input image"
+  var ac = document.createElement('canvas');
+  ac.width = W; ac.height = H;
+  var actx = ac.getContext('2d');
+  var idata = actx.createImageData(W, H);
+  var d = idata.data;
+
+  // Simple IFS-based pattern: Sierpinski-like recursive subdivision
+  for(var y=0; y<H; y++){
+    for(var x=0; x<W; x++){
+      var nx = x/W, ny = y/H;
+      // Menger Sponge projection: check if in void
+      var inVoid = false;
+      var qx=nx*3,qy=ny*3;
+      for(var iter=0;iter<5;iter++){
+        var cx=Math.floor(qx)%3, cy=Math.floor(qy)%3;
+        if(cx===1&&cy===1){inVoid=true;break;}
+        if((cx+cy)%2===0&&cx!==cy){inVoid=true;break;}
+        qx=(qx%1)*3; qy=(qy%1)*3;
+      }
+      // Add noise for texture
+      var noise = (Math.random()-0.5)*0.15;
+      var val = inVoid ? Math.floor(20+noise*50) : Math.floor(180+noise*60);
+      val = Math.max(0,Math.min(255,val));
+      var idx=(y*W+x)*4;
+      d[idx]=val; d[idx+1]=val+20; d[idx+2]=val+40; d[idx+3]=255;
+    }
+  }
+  actx.putImageData(idata,0,0);
+  imgData = idata.data;
+
+  var pc=document.getElementById('previewCanvas');
+  pc.style.display='block'; pc.width=312; pc.height=312;
+  pc.getContext('2d').drawImage(ac,0,0,312,312);
+
+  document.getElementById('infoName').textContent='synthetic_menger.png';
+  document.getElementById('infoDims').textContent=W+'x'+H;
+  document.getElementById('infoChannels').textContent='RGBA (generated)';
+  document.getElementById('analyzeBtn').disabled=false;
+  setStatus('Synthetic Menger-type fractal loaded. Ready to analyze.','');
+});
+
+//    Main analysis pipeline                                                     
+document.getElementById('analyzeBtn').addEventListener('click', function(){
+  if(!imgData){ setStatus('No image loaded',''); return; }
+  runAnalysis();
+});
+
+async function runAnalysis() {
+  document.getElementById('analyzeBtn').disabled = true;
+  setStatus('RUNNING: Converting to grayscale...','running');
+  setProgress(5);
+
+  // Convert to grayscale
+  var gray = new Float32Array(W*H);
+  for(var i=0;i<W*H;i++){
+    gray[i] = (0.299*imgData[i*4] + 0.587*imgData[i*4+1] + 0.114*imgData[i*4+2]) / 255.0;
+  }
+
+  await delay(30);
+  setStatus('RUNNING: Box-counting fractal dimension...','running');
+  setProgress(15);
+  var boxResult = boxCountDimension(gray);
+
+  await delay(30);
+  setStatus('RUNNING: Lacunarity analysis...','running');
+  setProgress(35);
+  var lacResult = lacunarity(gray);
+
+  await delay(30);
+  setStatus('RUNNING: Multifractal spectrum...','running');
+  setProgress(55);
+  var mfResult = multifractalSpectrum(gray);
+
+  await delay(30);
+  setStatus('RUNNING: Symmetry detection (angular FFT)...','running');
+  setProgress(70);
+  var symResult = symmetryDetection(gray);
+
+  await delay(30);
+  setStatus('RUNNING: Phi ratio analysis...','running');
+  setProgress(80);
+  var phiResult = phiAnalysis(gray, boxResult, lacResult);
+
+  await delay(30);
+  setStatus('RUNNING: Mapping to IFS parameter space...','running');
+  setProgress(90);
+
+  analysisResults = {
+    hausdorff: boxResult.dim,
+    lacunarity: lacResult.mean,
+    alphaRange: mfResult.alphaRange,
+    selfSim: boxResult.r2,
+    symmetryOrder: symResult.order,
+    symmetryStrength: symResult.strength,
+    phiPresence: phiResult.score,
+    boxSizes: boxResult.sizes,
+    boxCounts: boxResult.counts,
+    lacCurve: lacResult.curve,
+    mfAlpha: mfResult.alpha,
+    mfF: mfResult.f,
+    symAngular: symResult.angular,
+  };
+
+  outputParams = mapToIFS(analysisResults);
+
+  setProgress(100);
+  await delay(100);
+
+  renderResults(analysisResults);
+  renderOutput(outputParams);
+  setStatus('COMPLETE: Fractal analysis finished. IFS parameters mapped.', 'done');
+  document.getElementById('analyzeBtn').disabled = false;
+  document.getElementById('copyDnaBtn').disabled = false;
+  document.getElementById('loadEngineBtn').disabled = false;
+}
+
+//    Box-counting fractal dimension                                            
+// Threshold the image, count occupied boxes at multiple scales
+// Slope of log(count) vs log(1/boxSize) = Hausdorff dimension
+function boxCountDimension(gray) {
+  // Threshold: pixels above mean are "occupied"
+  var mean = 0;
+  for(var i=0;i<gray.length;i++) mean+=gray[i];
+  mean/=gray.length;
+  var thresh = mean;
+
+  var binary = new Uint8Array(W*H);
+  for(var i=0;i<gray.length;i++) binary[i]=gray[i]>thresh?1:0;
+
+  var sizes = [2,4,8,16,32,64,128];
+  var counts = [];
+
+  for(var si=0;si<sizes.length;si++){
+    var bs=sizes[si];
+    var count=0;
+    for(var y=0;y<H;y+=bs){
+      for(var x=0;x<W;x+=bs){
+        var hasOccupied=false;
+        for(var dy=0;dy<bs&&y+dy<H;dy++){
+          for(var dx=0;dx<bs&&x+dx<W;dx++){
+            if(binary[(y+dy)*W+(x+dx)]){hasOccupied=true;break;}
+          }
+          if(hasOccupied) break;
+        }
+        if(hasOccupied) count++;
+      }
+    }
+    counts.push(count);
+  }
+
+  // Linear regression on log-log
+  var logS = sizes.map(function(s){return Math.log(1/s);});
+  var logC = counts.map(function(c){return Math.log(Math.max(c,1));});
+  var reg = linearRegression(logS, logC);
+
+  return { dim: Math.max(1.0, Math.min(2.0, reg.slope)), r2: reg.r2, sizes: sizes, counts: counts };
+}
+
+//    Lacunarity                                                                
+// Measures the gap structure -- how "gappy" the fractal is
+// High lacunarity = lots of large voids (like Menger at low mi)
+// Low lacunarity = dense, uniform texture
+function lacunarity(gray) {
+  var windows = [8, 16, 32, 64];
+  var curve = [];
+  var mean_lac = 0;
+
+  for(var wi=0;wi<windows.length;wi++){
+    var ws = windows[wi];
+    var masses = [];
+    for(var y=0;y+ws<=H;y+=Math.floor(ws/2)){
+      for(var x=0;x+ws<=W;x+=Math.floor(ws/2)){
+        var mass=0;
+        for(var dy=0;dy<ws;dy++)
+          for(var dx=0;dx<ws;dx++)
+            mass+=gray[(y+dy)*W+(x+dx)];
+        masses.push(mass/(ws*ws));
+      }
+    }
+    // Lacunarity = (std/mean)^2
+    var m=0; for(var i=0;i<masses.length;i++) m+=masses[i]; m/=masses.length;
+    var v=0; for(var i=0;i<masses.length;i++) v+=(masses[i]-m)*(masses[i]-m); v/=masses.length;
+    var lac = m>0.001 ? v/(m*m) : 0;
+    curve.push(lac);
+    mean_lac+=lac;
+  }
+  mean_lac/=windows.length;
+
+  return { mean: mean_lac, curve: curve, windows: windows };
+}
+
+//    Multifractal spectrum                                                      
+// Computes the f(alpha) singularity spectrum
+// Wide spectrum = multifractal (complex, varied structure)
+// Narrow spectrum = monofractal (uniform self-similarity)
+function multifractalSpectrum(gray) {
+  var qs = [-3,-2,-1,0,1,2,3];
+  var scales = [4,8,16,32];
+  var tau = [];
+
+  for(var qi=0;qi<qs.length;qi++){
+    var q=qs[qi];
+    var tauQ=0, scaleCount=0;
+
+    for(var si=0;si<scales.length;si++){
+      var bs=scales[si];
+      var measures=[];
+      for(var y=0;y+bs<=H;y+=bs){
+        for(var x=0;x+bs<=W;x+=bs){
+          var m=0;
+          for(var dy=0;dy<bs;dy++)
+            for(var dx=0;dx<bs;dx++)
+              m+=Math.max(0.001,gray[(y+dy)*W+(x+dx)]);
+          m/=(bs*bs);
+          measures.push(m);
+        }
+      }
+      // Partition function
+      var Z=0;
+      for(var i=0;i<measures.length;i++)
+        Z+=Math.pow(Math.max(measures[i],1e-10),q);
+      tauQ+=Math.log(Math.max(Z,1e-10));
+      scaleCount++;
+    }
+    tau.push(tauQ/scaleCount);
+  }
+
+  // alpha = d(tau)/dq, f = q*alpha - tau
+  var alpha=[], f=[];
+  for(var i=1;i<qs.length-1;i++){
+    var a=(tau[i+1]-tau[i-1])/(qs[i+1]-qs[i-1]);
+    alpha.push(a);
+    f.push(qs[i]*a-tau[i]);
+  }
+
+  var alphaMin=Math.min.apply(null,alpha);
+  var alphaMax=Math.max.apply(null,alpha);
+
+  return { alphaRange: alphaMax-alphaMin, alpha: alpha, f: f };
+}
+
+//    Symmetry detection via angular autocorrelation                             
+// Samples the image in rings, computes angular FFT
+// Finds the dominant rotational order (2-fold, 4-fold, 5-fold, 6-fold)
+function symmetryDetection(gray) {
+  var cx=W/2, cy=H/2;
+  var radii=[20,40,60,80];
+  var nAngles=360;
+  var combined=new Float32Array(nAngles);
+
+  for(var ri=0;ri<radii.length;ri++){
+    var r=radii[ri];
+    for(var ai=0;ai<nAngles;ai++){
+      var ang=ai/nAngles*2*Math.PI;
+      var x=Math.round(cx+r*Math.cos(ang));
+      var y=Math.round(cy+r*Math.sin(ang));
+      if(x>=0&&x<W&&y>=0&&y<H)
+        combined[ai]+=gray[y*W+x];
+    }
+  }
+
+  // Compute power at each rotational frequency
+  var powers=[];
+  for(var freq=2;freq<=8;freq++){
+    var re=0,im=0;
+    for(var ai=0;ai<nAngles;ai++){
+      var phase=2*Math.PI*freq*ai/nAngles;
+      re+=combined[ai]*Math.cos(phase);
+      im+=combined[ai]*Math.sin(phase);
+    }
+    powers.push({freq:freq,power:re*re+im*im});
+  }
+  powers.sort(function(a,b){return b.power-a.power;});
+
+  var dominant=powers[0];
+  var total=0; for(var i=0;i<powers.length;i++) total+=powers[i].power;
+  var strength=total>0?dominant.power/total:0;
+
+  return {
+    order: dominant.freq,
+    strength: strength,
+    angular: combined,
+    powers: powers
+  };
+}
+
+//    Phi ratio analysis                                                         
+// Checks if the image contains phi-ratio spatial relationships
+// Measures frequency of ratio ~1.618 between spatial features
+function phiAnalysis(gray, boxResult, lacResult) {
+  var PHI = 1.61803398875;
+  var score = 0;
+
+  // Check if box-count ratio between successive scales approaches phi
+  var bc = boxResult.counts;
+  var phiMatches = 0;
+  for(var i=0;i<bc.length-1;i++){
+    if(bc[i+1]>0){
+      var ratio=bc[i]/bc[i+1];
+      var phiDist=Math.abs(ratio-PHI)/PHI;
+      if(phiDist<0.15) phiMatches++;
+    }
+  }
+  score += phiMatches / (bc.length-1) * 0.5;
+
+  // Check lacunarity curve for phi-ratio decay
+  var lc = lacResult.curve;
+  for(var i=0;i<lc.length-1;i++){
+    if(lc[i+1]>0.001){
+      var r=lc[i]/lc[i+1];
+      if(Math.abs(r-PHI)<0.2) score+=0.1;
+    }
+  }
+
+  return { score: Math.min(score,1.0) };
+}
+
+//    Map analysis results to IFS parameters                                     
+// This is the core of the inverse IFS codec
+// Hausdorff dimension -> mi, sc
+// Lacunarity -> bl (blend), ox/oy/oz
+// Symmetry -> ft (fold type)
+// Alpha range -> fsc (fold scale complexity)
+// Phi presence -> twist
+function mapToIFS(res) {
+  var dim   = res.hausdorff;     // 1.0 - 2.0
+  var lac   = res.lacunarity;    // 0.0 - 2.0+
+  var alpha = res.alphaRange;    // 0.0 - 1.0+
+  var sym   = res.symmetryOrder; // 2-8
+  var symS  = res.symmetryStrength; // 0-1
+  var phi   = res.phiPresence;   // 0-1
+  var selfS = res.selfSim;       // r^2, 0-1
+
+  //    mi: Menger iterations from Hausdorff dimension                        
+  // dim 1.0-1.5 -> mi=2, dim 1.5-1.8 -> mi=3, dim 1.8-2.1 -> mi=4, dim 2.1+ -> mi=5
+  var mi = dim < 1.5 ? 2 : dim < 1.8 ? 3 : dim < 2.1 ? 4 : 5;
+  mi = Math.max(2, Math.min(5, mi));
+
+  //    sc: Menger scale from dimension and self-similarity                   
+  // Higher dim -> higher scale (more self-similarity per iteration)
+  var sc = 2.5 + (dim - 1.0) * 0.8 + selfS * 0.3;
+  sc = Math.max(2.5, Math.min(4.5, parseFloat(sc.toFixed(2))));
+
+  //    ox, oy, oz: offsets from lacunarity structure                          
+  // High lac -> high offset (more gap in void structure)
+  // Low lac -> low offset (tight, compressed voids)
+  var oxBase = 0.7 + Math.min(lac, 1.5) * 0.4;
+  var ox = parseFloat(oxBase.toFixed(2));
+  // oy slightly different for anisotropy
+  var oy = parseFloat((oxBase * (0.9 + alpha * 0.2)).toFixed(2));
+  var oz = parseFloat((oxBase * (0.85 + phi * 0.3)).toFixed(2));
+  ox = Math.max(0.4, Math.min(2.0, ox));
+  oy = Math.max(0.4, Math.min(2.0, oy));
+  oz = Math.max(0.4, Math.min(2.0, oz));
+
+  //    ft: fold type from symmetry order                                     
+  // 2-fold -> ft=1 (BOX -- bilateral)
+  // 3-fold -> ft=4 (TETRA -- triangular)
+  // 4-fold -> ft=1 (BOX -- cubic) or ft=4
+  // 5-fold -> ft=2 (KLEINIAN -- quasicrystalline)
+  // 6-fold -> ft=3 (LATTICE -- hexagonal)
+  // Weak symmetry -> ft=0 (NONE) or ft=3 (LATTICE)
+  var ft;
+  if(symS < 0.15) {
+    ft = 3; // Weak symmetry -> lattice
+  } else if(sym === 2 || sym === 4) {
+    ft = 1; // Box -- cubic/bilateral
+  } else if(sym === 3) {
+    ft = 4; // Tetra -- triangular
+  } else if(sym === 5 || sym === 7) {
+    ft = 2; // Kleinian -- quasicrystalline
+  } else if(sym === 6) {
+    ft = 3; // Lattice -- hexagonal
+  } else {
+    ft = 1; // Default to box
+  }
+  var ftNames = ['NONE','BOX','KLEINIAN','LATTICE','TETRA'];
+
+  //    fi: fold iterations from alpha range (multifractal complexity)         
+  // Wide alpha -> more fold iterations (complex multifractal)
+  // Narrow alpha -> fewer (closer to monofractal)
+  var fi = Math.round(1 + alpha * 3);
+  fi = Math.max(1, Math.min(3, fi)); // cap at 3 for safety
+
+  //    fs: fold size from lacunarity                                         
+  var fs = parseFloat((0.5 + lac * 0.4).toFixed(2));
+  fs = Math.max(0.3, Math.min(2.0, fs));
+
+  //    fsc: fold scale from self-similarity and alpha                         
+  // High self-similarity -> higher fsc (more fold amplification)
+  var fsc = parseFloat((1.5 + selfS * 0.25 + alpha * 0.1).toFixed(2));
+  fsc = Math.max(1.4, Math.min(1.85, fsc)); // stay below chaos boundary
+
+  //    mr: min radius from lacunarity (void floor)                            
+  var mr = parseFloat((0.3 + (1.0 - Math.min(lac,1.0)) * 0.4).toFixed(2));
+  mr = Math.max(0.2, Math.min(0.9, mr));
+
+  //    bl: blend from self-similarity score                                  
+  // High self-similarity -> lower blend (fold has more influence)
+  // Low self-similarity -> higher blend (closer to pure Menger)
+  var bl = parseFloat((0.5 - selfS * 0.35).toFixed(3));
+  bl = Math.max(0.0, Math.min(0.6, bl));
+
+  //    twist: from phi presence                                               
+  // Strong phi -> twist near golden angle (2.399)
+  var twist = parseFloat((phi * 1.8).toFixed(3));
+  twist = Math.max(0, Math.min(2.4, twist));
+
+  //    Confidence score                                                       
+  // Based on: self-similarity r^2, symmetry strength, alpha range validity
+  var conf = Math.round((selfS * 0.4 + symS * 0.3 + Math.min(alpha/0.5,1.0) * 0.3) * 100);
+
+  // Quality scores per category
+  var qGeo   = Math.round(selfS * 100);
+  var qTex   = Math.round(Math.min(lac/1.0, 1.0) * 100);
+  var qSym   = Math.round(symS * 100);
+  var qScale = Math.round(Math.min(alpha * 2, 1.0) * 100);
+
+  return {
+    ft, ftName: ftNames[ft],
+    mi, sc, ox, oy, oz,
+    fi, fs, fsc, mr, bl, twist,
+    conf, qGeo, qTex, qSym, qScale,
+    alphaRange: alpha,
+    lacMean: lac,
+    symOrder: sym, symStrength: symS,
+    phiScore: phi,
+  };
+}
+
+//    Render results to UI                                                       
+function renderResults(res) {
+  var dim = Math.max(1.0, Math.min(2.0, res.hausdorff));
+  var lac = Math.min(res.lacunarity / 2.0, 1.0);
+  var alpha = Math.min(res.alphaRange / 1.0, 1.0);
+  var ss = Math.max(0, Math.min(res.selfSim, 1.0));
+  var phi = Math.min(res.phiPresence, 1.0);
+
+  // Metrics
+  setMetric('Hausdorff', res.hausdorff.toFixed(3), (dim-1.0)*100, '');
+  setMetric('Lacunarity', res.lacunarity.toFixed(3), lac*100, 'gold');
+  setMetric('Alpha', res.alphaRange.toFixed(3), alpha*100, 'violet');
+  setMetric('SelfSim', (res.selfSim*100).toFixed(0)+'%', ss*100, '');
+  setMetric('Phi', (res.phiPresence*100).toFixed(0)+'%', phi*100, 'gold');
+
+  // Box count chart
+  drawLogLog(document.getElementById('boxCanvas'), res.boxSizes, res.boxCounts, '#00E5CC');
+  document.getElementById('boxDimVal').textContent = 'D = '+res.hausdorff.toFixed(3);
+
+  // Lacunarity curve
+  drawCurve(document.getElementById('lacCanvas'), res.lacCurve, '#C9A84C');
+  document.getElementById('lacVal').textContent = 'L = '+res.lacunarity.toFixed(3);
+
+  // Multifractal
+  drawScatter(document.getElementById('mfCanvas'), res.mfAlpha, res.mfF, '#7B5EA7');
+  document.getElementById('mfVal').textContent = 'w = '+res.alphaRange.toFixed(3);
+
+  // Symmetry
+  drawAngular(document.getElementById('symCanvas'), res.symAngular, res.symmetryOrder);
+  document.getElementById('symVal').textContent = res.symmetryOrder+'-fold ('+Math.round(res.symmetryStrength*100)+'%)';
+
+  // Interpretation text
+  var interp = [];
+  interp.push('Hausdorff dimension '+res.hausdorff.toFixed(3)+': '
+    +(res.hausdorff<1.5?'Low complexity, smooth texture, few recursive scales.'
+    :res.hausdorff<1.8?'Moderate complexity. Comparable to fern leaf or coastline.'
+    :res.hausdorff<2.1?'High complexity. Comparable to Menger sponge projection, lung tissue.'
+    :'Very high complexity. Near space-filling. Possible noise or dense biological structure.'));
+
+  interp.push('Lacunarity '+res.lacunarity.toFixed(3)+': '
+    +(res.lacunarity<0.1?'Very uniform. Dense texture with few large gaps.'
+    :res.lacunarity<0.5?'Moderate gap structure. Balanced void distribution.'
+    :res.lacunarity<1.0?'High lacunarity. Significant void clustering, sparse regions.'
+    :'Very high lacunarity. Dominant void structure. Coarse gap distribution.'));
+
+  interp.push('Symmetry '+res.symmetryOrder+'-fold (strength '+Math.round(res.symmetryStrength*100)+'%): '
+    +(res.symmetryOrder===5?'Five-fold detected. Quasicrystalline. Maps to Kleinian fold.'
+    :res.symmetryOrder===6?'Six-fold hexagonal. Maps to Lattice fold.'
+    :res.symmetryOrder===4?'Four-fold cubic. Maps to Box or Tetrahedral fold.'
+    :res.symmetryOrder===3?'Triangular symmetry. Maps to Tetrahedral fold.'
+    :'Bilateral or no clear rotational symmetry.'));
+
+  if(res.phiPresence>0.3)
+    interp.push('Phi ratio detected ('+Math.round(res.phiPresence*100)+'% confidence). Golden ratio spatial relationships present. Twist parameter activated.');
+
+  interp.push('Self-similarity R\u00b2 = '+res.selfSim.toFixed(3)+': '
+    +(res.selfSim>0.85?'Strong. Image shows consistent fractal scaling across all box sizes.'
+    :res.selfSim>0.6?'Moderate. Fractal scaling with some noise or mixed structure.'
+    :'Weak. May be textured but not strongly self-similar. Engineered or random origin possible.'));
+
+  document.getElementById('interpretation').innerHTML = interp.map(function(t){
+    return '<div style="margin-bottom:6px;padding-bottom:6px;border-bottom:1px solid rgba(0,229,204,0.06)">'+t+'</div>';
+  }).join('');
+}
+
+function renderOutput(p) {
+  document.getElementById('outFT').textContent  = p.ftName;
+  document.getElementById('outMI').textContent  = p.mi;
+  document.getElementById('outSC').textContent  = p.sc;
+  document.getElementById('outOX').textContent  = p.ox;
+  document.getElementById('outOY').textContent  = p.oy;
+  document.getElementById('outOZ').textContent  = p.oz;
+  document.getElementById('outFI').textContent  = p.fi;
+  document.getElementById('outFS').textContent  = p.fs;
+  document.getElementById('outFSC').textContent = p.fsc;
+  document.getElementById('outMR').textContent  = p.mr;
+  document.getElementById('outBL').textContent  = p.bl;
+  document.getElementById('outTW').textContent  = p.twist;
+  document.getElementById('outConf').textContent= p.conf+'%';
+
+  document.getElementById('qGeo').textContent   = p.qGeo+'%';
+  document.getElementById('qTex').textContent   = p.qTex+'%';
+  document.getElementById('qSym').textContent   = p.qSym+'%';
+  document.getElementById('qScale').textContent = p.qScale+'%';
+
+  // DNA string -- same format as queuePIT
+  var dna = 'ft:'+p.ftName
+    +'  mi:'+p.mi
+    +'  sc:'+p.sc
+    +'  ox:'+p.ox+'/oy:'+p.oy+'/oz:'+p.oz
+    +'  fi:'+p.fi+'  fs:'+p.fs
+    +'  fsc:'+p.fsc+'  mr:'+p.mr
+    +'  bl:'+p.bl+'  tw:'+p.twist
+    +'  3D  cm:0  pal:0';
+
+  document.getElementById('dnaOutput').textContent = dna;
+
+  // Range display
+  var ranges = [
+    'mi range: '+(Math.max(2,p.mi-1))+' - '+(Math.min(6,p.mi+1)),
+    'sc range: '+(p.sc-0.3).toFixed(2)+' - '+(p.sc+0.3).toFixed(2),
+    'fsc range: '+(p.fsc-0.1).toFixed(2)+' - '+(Math.min(1.85,p.fsc+0.1)).toFixed(2),
+    'bl range: '+(Math.max(0,p.bl-0.1)).toFixed(2)+' - '+(Math.min(0.8,p.bl+0.15)).toFixed(2),
+    'twist: 0 to '+(p.twist+0.5).toFixed(2)+' (explore)',
+  ].join('\n');
+  document.getElementById('rangeDisplay').style.whiteSpace='pre';
+  document.getElementById('rangeDisplay').textContent = ranges;
+
+  // Store for copy/load
+  window._currentDNA = dna;
+  window._currentParams = p;
+}
+
+//    Copy DNA                                                                   
+document.getElementById('copyDnaBtn').addEventListener('click', function(){
+  if(!window._currentDNA) return;
+  (navigator.clipboard ? navigator.clipboard.writeText(window._currentDNA) : Promise.reject())
+  .catch(function(){
+    var ta=document.createElement('textarea');ta.value=window._currentDNA;
+    document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);
+  });
+  this.textContent='COPIED';
+  var btn=this;
+  setTimeout(function(){btn.textContent='COPY DNA STRING';},2000);
+});
+
+//    Load into queuePIT                                                         
+document.getElementById('loadEngineBtn').addEventListener('click', function(){
+  if(!window._currentParams) return;
+  var p = window._currentParams;
+  // Build queuePIT URL with params encoded in hash
+  var hash = encodeURIComponent(JSON.stringify({
+    ft:p.ft,mi:p.mi,sc:p.sc,ox:p.ox,oy:p.oy,oz:p.oz,
+    fi:p.fi,fs:p.fs,fsc:p.fsc,mr:p.mr,bl:p.bl,twist:p.twist,
+    trap:0,w4d:0,mode4d:0,cm:0,pal:0,
+    dv:5.0,fov:55,sp:0.7,la:45,le:35,rs:140,aoq:8,
+    _source:'fractal_analysis'
+  }));
+  // Open queuePIT -- if same origin, pass params; otherwise show copy instruction
+  var dnaText = 'DNA: '+window._currentDNA+'\n\nLoad this into queuePIT manually using the parameter sliders.';
+  alert('Parameters ready:\n\n'+
+    'ft:'+['NONE','BOX','KLEINIAN','LATTICE','TETRA'][p.ft]+
+    '  mi:'+p.mi+'  sc:'+p.sc+
+    '\nox:'+p.ox+'  oy:'+p.oy+'  oz:'+p.oz+
+    '\nfi:'+p.fi+'  fs:'+p.fs+'  fsc:'+p.fsc+
+    '\nmr:'+p.mr+'  bl:'+p.bl+'  twist:'+p.twist+
+    '\n\nCopy DNA string and load into queuePIT engine.');
+});
+
+//    Chart drawing helpers                                                      
+function drawLogLog(canvas, sizes, counts, color) {
+  var ctx=canvas.getContext('2d');
+  var W=canvas.clientWidth||200, H=80;
+  canvas.width=W; canvas.height=H;
+  ctx.fillStyle='#020508'; ctx.fillRect(0,0,W,H);
+
+  var logS=sizes.map(function(s){return Math.log(s);});
+  var logC=counts.map(function(c){return Math.log(Math.max(c,1));});
+  var minX=Math.min.apply(null,logS),maxX=Math.max.apply(null,logS);
+  var minY=Math.min.apply(null,logC),maxY=Math.max.apply(null,logC);
+
+  ctx.strokeStyle=color; ctx.lineWidth=1.5;
+  ctx.beginPath();
+  for(var i=0;i<logS.length;i++){
+    var px=(logS[i]-minX)/(maxX-minX)*(W-20)+10;
+    var py=H-((logC[i]-minY)/(maxY-minY)*(H-16)+8);
+    i===0?ctx.moveTo(px,py):ctx.lineTo(px,py);
+  }
+  ctx.stroke();
+
+  // Dots
+  ctx.fillStyle=color;
+  for(var i=0;i<logS.length;i++){
+    var px=(logS[i]-minX)/(maxX-minX)*(W-20)+10;
+    var py=H-((logC[i]-minY)/(maxY-minY)*(H-16)+8);
+    ctx.beginPath();ctx.arc(px,py,2.5,0,Math.PI*2);ctx.fill();
+  }
+
+  // Grid lines
+  ctx.strokeStyle='rgba(0,229,204,0.1)';ctx.lineWidth=0.5;
+  for(var gx=0;gx<W;gx+=W/4){ctx.beginPath();ctx.moveTo(gx,0);ctx.lineTo(gx,H);ctx.stroke();}
+  for(var gy=0;gy<H;gy+=H/3){ctx.beginPath();ctx.moveTo(0,gy);ctx.lineTo(W,gy);ctx.stroke();}
+}
+
+function drawCurve(canvas, curve, color) {
+  var ctx=canvas.getContext('2d');
+  var W=canvas.clientWidth||200,H=80;
+  canvas.width=W;canvas.height=H;
+  ctx.fillStyle='#020508';ctx.fillRect(0,0,W,H);
+  if(!curve||curve.length<2)return;
+  var minY=Math.min.apply(null,curve),maxY=Math.max.apply(null,curve);
+  var range=maxY-minY||1;
+  ctx.strokeStyle=color;ctx.lineWidth=1.5;
+  ctx.beginPath();
+  for(var i=0;i<curve.length;i++){
+    var px=i/(curve.length-1)*(W-20)+10;
+    var py=H-((curve[i]-minY)/range*(H-16)+8);
+    i===0?ctx.moveTo(px,py):ctx.lineTo(px,py);
+  }
+  ctx.stroke();
+  ctx.strokeStyle='rgba(201,168,76,0.1)';ctx.lineWidth=0.5;
+  for(var gy=0;gy<H;gy+=H/3){ctx.beginPath();ctx.moveTo(0,gy);ctx.lineTo(W,gy);ctx.stroke();}
+}
+
+function drawScatter(canvas, alpha, f, color) {
+  var ctx=canvas.getContext('2d');
+  var W=canvas.clientWidth||200,H=80;
+  canvas.width=W;canvas.height=H;
+  ctx.fillStyle='#020508';ctx.fillRect(0,0,W,H);
+  if(!alpha||alpha.length<2)return;
+  var minA=Math.min.apply(null,alpha),maxA=Math.max.apply(null,alpha);
+  var minF=Math.min.apply(null,f),maxF=Math.max.apply(null,f);
+  var rA=maxA-minA||1,rF=maxF-minF||1;
+  ctx.strokeStyle=color;ctx.lineWidth=1.5;
+  ctx.beginPath();
+  for(var i=0;i<alpha.length;i++){
+    var px=(alpha[i]-minA)/rA*(W-20)+10;
+    var py=H-((f[i]-minF)/rF*(H-16)+8);
+    i===0?ctx.moveTo(px,py):ctx.lineTo(px,py);
+  }
+  ctx.stroke();
+  ctx.fillStyle=color;
+  for(var i=0;i<alpha.length;i++){
+    var px=(alpha[i]-minA)/rA*(W-20)+10;
+    var py=H-((f[i]-minF)/rF*(H-16)+8);
+    ctx.beginPath();ctx.arc(px,py,2,0,Math.PI*2);ctx.fill();
+  }
+}
+
+function drawAngular(canvas, angular, order) {
+  var ctx=canvas.getContext('2d');
+  var W=canvas.clientWidth||200,H=80;
+  canvas.width=W;canvas.height=H;
+  ctx.fillStyle='#020508';ctx.fillRect(0,0,W,H);
+  if(!angular)return;
+  var max=0;for(var i=0;i<angular.length;i++)if(angular[i]>max)max=angular[i];
+  if(max<0.001)return;
+  var cx=W/2,cy=H/2,r=Math.min(W,H)*0.42;
+  // Draw angular profile as polar plot
+  ctx.strokeStyle='rgba(0,229,204,0.3)';ctx.lineWidth=0.5;
+  ctx.beginPath();ctx.arc(cx,cy,r,0,Math.PI*2);ctx.stroke();
+  ctx.strokeStyle='rgba(0,229,204,0.7)';ctx.lineWidth=1.2;
+  ctx.beginPath();
+  for(var i=0;i<angular.length;i++){
+    var ang=i/angular.length*2*Math.PI-Math.PI/2;
+    var rr=angular[i]/max*r;
+    var x=cx+rr*Math.cos(ang),y=cy+rr*Math.sin(ang);
+    i===0?ctx.moveTo(x,y):ctx.lineTo(x,y);
+  }
+  ctx.closePath();ctx.stroke();
+  // Mark dominant order
+  ctx.strokeStyle='rgba(201,168,76,0.6)';ctx.lineWidth=1;
+  for(var k=0;k<order;k++){
+    var ang=k/order*2*Math.PI-Math.PI/2;
+    ctx.beginPath();ctx.moveTo(cx,cy);
+    ctx.lineTo(cx+r*Math.cos(ang),cy+r*Math.sin(ang));
+    ctx.stroke();
+  }
+}
+
+//    Linear regression                                                          
+function linearRegression(x, y) {
+  var n=x.length;
+  if(n<2)return{slope:1.0,r2:0};
+  var mx=0,my=0;
+  for(var i=0;i<n;i++){mx+=x[i];my+=y[i];}
+  mx/=n;my/=n;
+  var num=0,den=0,vary=0;
+  for(var i=0;i<n;i++){
+    num+=(x[i]-mx)*(y[i]-my);
+    den+=(x[i]-mx)*(x[i]-mx);
+    vary+=(y[i]-my)*(y[i]-my);
+  }
+  var slope=den!==0?num/den:1.0;
+  var intercept=my-slope*mx;
+  var sst=vary,sse=0;
+  for(var i=0;i<n;i++){var pred=slope*x[i]+intercept;sse+=(y[i]-pred)*(y[i]-pred);}
+  var r2=sst>0?1-sse/sst:0;
+  return{slope:slope,intercept:intercept,r2:Math.max(0,r2)};
+}
+
+//    Helpers                                                                    
+function delay(ms){return new Promise(function(r){setTimeout(r,ms);});}
+function setStatus(msg,cls){
+  var el=document.getElementById('statusBar');
+  el.textContent=msg;el.className='status'+(cls?' '+cls:'');
+}
+function setProgress(pct){
+  document.getElementById('progressFill').style.width=pct+'%';
+}
+function setMetric(key,val,pct,cls){
+  document.getElementById('m'+key).textContent=val;
+  var bar=document.getElementById('b'+key);
+  bar.style.width=Math.max(0,Math.min(100,pct))+'%';
+  if(cls)bar.className='metric-fill '+cls;
+}
+</script>
+</body>
+</html>

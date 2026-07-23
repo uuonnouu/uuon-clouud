@@ -1,0 +1,51 @@
+{
+  "source": "Δmension Mathematical Universe",
+  "shapeId": "keccak_sha3_sponge",
+  "shapeName": "Keccak SHA-3 - Sponge Construction",
+  "exportDate": "2026-06-10T19:26:15.320Z",
+  "parameters": {
+    "a": 1,
+    "b": 1,
+    "c": 1,
+    "d": 5,
+    "e": 5,
+    "f": 24,
+    "uMin": 0,
+    "uMax": 1,
+    "vMin": 0,
+    "vMax": 1,
+    "uSegments": 160,
+    "vSegments": 80
+  },
+  "dmension_version": "2.0",
+  "security": {
+    "cryptographicHash": "43fe0fb2c70ca658453f0ca5cef76c9aaec667e349a604eb744fe662407d1765",
+    "verificationCode": "UUON-D13MON4-V1",
+    "timestamp": "2026-06-10T19:26:15.320Z",
+    "author": "UUON Foundation Inc.",
+    "organization": "Dmension Mathematical Universe",
+    "copyright": "2024 UUON Foundation Inc. All Rights Reserved.",
+    "license": "CC BY-NC 4.0",
+    "integrityVersion": "2.0",
+    "genesisAnchor": "cf114022b5e4e1d6fdeb36890f35f605857cf2de93b53ebcb9c8e5652413ca04",
+    "fixedAt": "2026-06-16T00:42:41.726Z"
+  },
+  "scene_bounds": {
+    "aabb_min": [
+      -1.8,
+      -1.6,
+      -1
+    ],
+    "aabb_max": [
+      1.8,
+      1.6,
+      1
+    ],
+    "center": [
+      0,
+      0,
+      0
+    ],
+    "scale": 4
+  }
+}

@@ -1,0 +1,51 @@
+{
+  "source": "Δmension Mathematical Universe",
+  "shapeId": "shor_nine_qubit",
+  "shapeName": "Shor 9-Qubit Error Correction Code",
+  "exportDate": "2026-06-10T20:29:17.285Z",
+  "parameters": {
+    "a": 1,
+    "b": 0,
+    "c": 0,
+    "d": 1,
+    "e": 9,
+    "f": 1,
+    "uMin": 0,
+    "uMax": 6.2831853,
+    "vMin": 0,
+    "vMax": 3.1415926,
+    "uSegments": 192,
+    "vSegments": 96
+  },
+  "dmension_version": "2.0",
+  "security": {
+    "cryptographicHash": "f6a1ca204440c266bcbc296f834d1501844e45ae5e75c6f1d887ea28436fa41d",
+    "verificationCode": "UUON-D13MON4-V1",
+    "timestamp": "2026-06-10T20:29:17.285Z",
+    "author": "UUON Foundation Inc.",
+    "organization": "Dmension Mathematical Universe",
+    "copyright": "2024 UUON Foundation Inc. All Rights Reserved.",
+    "license": "CC BY-NC 4.0",
+    "integrityVersion": "2.0",
+    "genesisAnchor": "cf114022b5e4e1d6fdeb36890f35f605857cf2de93b53ebcb9c8e5652413ca04",
+    "fixedAt": "2026-06-16T00:42:41.740Z"
+  },
+  "scene_bounds": {
+    "aabb_min": [
+      -3,
+      -3,
+      -3
+    ],
+    "aabb_max": [
+      3,
+      3,
+      3
+    ],
+    "center": [
+      0,
+      0,
+      0
+    ],
+    "scale": 6
+  }
+}

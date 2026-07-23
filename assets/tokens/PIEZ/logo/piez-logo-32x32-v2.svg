@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32">
+  <defs>
+    <radialGradient id="bg" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#0a1a2e"/>
+      <stop offset="100%" stop-color="#06060f"/>
+    </radialGradient>
+    <radialGradient id="core" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="60%" stop-color="#00e5ff"/>
+      <stop offset="100%" stop-color="#0077cc"/>
+    </radialGradient>
+  </defs>
+  <circle cx="16" cy="16" r="16" fill="url(#bg)"/>
+  <circle cx="16" cy="16" r="15" fill="none" stroke="#00d4ff" stroke-width="0.9" opacity="0.95"/>
+  <line x1="2" y1="16" x2="30" y2="16" stroke="#00d4ff" stroke-width="0.35" opacity="0.18"/>
+  <path d="M 2,16 C 4.5,10 7.5,10 9,16 C 10.5,22 13.5,22 16,16 C 18.5,10 21.5,10 23,16 C 24.5,22 27.5,22 30,16"
+    fill="none" stroke="#00d4ff" stroke-width="1.1" stroke-linecap="round" opacity="0.92"/>
+  <circle cx="9" cy="16" r="0.7" fill="#00d4ff" opacity="0.65"/>
+  <circle cx="23" cy="16" r="0.7" fill="#00d4ff" opacity="0.65"/>
+  <circle cx="16" cy="16" r="2.0" fill="#00d4ff" opacity="0.85"/>
+  <circle cx="16" cy="16" r="1.0" fill="url(#core)" opacity="0.98"/>
+</svg>

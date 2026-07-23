@@ -1,0 +1,23 @@
+{
+  "title": "Dmension Mathematical Universe Platform",
+  "description": "The first metered API for semantically-labeled parametric mathematical geometry. 541+ algorithms, 2,307+ shapes, 2,590,000+ Shape Tokens.",
+  "creators": [
+    {
+      "name": "Ruiz III, Phillip A.",
+      "affiliation": "UUON Foundation Inc."
+    }
+  ],
+  "keywords": [
+    "parametric geometry",
+    "mathematical shapes",
+    "topology",
+    "geometric deep learning",
+    "TPMS lattices",
+    "shape tokens",
+    "3D AI training data",
+    "differential geometry"
+  ],
+  "upload_type": "software",
+  "access_right": "open",
+  "license": "other-open"
+}

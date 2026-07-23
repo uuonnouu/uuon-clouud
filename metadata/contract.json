@@ -1,0 +1,22 @@
+{
+  "name": "Dmension Mathematical Universe — Null Set Parametric Manifold",
+  "description": "The first NFT collection where every token is a unique mathematical object.\n\n2,856 parametric 3D shapes rendered as NeRF volumes,\norganized across 6 Fibonacci levels (1+2+3+5+8+13=32 genesis shapes).\n\n2,405 of 2,856 shapes carry verified equation DNA.\n\nGenesis Hash: cf114022b5e4e1d6fdeb36890f35f605857cf2de93b53ebcb9c8e5652413ca04\nMerkle Root:  54fff9e19a729a3bfffbf9926d1e09d5134cb6e12a0723211ea04904d68530af\nIPFS Catalog: ipfs://QmU7zUDNF3pyuWqNsfH9QCUJcT4oCUBr5JQfeptdCVT7t8\n\n© UUON Foundation Inc. — Phillip Aguilar Ruiz III",
+  "image": "ipfs://QmU7zUDNF3pyuWqNsfH9QCUJcT4oCUBr5JQfeptdCVT7t8/collection-banner.png",
+  "banner_image": "ipfs://QmU7zUDNF3pyuWqNsfH9QCUJcT4oCUBr5JQfeptdCVT7t8/collection-banner.png",
+  "external_link": "https://dmension.app",
+  "seller_fee_basis_points": 250,
+  "fee_recipient": "0x14a918D01D1a2B31C7c4411df057386A6b44e0b8",
+  "uuon_provenance": {
+    "genesis_hash": "cf114022b5e4e1d6fdeb36890f35f605857cf2de93b53ebcb9c8e5652413ca04",
+    "merkle_root": "54fff9e19a729a3bfffbf9926d1e09d5134cb6e12a0723211ea04904d68530af",
+    "base_block": 47403435,
+    "base_tx": "0xaafd9865cedca7932838d7006a27b14898faca5c908e0fa092615f892aea8d05",
+    "ipfs_catalog_cid": "QmU7zUDNF3pyuWqNsfH9QCUJcT4oCUBr5JQfeptdCVT7t8",
+    "contract_address": "0x25831C80054e1f5dE062aC57FbB7A5fA0f0c1eb9",
+    "chain_id": 8453,
+    "total_shapes": 2856,
+    "verified_shapes": 2405,
+    "created_by": "Phillip Aguilar Ruiz III — UUON Foundation Inc.",
+    "generated_at": "2026-06-16T12:49:23.784Z"
+  }
+}

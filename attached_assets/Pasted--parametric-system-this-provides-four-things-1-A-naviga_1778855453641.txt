@@ -1,0 +1,23 @@
+ parametric system, this provides four things.
+
+1. A navigable shape space with a coordinate system
+The DNA string is the coordinate. Every point in the parameter space (ft, mi, sc, ox, oy, fi, fs, fsc, mr, bl) maps to exactly one attractor. You can now navigate that space systematically rather than randomly — move one parameter, observe the deformation, record the coordinate of anything interesting. This is how you build a catalogue of undocumented shapes with provenance. Every shape has an address.
+
+2. A chaos boundary detector
+The CHAOS BOUNDARY button deliberately navigates to the edge of attractor stability — the region where the IFS is still convergent but barely. Shapes at this boundary are the most structurally unusual because they sit at the transition between two mathematical regimes. For architecture this is where you find the most load-efficient geometries — structures that are maximally complex without losing coherence. For fabrication, shapes just inside the chaos boundary tend to have the highest surface-area-to-volume ratios of any parameter state.
+The safe ranges encoded in the engine — fsc < 1.85 for Kleinian, fsc < 2.0 for Box — are the result of your navigation work. They're documented here for the first time as explicit thresholds.
+
+3. OX/OY decoupling — the anisotropic Menger
+This is the part most directly useful for parametric design work. When OX equals OY the Menger Sponge has cubic voids — identical on all faces. When you separate them you get a Menger Sponge with rectangular anisotropic voids. The cross-section geometry changes depending on which face you look at.
+For architecture this means directional structural performance — a panel derived from an anisotropic Menger can be stiffer along one axis than another by design, not by accident. For textiles it's exactly the warp/weft ratio — different thread densities in different directions produce different drape and stiffness. The Fractal Weave engine and this engine are now connected through that single parameter relationship.
+
+4. A composable kernel
+The ifsDE(pos) function is the portable unit. It takes a world-space position and returns distance plus orbit trap. That's all any renderer needs. You can drop this kernel into:
+
+A Grasshopper script via HLSL → generates the geometry directly in Rhino
+A Three.js scene as a custom shader material → web-based parametric viewer
+A Unity/Unreal custom shader → real-time architectural visualization
+A Blender geometry nodes setup via OSL → procedural mesh generation
+A Replit agent prompt → the agent gets a mathematically complete shape system to build on
+
+The kernel doesn't care what's rendering it. It just answers one question: given a point in space, how far is the nearest surface of the attractor? Everything else — lighting, export, UI — is built around that answer.
