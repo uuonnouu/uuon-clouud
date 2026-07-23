@@ -46,3 +46,8 @@ dmension_funding*
 suspect_files.txt
 repo_entropy_report.txt
 FUNDING_TARGETS.md
+.pgurl
+backups/
+*.bak.*
+bisect_progress.txt
+.github/
