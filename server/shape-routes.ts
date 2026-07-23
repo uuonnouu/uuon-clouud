@@ -3,7 +3,6 @@ import { Router } from 'express';
 import { requireMintAuth } from './middleware/requireMintAuth';
 import { dbLoader } from './database-loader';
 import { seeder } from './database-seeder';
-import { exportTokenGenerator } from './export-token-generator';
 import { db } from './storage';
 import { formula_implementations } from '../shared/schema';
 import { sql } from 'drizzle-orm';
@@ -336,14 +335,6 @@ router.get('/:shapeId', async (req, res) => {
   }
 });
 
-// Generate export tokens for a specific shape
 
-  }
-});
-
-// Generate missing tokens for all shapes
-
-  }
-});
 
 export { router as shapeRoutes };

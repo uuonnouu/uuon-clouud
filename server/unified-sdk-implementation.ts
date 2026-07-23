@@ -6,7 +6,6 @@
 
 import { Router } from 'express';
 import { dbLoader } from './database-loader';
-import { exportTokenGenerator } from './export-token-generator';
 import { mathematicalProofEngine } from './mathematical-proof-engine';
 import { quantumIntegrationService } from './services/quantumIntegrationService';
 import { shapeCache } from '../client/src/lib/shapeCache';
