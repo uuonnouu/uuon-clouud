@@ -9,7 +9,6 @@ import ExplorationEngine from "@/components/exploration-engine";
 import DynamicBackground from "@/components/dynamic-background";
 import { encodeZWC } from "@/lib/zwc-fingerprint";
 import { crystalGet, crystalSet, crystalGetSync, crystalSetSync, crystalIncrement } from "@/lib/crystal";
-import uuonLogo from "@assets/A7950814-2592-4E7D-858F-3AEB1D632F98_1772064571557.png";
 
 type Message = {
   id: number;
@@ -686,11 +685,11 @@ export default function ClouudTerminal() {
           >
             <div className="relative p-4 border-b border-border bg-gradient-to-b from-[#0a1a30] to-card overflow-hidden">
               <div className="absolute inset-0 opacity-5">
-                <img src={uuonLogo} alt="" className="w-full h-full object-cover" />
+                
               </div>
               <div className="relative z-10 flex items-center gap-3">
                 <div className="relative">
-                  <img src={uuonLogo} alt="UUON" className="w-9 h-9 rounded-full border border-primary/30 shadow-[0_0_15px_rgba(240,185,59,0.2)] relative z-10" />
+                  
                   <AnimatePresence>
                     {hashingIntensity > 0 && (
                       <motion.div
