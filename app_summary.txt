@@ -1,0 +1,5110 @@
+
+=== FILE: ./.local/skills/shopify/references/shopifyStorefrontClient.ts ===
+// Shopify Store stores its connection_settings privately in `settings`
+// (encrypted at rest, Admin tokens, refresh state, plus the public-facing
+// Storefront fields `shop_domain` and `storefront_access_token`).
+// `connection.public_settings` is intentionally empty for this connector;
+// the OpenInt `public_settings` split was rolled back per OpenInt #1703.
+
+=== FILE: ./.local/skills/whop/references/whopClient.ts ===
+import Whop from '@whop/sdk';
+
+let clientPromise: Promise<Whop> | null = null;
+
+async function initWhopClient(): Promise<Whop> {
+
+=== FILE: ./.local/skills/artifacts/artifacts/automation/files/src/global.d.ts ===
+declare module "mastra";
+
+=== FILE: ./.local/skills/artifacts/artifacts/automation/files/src/mastra/agents/agent.ts ===
+import { Agent } from "@mastra/core/agent";
+import { Memory } from "@mastra/memory";
+import { sharedPostgresStorage } from "../storage";
+import { exampleTool } from "../tools/exampleTool";
+import { createOpenAI } from "@ai-sdk/openai";
+
+=== FILE: ./.local/skills/artifacts/artifacts/automation/files/src/mastra/index.ts ===
+import { Mastra } from "@mastra/core";
+import { MastraError } from "@mastra/core/error";
+import { PinoLogger } from "@mastra/loggers";
+import { LogLevel, MastraLogger } from "@mastra/core/logger";
+import pino from "pino";
+
+=== FILE: ./.local/skills/artifacts/artifacts/automation/files/src/mastra/inngest/client.ts ===
+import { Inngest } from "inngest";
+import { realtimeMiddleware } from "@inngest/realtime/middleware";
+
+// Use development configuration when NODE_ENV is not "production"
+export const inngest = new Inngest(
+
+=== FILE: ./.local/skills/artifacts/artifacts/automation/files/src/mastra/inngest/index.ts ===
+import { inngest } from "./client";
+import { init, serve as originalInngestServe } from "@mastra/inngest";
+import { registerApiRoute as originalRegisterApiRoute } from "@mastra/core/server";
+import { type Mastra } from "@mastra/core";
+import { type Inngest, InngestFunction, NonRetriableError } from "inngest";
+
+=== FILE: ./.local/skills/artifacts/artifacts/automation/files/src/mastra/storage/index.ts ===
+import { PostgresStore } from "@mastra/pg";
+
+// Create a single shared PostgreSQL storage instance
+export const sharedPostgresStorage = new PostgresStore({
+  id: "main-postgres-store",
+
+=== FILE: ./.local/skills/artifacts/artifacts/automation/files/src/mastra/tools/exampleTool.ts ===
+import { createTool } from "@mastra/core/tools";
+import { z } from "zod";
+
+/**
+ * Example Mastra Tool
+
+=== FILE: ./.local/skills/artifacts/artifacts/automation/files/src/mastra/workflows/workflow.ts ===
+// Use Inngest-compatible versions for this project
+// These are initialized with init(inngest) to work with the Inngest workflow engine
+import { createStep, createWorkflow } from "../inngest";
+import { z } from "zod";
+import { automationAgent } from "../agents/agent";
+
+=== FILE: ./.local/skills/artifacts/artifacts/automation/files/src/triggers/cronTriggers.ts ===
+/**
+ * Cron Trigger - Time-based Workflow Scheduling
+ *
+ * This module provides time-based triggering for Mastra workflows using cron expressions.
+ * Unlike webhook-based triggers, cron triggers run on a schedule without external events.
+
+=== FILE: ./.local/skills/artifacts/artifacts/automation/files/src/triggers/exampleConnectorTrigger.ts ===
+/**
+ * Example Connector Trigger - Linear Webhook Handler
+ *
+ * This demonstrates how to create a webhook handler for any connector.
+ * Linear is just an example - replace with your connector name.
+
+=== FILE: ./.local/skills/artifacts/artifacts/automation/files/src/triggers/slackTriggers.ts ===
+/**
+ * Slack Trigger - Webhook-based Workflow Triggering
+ *
+ * This module provides Slack event handling for Mastra workflows.
+ * When Slack events occur (like new messages), this trigger starts your workflow.
+
+=== FILE: ./.local/skills/artifacts/artifacts/automation/files/src/triggers/telegramTriggers.ts ===
+/**
+ * Telegram Trigger - Webhook-based Workflow Triggering
+ *
+ * This module provides Telegram bot event handling for Mastra workflows.
+ * When Telegram messages are received, this trigger starts your workflow.
+
+=== FILE: ./.local/skills/artifacts/artifacts/automation/files/tests/testCronAutomation.ts ===
+/**
+ * Test Script for Time-Based (Cron) Workflows
+ *
+ * This script demonstrates the CORRECT way to test time-based workflows
+ * that use Inngest for orchestration. It simulates a cron schedule firing.
+
+=== FILE: ./.local/skills/artifacts/artifacts/automation/files/tests/testWebhookAutomation.ts ===
+/**
+ * Test Script for Webhook-Triggered Workflows
+ *
+ * This script demonstrates the CORRECT way to test webhook-triggered workflows
+ * that use Inngest for orchestration. It simulates the complete production flow.
+
+=== FILE: ./.local/skills/artifacts/artifacts/design-system/files/src/generated/tokens.ts ===
+/* GENERATED FROM tokens.json -- DO NOT EDIT. Run scripts/build-tokens.mjs. */
+// Portable design tokens (colors as hex). Web consumes the theme via
+// src/index.css; mobile (Expo) and any other platform import this object so the
+// whole product shares one source of truth.
+export const tokens = {
+
+=== FILE: ./.local/skills/artifacts/artifacts/design-system/files/src/hooks/use-toast.ts ===
+import * as React from "react"
+
+import type {
+  ToastActionElement,
+  ToastProps,
+
+=== FILE: ./.local/skills/artifacts/artifacts/design-system/files/src/lib/utils.ts ===
+import { clsx, type ClassValue } from "clsx"
+import { twMerge } from "tailwind-merge"
+
+export function cn(...inputs: ClassValue[]) {
+  return twMerge(clsx(inputs))
+
+=== FILE: ./.local/skills/artifacts/artifacts/design-system/files/vite.config.ts ===
+import { defineConfig, type Plugin } from "vite";
+import react from "@vitejs/plugin-react";
+import tailwindcss from "@tailwindcss/vite";
+import path from "path";
+import runtimeErrorOverlay from "@replit/vite-plugin-runtime-error-modal";
+
+=== FILE: ./.local/skills/artifacts/artifacts/expo/files/constants/colors.ts ===
+/**
+ * Semantic design tokens for the mobile app.
+ *
+ * These tokens mirror the naming conventions used in web artifacts (index.css)
+ * so that multi-artifact projects share a cohesive visual identity.
+
+=== FILE: ./.local/skills/artifacts/artifacts/expo/files/hooks/useColors.ts ===
+import { useColorScheme } from "react-native";
+
+import colors from "@/constants/colors";
+
+/**
+
+=== FILE: ./.local/skills/artifacts/artifacts/mockup-sandbox/files/mockupPreviewPlugin.ts ===
+import { mkdirSync, writeFileSync } from "fs";
+import path from "path";
+import glob from "fast-glob";
+import chokidar from "chokidar";
+import type { FSWatcher } from "chokidar";
+
+=== FILE: ./.local/skills/artifacts/artifacts/mockup-sandbox/files/src/.generated/mockup-components.ts ===
+// This file is auto-generated by mockupPreviewPlugin.ts.
+type ModuleMap = Record<string, () => Promise<Record<string, unknown>>>;
+export const modules: ModuleMap = {};
+
+=== FILE: ./.local/skills/artifacts/artifacts/mockup-sandbox/files/src/hooks/use-toast.ts ===
+import * as React from "react"
+
+import type {
+  ToastActionElement,
+  ToastProps,
+
+=== FILE: ./.local/skills/artifacts/artifacts/mockup-sandbox/files/src/lib/utils.ts ===
+import { clsx, type ClassValue } from "clsx"
+import { twMerge } from "tailwind-merge"
+
+export function cn(...inputs: ClassValue[]) {
+  return twMerge(clsx(inputs))
+
+=== FILE: ./.local/skills/artifacts/artifacts/mockup-sandbox/files/vite.config.ts ===
+import { defineConfig } from "vite";
+import react from "@vitejs/plugin-react";
+import tailwindcss from "@tailwindcss/vite";
+import path from "path";
+import runtimeErrorOverlay from "@replit/vite-plugin-runtime-error-modal";
+
+=== FILE: ./.local/skills/artifacts/artifacts/react-vite/files/src/hooks/use-toast.ts ===
+import * as React from "react"
+
+import type {
+  ToastActionElement,
+  ToastProps,
+
+=== FILE: ./.local/skills/artifacts/artifacts/react-vite/files/src/lib/utils.ts ===
+import { clsx, type ClassValue } from "clsx"
+import { twMerge } from "tailwind-merge"
+
+export function cn(...inputs: ClassValue[]) {
+  return twMerge(clsx(inputs))
+
+=== FILE: ./.local/skills/artifacts/artifacts/react-vite/files/vite.config.ts ===
+import { defineConfig } from "vite";
+import react from "@vitejs/plugin-react";
+import tailwindcss from "@tailwindcss/vite";
+import path from "path";
+import runtimeErrorOverlay from "@replit/vite-plugin-runtime-error-modal";
+
+=== FILE: ./.local/skills/artifacts/artifacts/slides/files/scripts/validate-slides.ts ===
+/// <reference types="node" />
+import { readdirSync, readFileSync } from "fs";
+import { access } from "fs/promises";
+import path from "path";
+import { fileURLToPath } from "url";
+
+=== FILE: ./.local/skills/artifacts/artifacts/slides/files/src/data/slidesManifestSchema.ts ===
+import { z } from "zod";
+
+export const SlideEntrySchema = z
+  .object({
+    id: z.string().trim().min(1, "id is required"),
+
+=== FILE: ./.local/skills/artifacts/artifacts/slides/files/src/slideLoader.ts ===
+import type { ComponentType } from "react";
+
+import manifestJson from "@/data/slides-manifest.json";
+import { parseSlidesManifest, type SlideEntry } from "@/data/slidesManifestSchema";
+
+
+=== FILE: ./.local/skills/artifacts/artifacts/slides/files/vite.config.ts ===
+import { defineConfig } from "vite";
+import react from "@vitejs/plugin-react";
+import tailwindcss from "@tailwindcss/vite";
+import path from "path";
+import runtimeErrorOverlay from "@replit/vite-plugin-runtime-error-modal";
+
+=== FILE: ./.local/skills/artifacts/artifacts/video-js/files/src/components/video/index.ts ===
+export { ReplitLoadingScene } from './ReplitLoadingScene';
+
+=== FILE: ./.local/skills/artifacts/artifacts/video-js/files/src/lib/utils.ts ===
+import { clsx, type ClassValue } from "clsx"
+import { twMerge } from "tailwind-merge"
+
+export function cn(...inputs: ClassValue[]) {
+  return twMerge(clsx(inputs))
+
+=== FILE: ./.local/skills/artifacts/artifacts/video-js/files/src/lib/video/animations.ts ===
+// Animation presets for consistent motion language
+
+import type { Transition, Variants } from 'framer-motion';
+
+// Spring presets
+
+=== FILE: ./.local/skills/artifacts/artifacts/video-js/files/src/lib/video/hooks.ts ===
+// Video player hook - handles recording lifecycle, scene advancement, and looping
+
+import { useState, useEffect, useRef } from 'react';
+
+declare global {
+
+=== FILE: ./.local/skills/artifacts/artifacts/video-js/files/src/lib/video/index.ts ===
+// Video template library - hook and animation presets
+
+export { useVideoPlayer, useSceneTimer } from './hooks';
+export type { SceneDurations, UseVideoPlayerOptions, UseVideoPlayerReturn } from './hooks';
+
+
+=== FILE: ./.local/skills/artifacts/artifacts/video-js/files/vite.config.ts ===
+import { defineConfig } from "vite";
+import react from "@vitejs/plugin-react";
+import tailwindcss from "@tailwindcss/vite";
+import path from "path";
+import runtimeErrorOverlay from "@replit/vite-plugin-runtime-error-modal";
+
+=== FILE: ./project/.local/skills/shopify/references/shopifyStorefrontClient.ts ===
+// Shopify Store stores its connection_settings privately in `settings`
+// (encrypted at rest, Admin tokens, refresh state, plus the public-facing
+// Storefront fields `shop_domain` and `storefront_access_token`).
+// `connection.public_settings` is intentionally empty for this connector;
+// the OpenInt `public_settings` split was rolled back per OpenInt #1703.
+
+=== FILE: ./project/.local/skills/whop/references/whopClient.ts ===
+import Whop from '@whop/sdk';
+
+let clientPromise: Promise<Whop> | null = null;
+
+async function initWhopClient(): Promise<Whop> {
+
+=== FILE: ./project/.local/skills/artifacts/artifacts/automation/files/src/mastra/agents/agent.ts ===
+import { Agent } from "@mastra/core/agent";
+import { Memory } from "@mastra/memory";
+import { sharedPostgresStorage } from "../storage";
+import { exampleTool } from "../tools/exampleTool";
+import { createOpenAI } from "@ai-sdk/openai";
+
+=== FILE: ./project/.local/skills/artifacts/artifacts/automation/files/src/mastra/inngest/client.ts ===
+import { Inngest } from "inngest";
+import { realtimeMiddleware } from "@inngest/realtime/middleware";
+
+// Use development configuration when NODE_ENV is not "production"
+export const inngest = new Inngest(
+
+=== FILE: ./project/.local/skills/artifacts/artifacts/automation/files/src/mastra/inngest/index.ts ===
+import { inngest } from "./client";
+import { init, serve as originalInngestServe } from "@mastra/inngest";
+import { registerApiRoute as originalRegisterApiRoute } from "@mastra/core/server";
+import { type Mastra } from "@mastra/core";
+import { type Inngest, InngestFunction, NonRetriableError } from "inngest";
+
+=== FILE: ./project/.local/skills/artifacts/artifacts/automation/files/src/mastra/storage/index.ts ===
+import { PostgresStore } from "@mastra/pg";
+
+// Create a single shared PostgreSQL storage instance
+export const sharedPostgresStorage = new PostgresStore({
+  id: "main-postgres-store",
+
+=== FILE: ./project/.local/skills/artifacts/artifacts/automation/files/src/mastra/tools/exampleTool.ts ===
+import { createTool } from "@mastra/core/tools";
+import { z } from "zod";
+
+/**
+ * Example Mastra Tool
+
+=== FILE: ./project/.local/skills/artifacts/artifacts/automation/files/src/mastra/workflows/workflow.ts ===
+// Use Inngest-compatible versions for this project
+// These are initialized with init(inngest) to work with the Inngest workflow engine
+import { createStep, createWorkflow } from "../inngest";
+import { z } from "zod";
+import { automationAgent } from "../agents/agent";
+
+=== FILE: ./project/.local/skills/artifacts/artifacts/automation/files/src/mastra/index.ts ===
+import { Mastra } from "@mastra/core";
+import { MastraError } from "@mastra/core/error";
+import { PinoLogger } from "@mastra/loggers";
+import { LogLevel, MastraLogger } from "@mastra/core/logger";
+import pino from "pino";
+
+=== FILE: ./project/.local/skills/artifacts/artifacts/automation/files/src/triggers/cronTriggers.ts ===
+/**
+ * Cron Trigger - Time-based Workflow Scheduling
+ *
+ * This module provides time-based triggering for Mastra workflows using cron expressions.
+ * Unlike webhook-based triggers, cron triggers run on a schedule without external events.
+
+=== FILE: ./project/.local/skills/artifacts/artifacts/automation/files/src/triggers/exampleConnectorTrigger.ts ===
+/**
+ * Example Connector Trigger - Linear Webhook Handler
+ *
+ * This demonstrates how to create a webhook handler for any connector.
+ * Linear is just an example - replace with your connector name.
+
+=== FILE: ./project/.local/skills/artifacts/artifacts/automation/files/src/triggers/slackTriggers.ts ===
+/**
+ * Slack Trigger - Webhook-based Workflow Triggering
+ *
+ * This module provides Slack event handling for Mastra workflows.
+ * When Slack events occur (like new messages), this trigger starts your workflow.
+
+=== FILE: ./project/.local/skills/artifacts/artifacts/automation/files/src/triggers/telegramTriggers.ts ===
+/**
+ * Telegram Trigger - Webhook-based Workflow Triggering
+ *
+ * This module provides Telegram bot event handling for Mastra workflows.
+ * When Telegram messages are received, this trigger starts your workflow.
+
+=== FILE: ./project/.local/skills/artifacts/artifacts/automation/files/src/global.d.ts ===
+declare module "mastra";
+
+=== FILE: ./project/.local/skills/artifacts/artifacts/automation/files/tests/testCronAutomation.ts ===
+/**
+ * Test Script for Time-Based (Cron) Workflows
+ *
+ * This script demonstrates the CORRECT way to test time-based workflows
+ * that use Inngest for orchestration. It simulates a cron schedule firing.
+
+=== FILE: ./project/.local/skills/artifacts/artifacts/automation/files/tests/testWebhookAutomation.ts ===
+/**
+ * Test Script for Webhook-Triggered Workflows
+ *
+ * This script demonstrates the CORRECT way to test webhook-triggered workflows
+ * that use Inngest for orchestration. It simulates the complete production flow.
+
+=== FILE: ./project/.local/skills/artifacts/artifacts/expo/files/constants/colors.ts ===
+/**
+ * Semantic design tokens for the mobile app.
+ *
+ * These tokens mirror the naming conventions used in web artifacts (index.css)
+ * so that multi-artifact projects share a cohesive visual identity.
+
+=== FILE: ./project/.local/skills/artifacts/artifacts/expo/files/hooks/useColors.ts ===
+import { useColorScheme } from "react-native";
+
+import colors from "@/constants/colors";
+
+/**
+
+=== FILE: ./project/.local/skills/artifacts/artifacts/mockup-sandbox/files/src/.generated/mockup-components.ts ===
+// This file is auto-generated by mockupPreviewPlugin.ts.
+type ModuleMap = Record<string, () => Promise<Record<string, unknown>>>;
+export const modules: ModuleMap = {};
+
+=== FILE: ./project/.local/skills/artifacts/artifacts/mockup-sandbox/files/src/hooks/use-toast.ts ===
+import * as React from "react"
+
+import type {
+  ToastActionElement,
+  ToastProps,
+
+=== FILE: ./project/.local/skills/artifacts/artifacts/mockup-sandbox/files/src/lib/utils.ts ===
+import { clsx, type ClassValue } from "clsx"
+import { twMerge } from "tailwind-merge"
+
+export function cn(...inputs: ClassValue[]) {
+  return twMerge(clsx(inputs))
+
+=== FILE: ./project/.local/skills/artifacts/artifacts/mockup-sandbox/files/mockupPreviewPlugin.ts ===
+import { mkdirSync, writeFileSync } from "fs";
+import path from "path";
+import glob from "fast-glob";
+import chokidar from "chokidar";
+import type { FSWatcher } from "chokidar";
+
+=== FILE: ./project/.local/skills/artifacts/artifacts/mockup-sandbox/files/vite.config.ts ===
+import { defineConfig } from "vite";
+import react from "@vitejs/plugin-react";
+import tailwindcss from "@tailwindcss/vite";
+import path from "path";
+import runtimeErrorOverlay from "@replit/vite-plugin-runtime-error-modal";
+
+=== FILE: ./project/.local/skills/artifacts/artifacts/react-vite/files/src/hooks/use-toast.ts ===
+import * as React from "react"
+
+import type {
+  ToastActionElement,
+  ToastProps,
+
+=== FILE: ./project/.local/skills/artifacts/artifacts/react-vite/files/src/lib/utils.ts ===
+import { clsx, type ClassValue } from "clsx"
+import { twMerge } from "tailwind-merge"
+
+export function cn(...inputs: ClassValue[]) {
+  return twMerge(clsx(inputs))
+
+=== FILE: ./project/.local/skills/artifacts/artifacts/react-vite/files/vite.config.ts ===
+import { defineConfig } from "vite";
+import react from "@vitejs/plugin-react";
+import tailwindcss from "@tailwindcss/vite";
+import path from "path";
+import runtimeErrorOverlay from "@replit/vite-plugin-runtime-error-modal";
+
+=== FILE: ./project/.local/skills/artifacts/artifacts/slides/files/scripts/validate-slides.ts ===
+/// <reference types="node" />
+import { readdirSync, readFileSync } from "fs";
+import { access } from "fs/promises";
+import path from "path";
+import { fileURLToPath } from "url";
+
+=== FILE: ./project/.local/skills/artifacts/artifacts/slides/files/src/data/slidesManifestSchema.ts ===
+import { z } from "zod";
+
+export const SlideEntrySchema = z
+  .object({
+    id: z.string().trim().min(1, "id is required"),
+
+=== FILE: ./project/.local/skills/artifacts/artifacts/slides/files/src/slideLoader.ts ===
+import type { ComponentType } from "react";
+
+import manifestJson from "@/data/slides-manifest.json";
+import { parseSlidesManifest, type SlideEntry } from "@/data/slidesManifestSchema";
+
+
+=== FILE: ./project/.local/skills/artifacts/artifacts/slides/files/vite.config.ts ===
+import { defineConfig } from "vite";
+import react from "@vitejs/plugin-react";
+import tailwindcss from "@tailwindcss/vite";
+import path from "path";
+import runtimeErrorOverlay from "@replit/vite-plugin-runtime-error-modal";
+
+=== FILE: ./project/.local/skills/artifacts/artifacts/video-js/files/src/components/video/index.ts ===
+export { ReplitLoadingScene } from './ReplitLoadingScene';
+
+=== FILE: ./project/.local/skills/artifacts/artifacts/video-js/files/src/lib/video/animations.ts ===
+// Animation presets for consistent motion language
+
+import type { Transition, Variants } from 'framer-motion';
+
+// Spring presets
+
+=== FILE: ./project/.local/skills/artifacts/artifacts/video-js/files/src/lib/video/hooks.ts ===
+// Video player hook - handles recording lifecycle, scene advancement, and looping
+
+import { useState, useEffect, useRef } from 'react';
+
+declare global {
+
+=== FILE: ./project/.local/skills/artifacts/artifacts/video-js/files/src/lib/video/index.ts ===
+// Video template library - hook and animation presets
+
+export { useVideoPlayer, useSceneTimer } from './hooks';
+export type { SceneDurations, UseVideoPlayerOptions, UseVideoPlayerReturn } from './hooks';
+
+
+=== FILE: ./project/.local/skills/artifacts/artifacts/video-js/files/src/lib/utils.ts ===
+import { clsx, type ClassValue } from "clsx"
+import { twMerge } from "tailwind-merge"
+
+export function cn(...inputs: ClassValue[]) {
+  return twMerge(clsx(inputs))
+
+=== FILE: ./project/.local/skills/artifacts/artifacts/video-js/files/vite.config.ts ===
+import { defineConfig } from "vite";
+import react from "@vitejs/plugin-react";
+import tailwindcss from "@tailwindcss/vite";
+import path from "path";
+import runtimeErrorOverlay from "@replit/vite-plugin-runtime-error-modal";
+
+=== FILE: ./project/client/src/lib/animation/CurveEngine.ts ===
+import * as THREE from 'three';
+
+// Curve definition for mathematical motion paths
+export interface CurveDefinition {
+  name: string;
+
+=== FILE: ./project/client/src/lib/animation/AnimationEngine.ts ===
+import * as THREE from 'three';
+
+// Animation track types for mathematical surfaces
+export enum TrackType {
+  PARAMETER = 'parameter',    // Animates a-f parameters
+
+=== FILE: ./project/client/src/lib/deformations/heartbeatDeformer.ts ===
+
+import { DeformationFunction, SurfaceParameters } from '../anatomy-engine-v2';
+
+/**
+ * Heartbeat deformer: Creates realistic cardiac contraction/expansion
+
+=== FILE: ./project/client/src/lib/deformations/cortexFoldDeformer.ts ===
+
+import { DeformationFunction, SurfaceParameters } from '../anatomy-engine-v2';
+
+/**
+ * Cortex fold deformer: Enhances gyri and sulci patterns
+
+=== FILE: ./project/client/src/lib/deformations/breathingDeformer.ts ===
+
+import { DeformationFunction, SurfaceParameters } from '../anatomy-engine-v2';
+
+/**
+ * Breathing deformer: Simulates respiratory motion
+
+=== FILE: ./project/client/src/lib/utils.ts ===
+import { clsx, type ClassValue } from "clsx";
+import { twMerge } from "tailwind-merge";
+
+export function cn(...inputs: ClassValue[]) {
+  return twMerge(clsx(inputs));
+
+=== FILE: ./project/client/src/lib/commercialPresets.ts ===
+/**
+ * Commercial Preset Collections for High-Value Surfaces
+ * Optimized parameter combinations for maximum visual appeal and market demand
+ */
+
+
+=== FILE: ./project/client/src/lib/topologyKnotsFixed.ts ===
+/**
+ * Topology & Knot Theory Visualizations
+ * Advanced topological structures and knot invariants
+ */
+
+
+=== FILE: ./project/client/src/lib/nonEuclideanShapes.ts ===
+// ============================================================================
+// HISTORICAL DOCUMENTATION - DO NOT USE FOR NEW SHAPES
+// ============================================================================
+// This file is kept for historical reference only.
+// ALL NEW SHAPES must be added to: client/src/lib/unifiedShapes.ts
+
+=== FILE: ./project/client/src/lib/educationalSurfaces.ts ===
+// ============================================================================
+// HISTORICAL DOCUMENTATION - DO NOT USE FOR NEW SHAPES
+// ============================================================================
+// This file is kept for historical reference only.
+// ALL NEW SHAPES must be added to: client/src/lib/unifiedShapes.ts
+
+=== FILE: ./project/client/src/lib/meshOptimizer.ts ===
+export type MeshType = 'triangle' | 'quad' | 'hex' | 'mixed' | 'voronoi' | 'tetrahedral';
+
+export interface MeshRecommendation {
+  meshType: MeshType;
+  reason: string;
+
+=== FILE: ./project/client/src/lib/shapeFusionEngine.ts ===
+import { SurfaceParameters } from '../types/math';
+import { getDefaultParameters } from './parametricSurfacesClean';
+import { getBiologicalShapeMetadata, UUON_ATTRIBUTION } from './biologicalShapesMetadata';
+import { cryptoEngine, CryptoHash, ProofOfWork, CryptoToken } from './cryptoEngine';
+
+
+=== FILE: ./project/client/src/lib/enhancedProjections.ts ===
+/**
+ * Enhanced 4D Projections and Rotations
+ * 
+ * Provides mathematically rigorous SO(4) rotations using double quaternions
+ * and improved projection methods for 4D polytopes.
+
+=== FILE: ./project/client/src/lib/exclusiveShapes.ts ===
+// ============================================================================
+// HISTORICAL DOCUMENTATION - DO NOT USE FOR NEW SHAPES
+// ============================================================================
+// This file is kept for historical reference only.
+// ALL NEW SHAPES must be added to: client/src/lib/unifiedShapes.ts
+
+=== FILE: ./project/client/src/lib/nonEuclideanGeometries.ts ===
+// Non-Euclidean Geometries - Clean Implementation
+import { SurfaceEquation } from "./parametricSurfaces";
+
+export const NON_EUCLIDEAN_GEOMETRIES: Record<string, SurfaceEquation> = {
+  
+
+=== FILE: ./project/client/src/lib/realWorldObjects.ts ===
+/**
+ * Real-World Objects and Recognizable Shapes
+ * Natural forms, letters, numbers, and everyday objects
+ */
+
+
+=== FILE: ./project/client/src/lib/shapeValidator.ts ===
+// Automated Shape Verification System
+import { PREDEFINED_SURFACES } from "./parametricSurfaces";
+import { EXCLUSIVE_SHAPES } from "./exclusiveShapes";
+import { SurfaceParameters, SurfaceType } from "../types/math";
+import { getShapeDefaults } from "./shapeDefaults";
+
+=== FILE: ./project/client/src/lib/adaptiveCryptographicRenderer.ts ===
+
+// Adaptive Cryptographic Renderer
+// Dynamically changes visualization based on cryptographic state evolution
+
+import { cryptographicEngine } from './advancedCryptographicEngine';
+
+=== FILE: ./project/client/src/lib/macOptimizations.ts ===
+
+// macOS-specific optimizations for Metal rendering and performance
+class MacOptimizations {
+  private isMac = navigator.platform.toUpperCase().indexOf('MAC') >= 0;
+  private hasMetalSupport = false;
+
+=== FILE: ./project/client/src/lib/authorshipFingerprint.ts ===
+/**
+ * AUTHORSHIP FINGERPRINT SYSTEM
+ * Multi-layered protection for 3D models with cryptographic and geometric watermarks
+ * 
+ * © 2024 UUON Foundation Inc. All Rights Reserved.
+
+=== FILE: ./project/client/src/lib/animationShaders.ts ===
+import * as THREE from 'three';
+
+/**
+ * GPU-Accelerated Animation Shaders
+ * Animate parametric surfaces on the GPU for maximum performance
+
+=== FILE: ./project/client/src/lib/diamondGeometry.ts ===
+import * as THREE from 'three';
+
+/**
+ * Faceted Diamond Geometry Generator
+ * Creates real 3D gemstone models with discrete facet planes
+
+=== FILE: ./project/client/src/lib/shapeDiscoveryEngine.ts ===
+
+/**
+ * AUTONOMOUS MATHEMATICAL SHAPE DISCOVERY ENGINE
+ * Analyzes parameter patterns and discovers new mathematical forms
+ */
+
+=== FILE: ./project/client/src/lib/verificationAPI.ts ===
+import { apiRequest } from './queryClient';
+
+export interface VerificationRequest {
+  algorithmId: string;
+  parameters: Record<string, number>;
+
+=== FILE: ./project/client/src/lib/multidimensionalComplex.ts ===
+/**
+ * Multidimensional Complex Number System
+ * Based on the mathematical framework by Kuan Peng (彭宽)
+ * 
+ * Reference: "Extending complex number to spaces with 3, 4 or any number of dimensions"
+
+=== FILE: ./project/client/src/lib/generativeTransforms.ts ===
+/**
+ * GENERATIVE TRANSFORMATION SYSTEM
+ * 
+ * Transforms parameters g-j from harmonic controls into non-linear generative enhancers
+ * that create emergent complexity through turbulence, recursion, phase coupling, and entropy.
+
+=== FILE: ./project/client/src/lib/mathematicalVerification.ts ===
+/**
+ * MATHEMATICAL VERIFICATION SYSTEM
+ * Validates mathematical properties and surface integrity
+ */
+
+
+=== FILE: ./project/client/src/lib/flowAnimationSystem.ts ===
+/**
+ * UNIVERSAL FLOW ANIMATION SYSTEM
+ * Provides wave propagation effects for tubular, helical, and linear structures
+ * Inspired by the axon_with_myelin nerve signal propagation
+ */
+
+=== FILE: ./project/client/src/lib/hdrColorSystem.ts ===
+/**
+ * HDR COLOR SYSTEM
+ * High Dynamic Range color processing with extended luminance range
+ * Supports values beyond standard 0-1 RGB for glowing/emissive effects
+ * 
+
+=== FILE: ./project/client/src/lib/phiHarmonicModulator.ts ===
+/**
+ * PHI HARMONIC MODULATOR
+ * Golden ratio (φ = 1.618033988749...) based color harmonies
+ * Creates mathematically perfect color relationships
+ * 
+
+=== FILE: ./project/client/src/lib/unifiedColorSystem.ts ===
+/**
+ * UNIFIED RGBA-HDR COLOR SYSTEM
+ * Integrates spectral, HDR, and phi-harmonic color engines
+ * Provides global rendering profile for all 699 shapes
+ * 
+
+=== FILE: ./project/client/src/lib/physicsEngine.ts ===
+/**
+ * CORE PHYSICS ENGINE for Δmension
+ * 
+ * Replaces passive rotation with active physical simulation
+ * Each shape demonstrates the mathematical/scientific principle it embodies
+
+=== FILE: ./project/client/src/lib/surfaceShader.ts ===
+/**
+ * Custom Surface Shader System for Δmension
+ * Adds visual depth with fresnel, curvature, and gradient effects
+ */
+
+
+=== FILE: ./project/client/src/lib/pbrMicrodetailTextures.ts ===
+/**
+ * PBR MICRODETAIL TEXTURE GENERATOR
+ * 
+ * Generates seamless, tileable normal and AO maps for glass and metal surfaces
+ * Resolution: ≤2K (2048x2048) for GPU optimization
+
+=== FILE: ./project/client/src/lib/fixedMathematicalDomains.ts ===
+/**
+ * FIXED MATHEMATICAL DOMAINS
+ * 
+ * Each parametric shape has a FIXED mathematical domain that defines
+ * its correct geometry. UV parameters (uMin, uMax, vMin, vMax) should
+
+=== FILE: ./project/client/src/lib/kfoldValidationEngine.ts ===
+/**
+ * IRREDUNDANT K-FOLD CROSS-VALIDATION ENGINE
+ * Implements novel validation approach where each instance is used exactly once
+ * for training and once for testing (eliminates redundancy in traditional k-fold)
+ * 
+
+=== FILE: ./project/client/src/lib/unifiedAnimationSystem.ts ===
+/**
+ * UNIFIED ANIMATION SYSTEM
+ * Consolidates all animation engines into one simple, reliable system
+ * © 2025 UUON Foundation Inc.
+ */
+
+=== FILE: ./project/client/src/lib/planeTransforms.ts ===
+import { SurfaceParameters } from '../types/math';
+
+export interface PlaneTransform {
+  name: string;
+  description: string;
+
+=== FILE: ./project/client/src/lib/adaptiveMeshRefinement.ts ===
+
+/**
+ * ADAPTIVE MESH REFINEMENT SYSTEM
+ * Intelligently refines mesh geometry based on curvature and visual importance
+ * © 2025 UUON Foundation Inc. - Phillip A. Ruiz III
+
+=== FILE: ./project/client/src/lib/mlFrontrunnerStrategy.ts ===
+
+/**
+ * ML FRONTRUNNER STRATEGY
+ * Strategic roadmap to ML leadership using UUON mathematical foundations
+ */
+
+=== FILE: ./project/client/src/lib/quantumParameterIntelligence.ts ===
+
+/**
+ * Quantum-Enhanced Parameter Intelligence
+ * Uses quantum annealing principles for optimal parameter discovery
+ */
+
+=== FILE: ./project/client/src/lib/settingsPreservationEngine.ts ===
+
+/**
+ * SETTINGS PRESERVATION ENGINE
+ * Prevents system overrides of user-modified parameters
+ */
+
+=== FILE: ./project/client/src/lib/postQuantumCrypto.ts ===
+import { advancedCrypto } from './advancedCryptography';
+
+export interface LatticeKeyPair {
+  publicKey: number[][];
+  privateKey: number[][];
+
+=== FILE: ./project/client/src/lib/cryptoEngine.ts ===
+import { SurfaceParameters } from '../types/math';
+import { advancedCrypto } from './advancedCryptography';
+import { postQuantumCrypto } from './postQuantumCrypto';
+
+export interface CryptoHash {
+
+=== FILE: ./project/client/src/lib/cryptoDemo.ts ===
+import { cryptoSuite } from './cryptoSuite';
+import { cryptoEngine, advancedCrypto, postQuantumCrypto } from './cryptoEngine';
+
+export async function runCryptographicTests() {
+  console.log('='.repeat(60));
+
+=== FILE: ./project/client/src/lib/d13mon4HashEngine.ts ===
+
+/**
+ * D13MON4 GEOMETRIC HASH ENGINE
+ * 12-Tetrahedron Circle Formation with Cultural Complexity Scaling
+ * Integration with UUON Foundation Lattice Networks
+
+=== FILE: ./project/client/src/lib/cryptoSuite.ts ===
+export { cryptoEngine, advancedCrypto, postQuantumCrypto } from './cryptoEngine';
+export { AdvancedCryptography } from './advancedCryptography';
+export { PostQuantumCryptography } from './postQuantumCrypto';
+export { d13mon4HashEngine, D13MON4HashEngine } from './d13mon4HashEngine';
+
+
+=== FILE: ./project/client/src/lib/materialExport.ts ===
+/**
+ * MATERIAL EXPORT SYSTEM
+ * Exports 3D models with full material and shader properties
+ * Supports GLTF/GLB format with embedded textures and PBR materials
+ */
+
+=== FILE: ./project/client/src/lib/emojiToShapeConverter.ts ===
+/**
+ * EMOJI TO 3D SHAPE CONVERTER
+ * Converts emojis, stickers, and GIFs to mathematical visualizations
+ * © 2025 UUON Foundation Inc.
+ */
+
+=== FILE: ./project/client/src/lib/intelligentColorRecognition.ts ===
+
+/**
+ * INTELLIGENT COLOR RECOGNITION SYSTEM
+ * Converts color names/codes to mathematically meaningful visualizations
+ * © 2025 UUON Foundation Inc.
+
+=== FILE: ./project/client/src/lib/fractalMappingEngine.ts ===
+
+/**
+ * ADVANCED FRACTAL MAPPING ENGINE
+ * Implements 15+ sophisticated fractal analysis algorithms
+ * Based on TEM/SEM research and mathematical foundations
+
+=== FILE: ./project/client/src/lib/extendedPrecisionConstants.ts ===
+
+/**
+ * EXTENDED PRECISION MATHEMATICAL CONSTANTS
+ * Ultra-high precision (O(10^-100)) constants for quantum-enhanced computations
+ * Based on quantum-enhanced materials simulation research
+
+=== FILE: ./project/client/src/lib/semanticAlgorithmMapping.ts ===
+/**
+ * SEMANTIC ALGORITHM MAPPINGS
+ * Maps emojis to mathematical algorithms and their parameters
+ * © 2025 UUON Foundation Inc.
+ */
+
+=== FILE: ./project/client/src/lib/piPhiConstantsEngine.ts ===
+
+/**
+ * π–φ CONSTANTS ENGINE: TOPICAL MAPPING & ANALYSIS
+ * Advanced mathematical framework for cosmic to quantum scale phenomena
+ */
+
+=== FILE: ./project/client/src/lib/blockchainIntegration.ts ===
+
+/**
+ * BLOCKCHAIN ALGORITHMS INTEGRATION
+ * Seamless integration with existing UUON Foundation mathematical visualization platform
+ */
+
+=== FILE: ./project/client/src/lib/universalMathematics.ts ===
+
+/**
+ * UNIVERSAL MATHEMATICS ENGINE
+ * Complete mathematical framework of physical reality as 3D visualizations
+ * Based on "Mathematician's Guide to Universal Mathematics"
+
+=== FILE: ./project/client/src/lib/mlLeverageEngine.ts ===
+
+/**
+ * ML LEVERAGE ENGINE
+ * Transforms UUON mathematical foundations into cutting-edge ML capabilities
+ */
+
+=== FILE: ./project/client/src/lib/shapeSpecificTextures.ts ===
+/**
+ * SHAPE-SPECIFIC MATHEMATICAL TEXTURE GENERATION SYSTEM
+ * 
+ * Generates unique PBR texture maps (albedo, normal, roughness, metallic, occlusion)
+ * based on the mathematical foundation of each shape category.
+
+=== FILE: ./project/client/src/lib/renderingConfigManager.ts ===
+/**
+ * RENDERING CONFIGURATION MANAGER
+ * Single source of truth for all WebGL renderer settings
+ * Prevents conflicts from multiple components trying to modify renderer
+ * 
+
+=== FILE: ./project/client/src/lib/optimizationEngines.ts ===
+
+/**
+ * Mathematical Optimization Engines
+ * Implementation of gradient descent variants and advanced AI algorithms
+ */
+
+=== FILE: ./project/client/src/lib/shareURLParser.ts ===
+import { SurfaceParameters, SurfaceType } from '../types/math';
+
+export interface ParsedShareParams {
+  type: string;
+  parameters: Partial<SurfaceParameters>;
+
+=== FILE: ./project/client/src/lib/universalEquationSolver.ts ===
+
+/**
+ * UNIVERSAL EQUATION SOLVER
+ * Integrates all major equation solving algorithms into the Δmension platform
+ * Based on comprehensive mathematical framework from research document
+
+=== FILE: ./project/client/src/lib/equationVisualizationIntegration.ts ===
+
+/**
+ * EQUATION VISUALIZATION INTEGRATION
+ * Connects universal equation solver results to the 3D rendering system
+ */
+
+=== FILE: ./project/client/src/lib/stabilityMonitor.ts ===
+
+/**
+ * STABILITY MONITOR
+ * Prevents crashes and glitches by monitoring system health
+ */
+
+=== FILE: ./project/client/src/lib/intelligenceMetricsEnhancer.ts ===
+
+/**
+ * INTELLIGENCE METRICS ENHANCEMENT MODULE
+ * Drop-in extension for existing UUON Foundation metrics systems
+ * © 2025 UUON Foundation Inc.
+
+=== FILE: ./project/client/src/lib/databaseMLLoader.ts ===
+
+/**
+ * DATABASE ML LOADER
+ * Client-side loader for ML models stored in database
+ */
+
+=== FILE: ./project/client/src/lib/serverSideProtection.ts ===
+
+/**
+ * SERVER-SIDE MATHEMATICAL FORMULA PROTECTION
+ * Prevents client-side access to proprietary mathematical formulations
+ */
+
+=== FILE: ./project/client/src/lib/fractalUVMapping.ts ===
+/**
+ * FRACTAL UV MAPPING ENGINE
+ * 
+ * Comprehensive UV coordinate generation system for 3D parametric surfaces
+ * Supports multiple mapping modes including fractal-based UV patterns
+
+=== FILE: ./project/client/src/lib/moduloAlgorithms.ts ===
+/**
+ * MODULO ALGORITHMS LIBRARY
+ * 
+ * Complete implementation of 150 modulo-based algorithms as 3D parametric surfaces
+ * Based on the Master List of Modulo Operations in Mathematics, Computing, and Physics
+
+=== FILE: ./project/client/src/lib/gmod6IntegrationFoundation.ts ===
+
+/**
+ * G MOD 6 FRONTEND INTEGRATION FOUNDATION
+ * 
+ * Provides the foundation for frontend implementation of G Mod 6 engine
+
+=== FILE: ./project/client/src/lib/moduloAlgorithmsPart2.ts ===
+/**
+ * MODULO ALGORITHMS LIBRARY - PART 2
+ * 
+ * Continuation of 150 modulo-based algorithms as 3D parametric surfaces
+ * Categories 8-14 from the Master List
+
+=== FILE: ./project/client/src/lib/essentialShapesClient.ts ===
+
+/**
+ * ESSENTIAL SHAPES CLIENT
+ * Frontend interface to access bare minimum mathematical shapes
+ */
+
+=== FILE: ./project/client/src/lib/deviceDetection.ts ===
+export function isMobileDevice(): boolean {
+  if (typeof window === 'undefined') return false;
+
+  const userAgent = window.navigator.userAgent.toLowerCase();
+  const isMobileUA = /android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini/i.test(userAgent);
+
+=== FILE: ./project/client/src/lib/webglContextRecovery.ts ===
+
+export class WebGLContextRecovery {
+  private canvas: HTMLCanvasElement | null = null;
+  private gl: WebGLRenderingContext | null = null;
+  private contextLostListener: ((event: Event) => void) | null = null;
+
+=== FILE: ./project/client/src/lib/quantumHardwareIntegration.ts ===
+
+// Quantum Hardware Integration Layer
+// Interfaces with IBM Quantum systems and other quantum backends
+
+export interface QuantumBackend {
+
+=== FILE: ./project/client/src/lib/frontendSynchronization.ts ===
+/**
+ * FRONTEND SYNCHRONIZATION SYSTEM
+ * Ensures all changes are immediately visible on the frontend
+ * Handles WebGL context issues, HMR conflicts, and state propagation
+ */
+
+=== FILE: ./project/client/src/lib/shapeRegistryInitializer.ts ===
+
+import { getAllImplementedShapes, getAllRegisteredShapes } from './shapeRegistryValidator';
+import { SHAPE_CATEGORIES } from './shapeCategories';
+
+/**
+
+=== FILE: ./project/client/src/lib/gpuParticleSystem.ts ===
+import * as THREE from 'three';
+
+export interface ParticleSystemConfig {
+  maxParticles: number;
+  particleSize: number;
+
+=== FILE: ./project/client/src/lib/quantumGapMathematics.ts ===
+
+/**
+ * Discrete Measurement Gap Mathematical Framework
+ * A mathematical modeling approach inspired by observations of discrete measurement limits
+ * Used for enhanced numerical precision in parametric surface computations
+
+=== FILE: ./project/client/src/lib/shapeStabilizer.ts ===
+import { SurfaceParameters } from '../types/math';
+
+// Stabilization utility to prevent chaotic shapes
+export function stabilizeParameters(params: SurfaceParameters): SurfaceParameters {
+  const stabilized = { ...params };
+
+=== FILE: ./project/client/src/lib/mathematicalValidator.ts ===
+/**
+ * Advanced Mathematical Validation System
+ * Validates equations, parameters, and mathematical operations in real-time
+ */
+
+
+=== FILE: ./project/client/src/lib/lightweightParameterValidator.ts ===
+/**
+ * LIGHTWEIGHT PARAMETER VALIDATOR
+ * Ultra-efficient parameter validation with minimal computational overhead
+ * Optimized for reduced CPU usage and memory footprint
+ */
+
+=== FILE: ./project/client/src/lib/missingShapesBridge.ts ===
+
+/**
+ * MISSING SHAPES BRIDGE
+ * Provides fallback implementations for shapes that are registered but missing equations
+ */
+
+=== FILE: ./project/client/src/lib/databaseShapeLoader.ts ===
+/**
+ * Database-First Shape Loader
+ * Fetches shapes from the database API instead of bundling everything
+ * This is how games load assets - on-demand from server
+ */
+
+=== FILE: ./project/client/src/lib/databaseChangeLogger.ts ===
+/**
+ * Database Change Logger
+ * Tracks all database operations for shapes, formulas, and assets
+ * Makes it easy to search and track database-related changes
+ */
+
+=== FILE: ./project/client/src/lib/babylonianZodiacShapes.ts ===
+import { ParametricSurface, getCleanDefaults } from '../types/shapes';
+
+export const BABYLONIAN_ZODIAC_SHAPES: Record<string, ParametricSurface> = {
+  
+  babylonian_aries_hired_man: {
+
+=== FILE: ./project/client/src/lib/consciousnessTheory.ts ===
+import { SurfaceParameters } from '../types/math';
+import { ParametricSurface } from '../types/shapes';
+
+/**
+ * CONSCIOUSNESS & COGNITIVE SCIENCE ALGORITHMS
+
+=== FILE: ./project/client/src/lib/financialMathematics.ts ===
+import { SurfaceParameters } from '../types/math';
+import { ParametricSurface } from '../types/shapes';
+
+/**
+ * FINANCIAL MATHEMATICS & MACHINE LEARNING ALGORITHMS
+
+=== FILE: ./project/client/src/lib/advancedPhysicsSims.ts ===
+import { SurfaceParameters } from '../types/math';
+import { ParametricSurface } from '../types/shapes';
+
+/**
+ * ADVANCED PHYSICS SIMULATIONS
+
+=== FILE: ./project/client/src/lib/cryptoUtils.ts ===
+/**
+ * SHARED CRYPTO UTILITIES
+ * Base cryptographic functions used by both cryptoEngine and advancedCryptography
+ * Prevents circular dependencies
+ */
+
+=== FILE: ./project/client/src/lib/advancedCryptography.ts ===
+import { sha256, sha256Sync } from './cryptoUtils';
+
+export interface HashResult {
+  algorithm: string;
+  hash: string;
+
+=== FILE: ./project/client/src/lib/specializedEquationsAPI.ts ===
+
+/**
+ * SPECIALIZED EQUATIONS API
+ * Access to advanced mathematical equations not in UI dropdown
+ * Clean separation from visualization system
+
+=== FILE: ./project/client/src/lib/sketchfabExporter.ts ===
+/**
+ * SKETCHFAB-OPTIMIZED EXPORT SYSTEM
+ * 
+ * Comprehensive exporter designed for Sketchfab compatibility with:
+ * - Multiple transparency modes (Alpha Mask, Blending, Dithered, Refraction)
+
+=== FILE: ./project/client/src/lib/verificationRegistry.ts ===
+/**
+ * UUON FOUNDATION VERIFICATION REGISTRY
+ * 
+ * Public registry for SHA-256 hashes of all mathematical shapes
+ * Allows anyone to verify authenticity of exported models
+
+=== FILE: ./project/client/src/lib/qrCodeGenerator.ts ===
+/**
+ * QR CODE GENERATOR FOR VERIFICATION
+ * 
+ * Generates QR codes that link to UUON Foundation verification page
+ * Can be embedded in textures or exported as standalone images
+
+=== FILE: ./project/client/src/lib/holographicExport.ts ===
+/**
+ * HOLOGRAPHIC EXPORT ENGINE
+ * 
+ * Creates true holographic visual effects for 3D model exports:
+ * - Interference patterns (rainbow/iridescent shimmer)
+
+=== FILE: ./project/client/src/lib/internalAlgorithmUtilities.ts ===
+/**
+ * INTERNAL ALGORITHM UTILITIES
+ * Centralized reusable algorithms extracted from shape libraries
+ * 
+ * These algorithms were previously embedded in individual shape files
+
+=== FILE: ./project/client/src/lib/latticeNetworkEngine.ts ===
+
+/**
+ * LATTICE NETWORK ENGINE
+ * Advanced Auxetic Lattice System for Mathematical Object Networking
+ * Based on UUON Foundation Lattice Technology
+
+=== FILE: ./project/client/src/lib/publicReadinessMonitor.ts ===
+/**
+ * PUBLIC READINESS MONITORING SYSTEM
+ * Ensures platform stability for public launch
+ */
+
+
+=== FILE: ./project/client/src/lib/shapeDefaults.ts ===
+import { SurfaceParameters } from '../types/math';
+
+// Database integration for shape defaults
+const API_BASE = '/api';
+
+
+=== FILE: ./project/client/src/lib/iceCrystalShapes.ts ===
+/**
+ * ICE CRYSTALS & SNOWFLAKE SHAPES
+ * Nature's geometric masterpieces with 6-fold symmetry
+ * Based on Bentley's snowflake classification and crystallography
+ */
+
+=== FILE: ./project/client/src/lib/dynamicBackgroundEffects.ts ===
+/**
+ * DYNAMIC BACKGROUND EFFECTS
+ * Generates visual background effects based on mathematical properties of shapes
+ * Changes colors, patterns, and animations based on equation characteristics
+ */
+
+=== FILE: ./project/client/src/lib/parametricDataPreservation.ts ===
+/**
+ * PARAMETRIC DATA PRESERVATION SYSTEM
+ * 
+ * Transforms "dead geometry" into "living geometry" by embedding complete
+ * parametric data in exports. This allows any compatible system to:
+
+=== FILE: ./project/client/src/lib/shapeDynamicsEngine.ts ===
+/**
+ * SHAPE DYNAMICS ENGINE
+ * 
+ * Comprehensive mathematical analysis system using triple integrals
+ * and differential geometry to compute physical properties of 3D shapes.
+
+=== FILE: ./project/client/src/lib/physicalGeometryProcessor.ts ===
+import * as THREE from 'three';
+
+export interface GeometryValidation {
+  isManifold: boolean;
+  isWatertight: boolean;
+
+=== FILE: ./project/client/src/lib/exportQualityValidator.ts ===
+/**
+ * EXPORT QUALITY VALIDATOR
+ * 
+ * Validates GLB/GLTF export quality and compliance with
+ * the Physical-Geometry Best-Practices Protocol.
+
+=== FILE: ./project/client/src/lib/shapeUnfoldPresets.ts ===
+/**
+ * Shape Unfold Presets
+ * 
+ * Optimized UV domain parameters for fully unfolding complex shapes
+ * including helixes, vortexes, twisted surfaces, and Riemann surfaces.
+
+=== FILE: ./project/client/src/lib/fractalFormulaExtensions.ts ===
+export interface FractalFormula {
+  id: string;
+  name: string;
+  formula: string;
+  category: string;
+
+=== FILE: ./project/client/src/lib/trackingService.ts ===
+const SESSION_ID = `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+
+let lastViewedShape = '';
+let lastParameters: Record<string, any> = {};
+let parameterDebounceTimer: ReturnType<typeof setTimeout> | null = null;
+
+=== FILE: ./project/client/src/lib/deploymentAssetLoader.ts ===
+
+/**
+ * DEPLOYMENT ASSET LOADER
+ * Loads assets from database storage instead of bundled files
+ */
+
+=== FILE: ./project/client/src/lib/quantumAlgorithmsAdvanced.ts ===
+
+import * as THREE from 'three';
+
+interface QuantumState {
+  amplitude: number;
+
+=== FILE: ./project/client/src/lib/quantumComputingFormulas.ts ===
+
+/**
+ * Quantum Computing Formulas & Phenomena
+ * Comprehensive mathematical foundation for quantum visualization
+ */
+
+=== FILE: ./project/client/src/lib/memoryManager.ts ===
+import * as THREE from 'three';
+
+/**
+ * Advanced Memory Management System for Mathematical Visualization Platform
+ * Prevents memory leaks in complex shape rendering and AI computations
+
+=== FILE: ./project/client/src/lib/geometryOptimizer.ts ===
+import * as THREE from 'three';
+
+/**
+ * Geometry Optimizer with LRU-based BufferGeometry pooling
+ * Manages geometry memory efficiently for high-performance rendering
+
+=== FILE: ./project/client/src/lib/preloadManager.ts ===
+/**
+ * Preload Manager - Priority-based shape preloading using requestIdleCallback
+ * Intelligently preloads shapes during browser idle time
+ */
+
+
+=== FILE: ./project/client/src/lib/requestOptimizer.ts ===
+/**
+ * Request Optimizer - Batch request processing with configurable delays
+ * Reduces API call frequency and improves performance
+ */
+
+
+=== FILE: ./project/client/src/lib/smartFlowManager.ts ===
+/**
+ * Smart Flow Manager - Intelligent UI/UX flow optimization
+ * Manages user interaction patterns and optimizes response timing
+ */
+
+
+=== FILE: ./project/client/src/lib/loadBearingOptimizer.ts ===
+/**
+ * Load Bearing Optimizer - Intelligent load distribution and progressive loading
+ * Ensures smooth performance even with complex mathematical visualizations
+ */
+
+
+=== FILE: ./project/client/src/lib/intelligentPreloader.ts ===
+
+/**
+ * Intelligent Preloading System
+ * Predicts and preloads shapes/resources based on user behavior
+ */
+
+=== FILE: ./project/client/src/lib/userExperienceTracker.ts ===
+
+/**
+ * User Experience Tracker
+ * Monitors user interactions and provides insights for optimization
+ */
+
+=== FILE: ./project/client/src/lib/shapeRecommendationEngine.ts ===
+
+/**
+ * Shape Recommendation Engine
+ * Provides intelligent shape suggestions based on user preferences and patterns
+ */
+
+=== FILE: ./project/client/src/lib/systemIntegrationHub.ts ===
+/**
+ * SYSTEM INTEGRATION HUB
+ * 
+ * Central communication layer connecting all systems through the Parameter Authority.
+ * This is the nervous system that ensures all parts of the app work together.
+
+=== FILE: ./project/client/src/lib/formulaReferenceIndex.ts ===
+/**
+ * FORMULA REFERENCE INDEX - Shape Compression System
+ * 
+ * Instead of hardcoded switch statements, use formula equations
+ * as the SINGLE SOURCE OF TRUTH for all shapes.
+
+=== FILE: ./project/client/src/lib/chakraShapes.ts ===
+/**
+ * CHAKRA ENERGY VISUALIZATIONS
+ * Traditional 7 Chakra System - PLATONIC SYMBOLIC FORMS
+ * Each chakra rendered as a simple, clean geometric symbol
+ * 
+
+=== FILE: ./project/client/src/lib/theoryOfEverythingShapes.ts ===
+/**
+ * THEORY OF EVERYTHING CANDIDATE SHAPES
+ * Mathematical visualizations of leading ToE candidate frameworks
+ * String Theory, M-Theory, Loop Quantum Gravity, Standard Model, Grand Unification
+ * © 2025 UUON Foundation Inc.
+
+=== FILE: ./project/client/src/lib/tenPercentShapes.ts ===
+/**
+ * 10% SYSTEMS - VISIBLE/HIDDEN DYNAMICS
+ * Universal pattern: Complex systems have ~10% visible and ~90% hidden layers
+ * S = V + H where V ≈ 0.10 and H ≈ 0.90 of total system
+ * © 2025 UUON Foundation Inc. / CargoEU
+
+=== FILE: ./project/client/src/lib/generalRelativityShapes.ts ===
+/**
+ * GENERAL RELATIVITY & SPACETIME PHYSICS LIBRARY
+ * 
+ * Comprehensive 3D visualizations of Einstein's equations and spacetime geometry
+ * Based on the mathematical framework of General Relativity
+
+=== FILE: ./project/client/src/lib/entropicPrinciples.ts ===
+/**
+ * ENTROPIC PRINCIPLES & ANTHROPIC COSMOLOGY
+ * Advanced Theoretical Physics Visualizations
+ * Causal Entropic Principle, Anthropic Reasoning, Thermodynamic Cosmology
+ * © 2025 UUON Foundation Inc. - Proprietary Research
+
+=== FILE: ./project/client/src/lib/qpuQuantumComputingShapes.ts ===
+import { SurfaceParameters } from '../types/math';
+import { getCleanDefaults } from '../types/shapes';
+
+/**
+ * QPU & QUANTUM COMPUTING SHAPES
+
+=== FILE: ./project/client/src/lib/quantumComputingAlgorithms.ts ===
+import { SurfaceParameters } from '../types/math';
+
+/**
+ * QUANTUM COMPUTING FORMULAS & PHENOMENA LIBRARY
+ * 
+
+=== FILE: ./project/client/src/lib/scientificExpansionShapes.ts ===
+import { SurfaceParameters } from '../types/math';
+
+/**
+ * SCIENTIFIC EXPANSION SHAPES - Comprehensive Life, Earth, Social Sciences & Engineering
+ * Product of UUON Foundation - Phillip A. Ruiz III
+
+=== FILE: ./project/client/src/lib/fractalAnalysisShapes.ts ===
+import { SurfaceParameters } from '../types/math';
+import { getCleanDefaults } from '../types/shapes';
+
+/**
+ * FRACTAL ANALYSIS & TEM/SEM IMAGING SHAPES
+
+=== FILE: ./project/client/src/lib/topologyDifferentialShapes.ts ===
+import { SurfaceParameters } from '../types/math';
+import { getCleanDefaults } from '../types/shapes';
+
+/**
+ * TOPOLOGY & DIFFERENTIAL GEOMETRY SHAPES
+
+=== FILE: ./project/client/src/lib/riemannSurfaces.ts ===
+/**
+ * RIEMANN SURFACES & DIFFERENTIAL GEOMETRY LIBRARY
+ * Bernhard Riemann (1826-1866) - Foundational work 1854
+ * 
+ * Multi-valued function visualizations with branch cuts and sheets
+
+=== FILE: ./project/client/src/lib/temporalGeometry.ts ===
+/**
+ * TEMPORAL GEOMETRY ENGINE
+ * Cross = Time Visualization System
+ * 
+ * Implements the philosophical framework: "The Cross is a Map of Time"
+
+=== FILE: ./project/client/src/lib/tensorAlgebraEngine.ts ===
+
+/**
+ * TENSOR ALGEBRA & LINEAR OPERATORS LIBRARY
+ * Advanced tensor operations and linear algebra visualizations
+ * © 2025 UUON Foundation Inc.
+
+=== FILE: ./project/client/src/lib/waveAlgorithmsEngine.ts ===
+
+/**
+ * WAVE ALGORITHMS & WAVE EQUATIONS LIBRARY
+ * Wave propagation, interference, and wave-based algorithms
+ * © 2025 UUON Foundation Inc.
+
+=== FILE: ./project/client/src/lib/dualMirrorEnergySystem.ts ===
+import { SurfaceParameters } from '../types/math';
+
+/**
+ * DUAL MIRROR ENERGY SYSTEM
+ * 
+
+=== FILE: ./project/client/src/lib/yeganehEagle.ts ===
+/**
+ * Yeganeh Eagle Mathematical Art
+ * Based on Hamid Naderi Yeganeh's famous Eagle visualization
+ * 
+ * This creates ellipses with foci at:
+
+=== FILE: ./project/client/src/lib/inverseFishBowlSpace.ts ===
+/**
+ * INVERSE FISH-BOWL SPACE MODEL
+ * Mathematical visualization of inverse-lens geometric projection
+ * 
+ * Based on the theory that space functions as an inverse-lens geometric projection
+
+=== FILE: ./project/client/src/lib/fieldTheoryEngine.ts ===
+
+/**
+ * FIELD THEORY & PHYSICS EQUATIONS LIBRARY
+ * Quantum field theory, classical fields, and physics equations
+ * © 2025 UUON Foundation Inc.
+
+=== FILE: ./project/client/src/lib/maxwellFieldTheory.ts ===
+
+/**
+ * MAXWELL'S FIELD THEORY ENGINE
+ * Complete implementation of electromagnetic field equations with Shape Formula Time Cross Field visualization
+ * Based on the four fundamental Maxwell equations in differential form
+
+=== FILE: ./project/client/src/lib/electromagneticFieldRenderer.ts ===
+
+/**
+ * ELECTROMAGNETIC FIELD RENDERER
+ * Advanced visualization system for Maxwell's equations and electromagnetic phenomena
+ * Handles real-time field line rendering, wave propagation, and field interactions
+
+=== FILE: ./project/client/src/lib/uuonMeshEngine.ts ===
+/**
+ * UUON-Mesh Engine - Noise-Reactive Parametric 3D Geometry System
+ * **Product of UUON Foundation, no undocumented reproduction or any use without written consent.**
+ * **Author: Phillip A. Ruiz III, Organization: UUON Foundation Inc.**
+ * 
+
+=== FILE: ./project/client/src/lib/atomicStructureShapes.ts ===
+/**
+ * Atomic Structure & Electron Association Formulas
+ * ================================================
+ * 
+ * Mathematical visualizations of atomic and molecular structures:
+
+=== FILE: ./project/client/src/lib/jacobianTransformationShapes.ts ===
+/**
+ * JACOBIAN TRANSFORMATION SHAPES
+ * Visualizations of coordinate transformations and Jacobian matrix mathematics
+ * 
+ * These shapes demonstrate the geometric meaning of Jacobian matrices:
+
+=== FILE: ./project/client/src/lib/unifiedTOECanvas.ts ===
+/**
+ * UNIFIED THEORY OF EVERYTHING CANVAS
+ * ====================================
+ * 
+ * Complete visualization system showing ALL mathematical domains working together:
+
+=== FILE: ./project/client/src/lib/aiMlAlgorithmsLibrary.ts ===
+/**
+ * QUANTUM MACHINE LEARNING (QML) MATHEMATICAL FOUNDATIONS LIBRARY
+ * Comprehensive 3D Visualizations of Modern AI/ML Algorithms with Quantum Enhancement
+ * 
+ * ============================================================================
+
+=== FILE: ./project/client/src/lib/neuralLatticeAlgorithms.ts ===
+import { SurfaceParameters } from '../types/math';
+
+/**
+ * NEURAL NETWORK + LATTICE ALGORITHMS LIBRARY
+ * 
+
+=== FILE: ./project/client/src/lib/cosmicHistoryGaps.ts ===
+/**
+ * The 9 Biggest Gaps in Cosmic History - Mathematical Visualizations
+ * Based on BigThink analysis - Scientific framework for understanding cosmic mysteries
+ * 
+ * Each gap represents a fundamental question in cosmology with mathematical formulations
+
+=== FILE: ./project/client/src/lib/shapeInfo.ts ===
+/**
+ * SHAPE INFO SYSTEM
+ * Provides comprehensive shape information including formulas and sensitivity levels
+ * Uses the ShapeSensitivityEngine for accurate formula and classification data
+ * 
+
+=== FILE: ./project/client/src/lib/shapeSensitivityEngine.ts ===
+/**
+ * SHAPE SENSITIVITY ENGINE
+ * Classifies shapes by their mathematical complexity and parameter sensitivity
+ * Provides parameter dampening for chaotic shapes to prevent visual glitches
+ * 
+
+=== FILE: ./project/client/src/lib/assetStorage.ts ===
+import * as THREE from 'three';
+import { Client } from '@replit/object-storage';
+
+interface AssetMetadata {
+  id: string;
+
+=== FILE: ./project/client/src/lib/errorRecoverySystem.ts ===
+
+/**
+ * Enhanced Error Recovery System
+ * Provides automatic fallbacks and self-healing capabilities
+ */
+
+=== FILE: ./project/client/src/lib/queryClient.ts ===
+import { QueryClient, QueryFunction } from "@tanstack/react-query";
+
+async function throwIfResNotOk(res: Response) {
+  if (!res.ok) {
+    const text = (await res.text()) || res.statusText;
+
+=== FILE: ./project/client/src/lib/generativeAlgorithms.ts ===
+import { SurfaceParameters } from '../types/math';
+
+/**
+ * GENERATIVE ALGORITHMS - L-SYSTEMS LIBRARY
+ * 
+
+=== FILE: ./project/client/src/lib/noiseFunctions.ts ===
+import { SurfaceParameters } from '../types/math';
+
+/**
+ * NOISE FUNCTIONS LIBRARY
+ * 
+
+=== FILE: ./project/client/src/lib/physicsCategories.ts ===
+/**
+ * CATEGORY-SPECIFIC PHYSICS SYSTEMS for Δmension
+ *
+ * Each category implements its own physics behavior that demonstrates
+ * the underlying scientific principles
+
+=== FILE: ./project/client/src/lib/multidimensionalFractals.ts ===
+/**
+ * Multidimensional Fractal Shapes
+ * 
+ * Based on Kuan Peng's (彭宽) mathematical framework for extending complex numbers
+ * to 3D, 4D, and higher dimensional spaces.
+
+=== FILE: ./project/client/src/lib/advancedTopologicalSurfaces.ts ===
+
+/**
+ * ADVANCED TOPOLOGICAL & MINIMAL SURFACES
+ * High-level mathematical surfaces for research and visualization
+ */
+
+=== FILE: ./project/client/src/lib/groupTheory.ts ===
+import { SurfaceParameters } from '../types/math';
+
+/**
+ * Group Theory Visualizations
+ * Mathematical symmetry groups and their geometric manifestations
+
+=== FILE: ./project/client/src/lib/categoryTheory.ts ===
+import { SurfaceParameters } from '../types/math';
+
+/**
+ * Category Theory Visualizations
+ * Abstract mathematical structures representing categories, functors, and natural transformations
+
+=== FILE: ./project/client/src/lib/uuon-gmod6-engine.ts ===
+
+/**
+ * UUON G MOD 6 MATHEMATICAL ENGINE
+ * Modulo-6 based mathematical patterns and cycles for enhanced geometric visualization
+ * © 2024 UUON Foundation Inc. All Rights Reserved.
+
+=== FILE: ./project/client/src/lib/entanglementAlgorithms.ts ===
+/**
+ * QUANTUM ENTANGLEMENT ALGORITHMS
+ * Mathematical visualization of quantum entanglement states and correlations
+ * © 2025 UUON Foundation Inc.
+ */
+
+=== FILE: ./project/client/src/lib/algorithmRenderer.ts ===
+/**
+ * ALGORITHM RENDERER
+ * Renders mathematical algorithms from semantic mappings
+ * © 2025 UUON Foundation Inc.
+ */
+
+=== FILE: ./project/client/src/lib/cosmicPhysicsEquations.ts ===
+
+/**
+ * COSMIC PHYSICS EQUATIONS
+ * Missing formulations from cosmic gaps research framework
+ * © 2025 UUON Foundation Inc.
+
+=== FILE: ./project/client/src/lib/sequencePatterns.ts ===
+import type { SurfaceParameters } from '../types/math';
+
+export interface ParametricSurface {
+  name: string;
+  description?: string;
+
+=== FILE: ./project/client/src/lib/hypercomputationSurfaces.ts ===
+
+/**
+ * HYPERCOMPUTATION MATHEMATICAL SURFACES
+ * Visual representations of theoretical computing models beyond Church-Turing thesis
+ */
+
+=== FILE: ./project/client/src/lib/blockchainAlgorithmsEngine.ts ===
+
+/**
+ * BLOCKCHAIN & CRYPTOGRAPHIC ALGORITHMS ENGINE
+ * Comprehensive visualization system for consensus mechanisms, cryptographic primitives,
+ * and proof systems from the blockchain ecosystem
+
+=== FILE: ./project/client/src/lib/differentialGrowth.ts ===
+import { SurfaceParameters } from '../types/math';
+
+/**
+ * DIFFERENTIAL GROWTH LIBRARY
+ * 
+
+=== FILE: ./project/client/src/lib/voronoiSystems.ts ===
+import { SurfaceParameters } from '../types/math';
+
+/**
+ * VORONOI & TESSELLATION SYSTEMS LIBRARY
+ * 
+
+=== FILE: ./project/client/src/lib/humanAnatomyShapes.ts ===
+/**
+ * Human Anatomy Structures
+ * 50 parametric surface representations of human anatomical systems
+ * Organized into 6 major subsections for comprehensive medical/biological visualization
+ * Enhanced with anatomy-engine-v2 integration for mesh and hybrid support
+
+=== FILE: ./project/client/src/lib/nationalMottoAlgorithms.ts ===
+import { SurfaceParameters } from '../types/math';
+
+/**
+ * NATIONAL MOTTOS & SLOGANS - ALGORITHMIC INTERPRETATIONS
+ * 
+
+=== FILE: ./project/client/src/lib/setTheoryShapes.ts ===
+/**
+ * SET THEORY SHAPES - Mathematical Set Visualizations
+ * **Product of UUON Foundation, no undocumented reproduction or any use without written consent.**
+ * **Author: Phillip A. Ruiz III, Organization: UUON Foundation Inc.**
+ * 
+
+=== FILE: ./project/client/src/lib/biologicalShapeImplementations.ts ===
+/**
+ * MATHEMATICAL CELLULAR AUTOMATA IMPLEMENTATIONS
+ * Pure mathematical structures without medical references
+ * 
+ * Scale References:
+
+=== FILE: ./project/client/src/lib/mathematicalConstants.ts ===
+import { ParametricSurface, getCleanDefaults } from '../types/shapes';
+import { SurfaceParameters } from '../types/math';
+import { piPhiEngine } from './piPhiConstantsEngine';
+
+// Enhanced mathematical constants with extended precision
+
+=== FILE: ./project/client/src/lib/weatherSystems.ts ===
+/**
+ * WEATHER SYSTEMS & ATMOSPHERIC PHENOMENA
+ * Hurricane structure, tornado vortex, cloud formations
+ * © 2025 UUON Foundation Inc.
+ */
+
+=== FILE: ./project/client/src/lib/astronomicalObjects.ts ===
+/**
+ * ASTRONOMICAL OBJECTS
+ * Asteroids, planetary rings, and galaxy morphologies
+ * © 2025 UUON Foundation Inc.
+ */
+
+=== FILE: ./project/client/src/lib/tissueStructures.ts ===
+/**
+ * TISSUE STRUCTURES
+ * Biological tissue organization at microscopic scale
+ * © 2025 UUON Foundation Inc.
+ */
+
+=== FILE: ./project/client/src/lib/mechanicalShapes.ts ===
+/**
+ * INDUSTRIAL & MECHANICAL SHAPES
+ * Gears, turbine blades, pump geometries
+ * © 2025 UUON Foundation Inc.
+ */
+
+=== FILE: ./project/client/src/lib/proteinStructures.ts ===
+/**
+ * PROTEIN FOLDING STRUCTURES - AlphaFold Inspired Models
+ * Common protein folds and secondary structures
+ * © 2025 UUON Foundation Inc.
+ */
+
+=== FILE: ./project/client/src/lib/polymerChains.ts ===
+/**
+ * POLYMER CHAIN CONFIGURATIONS
+ * Different conformational states of polymer molecules
+ * © 2025 UUON Foundation Inc.
+ */
+
+=== FILE: ./project/client/src/lib/extendedCrystals.ts ===
+/**
+ * EXTENDED CRYSTAL STRUCTURES
+ * BCC, HCP, and common mineral lattices
+ * © 2025 UUON Foundation Inc.
+ */
+
+=== FILE: ./project/client/src/lib/higherDimensionalShapes.ts ===
+import { ParametricSurface, getCleanDefaults } from '../types/shapes';
+import { EnhancedProjections, Point4D } from './enhancedProjections';
+
+interface Point5D {
+  x: number;
+
+=== FILE: ./project/client/src/lib/quantumGravityEquations.ts ===
+/**
+ * QUANTUM GRAVITY CORE EQUATIONS
+ * Advanced Physics Visualizations - Theoretical Physics at Planck Scale
+ * © 2025 UUON Foundation Inc. - Proprietary Quantum Gravity Research
+ */
+
+=== FILE: ./project/client/src/lib/unifiedMathSymbols.ts ===
+/**
+ * CLIENT-SIDE UNIFIED MATH SYMBOLS
+ * Mirrors backend unified math system for frontend shape selection
+ */
+
+
+=== FILE: ./project/client/src/lib/unifiedMasterEquation.ts ===
+
+/**
+ * UNIFIED MASTER EQUATION IMPLEMENTATIONS
+ * Core Law of Reality: dΨ/dt = F(Ψ) across all domains
+ * Neuroscience, Mathematics, Physics, Quantum, Information Theory, Consciousness
+
+=== FILE: ./project/client/src/lib/socialSciencesShapes.ts ===
+
+/**
+ * SOCIAL SCIENCES & APPLIED SCIENCES PARAMETRIC SHAPES
+ * Economics, Sociology, Political Science, Engineering applications
+ * © 2025 UUON Foundation Inc.
+
+=== FILE: ./project/client/src/lib/lifeSciencesShapes.ts ===
+
+/**
+ * LIFE SCIENCES PARAMETRIC SHAPES
+ * Comprehensive implementation covering molecular biology, microbiology, botany, and ecology
+ * © 2025 UUON Foundation Inc.
+
+=== FILE: ./project/client/src/lib/earthSciencesShapes.ts ===
+
+/**
+ * EARTH & ENVIRONMENTAL SCIENCES PARAMETRIC SHAPES
+ * Comprehensive implementation covering geology, oceanography, and meteorology
+ * © 2025 UUON Foundation Inc.
+
+=== FILE: ./project/client/src/lib/physicsAnimationEngine.ts ===
+/**
+ * PHYSICS-BASED ANIMATION ENGINE
+ * 
+ * Generates realistic animations based on the physical laws governing each shape category.
+ * Each category has its own physics model that determines how the shape naturally moves.
+
+=== FILE: ./project/client/src/lib/customTextureManager.ts ===
+/**
+ * CUSTOM TEXTURE MANAGER
+ * Handles user-uploaded textures and creates material presets from them
+ * Integrated with Fractal UV Mapping Engine for advanced texture mapping
+ */
+
+=== FILE: ./project/client/src/lib/industrialExportStandards.ts ===
+/**
+ * Industrial 3D Export Standards Compliance Module
+ * Ensures all polygon data and industry standards are properly included
+ */
+
+
+=== FILE: ./project/client/src/lib/frontendConnectionMap.ts ===
+
+/**
+ * FRONTEND CONNECTION MAP
+ * Unified communication system for Assistant/Agent coordination
+ * © 2025 UUON Foundation Inc.
+
+=== FILE: ./project/client/src/lib/lexiconConsciousnessIntegration.ts ===
+/**
+ * LEXICON CONSCIOUSNESS INTEGRATION
+ * Connects the Physical Embodiment Engine to UNIFIED_SHAPES and Parameter Authority
+ * 
+ * This module automatically extracts all 2000+ shapes and creates consciousness entities
+
+=== FILE: ./project/client/src/lib/lexiconPhysicalEmbodiment.ts ===
+
+/**
+ * MATHEMATICAL CONSCIOUSNESS OPERATING SYSTEM
+ * Physical embodiment engine where mathematical entities gain consciousness
+ * and can "feel" parameter changes through their 3D bodies
+
+=== FILE: ./project/client/src/lib/sacredGeometry.ts ===
+// @ts-nocheck
+// Sacred geometry uses dynamic parameter signatures for mathematical flexibility
+
+/**
+ * Sacred Geometry Implementations
+
+=== FILE: ./project/client/src/lib/scientificKeywordHighlighter.ts ===
+/**
+ * Scientific Keyword Highlighter
+ * Highlights key astrophysics, cosmology, and physics terms in blue
+ * © 2025 UUON Foundation Inc.
+ */
+
+=== FILE: ./project/client/src/lib/thermalSystemSummary.ts ===
+
+/**
+ * THERMAL ENGINEERING & DATABASE EFFICIENCY SYSTEM SUMMARY
+ * Complete implementation overview for frontend integration
+ * © 2025 UUON Foundation Inc.
+
+=== FILE: ./project/client/src/lib/crossDomainHybridShapes.ts ===
+/**
+ * CROSS-DOMAIN HYBRID SHAPES - Client-Side Implementation
+ * Implements Section 3.1 from "THE DMENSION SYSTEM" publication
+ * 
+ * 8 Novel cross-domain mathematical fusions:
+
+=== FILE: ./project/client/src/lib/universalLexiconEngine.ts ===
+/**
+ * UNIVERSAL LEXICON ENGINE
+ * A comprehensive semantic engine for extracting, expanding, and mapping
+ * all mathematical terms, formulas, and concepts in Dmension Mathematical Universe.
+ * 
+
+=== FILE: ./project/client/src/lib/systemIntegrationOrchestrator.ts ===
+
+/**
+ * DMENSION SYSTEM INTEGRATION ORCHESTRATOR
+ * Coordinates all mathematical libraries and ensures proper functionality
+ * Non-destructive enhancement to existing system
+
+=== FILE: ./project/client/src/lib/centralOrchestrator.ts ===
+
+/**
+ * CENTRAL ORCHESTRATION ENGINE
+ * Unified system for interconnecting all mathematical, AI, blockchain, and visualization components
+ * © 2025 UUON Foundation Inc.
+
+=== FILE: ./project/client/src/lib/instantViralActivation.ts ===
+
+/**
+ * DISCOVERY ACTIVATION SYSTEM
+ * 
+ * Activates discovery features for platform visibility
+
+=== FILE: ./project/client/src/lib/viralDiscoveryAmplifier.ts ===
+
+/**
+ * DISCOVERY AMPLIFIER
+ * 
+ * Enhances platform visibility in exports
+
+=== FILE: ./project/client/src/lib/universalExportPerfection.ts ===
+
+/**
+ * UNIVERSAL EXPORT PERFECTION SYSTEM
+ * 
+ * Transforms mathematical 3D shapes into universally readable formats with full provenance,
+
+=== FILE: ./project/client/src/lib/parametricLibraryPack.ts ===
+/**
+ * ΔMENSION PARAMETRIC LIBRARY PACK
+ * ================================
+ * Universal set of 39+ parametric forms organized into 10 master categories.
+ * 
+
+=== FILE: ./project/client/src/lib/anatomy-engine-v2.ts ===
+
+// anatomy-engine-v2.ts
+// Upgraded: supports "parametric", "mesh", and "hybrid" anatomy shapes.
+// Exports async loaders, deformation appliers, and a model manifest (mapping to your systems).
+
+
+=== FILE: ./project/client/src/lib/geometricIdentityPrinciple.ts ===
+
+/**
+ * GEOMETRIC IDENTITY PRINCIPLE (GIP) IMPLEMENTATION
+ * Core system for tracking identity evolution: Point → Line → Shape
+ * Integrates with existing Mathematical Consciousness OS
+
+=== FILE: ./project/client/src/lib/identityAuthority.ts ===
+
+/**
+ * IDENTITY AUTHORITY SYSTEM
+ * Extends Parameter Authority with Geometric Identity Principle tracking
+ * Integrates consciousness, identity persistence, and evolution metrics
+
+=== FILE: ./project/client/src/lib/gipIdentityEngine.ts ===
+/**
+ * GEOMETRIC IDENTITY PRINCIPLE (GIP) ENGINE
+ * 
+ * Identity Mathematics: "You are a geometric evolution of consciousness,
+ * not a fixed self, but an unfolding structure connected to everything else."
+
+=== FILE: ./project/client/src/lib/scientificIdentityShapes.ts ===
+/**
+ * UNIFIED SCIENTIFIC IDENTITY PRINCIPLES (ALAREX)
+ * © 2025 UUON Foundation Inc. - Proprietary
+ * 
+ * Implements the 4 Scientific Identity Principles:
+
+=== FILE: ./project/client/src/lib/timePhenomenonShapes.ts ===
+/**
+ * TIME PRINCIPLE & PHENOMENON PRINCIPLE SHAPES
+ * GEIA CORE MATHEMATICAL FRAMEWORK
+ * 
+ * Named after Gaia/Geia (Earth), representing the living, breathing mathematical
+
+=== FILE: ./project/client/src/lib/linguisticGeometryShapes.ts ===
+/**
+ * LINGUISTIC GEOMETRY ENGINE
+ * Finding Geometric Meaning in Words, Letters, and Expressions
+ * 
+ * CORE PRINCIPLE: Every letter has an inherent geometric structure that can be
+
+=== FILE: ./project/client/src/lib/protectedShapesRegistry.ts ===
+/**
+ * PROTECTED SHAPES REGISTRY
+ * Server-Side Only - Proprietary IP Protection
+ * 
+ * Shapes requiring team password authentication before viewing.
+
+=== FILE: ./project/client/src/lib/universalInformationLaw.ts ===
+/**
+ * UNIVERSAL LAW OF INFORMATION
+ * Backend Knowledge Layer for Dmension Mathematical Universe
+ * 
+ * CORE PRINCIPLE: Information ordering must increase or remain equal over evolutionary steps
+
+=== FILE: ./project/client/src/lib/phenomenonPrinciple.ts ===
+
+/**
+ * PHENOMENON PRINCIPLE ENGINE
+ * Mathematical framework explaining why anything appears, behaves, or becomes real
+ * 
+
+=== FILE: ./project/client/src/lib/platformOverview.ts ===
+/**
+ * DMENSION PLATFORM OVERVIEW
+ * Main public-facing description for sitemaps, SEO, and visitor discovery
+ * Written for general audiences while preserving technical depth for specialists
+ */
+
+=== FILE: ./project/client/src/lib/medicalImagingShapes.ts ===
+import * as THREE from 'three';
+
+export interface MedicalImagingShape {
+  name: string;
+  category: string;
+
+=== FILE: ./project/client/src/lib/slinkyDynamicsShapes.ts ===
+import type { ParametricSurface } from './surfaceGenerator';
+
+export const SLINKY_DYNAMICS_SHAPES: Record<string, ParametricSurface> = {
+  
+  // ═══════════════════════════════════════════════════════════════════════════
+
+=== FILE: ./project/client/src/lib/rubiksCubeDynamicsShapes.ts ===
+import type { ParametricSurface } from './surfaceGenerator';
+
+export const RUBIKS_CUBE_DYNAMICS_SHAPES: Record<string, ParametricSurface> = {
+  
+  // ═══════════════════════════════════════════════════════════════════════════
+
+=== FILE: ./project/client/src/lib/evolutionaryStringTheoryShapes.ts ===
+import type { SurfaceParameters } from './parametricSurfaces';
+
+/**
+ * EVOLUTIONARY STRING THEORY SHAPES
+ * "A String Theory of Evolution" - Harmonic Theory of Evolution
+
+=== FILE: ./project/client/src/lib/missing19ShapesImplementation.ts ===
+
+/**
+ * MISSING 19 SHAPES IMPLEMENTATION
+ * Critical implementations for complete mathematical universe coverage
+ * © 2025 UUON Foundation Inc.
+
+=== FILE: ./project/client/src/lib/efvUnifiedShapes.ts ===
+/**
+ * EFV — Energy-Frequency-Variation Unified Shape System
+ * 
+ * A formal analytical framework for constructing and controlling dynamic geometric systems.
+ * Three orthogonal parameters:
+
+=== FILE: ./project/client/src/lib/thermalEngineeringShapes.ts ===
+/**
+ * THERMAL ENGINEERING & DATA CENTER COOLING SHAPES
+ * Mathematical visualization of heat transfer, fluid dynamics, and cooling systems
+ * Based on AI Infrastructure Thermal Engineering Formulas
+ * © 2025 UUON Foundation Inc.
+
+=== FILE: ./project/client/src/lib/parameterProcessor.ts ===
+/**
+ * PARAMETER SYSTEM ARCHITECTURE - Stable Mathematical Controls
+ * Maintains mathematical integrity with predictable geometric operations
+ * 
+ * CATEGORIES (13 parameters a-m):
+
+=== FILE: ./project/client/src/lib/foundersSignatureShape.ts ===
+/**
+ * Φ³ AUREUM COLLECTION - Hidden Founder's Signature
+ * 
+ * A phi-driven tri-spiral golden geometry with global coherence.
+ * The mathematical DNA encoded within - discoverable only by those who seek.
+
+=== FILE: ./project/client/src/lib/diatomShapes.ts ===
+import { SurfaceParameters } from '../types/math';
+import { getCleanDefaults } from '../types/shapes';
+
+export interface ParametricSurface {
+  name: string;
+
+=== FILE: ./project/client/src/lib/harmonyWaveShapes.ts ===
+/**
+ * HARMONY WAVE SHAPES LIBRARY
+ * Advanced animation-focused parametric surfaces for harmony, symphony, 
+ * wave dynamics, morphing, and 4D projections
+ * 
+
+=== FILE: ./project/client/src/lib/surfaceGenerator.ts ===
+import { SurfaceParameters } from "../types/math";
+import { getSurfaceEquation } from "./parametricSurfacesClean";
+import { getFixedDomain } from "./fixedMathematicalDomains";
+import { applyUniversalEffects } from "./universalParameterEffects";
+import * as THREE from 'three';
+
+=== FILE: ./project/client/src/lib/alchemicalSymbolShapes.ts ===
+import { SurfaceParameters } from '../types/math';
+import { getCleanDefaults } from '../types/shapes';
+
+export interface ParametricSurface {
+  name: string;
+
+=== FILE: ./project/client/src/lib/exportSecurityCore.ts ===
+/**
+ * EXPORT SECURITY CORE
+ * Unified encryption, digital signatures, and watermarking for all export types
+ * 
+ * Security Levels:
+
+=== FILE: ./project/client/src/lib/minimalSurfacesLibrary.ts ===
+/**
+ * MINIMAL SURFACES LIBRARY
+ * Research-grade parametric equations from minimalsurfaces.blog
+ * 
+ * Organized into three categories:
+
+=== FILE: ./project/client/src/lib/neuralRepresentationsEngine.ts ===
+/**
+ * Neural Representations Engine for Δmension
+ * 
+ * Implements NeRF-like continuous sampling and SDS-inspired text-to-shape generation
+ * as integrated features within the parametric shape system.
+
+=== FILE: ./project/client/src/lib/medicalTPMSStructures.ts ===
+/**
+ * MEDICAL TPMS (Triply Periodic Minimal Surfaces) STRUCTURES
+ * FDA-Ready Tissue Engineering Scaffolds
+ * Bone scaffold optimization, tissue growth simulation, medical device prototyping
+ * © 2025 UUON Foundation Inc.
+
+=== FILE: ./project/client/src/lib/frontendCleanupSystem.ts ===
+import { SystemMaintenance } from './systemMaintenance';
+import { memoryManager } from './memoryManager';
+import { performanceMonitor } from './performanceMonitor';
+
+interface CleanupMetrics {
+
+=== FILE: ./project/client/src/lib/shapeCache.ts ===
+
+class ShapeCache {
+  private cache = new Map<string, any>();
+  private expiry = new Map<string, number>();
+  private accessOrder = new Map<string, number>(); // LRU tracking
+
+=== FILE: ./project/client/src/lib/astrophysicalPhenomena.ts ===
+/**
+ * ASTROPHYSICAL PHENOMENA - 3D Parametric Visualizations
+ * Gravitational fields, black holes, and cosmic structures
+ * 
+ * Parameter Mapping:
+
+=== FILE: ./project/client/src/lib/consciousnessMathShapes.ts ===
+import { SurfaceParameters } from '../types/math';
+import { getCleanDefaults } from '../types/shapes';
+
+export interface ParametricSurface {
+  name: string;
+
+=== FILE: ./project/client/src/lib/enhancedPerformanceCore.ts ===
+/**
+ * Enhanced Performance Core - Integrating your algorithms with mathematical visualization needs
+ * Builds upon your solid foundation with WebGL, precision, and multi-shape optimizations
+ */
+
+
+=== FILE: ./project/client/src/lib/systemMaintenance.ts ===
+import { ShapeRegistryValidator } from './shapeRegistryValidator';
+
+export class SystemMaintenance {
+  private static maintenanceInterval: NodeJS.Timeout | null = null;
+  private static healthCheckInterval: NodeJS.Timeout | null = null;
+
+=== FILE: ./project/client/src/lib/optimizedShapeLoader.ts ===
+
+export class OptimizedShapeLoader {
+  private loadedShapes = new Set<string>();
+  private loadingPromises = new Map<string, Promise<any>>();
+  private priorityQueue: string[] = [];
+
+=== FILE: ./project/client/src/lib/universalTransformations.ts ===
+/**
+ * UNIVERSAL GEOMETRIC TRANSFORMATION SYSTEM
+ * Applies parameters D-M consistently across ALL 344 shapes
+ * SYMMETRIC BEHAVIOR: Parameters from -180 to 180 produce mirror morphing
+ * © 2025 UUON Foundation Inc. - Proprietary
+
+=== FILE: ./project/client/src/lib/historicalAlgorithms.ts ===
+import { SurfaceParameters } from '../types/math';
+
+export interface ParametricSurface {
+  name: string;
+  equation: (u: number, v: number, params: SurfaceParameters) => [number, number, number];
+
+=== FILE: ./project/client/src/lib/environmentMapping.ts ===
+/**
+ * ENVIRONMENT MAPPING SYSTEM
+ * Generates procedural environment maps for realistic reflections
+ * Optimized for glass and metal PBR materials
+ */
+
+=== FILE: ./project/client/src/lib/attractorSystems.ts ===
+import { SurfaceParameters } from '../types/math';
+
+/**
+ * ATTRACTOR SYSTEMS LIBRARY
+ * 
+
+=== FILE: ./project/client/src/lib/ancientCivilizationShapes.ts ===
+/**
+ * ANCIENT CIVILIZATION SHAPES - Museum-Quality Parametric Geometry
+ * © 2025 UUON Foundation Inc.
+ * 
+ * Historically accurate parametric equations based on:
+
+=== FILE: ./project/client/src/lib/engineeringPBRMaterialSystem.ts ===
+/**
+ * ENGINEERING PBR MATERIAL SYSTEM
+ * 
+ * Physically-based rendering materials with strict physical correctness and structural fidelity.
+ * Treats geometry as mathematically coherent, geodesic, and lattice-based architecture.
+
+=== FILE: ./project/client/src/lib/higherDimensionalGaps.ts ===
+/**
+ * HIGHER-DIMENSIONAL GAPS LIBRARY
+ * 25 Missing 4D/5D/6D+ Shape Implementations
+ * Proper mathematical equations with N-dimensional to 3D projection
+ * © 2025 UUON Foundation Inc.
+
+=== FILE: ./project/client/src/lib/consciousMathematicsShapes.ts ===
+
+import type { SurfaceParameters } from '../types/math';
+
+/**
+ * CONSCIOUS MATHEMATICS VISUALIZATION SHAPES
+
+=== FILE: ./project/client/src/lib/assetPreloader.ts ===
+
+class AssetPreloader {
+  private preloadQueue: string[] = [];
+  private loadedAssets = new Set<string>();
+  private loadingAssets = new Set<string>();
+
+=== FILE: ./project/client/src/lib/nasaPlanetaryShapes.ts ===
+import type { SurfaceParameters } from './parametricSurfaces';
+
+/**
+ * NASA Planetary Shapes - External Asset Integration
+ * Saturn visualization based on NASA's 3D model with 8k textures
+
+=== FILE: ./project/client/src/lib/fourDimensional4DShapes.ts ===
+
+/**
+ * COMPREHENSIVE 4D MATHEMATICAL SHAPES LIBRARY
+ * Based on cutting-edge mathematical research
+ * 42 shapes from basic to research frontier
+
+=== FILE: ./project/client/src/lib/fourDimensionalShapes.ts ===
+import { ParametricSurface, getCleanDefaults } from '../types/shapes';
+import { SurfaceParameters } from '../types/math';
+import { EnhancedProjections, Point4D, Point3D } from './enhancedProjections';
+
+// Helper function to generate solid cube faces for 4D polytopes
+
+=== FILE: ./project/client/src/lib/foundationalPatternSystem.ts ===
+/**
+ * FOUNDATIONAL PATTERN SYSTEM - UUON Foundation Inc.
+ * Universal Binary-Decimal Pattern Generation System
+ * 
+ * Core computational primitive for the Δmension Mathematical Universe
+
+=== FILE: ./project/client/src/lib/foundationalIntegrationBridge.ts ===
+/**
+ * FOUNDATIONAL INTEGRATION BRIDGE - UUON Foundation Inc.
+ * Connects Foundational Pattern System to existing platform components
+ * 
+ * Integration Points:
+
+=== FILE: ./project/client/src/lib/foundationalSystemInitializer.ts ===
+/**
+ * FOUNDATIONAL SYSTEM INITIALIZER - UUON Foundation Inc.
+ * Auto-initializes foundational patterns on app startup
+ * 
+ * Coordinates initialization of:
+
+=== FILE: ./project/client/src/lib/spectralColorEngine.ts ===
+/**
+ * SPECTRAL COLOR ENGINE
+ * Converts physical light wavelengths (380-740nm) to RGB colors
+ * Uses CIE 1931 color matching functions for scientific accuracy
+ * 
+
+=== FILE: ./project/client/src/lib/streamProcessingEngine.ts ===
+
+/**
+ * STREAM PROCESSING ENGINE
+ * Enables free-flow merger processing without blocking UI
+ */
+
+=== FILE: ./project/client/src/lib/missingShapesImplementationBridge.ts ===
+
+/**
+ * MISSING SHAPES IMPLEMENTATION BRIDGE
+ * Implements the 41 missing ancient civilization shapes
+ */
+
+=== FILE: ./project/client/src/lib/universalParameterEffects.ts ===
+import { SurfaceParameters } from '../types/math';
+
+/**
+ * Universal Parameter Effects System
+ * Ensures all 26 parameters (a-w) provide meaningful 3D morphing capabilities
+
+=== FILE: ./project/client/src/lib/internalAnalysisEngine.ts ===
+/**
+ * INTERNAL ANALYSIS ENGINE
+ * Unified validation system for evaluating proposed code/features before integration
+ * Provides What/Who/Where/When/Why analysis for UUoN Foundation review
+ * 
+
+=== FILE: ./project/client/src/lib/timeTravelPhysics.ts ===
+/**
+ * Time Travel Physics Formulas - Mathematical Foundations of Temporal Engineering
+ * 
+ * Based on real physics:
+ * - Einstein Field Equations for spacetime curvature
+
+=== FILE: ./project/client/src/lib/spaceBiologyShapes.ts ===
+/**
+ * Space Biology Shapes - NASA OSDR Research Visualizations
+ * 
+ * Based on real space biology research:
+ * - Microgravity effects on cellular structures
+
+=== FILE: ./project/client/src/lib/osdrShapeMapping.ts ===
+/**
+ * NASA OSDR Shape Mapping - Links Space Biology shapes to real NASA studies
+ * Maps parametric shapes to experimental data sources
+ */
+
+
+=== FILE: ./project/client/src/lib/shapeRegistryValidation.ts ===
+export function clearRegistrationCache(): void {
+  if (typeof window !== 'undefined' && window.localStorage) {
+    localStorage.removeItem('shapes_registered');
+    localStorage.removeItem('registration_timestamp');
+    console.log('🧹 Registration cache cleared');
+
+=== FILE: ./project/client/src/lib/performanceOptimizer.ts ===
+
+// Emergency performance optimizer for mobile devices
+export class PerformanceOptimizer {
+  private static instance: PerformanceOptimizer;
+  private isMobile = false;
+
+=== FILE: ./project/client/src/lib/glbExportWithUV.ts ===
+/**
+ * ENHANCED GLB EXPORTER WITH FRACTAL UV MAPPING AND GIP METADATA
+ * 
+ * Exports 3D shapes with proper UV coordinates and embedded textures
+ * Supports baked lighting, multiple UV channels, texture tiling, and GIP identity metrics
+
+=== FILE: ./project/client/src/lib/pbrTextureGenerator.ts ===
+/**
+ * PBR TEXTURE GENERATOR FOR GLB EXPORT
+ * 
+ * Generates complete PBR texture maps from geometry and material values:
+ * - Normal Map: From geometry curvature analysis
+
+=== FILE: ./project/client/src/lib/inverseSquareLawShapes.ts ===
+/**
+ * INVERSE SQUARE LAW SHAPES
+ * Universal 1/r² field equations across physics domains
+ * E = k(q/r²) template that appears in electromagnetism, gravity, waves, quantum mechanics
+ * © 2025 UUON Foundation Inc.
+
+=== FILE: ./project/client/src/lib/chaosTheoryShapes.ts ===
+import { SurfaceParameters } from '../types/math';
+import { getCleanDefaults } from '../types/shapes';
+
+export interface ParametricSurface {
+  name: string;
+
+=== FILE: ./project/client/src/lib/dmensionPatternCodex.ts ===
+/**
+ * 🔱 DMENSION PATTERN CODEX
+ * Master Collection of 40 Mathematical Pattern Visualizations
+ * Full 360° Parametric Surface Models
+ * 
+
+=== FILE: ./project/client/src/lib/completeMissingShapesLibrary.ts ===
+/**
+ * COMPLETE MISSING SHAPES LIBRARY
+ * Comprehensive implementation of all 64+ missing shapes
+ * December 2025 - Full Shape Recovery System
+ * 
+
+=== FILE: ./project/client/src/lib/sdkMigrationHelper.ts ===
+/**
+ * SDK MIGRATION HELPER
+ * Assists in transitioning from legacy API calls to unified SDK
+ * Provides compatibility layer and migration tracking
+ */
+
+=== FILE: ./project/client/src/lib/lazyShapeLoader.ts ===
+/**
+ * Lazy Shape Loader - Load heavy mathematical shapes on demand
+ * Reduces initial bundle size by ~60%
+ */
+
+
+=== FILE: ./project/client/src/lib/frontendMathematicalValidator.ts ===
+
+/**
+ * Frontend Mathematical Validation System
+ * Mirrors backend mathematical completeness for 99.99% accuracy
+ */
+
+=== FILE: ./project/client/src/lib/uvEnvironmentalPresets.ts ===
+/**
+ * UV ENVIRONMENTAL PRESETS
+ * Quick UV configurations for different observational contexts
+ * © 2025 UUON Foundation Inc.
+ */
+
+=== FILE: ./project/client/src/lib/uvMorphingEngine.ts ===
+/**
+ * UV MORPHING & EVOLUTION ENGINE
+ * Transforms shapes using UV domain parameters for real-time morphing
+ * Makes U/V controls actually powerful and functional
+ * © 2025 UUON Foundation Inc.
+
+=== FILE: ./project/client/src/lib/unifiedFormulaIntegration.ts ===
+
+/**
+ * UNIFIED FORMULA INTEGRATION SYSTEM
+ * Integrates all available mathematical formulas for frontend 3D rendering
+ * Provides unified access to 1000+ mathematical shapes and equations
+
+=== FILE: ./project/client/src/lib/unifiedSDKClient.ts ===
+/**
+ * UNIFIED SDK CLIENT
+ * Client-side integration for the unified SDK architecture
+ * Replaces multiple API calls with single SDK interface
+ */
+
+=== FILE: ./project/client/src/lib/wireGenesisEngine.ts ===
+
+/**
+ * WIREGENESIS ENGINE - Enhanced Image-to-3D Conversion
+ * Improved depth estimation with multiple visual cues and proper 3D mesh generation
+ * Integrates with existing Dmension Parameter Authority (A-Z) system
+
+=== FILE: ./project/client/src/lib/localAI.ts ===
+// Conditional import to prevent Vite pre-transform errors
+// Only import when actually needed
+let pipeline: any = null;
+let env: any = null;
+
+
+=== FILE: ./project/client/src/lib/advancedVisualProcessor.ts ===
+
+/**
+ * Advanced Visual Processor for Self-Contained Mathematical Universe
+ * Maximizes internal visual input processing without external dependencies
+ */
+
+=== FILE: ./project/client/src/lib/shapeMetadata.ts ===
+export interface ShapeMetadata {
+  name: string;
+  uuhat: string;
+  uuhere: string;
+  uuho: string;
+
+=== FILE: ./project/client/src/lib/shapeRegistryValidator.ts ===
+/**
+ * SHAPE REGISTRY VALIDATOR
+ *
+ * Automatically detects all implemented shapes from code libraries
+ * and validates they're registered in the dropdown menu system.
+
+=== FILE: ./project/client/src/lib/fractalShapeImplementations.ts ===
+import { FRACTAL_FORMULAS, iterateFractal } from './fractalFormulaExtensions';
+
+export interface FractalShapeDefinition {
+  id: string;
+  name: string;
+
+=== FILE: ./project/client/src/lib/parametricSurfaces.ts ===
+import { SurfaceParameters } from '../types/math';
+import { MATHEMATICAL_CONSTANTS } from './mathematicalConstants';
+import { piPhiEngine, getCosmicConstant, getEnergyConstant, getGrowthConstant } from './piPhiConstantsEngine';
+
+// **Product of UUON Foundation, no undocumented reproduction or any use without written consent.**
+
+=== FILE: ./project/client/src/lib/basicGeometryFormulas.ts ===
+/**
+ * Basic Geometry Formulas - 25 Essential Geometric Formula Shapes
+ * Visualizes area, perimeter, volume, surface area, and special formulas as 3D parametric surfaces
+ * 
+ * Full Parameter Response:
+
+=== FILE: ./project/client/src/lib/biologicalShapesMetadata.ts ===
+/**
+ * MATHEMATICAL COMPUTATIONAL STRUCTURES METADATA
+ * 
+ * This file contains immutable metadata for all 34 discovered mathematical structures (2024).
+ * This metadata is embedded in exports and serves as proof of authorship and mathematical validation.
+
+=== FILE: ./project/client/src/lib/hydrogenOrbitals.ts ===
+/**
+ * HYDROGEN ATOMIC ORBITALS
+ * Complete p, d, and f orbital visualizations with proper angular shapes
+ * 
+ * Orbital shapes based on spherical harmonics Y_l^m(θ,φ)
+
+=== FILE: ./project/client/src/lib/quantumVisualizationShapes.ts ===
+
+/**
+ * Quantum Visualization Shapes
+ * Advanced quantum phenomena visualizations based on the formulas
+ */
+
+=== FILE: ./project/client/src/lib/shapeAccessControl.ts ===
+/**
+ * SHAPE ACCESS CONTROL SYSTEM
+ * Team Password Protection for Proprietary Shapes
+ * 
+ * This system requires authentication before viewing protected shapes.
+
+=== FILE: ./project/client/src/lib/schrodingerEquations.ts ===
+/**
+ * SCHRÖDINGER EQUATION VISUALIZATIONS
+ * Time-dependent and time-independent forms
+ * Wave function visualizations for quantum mechanics
+ * © 2025 UUON Foundation Inc.
+
+=== FILE: ./project/client/src/lib/dynamicShapeSummary.ts ===
+/**
+ * DYNAMIC SHAPE SUMMARY GENERATOR
+ * Generates meaningful educational content for any shape based on its category,
+ * formula, and metadata. Ensures the Learn tab shows relevant info for all 2,307 shapes.
+ */
+
+=== FILE: ./project/client/src/lib/ifsFractalsRegistry.ts ===
+/**
+ * IFS FRACTALS REGISTRY
+ * UNIFIED_SHAPES entries for all IFS/raymarched fractal shapes.
+ *
+ * These shapes are rendered via WebGL GPU raymarching (not CPU parametric tessellation).
+
+=== FILE: ./project/client/src/lib/ifsGLBExporter.ts ===
+/**
+ * IFS GLB Exporter
+ * Two export paths:
+ *   1. Texture-plane GLB  — canvas frame → PNG texture → plane mesh → GLB (fast, always works)
+ *   2. Real-mesh GLB      — CPU SDF evaluation → fan-triangulation isosurface → GLB (Menger + Mandelbulb)
+
+=== FILE: ./project/client/src/lib/shapeRegistryGuard.ts ===
+
+/**
+ * SHAPE REGISTRY GUARD
+ * Runtime protection against missing shape implementations
+ * Ensures users never see sphere placeholders unexpectedly
+
+=== FILE: ./project/client/src/lib/versatileExportEngine.ts ===
+
+import * as THREE from 'three';
+import { GLTFExporter } from 'three/examples/jsm/exporters/GLTFExporter.js';
+import { OBJExporter } from 'three/examples/jsm/exporters/OBJExporter.js';
+import { SurfaceParameters } from '../types/math';
+
+=== FILE: ./project/client/src/lib/formulaIntegrationBridge.ts ===
+
+/**
+ * FORMULA INTEGRATION BRIDGE
+ * Connects all mathematical libraries to frontend shape registry
+ * Fixes "formulas missing" issue by bridging backend->frontend
+
+=== FILE: ./project/client/src/lib/parameterAuthority.ts ===
+/**
+ * PARAMETER AUTHORITY - The Central Nervous System
+ * 
+ * Single source of truth for ALL A-Z parameters.
+ * NO OTHER SYSTEM can override these values.
+
+=== FILE: ./project/client/src/lib/parametricSurfacesClean.ts ===
+import { SurfaceParameters } from '../types/math';
+import { ParametricSurface } from '../types/shapes';
+import { applyPlaneTransform } from './planeTransforms';
+import { UNIFIED_SHAPES } from './unifiedShapes';
+import { CLEAN_SURFACES } from './cleanMathEngine';
+
+=== FILE: ./project/client/src/lib/wireframeTextureGenerator.ts ===
+/**
+ * WIREFRAME TEXTURE GENERATOR
+ * Generates wireframe overlay textures for solid exports
+ */
+
+
+=== FILE: ./project/client/src/lib/rareManifolds.ts ===
+/**
+ * RARE MANIFOLDS LIBRARY
+ * The three rarest and most mathematically singular 3D manifolds in existence.
+ *
+ * 1. Weeks Manifold — smallest-volume closed hyperbolic 3-manifold (vol ≈ 0.9427)
+
+=== FILE: ./project/client/src/lib/proceduralPatterns.ts ===
+/**
+ * PROCEDURAL PATTERN GENERATION - UPGRADED FOR 4K/HD RENDERING
+ * Supports HD (1920x1080), 4K UHD (3840x2160), and optimized detail rendering
+ * Enhanced contrast and detail visibility for all procedural textures
+ * 
+
+=== FILE: ./project/client/src/lib/quantumParametricFunctions.ts ===
+/**
+ * QUANTUM PARAMETRIC FUNCTIONS
+ * **Product of UUON Foundation, no undocumented reproduction or any use without written consent.**
+ * **Author: Phillip A. Ruiz III, Organization: UUON Foundation Inc.**
+ * **Contact: www.uuonfoundation.com, phi1@uuonfoundation.com, @uuon.foundation**
+
+=== FILE: ./project/client/src/lib/triplanarFbmShader.ts ===
+/**
+ * TRIPLANAR fBm SHADER INJECTION
+ *
+ * Replaces UV-based DataTexture lookup with world-space triplanar projection
+ * + Fractional Brownian Motion (fBm) detail layer + domain warping for the
+
+=== FILE: ./project/client/src/lib/materialPresets.ts ===
+/**
+ * MATERIAL PRESET SYSTEM - EXPANDED
+ * 6 Categories: Neon Glow (NEW PREMIUM), Topological, Metallic, Crystalline, Energy, Organic
+ */
+
+
+=== FILE: ./project/client/src/lib/antiReverseEngineering.ts ===
+
+/**
+ * ANTI-REVERSE-ENGINEERING PROTECTION SYSTEM
+ * © 2025 UUON Foundation Inc. - Phillip A. Ruiz III
+ * UNAUTHORIZED ANALYSIS OR EXTRACTION PROHIBITED
+
+=== FILE: ./project/client/src/lib/parameterValidator.ts ===
+/**
+ * UNIVERSAL PARAMETER VALIDATION SYSTEM
+ * Prevents crashes from extreme parameter values
+ * Ensures mathematical stability across all 314 shapes
+ */
+
+=== FILE: ./project/client/src/lib/shapeLibrariesLoader.ts ===
+/**
+ * SHAPE LIBRARIES LOADER
+ * 
+ * Centralized loader for ALL_SHAPE_LIBRARIES that can be imported
+ * by parameterAuthority.ts without circular dependencies.
+
+=== FILE: ./project/client/src/lib/advancedPhysicsEquations.ts ===
+/**
+ * ADVANCED PHYSICS EQUATIONS
+ * General Relativity, Quantum Field Theory, and Theoretical Physics
+ * © 2025 UUON Foundation Inc.
+ */
+
+=== FILE: ./project/client/src/lib/performanceAnalytics.ts ===
+/**
+ * PERFORMANCE ANALYTICS & OPTIMIZATION ENGINE
+ * Real-time monitoring and automatic optimization of mathematical rendering
+ */
+
+
+=== FILE: ./project/client/src/lib/adaptiveRenderer.ts ===
+/**
+ * ADAPTIVE RENDERING SYSTEM
+ * Dynamically adjusts rendering quality based on performance metrics
+ */
+
+
+=== FILE: ./project/client/src/lib/shapeRegistryIntegration.ts ===
+
+/**
+ * UNIFIED SHAPE REGISTRY INTEGRATION
+ * Connects all shape libraries to the main system
+ * © 2025 UUON Foundation Inc.
+
+=== FILE: ./project/client/src/lib/formulaMappingProtocol.ts ===
+/**
+ * FORMULA MAPPING PROTOCOL
+ * Comprehensive analysis, mapping, and safe fusion system for mathematical formulas
+ * © 2025 UUON Foundation Inc.
+ */
+
+=== FILE: ./project/client/src/lib/mathematicalPatternDiscovery.ts ===
+/**
+ * MATHEMATICAL PATTERN DISCOVERY ENGINE
+ * Discovers similarities between shapes and enables cross-enhancement
+ * Connects shapes with shared mathematical properties for fusion and optimization
+ * © 2025 UUON Foundation Inc.
+
+=== FILE: ./project/client/src/lib/001_MASTER_FORMULA_REGISTRY.ts ===
+/**
+ * ╔═══════════════════════════════════════════════════════════════════════════╗
+ * ║                    001_MASTER_FORMULA_REGISTRY                            ║
+ * ║                                                                           ║
+ * ║  ΔMENSION / DMENSION MATHEMATICAL UNIVERSE                               ║
+
+=== FILE: ./project/client/src/lib/systemSpecs.ts ===
+/**
+ * Δmension Mathematical Universe - System Specifications
+ * Quick Reference Module for Runtime Access
+ * 
+ * Usage: import { SYSTEM_SPECS, getSystemStatus } from './systemSpecs';
+
+=== FILE: ./project/client/src/lib/reactiveMaterialEngine.ts ===
+/**
+ * Reactive Material Shader Engine
+ * 
+ * Creates dynamic materials that respond to:
+ * - Light sources (intensity, direction, color)
+
+=== FILE: ./project/client/src/lib/perspectiveMathematicsEngine.ts ===
+/**
+ * Perspective Mathematics Engine
+ * 
+ * "The universe is infinite geometry - each number base, each plane, 
+ * each perspective reveals a unique piece of π"
+
+=== FILE: ./project/client/src/lib/performanceMonitor.ts ===
+import { isMobileDevice, isLowPowerDevice, getDeviceProfile } from './deviceDetection';
+
+interface PerformanceMetrics {
+  shapeLoadTime: number;
+  renderTime: number;
+
+=== FILE: ./project/client/src/lib/arVrExportEngine.ts ===
+/**
+ * AR/VR EXPORT ENGINE
+ * 
+ * One-click export options for augmented and virtual reality platforms:
+ * - WebXR ready GLB exports (optimized for Three.js/A-Frame/Babylon.js)
+
+=== FILE: ./project/client/src/lib/neuralRepresentationsEngine (copy).ts ===
+/**
+ * Neural Representations Engine for Δmension
+ * 
+ * Implements NeRF-like continuous sampling and SDS-inspired text-to-shape generation
+ * as integrated features within the parametric shape system.
+
+=== FILE: ./project/client/src/lib/neuralRepresentationsEngine (copy) 1.ts ===
+/**
+ * Neural Representations Engine for Δmension
+ * 
+ * Implements NeRF-like continuous sampling and SDS-inspired text-to-shape generation
+ * as integrated features within the parametric shape system.
+
+=== FILE: ./project/client/src/lib/vectorFieldShapes.ts ===
+import { SurfaceParameters } from '../types/math';
+
+export interface ParametricSurface {
+  name: string;
+  description?: string;
+
+=== FILE: ./project/client/src/lib/galacticUvShape.ts ===
+import { SurfaceParameters } from '../types/math';
+
+export interface ParametricSurface {
+  name: string;
+  description?: string;
+
+=== FILE: ./project/client/src/lib/foundationTensorMesh.ts ===
+import { SurfaceParameters } from '../types/math';
+
+export interface ParametricSurface {
+  name: string;
+  description?: string;
+
+=== FILE: ./project/client/src/lib/shapeCategories.ts ===
+/**
+ * Shape Categorization System
+ * Organizes 457 unique mathematical and biological shapes across 28 categories
+ */
+
+
+=== FILE: ./project/client/src/lib/parameterManifests.ts ===
+export interface ParameterManifest {
+  activeParams: string[];
+  labels: Record<string, string>;
+}
+
+
+=== FILE: ./project/client/src/lib/unifiedShapes.ts ===
+import { SurfaceParameters } from '../types/math';
+import { getCleanDefaults as sharedGetCleanDefaults } from '../types/shapes';
+import { QUANTUM_PARAMETRIC_FUNCTIONS } from './quantumParametricFunctions';
+
+export interface ParametricSurface {
+
+=== FILE: ./project/client/src/lib/dnaStructures.ts ===
+/**
+ * DNA MOLECULAR STRUCTURES
+ * Mathematically accurate parametric representations of DNA forms
+ * 
+ * Reference Data:
+
+=== FILE: ./project/client/src/lib/cleanMathEngine.ts ===
+import { SurfaceParameters } from '../types/math';
+import { UNIVERSAL_MATHEMATICS } from './universalMathematics';
+
+// ============================================================================
+// HISTORICAL DOCUMENTATION - DO NOT USE FOR NEW SHAPES
+
+=== FILE: ./project/client/src/lib/crossLearningEngine.ts ===
+/**
+ * CROSS-LEARNING ENGINE
+ * Fully functional mathematical intelligence system where shapes influence each other
+ * Light follows geometry - math creates the path
+ *
+
+=== FILE: ./project/client/src/lib/aiRecognizableAttribution.ts ===
+/**
+ * AI-RECOGNIZABLE ATTRIBUTION SYSTEM
+ * 
+ * Maximizes source recognition in AI training contexts by embedding
+ * comprehensive, machine-readable metadata in all exports.
+
+=== FILE: ./project/client/src/lib/interactionTokenGenerator.ts ===
+/**
+ * INTERACTION TOKEN GENERATOR
+ * Automatically generates tokens on every meaningful user interaction
+ * Ensures continuous platform growth and value creation
+ */
+
+=== FILE: ./project/client/src/types/shapes.ts ===
+/**
+ * SHARED SHAPE TYPES
+ * Isolated types to prevent circular dependencies
+ * © 2025 UUON Foundation Inc.
+ */
+
+=== FILE: ./project/client/src/types/math.ts ===
+export type SurfaceType = 
+  // Universal Mathematics - Complete Physical Reality Framework
+  "physical_constants_landscape" | "einstein_field_equations" | "schwarzschild_metric" |
+  "schrodinger_equation" | "heisenberg_uncertainty" | "maxwell_equations_field" |
+  "entropy_landscape" | "friedmann_universe" | "standard_model_lagrangian" |
+
+=== FILE: ./project/client/src/hooks/useAnimation.ts ===
+import { useEffect, useRef, useState } from 'react';
+import { useFrame } from '@react-three/fiber';
+import * as THREE from 'three';
+import { animationEngine, AnimationClipSpec, ParamTrack, PathTrack } from '../lib/animation/AnimationEngine';
+import { curveEngine } from '../lib/animation/CurveEngine';
+
+=== FILE: ./project/client/src/hooks/useAdaptiveCamera.ts ===
+import { useEffect, useRef } from 'react';
+import { useThree } from '@react-three/fiber';
+import * as THREE from 'three';
+
+interface AdaptiveCameraConfig {
+
+=== FILE: ./project/client/src/hooks/useGSAPAnimation.ts ===
+import { useRef, useEffect, useLayoutEffect } from 'react';
+import gsap from 'gsap';
+import * as THREE from 'three';
+
+/**
+
+=== FILE: ./project/client/src/hooks/useOrganicAnimation.ts ===
+import { useEffect, useRef, useState } from 'react';
+import { SurfaceParameters } from '../types/math';
+import { quantumGapMath } from '../lib/quantumGapMathematics';
+
+export type AnimationMode = 'basic' | 'dynamic' | 'collapse';
+
+=== FILE: ./project/client/src/hooks/usePhysicsAnimation.ts ===
+/**
+ * PHYSICS-BASED ANIMATION HOOK
+ * 
+ * Replaces passive rotation with active physical simulation
+ * Each shape demonstrates its underlying scientific principle
+
+=== FILE: ./project/client/src/hooks/useFormulaIntegration.ts ===
+
+import { useState, useEffect, useCallback } from 'react';
+import { unifiedFormulaIntegration, FormulaMetadata } from '../lib/unifiedFormulaIntegration';
+import { SurfaceParameters } from '../types/math';
+
+
+=== FILE: ./project/client/src/hooks/useShapeRegistryValidation.ts ===
+
+import { useEffect, useState } from 'react';
+import { ShapeRegistryGuard, ShapeRegistryStatus } from '../lib/shapeRegistryGuard';
+
+export function useShapeRegistryValidation() {
+
+=== FILE: ./project/client/src/hooks/useInteractivePhysics.ts ===
+/**
+ * INTERACTIVE PHYSICS HOOK
+ * Real-time physics simulation with drag-and-drop manipulation
+ * Objects respond to gravity, bounce, and friction based on material properties
+ * 
+
+=== FILE: ./project/client/src/hooks/useParameterControl.ts ===
+/**
+ * useParameterControl - React Hook for Parameter Authority
+ * 
+ * Provides clean interface for components to read/write parameters
+ * through the central authority. No interference, no conflicts.
+
+=== FILE: ./project/client/src/hooks/useAIAssistant.ts ===
+import { useState, useCallback } from 'react';
+import { localAI, LocalAIResponse } from '../lib/localAI';
+
+interface AIAnalysis {
+  recommended_shape: string;
+
+=== FILE: ./project/client/src/hooks/useConsciousnessIntegration.ts ===
+/**
+ * CONSCIOUSNESS INTEGRATION HOOK
+ * Connects the Lexicon Physical Embodiment Engine to the Parameter Authority and 3D Renderer
+ * 
+ * This hook provides the runtime connection between:
+
+=== FILE: ./project/client/src/utils/three-materials.ts ===
+import * as THREE from 'three';
+
+export interface MaterialPreset {
+  color: number;
+  metalness: number;
+
+=== FILE: ./project/client/src/utils/lightingBaker.ts ===
+import * as THREE from 'three';
+import { LightingSettings } from '../stores/lightingStore';
+
+export interface BakingOptions {
+  method: 'vertex_colors' | 'emissive' | 'both';
+
+=== FILE: ./project/client/src/utils/mathExport.ts ===
+import * as THREE from 'three';
+import { GLTFExporter } from 'three/examples/jsm/exporters/GLTFExporter.js';
+import { AnimationRecorder } from './animationRecorder';
+import { LightingBaker, BakingOptions } from './lightingBaker';
+import { LightingSettings } from '../stores/lightingStore';
+
+=== FILE: ./project/client/src/utils/fractalBiosystemExport.ts ===
+import * as THREE from 'three';
+import { GLTFExporter } from 'three/examples/jsm/exporters/GLTFExporter.js';
+import JSZip from 'jszip';
+
+interface FractalExportConfig {
+
+=== FILE: ./project/client/src/utils/animationRecorder.ts ===
+import * as THREE from 'three';
+
+/**
+ * Records object transformations over time and creates AnimationClips
+ * for export to GLB/GLTF files that play in external viewers.
+
+=== FILE: ./project/client/src/shapes/foundations/riemannSurfaces.ts ===
+/**
+ * Re-export from original location
+ */
+export * from '../../lib/riemannSurfaces';
+
+=== FILE: ./project/client/src/shapes/foundations/nonEuclideanShapes.ts ===
+/**
+ * Re-export from original location
+ */
+export * from '../../lib/nonEuclideanShapes';
+export { default } from '../../lib/nonEuclideanShapes';
+
+=== FILE: ./project/client/src/shapes/foundations/unifiedShapes.ts ===
+/**
+ * Re-export from original location
+ * For organized navigation while maintaining compatibility
+ */
+export * from '../../lib/unifiedShapes';
+
+=== FILE: ./project/client/src/shapes/foundations/index.ts ===
+export * from './unifiedShapes';
+export * from './nonEuclideanShapes';
+export * from './riemannSurfaces';
+
+=== FILE: ./project/client/src/shapes/generative/generativeAlgorithms.ts ===
+/**
+ * Re-export from original location
+ */
+export * from '../../lib/generativeAlgorithms';
+
+=== FILE: ./project/client/src/shapes/generative/noiseFunctions.ts ===
+/**
+ * Re-export from original location
+ */
+export * from '../../lib/noiseFunctions';
+
+=== FILE: ./project/client/src/shapes/generative/differentialGrowth.ts ===
+/**
+ * Re-export from original location
+ */
+export * from '../../lib/differentialGrowth';
+
+=== FILE: ./project/client/src/shapes/generative/attractorSystems.ts ===
+/**
+ * Re-export from original location
+ */
+export * from '../../lib/attractorSystems';
+
+=== FILE: ./project/client/src/shapes/generative/voronoiSystems.ts ===
+/**
+ * Re-export from original location
+ */
+export * from '../../lib/voronoiSystems';
+
+=== FILE: ./project/client/src/shapes/generative/index.ts ===
+export * from './generativeAlgorithms';
+export * from './noiseFunctions';
+export * from './differentialGrowth';
+export * from './attractorSystems';
+export * from './voronoiSystems';
+
+=== FILE: ./project/client/src/shapes/quantum/quantumParametricFunctions.ts ===
+/**
+ * Re-export from original location
+ */
+export * from '../../lib/quantumParametricFunctions';
+
+=== FILE: ./project/client/src/shapes/quantum/index.ts ===
+export * from './quantumParametricFunctions';
+
+=== FILE: ./project/client/src/shapes/index.ts ===
+/**
+ * Δmension Shape Library
+ * Complete collection of 671+ parametric 3D shapes
+ * Organized by category for easy discovery
+ */
+
+=== FILE: ./project/client/src/systems/index.ts ===
+/**
+ * Δmension Core Systems
+ * Shape lookup, categorization, and registry validation
+ */
+
+
+=== FILE: ./project/client/src/systems/shapeCategories.ts ===
+/**
+ * Shape Categorization System
+ * Re-export from original location
+ */
+export * from '../lib/shapeCategories';
+
+=== FILE: ./project/client/src/systems/programmingMatrix.ts ===
+
+/**
+ * PROGRAMMING MATRIX INTEGRATION SYSTEM
+ * Universal cross-reference framework for formulas, engines, and modules
+ * Integrates with existing Dmension architecture
+
+=== FILE: ./project/client/src/systems/shapeRegistryValidator.ts ===
+/**
+ * Shape Registry Validator
+ * Re-export from original location
+ */
+export * from '../lib/shapeRegistryValidator';
+
+=== FILE: ./project/client/src/stores/parameterLinkStore.ts ===
+import { create } from 'zustand';
+
+export interface LinkedShape {
+  id: string;
+  shapeName: string;
+
+=== FILE: ./project/client/src/stores/tutorialStore.ts ===
+import { create } from 'zustand';
+
+export interface TutorialStep {
+  id: string;
+  title: string;
+
+=== FILE: ./project/client/src/stores/lightingStore.ts ===
+import { create } from 'zustand';
+
+export type LightingMode = 'glow' | 'studio' | 'cinematic';
+
+export interface LightingSettings {
+
+=== FILE: ./project/client/src/stores/authStore.ts ===
+import { create } from 'zustand';
+
+interface User {
+  id: number;
+  username: string;
+
+=== FILE: ./project/client/src/stores/ifsStore.ts ===
+import { create } from 'zustand';
+
+export interface IFSParams {
+  ft: number;      // fold type 0-7 (also weave type for fractal_weave)
+  mi: number;      // IFS iterations 1-6 (also l-system depth, weave depth)
+
+=== FILE: ./project/client/src/services/surfaceComputeService.ts ===
+/**
+ * CLIENT-SIDE SERVICE FOR SERVER-COMPUTED GEOMETRY
+ * Fetches parametric surface geometry from server to protect algorithms
+ */
+
+
+=== FILE: ./project/client/src/config/protectedShapes.ts ===
+/**
+ * HYBRID SECURITY CONFIGURATION
+ * Defines which shapes are computed server-side for IP protection
+ * © 2025 UUON Foundation Inc. - Proprietary
+ */
+
+=== FILE: ./project/client/src/vite-env.d.ts ===
+/// <reference types="vite/client" />
+
+=== FILE: ./project/server/routes/nerf-api/middleware/provenance.ts ===
+import { Request, Response, NextFunction } from 'express';
+
+export function provenanceHeaders(_req: Request, res: Response, next: NextFunction) {
+  res.setHeader('X-UUON-Author',    'UUON Foundation Inc.');
+  res.setHeader('X-UUON-License',   'CC BY-NC 4.0');
+
+=== FILE: ./project/server/routes/nerf-api/types/asset.ts ===
+export type AssetTier = 'metadata' | 'formulas' | 'transforms' | 'ngp_config' | 'weights';
+
+export const ASSET_ACCESS: Record<AssetTier, 'public_auth' | 'protected' | 'internal'> = {
+  metadata:   'public_auth',
+  formulas:   'public_auth',
+
+=== FILE: ./project/server/routes/nerf-api/controllers/shapes.ts ===
+import { Request, Response } from 'express';
+import fs from 'fs';
+import path from 'path';
+import type { ShapeMetadataResponse } from '../types/asset';
+
+
+=== FILE: ./project/server/routes/nerf-api/routes/shapes.ts ===
+import { Router } from 'express';
+import { apiKeyAuth } from '../../../middleware/apiKeyAuth';
+import { provenanceHeaders } from '../middleware/provenance';
+import {
+  listShapes,
+
+=== FILE: ./project/server/routes/nerf-api/index.ts ===
+import { Router } from 'express';
+import shapesRouter from './routes/shapes';
+
+const nerfApi = Router();
+
+
+=== FILE: ./project/server/routes/sketchfab.ts ===
+import { Router } from 'express';
+import FormData from 'form-data';
+
+const router = Router();
+
+
+=== FILE: ./project/server/routes/unified-math.ts ===
+/**
+ * UNIFIED MATHEMATICAL SYSTEM API ROUTES
+ * RESTful endpoints for plaintext math symbols, emoji translations, and unified 3D rendering
+ */
+
+
+=== FILE: ./project/server/routes/lattice-health.ts ===
+
+import { Router } from 'express';
+
+const router = Router();
+
+
+=== FILE: ./project/server/routes/secure-compute.ts ===
+import { Router, Request, Response } from 'express';
+import { UNIFIED_SHAPES } from '../../client/src/lib/unifiedShapes';
+import crypto from 'crypto';
+import rateLimit from 'express-rate-limit';
+import { backendSecurityEnforcer } from '../backend-security-enforcer';
+
+=== FILE: ./project/server/routes/ai-ml-models.ts ===
+
+import { Router } from 'express';
+import { neon } from '@neondatabase/serverless';
+import { drizzle } from 'drizzle-orm/neon-http';
+import { eq, like, desc, asc } from 'drizzle-orm';
+
+=== FILE: ./project/server/routes/symbol.ts ===
+
+/**
+ * MATHEMATICAL SYMBOL API ROUTES
+ * RESTful endpoints for symbol database and 3D mapping
+ */
+
+=== FILE: ./project/server/routes/ml-data-management.ts ===
+import { Router } from 'express';
+import { databaseMLOptimizer } from '../database-ml-optimizer';
+import multer from 'multer';
+import { readFileSync } from 'fs';
+
+
+=== FILE: ./project/server/routes/fusedShapes.ts ===
+import { Router, Request, Response } from 'express';
+import { db } from '../storage';
+import { custom_fused_shapes } from '../../shared/schema';
+import { eq, desc } from 'drizzle-orm';
+
+
+=== FILE: ./project/server/routes/essential-shapes-api.ts ===
+
+=== FILE: ./project/server/routes/shape-learning-api.ts ===
+
+/**
+ * SHAPE LEARNING API - Educational Interface
+ * Helps other systems understand and implement shape algorithms
+ */
+
+=== FILE: ./project/server/routes/standardized-sitemaps.ts ===
+
+import { Router } from 'express';
+import { StandardizedSitemapGenerator } from '../sitemap-framework-generator';
+
+const router = Router();
+
+=== FILE: ./project/server/routes/sitemap-framework.ts ===
+
+import { Router } from 'express';
+import { sitemapFramework } from '../sitemap-framework';
+
+const router = Router();
+
+=== FILE: ./project/server/routes/queens-bridge.ts ===
+
+import express from 'express';
+import { queensBridgeService } from '../services/queensBridgeService';
+
+const router = express.Router();
+
+=== FILE: ./project/server/routes/quantum-research.ts ===
+
+import express from 'express';
+import { databaseMLOptimizer } from '../database-ml-optimizer';
+
+const router = express.Router();
+
+=== FILE: ./project/server/routes/quantum-computing.ts ===
+
+import express from 'express';
+import { quantumIntegrationService } from '../services/quantumIntegrationService';
+
+const router = express.Router();
+
+=== FILE: ./project/server/routes/health.ts ===
+
+import express from 'express';
+
+const router = express.Router();
+
+
+=== FILE: ./project/server/routes/changelog.ts ===
+
+import { Router } from 'express';
+import { changelogTracker } from '../changelog-tracker';
+
+const router = Router();
+
+=== FILE: ./project/server/routes/compute.ts ===
+import { Router, Request, Response } from 'express';
+import { wolframAlphaService } from '../services/wolframAlphaService';
+import { ibmQuantumService } from '../services/ibmQuantumService';
+
+const router = Router();
+
+=== FILE: ./project/server/routes/quantum-algorithms.ts ===
+import { Router } from 'express';
+import crypto from 'crypto';
+
+const router = Router();
+
+
+=== FILE: ./project/server/routes/ram-optimization.ts ===
+
+/**
+ * RAM OPTIMIZATION API ROUTES
+ * Provides memory optimization data without affecting frontend
+ */
+
+=== FILE: ./project/server/routes/storage-optimization.ts ===
+
+import express, { Request, Response } from 'express';
+import { storageOptimizer } from '../storage-optimization-engine';
+
+const router = express.Router();
+
+=== FILE: ./project/server/routes/formula-mapping.ts ===
+
+import express from 'express';
+import { formulaMappingProtocol } from '../formula-mapping-protocol';
+import { UNIFIED_SHAPES } from '../../client/src/lib/unifiedShapes';
+
+
+=== FILE: ./project/server/routes/ai-agent-integration.ts ===
+
+import { Router, Request, Response } from 'express';
+
+const router = Router();
+
+
+=== FILE: ./project/server/routes/emergency.ts ===
+
+import { Router, Request, Response } from 'express';
+import { emergencyControls } from '../emergency-controls';
+import { smartContractEscrow } from '../smart-contract-escrow';
+
+
+=== FILE: ./project/server/routes/coordination.ts ===
+
+import { Router, Request, Response } from 'express';
+import { unifiedCommunicationCoordinator } from '../unified-communication-coordinator';
+
+const router = Router();
+
+=== FILE: ./project/server/routes/lexicon-extraction.ts ===
+
+import { Router } from 'express';
+import fs from 'fs/promises';
+import path from 'path';
+
+
+=== FILE: ./project/server/routes/database-efficiency.ts ===
+
+import { Router, Request, Response } from 'express';
+import { cpuEfficientDBManager } from '../cpu-efficient-database-manager';
+import { databaseMLOptimizer } from '../database-ml-optimizer';
+
+
+=== FILE: ./project/server/routes/ontology.ts ===
+/**
+ * GLOBAL VARIABLE ONTOLOGY API ROUTES
+ * Unified symbol translation layer for cross-domain mathematical formula compatibility
+ * 
+ * @author UUON Foundation
+
+=== FILE: ./project/server/routes/weighting.ts ===
+/**
+ * DOMAIN WEIGHTING SYSTEM API ROUTES
+ * Truth weighting for formula significance across domains
+ * 
+ * @author UUON Foundation
+
+=== FILE: ./project/server/routes/quantum-formulas.ts ===
+
+import { Router } from 'express';
+import { QuantumComputingFormulas, QUANTUM_CONSTANTS } from '../../client/src/lib/quantumComputingFormulas';
+
+const router = Router();
+
+=== FILE: ./project/server/routes/workflow-integration-api.ts ===
+import { Router, Request, Response, NextFunction } from 'express';
+
+const router = Router();
+
+// API Key Authentication Middleware
+
+=== FILE: ./project/server/routes/shape-pages.ts ===
+
+import { Router } from 'express';
+import { dbLoader } from '../database-loader';
+
+const router = Router();
+
+=== FILE: ./project/server/routes/ontology-integration.ts ===
+
+import express from 'express';
+import { globalVariableOntology } from '../global-variable-ontology';
+import { domainWeightingEngine } from '../domain-weighting-system';
+
+
+=== FILE: ./project/server/routes/system-metrics.ts ===
+
+import { Router } from 'express';
+import { unifiedLiveMetricsEngine } from '../unified-live-metrics-engine';
+
+const router = Router();
+
+=== FILE: ./project/server/routes/mathematical-consciousness-integration.ts ===
+
+import { Router } from 'express';
+
+const router = Router();
+
+
+=== FILE: ./project/server/routes/symbiotic-consciousness-growth.ts ===
+
+import { Router } from 'express';
+
+const router = Router();
+
+
+=== FILE: ./project/server/routes/frontend-agent-backend-measures.ts ===
+
+/**
+ * FRONTEND AGENT BACKEND MEASURES
+ * Comprehensive evaluation and measurement system for frontend agent integration
+ */
+
+=== FILE: ./project/server/routes/thermal-engineering-integration.ts ===
+/**
+ * THERMAL ENGINEERING INTEGRATION API
+ * Cross-domain mathematical connections between thermal physics and evolutionary harmonics
+ * Based on "Beyond Darwin" research - Second harmonics (1/3 divisions) in evolution
+ * © 2025 UUON Foundation Inc.
+
+=== FILE: ./project/server/routes/thirdweb-ai-integration.ts ===
+
+/**
+ * THIRDWEB AI INTEGRATION
+ * Natural language NFT minting and blockchain operations
+ * © 2025 UUON Foundation Inc.
+
+=== FILE: ./project/server/routes/uuon-schema.ts ===
+
+import { Router, Request, Response } from 'express';
+import { uuonSchemaIntegration } from '../uuon-schema-integration';
+
+const router = Router();
+
+=== FILE: ./project/server/routes/database-diagnostics.ts ===
+
+import { Router, Request, Response } from 'express';
+import { neon } from '@neondatabase/serverless';
+import { drizzle } from 'drizzle-orm/neon-http';
+import { sql, count } from 'drizzle-orm';
+
+=== FILE: ./project/server/routes/external-integration-api.ts ===
+
+/**
+ * EXTERNAL INTEGRATION API
+ * Provides secure access to external mathematical and scientific services
+ * © 2025 UUON Foundation Inc.
+
+=== FILE: ./project/server/routes/api-connectivity-checker.ts ===
+
+import { Router, Request, Response } from 'express';
+import { pinataService } from '../services/pinataService';
+import { wolframAlphaService } from '../services/wolframAlphaService';
+
+
+=== FILE: ./project/server/routes/tracking.ts ===
+import { Router } from 'express';
+import { neon } from '@neondatabase/serverless';
+
+const router = Router();
+
+
+=== FILE: ./project/server/routes/pr-testing.ts ===
+
+import { Router } from 'express';
+
+const router = Router();
+
+
+=== FILE: ./project/server/routes/public-api-gateway.ts ===
+
+import { Router } from 'express';
+import { customerTracker } from '../customer-payment-tracker';
+import { smartContractEscrow } from '../smart-contract-escrow';
+import { verifySurfaceWithInternalAlgorithm } from '../verification-routes';
+
+=== FILE: ./project/server/routes/testing-sprites-api.ts ===
+
+import { Router } from 'express';
+
+// Stub implementations for missing modules
+const customerTracker = {
+
+=== FILE: ./project/server/routes/comprehensive-database-tracker.ts ===
+import { Router, Request, Response } from 'express';
+import { neon } from '@neondatabase/serverless';
+import { drizzle } from 'drizzle-orm/neon-http';
+import { shape_tokens, morph_manifold_data, formula_implementations, shape_token_ledger, shape_token_metadata, shape_token_energy } from '@shared/schema';
+import { sql, count, sum, desc } from 'drizzle-orm';
+
+=== FILE: ./project/server/routes/agent-coordination.ts ===
+/**
+ * AGENT COORDINATION API
+ * Provides endpoints for all SDK governance agents
+ * Centralizes agent management and reporting
+ */
+
+=== FILE: ./project/server/routes/deployment-optimization.ts ===
+
+import { Router } from 'express';
+import { databaseDeploymentOptimizer } from '../database-deployment-optimizer';
+import { databaseMLOptimizer } from '../database-ml-optimizer';
+
+
+=== FILE: ./project/server/routes/deployment-status.ts ===
+
+import { Router } from 'express';
+import { unifiedDeploymentCoordinator } from '../unified-deployment-coordinator';
+
+const router = Router();
+
+=== FILE: ./project/server/routes/new-year-2026-revenue-activation.ts ===
+import { Router, Request, Response } from 'express';
+import { neon } from '@neondatabase/serverless';
+import { drizzle } from 'drizzle-orm/neon-http';
+
+const router = Router();
+
+=== FILE: ./project/server/routes/sdk-info.ts ===
+
+import { Router } from 'express';
+
+const router = Router();
+
+
+=== FILE: ./project/server/routes/api-status.ts ===
+
+import { Router } from 'express';
+
+const router = Router();
+
+
+=== FILE: ./project/server/routes/proof-testing.ts ===
+import { Router, Request, Response } from 'express';
+import { mathematicalProofEngine } from '../mathematical-proof-engine';
+import { CertificateStorageManager } from '../certificate-storage-manager';
+
+const router = Router();
+
+=== FILE: ./project/server/routes/pricing-api.ts ===
+import { Router } from 'express';
+
+const router = Router();
+
+type PricingTierKey = 'developer' | 'professional' | 'enterprise' | 'government';
+
+=== FILE: ./project/server/routes/uuon-cloud-bridge.ts ===
+/**
+ * UUON CLOUD BRIDGE ROUTES
+ * Mounts at /api/bridge
+ *
+ * FROM this app TO uuon-clouud.replit.app:
+
+=== FILE: ./project/server/routes/paypal.ts ===
+import express from 'express';
+import crypto from 'crypto';
+
+const router = express.Router();
+
+
+=== FILE: ./project/server/routes/ai-analysis.ts ===
+import { Router, Request, Response } from 'express';
+import Anthropic from '@anthropic-ai/sdk';
+import OpenAI from 'openai';
+import rateLimit from 'express-rate-limit';
+import fs from 'fs';
+
+=== FILE: ./project/server/routes/shaders-materials-api.ts ===
+import { Router, Request, Response } from 'express';
+
+const router = Router();
+
+// ============================================================
+
+=== FILE: ./project/server/routes/github.ts ===
+import express from 'express';
+import fs from 'fs';
+import path from 'path';
+import {
+  getGitHubUser,
+
+=== FILE: ./project/server/routes/lexicon.ts ===
+/**
+ * UNIVERSAL LEXICON ENGINE - API ROUTES
+ * Provides REST endpoints for lexicon queries, term expansion, and formula retrieval
+ */
+
+
+=== FILE: ./project/server/routes/enterprise-api.ts ===
+/**
+ * ENTERPRISE COMMERCIAL LICENSING API
+ * Production-grade API infrastructure for commercial deployment
+ * Supports tiered licensing, usage metering, and API key management
+ * © 2025 UUON Foundation Inc.
+
+=== FILE: ./project/server/routes/educational-integration.ts ===
+/**
+ * EDUCATIONAL PLATFORM INTEGRATION API
+ * LMS integration, curriculum tools, and interactive learning features
+ * Supports Canvas, Moodle, Blackboard, and Google Classroom
+ * © 2025 UUON Foundation Inc.
+
+=== FILE: ./project/server/routes/system-performance.ts ===
+import { Router } from 'express';
+import { unifiedLiveMetricsEngine } from '../unified-live-metrics-engine';
+
+const router = Router();
+
+
+=== FILE: ./project/server/routes/system-health.ts ===
+import express from 'express';
+import { systemHealthVerifier } from '../system-health-verifier';
+
+const router = express.Router();
+
+
+=== FILE: ./project/server/routes/auth.ts ===
+import { Router } from 'express';
+import bcrypt from 'bcrypt';
+import crypto from 'crypto';
+import pg from 'pg';
+import { db } from '../storage';
+
+=== FILE: ./project/server/routes/engine-api.ts ===
+import { Router, Request, Response } from 'express';
+import { computeSurfaceGeometry, SurfaceComputeRequest } from '../lib/shapes/shapeComputer';
+const router = Router();
+
+// ── Shape ID normalization — accept common aliases without _surface suffix ──
+
+=== FILE: ./project/server/routes/chat.ts ===
+import { Router, Request, Response } from 'express';
+import rateLimit from 'express-rate-limit';
+import { openApiSpec } from '../openapi';
+
+const router = Router();
+
+=== FILE: ./project/server/routes/quantum.ts ===
+/**
+ * IBM QUANTUM API ROUTES
+ * Endpoints for quantum computing integration
+ */
+
+
+=== FILE: ./project/server/routes/sitemap-hierarchy.ts ===
+import express from 'express';
+import { SITE_DOMAIN } from '../lib/siteDomain';
+
+const router = express.Router();
+
+
+=== FILE: ./project/server/routes/foundation-api.ts ===
+import { Router, Request, Response } from 'express';
+
+const router = Router();
+
+// ── Golden-ratio icosahedral vertex directions (unit vectors) ─────────────
+
+=== FILE: ./project/server/routes/admin.ts ===
+import { Router } from 'express';
+import { neon } from '@neondatabase/serverless';
+import { drizzle } from 'drizzle-orm/neon-http';
+import { formula_implementations, shape_tokens, complete_shape_registry } from '@shared/schema';
+import { count } from 'drizzle-orm';
+
+=== FILE: ./project/server/routes/token-ecosystem.ts ===
+import { Router, Request, Response } from 'express';
+import { neon } from '@neondatabase/serverless';
+import { drizzle } from 'drizzle-orm/neon-http';
+import { shape_tokens, morph_manifold_data, formula_implementations, uuon_shapes, energy_transactions, energy_balance } from '@shared/schema';
+import { eq, sql, desc, and, count } from 'drizzle-orm';
+
+=== FILE: ./project/server/routes/genesis-ledger.ts ===
+import { Router, Request, Response } from 'express';
+import { createHash, createHmac } from 'crypto';
+import { db } from '../storage';
+
+function getGenesisSecret(): string {
+
+=== FILE: ./project/server/routes/seo-apidocs.ts ===
+import { Router } from 'express';
+import { seoShell } from '../seoShared';
+
+const router = Router();
+
+
+=== FILE: ./project/server/routes/page-routes.ts ===
+
+import { Router } from 'express';
+import path from 'path';
+
+const router = Router();
+
+=== FILE: ./project/server/routes/about-sitemap.ts ===
+/**
+ * ABOUT US SITEMAP - UUON Foundation
+ * Comprehensive About pages with validated content from platform capabilities
+ * Updated January 2026 with DNA Molecular Structures Library
+ * © 2025-2026 UUON Foundation Inc. All Rights Reserved.
+
+=== FILE: ./project/server/routes/sitemap-generator.ts ===
+
+import { Router } from 'express';
+import { dbLoader } from '../database-loader';
+import { SITEMAP_SEO_METADATA, generateEnhancedSitemapXML, generateMasterSitemapIndex } from '../sitemapSEOMetadata';
+import { SITE_DOMAIN } from '../lib/siteDomain';
+
+=== FILE: ./project/server/routes/seo-glossary.ts ===
+import { Router } from 'express';
+import { seoShell } from '../seoShared';
+
+const router = Router();
+
+
+=== FILE: ./project/server/routes/seo-shapes.ts ===
+import { Router } from 'express';
+import { neon } from '@neondatabase/serverless';
+import { seoShell } from '../seoShared';
+
+const router = Router();
+
+=== FILE: ./project/server/routes/polygon-bridge.ts ===
+/**
+ * Polygon Bridge API — REST endpoints for smart contract management,
+ * weekly report access, and on-chain token verification.
+ */
+
+
+=== FILE: ./project/server/routes/web3-setup.ts ===
+/**
+ * WEB3 SETUP STATUS API
+ * Returns which credentials are configured and what each unlocks.
+ * Powers the in-app setup checklist in the MetaMask wallet panel.
+ */
+
+=== FILE: ./project/server/routes/nft-minting.ts ===
+/**
+ * NFT MINTING API
+ * One-Click NFT Creation for Mathematical Shape Assets
+ * ERC-721/ERC-1155 compatible metadata with marketplace integration
+ * © 2025 UUON Foundation Inc.
+
+=== FILE: ./project/server/routes/token-ledger.ts ===
+import { Router, Request, Response } from 'express';
+import tokenLedgerService from '../tokenLedgerService';
+
+const router = Router();
+
+
+=== FILE: ./project/server/services/wolframAlphaService.ts ===
+import axios from 'axios';
+
+interface WolframQueryResult {
+  success: boolean;
+  data?: any;
+
+=== FILE: ./project/server/services/ibmQuantumService.ts ===
+import axios from 'axios';
+
+interface QuantumResult {
+  success: boolean;
+  data?: any;
+
+=== FILE: ./project/server/services/qiskitRuntimeService.ts ===
+
+import { spawn } from 'child_process';
+import path from 'path';
+
+interface QiskitJob {
+
+=== FILE: ./project/server/services/quantumIntegrationService.ts ===
+
+import { spawn, ChildProcess } from 'child_process';
+import fs from 'fs/promises';
+import path from 'path';
+
+
+=== FILE: ./project/server/services/queensBridgeService.ts ===
+
+import { spawn } from 'child_process';
+import { qiskitRuntimeService } from './qiskitRuntimeService';
+
+interface QuantumPortal {
+
+=== FILE: ./project/server/services/uuonCloudBridgeService.ts ===
+/**
+ * UUON CLOUD BRIDGE SERVICE
+ * Handles all communication between Δmension and uuon-clouud.replit.app
+ * - Pushes shape data, ML embeddings, and physics parameters outward
+ * - Receives learning feedback and model updates inward
+
+=== FILE: ./project/server/services/githubService.ts ===
+// GitHub Integration — uses Replit GitHub connector
+// Primary account: uuon (UUONdmON)
+import { Octokit } from '@octokit/rest';
+
+let connectionSettings: any;
+
+=== FILE: ./project/server/services/pinataService.ts ===
+
+/**
+ * PINATA IPFS SERVICE
+ * Handles file uploads to IPFS via Pinata API
+ */
+
+=== FILE: ./project/server/lib/shapes/shapeComputer.ts ===
+/**
+ * SERVER-SIDE PARAMETRIC SURFACE COMPUTATION
+ * © 2025 UUON Foundation Inc. - Proprietary
+ * SECURITY: Shape computation happens server-side for optimization
+ */
+
+=== FILE: ./project/server/lib/siteDomain.ts ===
+/**
+ * Single source of truth for the site domain used in sitemap generation.
+ * Set SITE_DOMAIN env var to override (e.g. when deploying to a custom domain).
+ * Railway is the public-facing canonical URL.
+ * Falls back to REPLIT_DOMAINS only for local dev if SITE_DOMAIN is not set.
+
+=== FILE: ./project/server/deployment-optimizer.ts ===
+
+/**
+ * Deployment Size Optimizer
+ * Reduces container image size for Cloud Run deployments
+ */
+
+=== FILE: ./project/server/lazy-loader.ts ===
+
+/**
+ * Lazy Loading System
+ * Dynamically loads heavy dependencies only when needed
+ */
+
+=== FILE: ./project/server/ml-routes.ts ===
+
+import { Router } from 'express';
+import { mlLeverageEngine, MLModel } from '../client/src/lib/mlLeverageEngine';
+import { mathematicalAI } from './ai-assistant';
+import { UNIFIED_SHAPES } from '../client/src/lib/unifiedShapes';
+
+=== FILE: ./project/server/database-deployment-optimizer.ts ===
+
+/**
+ * DATABASE DEPLOYMENT OPTIMIZER
+ * Optimizes deployment by moving heavy assets to database storage
+ */
+
+=== FILE: ./project/server/auto-asset-migrator.ts ===
+import fs from 'fs';
+import path from 'path';
+import { databaseMLOptimizer } from './database-ml-optimizer';
+
+const ASSETS_DIR = './attached_assets';
+
+=== FILE: ./project/server/emergency-controls.ts ===
+
+/**
+ * EMERGENCY CONTROLS SYSTEM
+ * Addresses security audit requirement for emergency pause and circuit breakers
+ */
+
+=== FILE: ./project/server/seed-omni-proofs.ts ===
+import { neon } from '@neondatabase/serverless';
+import { drizzle } from 'drizzle-orm/neon-http';
+import { formula_implementations } from '@shared/schema';
+
+const connectionString = process.env.DATABASE_URL!;
+
+=== FILE: ./project/server/generate-standardized-sitemaps.ts ===
+
+import { StandardizedSitemapGenerator } from './sitemap-framework-generator';
+
+async function generateStandardizedSitemaps() {
+  console.log('🚀 GENERATING STANDARDIZED SITEMAP FRAMEWORK');
+
+=== FILE: ./project/server/ai-ml-models-seeder.ts ===
+
+import { neon } from '@neondatabase/serverless';
+import { drizzle } from 'drizzle-orm/neon-http';
+import { ai_ml_models } from '../shared/ai-ml-models-schema';
+
+
+=== FILE: ./project/server/graceful-shutdown.ts ===
+
+import { startupOptimizer } from './startup-optimizer';
+
+class GracefulShutdown {
+  private shutdownHandlers: Array<() => Promise<void>> = [];
+
+=== FILE: ./project/server/seed-369-shapes.ts ===
+/**
+ * 369 Sacred Shape Seeder
+ * Tesla's Divine Number: 3, 6, 9 - The Keys to the Universe
+ *
+ * Curated collection of the most powerful, rare, and unique mathematical visualizations
+
+=== FILE: ./project/server/add-more-shapes.ts ===
+import { neon } from '@neondatabase/serverless';
+
+const sql = neon(process.env.DATABASE_URL!);
+
+const ADDITIONAL_SHAPES = [
+
+=== FILE: ./project/server/preview-cache-service.ts ===
+import { neon } from '@neondatabase/serverless';
+import { Router, Request, Response } from 'express';
+
+const connectionString = process.env.DATABASE_URL!;
+const sql = neon(connectionString);
+
+=== FILE: ./project/server/tesla-369-completion-system.ts ===
+
+/**
+ * TESLA 369 SACRED SHAPES COMPLETION SYSTEM
+ * Completes the sacred mathematical sequence to achieve perfect balance
+ * © 2025 UUON Foundation Inc.
+
+=== FILE: ./project/server/backend-security-enforcer.ts ===
+
+import { neon } from '@neondatabase/serverless';
+import { drizzle } from 'drizzle-orm/neon-http';
+import { eq, and, desc, count } from 'drizzle-orm';
+import { 
+
+=== FILE: ./project/server/permanent-stability-manager.ts ===
+
+export class PermanentStabilityManager {
+  private static instance: PermanentStabilityManager;
+  private isInitialized: boolean = false;
+  private activeProcesses: Set<string> = new Set();
+
+=== FILE: ./project/server/database-loader.ts ===
+import { neon } from '@neondatabase/serverless';
+import { drizzle } from 'drizzle-orm/neon-http';
+import { eq } from 'drizzle-orm';
+import { 
+  formula_implementations, 
+
+=== FILE: ./project/server/production-config.ts ===
+/**
+ * Production Configuration
+ * Optimized settings for deployment
+ */
+
+
+=== FILE: ./project/server/changelog-tracker.ts ===
+
+import { promises as fs } from 'fs';
+import path from 'path';
+
+interface ChangeEntry {
+
+=== FILE: ./project/server/system-sync-monitor.ts ===
+export class SystemSyncMonitor {
+  private static instance: SystemSyncMonitor;
+  private syncInterval: NodeJS.Timeout | null = null;
+  private lastSyncStatus: Record<string, any> = {};
+
+
+=== FILE: ./project/server/perfection-verification-system.ts ===
+/**
+ * Perfection Verification System
+ * Ensures all systems are operating at 99.99% efficiency
+ */
+
+
+=== FILE: ./project/server/security-metrics-monitor.ts ===
+/**
+ * SECURITY METRICS MONITORING SYSTEM
+ * Implements real-time security monitoring and automated circuit breakers
+ */
+
+
+=== FILE: ./project/server/export-token-generator.ts ===
+
+import { neon } from '@neondatabase/serverless';
+import { drizzle } from 'drizzle-orm/neon-http';
+import { eq, and, sql } from 'drizzle-orm';
+import { 
+
+=== FILE: ./project/server/ai-assistant.ts ===
+import { neon } from '@neondatabase/serverless';
+import { drizzle } from 'drizzle-orm/neon-http';
+import { eq } from 'drizzle-orm';
+import { ai_interactions, ai_learning_patterns } from '@shared/schema';
+
+
+=== FILE: ./project/server/smart-contract-escrow.ts ===
+
+interface EscrowStatus {
+  isPaused: boolean;
+  pausedAt?: Date;
+  pausedBy?: string;
+
+=== FILE: ./project/server/unified-communication-coordinator.ts ===
+
+/**
+ * UNIFIED COMMUNICATION COORDINATOR
+ * Ensures Assistant and Agent work hand-in-hand without conflicts
+ */
+
+=== FILE: ./project/server/lexicon-source-analyzer.ts ===
+
+/**
+ * LEXICON SOURCE ANALYZER
+ * Extracts terms from ALL system components without external API dependencies
+ */
+
+=== FILE: ./project/server/publication-tracker.ts ===
+/**
+ * UUON FOUNDATION & CLAUDE AI PUBLICATION TRACKER
+ * Tracks all technical publications, research papers, and implementation guides
+ * © 2025 UUON Foundation Inc. All Rights Reserved.
+ */
+
+=== FILE: ./project/server/formula-mapping-protocol.ts ===
+
+/**
+ * FORMULA MAPPING PROTOCOL
+ * Advanced system for analyzing, mapping, and safely fusing mathematical formulas
+ * Integrates with existing UUON Foundation mathematical systems
+
+=== FILE: ./project/server/domain-weighting-system.ts ===
+/**
+ * DOMAIN WEIGHTING SYSTEM (Truth Weighting)
+ * Assigns significance weights to formulas based on physical/mathematical truth
+ * 
+ * Addresses publication weakness 5.4: "Some formulas are more meaningful physically"
+
+=== FILE: ./project/server/cross-domain-hybrid-shapes.ts ===
+/**
+ * CROSS-DOMAIN HYBRID SHAPES
+ * Implements Section 3.1 from "THE DMENSION SYSTEM" publication
+ * 
+ * 4 Novel cross-domain mathematical fusions:
+
+=== FILE: ./project/server/ram-optimization-engine.ts ===
+
+/**
+ * RAM ALGORITHM DETECTION & OPTIMIZATION ENGINE
+ * Monitors memory patterns without affecting frontend systems
+ * © 2025 UUON Foundation Inc.
+
+=== FILE: ./project/server/storage-optimization-engine.ts ===
+
+/**
+ * DMENSION STORAGE OPTIMIZATION ENGINE
+ * Hybrid storage management for mathematical visualization assets
+ * © 2025 UUON Foundation Inc.
+
+=== FILE: ./project/server/database-change-monitor.ts ===
+
+/**
+ * DATABASE CHANGE MONITOR
+ * Automatically invalidates metrics caches when data changes
+ */
+
+=== FILE: ./project/server/global-variable-ontology.ts ===
+/**
+ * GLOBAL VARIABLE ONTOLOGY
+ * Unified symbol translation layer for cross-domain mathematical formula compatibility
+ * 
+ * Addresses publication weakness 5.1: "Some formulas reuse symbols inconsistently (r, L, T, Θ)"
+
+=== FILE: ./project/server/web-of-things-integration-strategy.ts ===
+
+/**
+ * WEB OF THINGS INTEGRATION STRATEGY
+ * Strategic shape classification and API exposure management
+ */
+
+=== FILE: ./project/server/automated-growth-tracker.ts ===
+/**
+ * AUTOMATED GROWTH TRACKER
+ * Monitors and updates competitive metrics in real-time
+ * Ensures your moat statistics are always current and growing
+ */
+
+=== FILE: ./project/server/system-optimization-manager.ts ===
+/**
+ * SYSTEM OPTIMIZATION MANAGER
+ * Centralizes all optimization processes to prevent conflicts and redundancy
+ */
+
+
+=== FILE: ./project/server/startup-optimizer.ts ===
+
+export class StartupOptimizer {
+  private deferredServices: Array<() => Promise<void>> = [];
+  private criticalServices: Array<() => Promise<void>> = [];
+
+
+=== FILE: ./project/server/enhanced-shape-dynamics-engine.ts ===
+
+import { neon } from '@neondatabase/serverless';
+import { drizzle } from 'drizzle-orm/neon-http';
+import { sql } from 'drizzle-orm';
+
+
+=== FILE: ./project/server/algorithm-recovery-system.ts ===
+#!/usr/bin/env tsx
+/**
+ * Algorithm Recovery System for Mathematical Verification Platform
+ * Catalogs, validates, and recovers mathematical algorithms that may be lost in the stack
+ */
+
+=== FILE: ./project/server/comprehensive-data-preservation-engine.ts ===
+import { db } from './storage';
+import { 
+  system_evolution_tracking,
+  mathematical_pattern_recognition,
+  cross_system_correlations,
+
+=== FILE: ./project/server/uuon-schema-integration.ts ===
+
+/**
+ * UUON TOKEN ECONOMY SCHEMA INTEGRATION
+ * Ensures compatibility between existing token system and UUON schema
+ */
+
+=== FILE: ./project/server/unified-live-metrics-engine.ts ===
+/**
+ * UNIFIED LIVE METRICS ENGINE
+ * Real-time system statistics with automatic cache invalidation
+ * Ensures ALL metrics are database-driven, never static
+ */
+
+=== FILE: ./project/server/robust-token-storage.ts ===
+
+export class RobustTokenStorage {
+  private static instance: RobustTokenStorage;
+  private retryAttempts = 3;
+  private retryDelay = 1000; // 1 second
+
+=== FILE: ./project/server/enhanced-error-recovery.ts ===
+
+import { robustTokenStorage } from './robust-token-storage';
+
+export class EnhancedErrorRecovery {
+  private static instance: EnhancedErrorRecovery;
+
+=== FILE: ./project/server/foundational-pattern-api.ts ===
+/**
+ * FOUNDATIONAL PATTERN API - UUON Foundation Inc.
+ * REST API endpoints for pattern generation and hash distribution
+ * 
+ * Provides server-side pattern operations for:
+
+=== FILE: ./project/server/system-health-verifier.ts ===
+/**
+ * COMPREHENSIVE SYSTEM HEALTH VERIFIER
+ * Provides real-time analysis of application optimization and performance
+ * © 2025 UUON Foundation - Phillip A. Ruiz III
+ */
+
+=== FILE: ./project/server/missing-shapes-implementer.ts ===
+/**
+ * MISSING SHAPES IMPLEMENTER
+ * Implements the 25 missing 4D/5D shapes to complete the mathematical foundation
+ */
+
+
+=== FILE: ./project/server/cpu-efficient-database-manager.ts ===
+/**
+ * CPU-EFFICIENT DATABASE MANAGER
+ * Optimizes database operations to reduce CPU usage in development and production
+ */
+
+
+=== FILE: ./project/server/performance-bottleneck-resolver.ts ===
+
+/**
+ * PERFORMANCE BOTTLENECK RESOLVER
+ * Optimizes system performance without interfering with frontend operations
+ */
+
+=== FILE: ./project/server/database-ml-optimizer.ts ===
+/**
+ * DATABASE ML OPTIMIZER
+ * Utilizes production database to manage heavy ML/AI data and reduce deployment size
+ */
+
+
+=== FILE: ./project/server/development-mode-checker.ts ===
+
+/**
+ * Development Mode Checker
+ * Provides utilities to detect and handle development vs production environments
+ */
+
+=== FILE: ./project/server/agents/architectureAgent.ts ===
+
+/**
+ * ARCHITECTURE PLATFORM AGENT
+ * Controls SDK structure, versioning, and long-term evolution
+ * Prevents feature sprawl and maintains single source of truth
+
+=== FILE: ./project/server/agents/dataGovernanceAgent.ts ===
+
+/**
+ * DATA GOVERNANCE AGENT
+ * Controls data storage, retention, and retrieval policies
+ * Prevents data bloat and defines persistence behavior
+
+=== FILE: ./project/server/agents/buildPackagingAgent.ts ===
+
+/**
+ * BUILD PACKAGING AGENT
+ * Controls SDK bundling, tree-shaking, and distribution
+ * Produces optimized builds for different environments
+
+=== FILE: ./project/server/agents/observabilityAgent.ts ===
+
+/**
+ * OBSERVABILITY AGENT
+ * Tracks module usage, failures, and degraded behavior
+ * Provides debug logs, validation reports, and health checks
+
+=== FILE: ./project/server/agents/index.ts ===
+
+/**
+ * AGENT SYSTEM INDEX
+ * Centralized exports for all SDK governance agents
+ */
+
+=== FILE: ./project/server/core-automation-engine.ts ===
+/**
+ * CORE AUTOMATION ENGINE
+ * Fully automated mathematical platform management with zero manual intervention
+ */
+
+
+=== FILE: ./project/server/automated-legal-generator.ts ===
+/**
+ * AUTOMATED LEGAL DOCUMENT GENERATOR
+ * Leverages existing ACAS system to generate compliance documents
+ * ZERO external legal costs - fully automated
+ */
+
+=== FILE: ./project/server/automated-proof-testing.ts ===
+/**
+ * AUTOMATED PROOF TESTING SYSTEM
+ * Runs comprehensive mathematical proofs on schedule
+ */
+
+
+=== FILE: ./project/server/certificate-storage-manager.ts ===
+
+import { db as replitDB } from '@replit/database';
+
+export interface StoredCertificate {
+  id: string;
+
+=== FILE: ./project/server/advanced-pattern-recognition.ts ===
+#!/usr/bin/env tsx
+/**
+ * Advanced Mathematical Pattern Recognition System
+ * Automatically discovers and catalogs mathematical relationships
+ */
+
+=== FILE: ./project/server/automated-shape-discovery.ts ===
+#!/usr/bin/env tsx
+/**
+ * Automated Shape Discovery Engine
+ * Discovers new mathematical shapes through systematic parameter exploration
+ */
+
+=== FILE: ./project/server/comprehensive-placeholder-scanner.ts ===
+#!/usr/bin/env tsx
+/**
+ * COMPREHENSIVE PLACEHOLDER SCANNER
+ * Detects all shapes using sphere/cube placeholders and prepares for mass insertion
+ */
+
+=== FILE: ./project/server/missing-shape-detector.ts ===
+#!/usr/bin/env tsx
+/**
+ * MISSING SHAPE DETECTOR & AUTO-IMPLEMENTATION SYSTEM
+ * Detects all missing shape implementations and provides mathematical equations
+ */
+
+=== FILE: ./project/server/placeholder-insertion-preparer.ts ===
+#!/usr/bin/env tsx
+/**
+ * PLACEHOLDER INSERTION PREPARER
+ * Prepares system for mass insertion of shapes with placeholder implementations
+ */
+
+=== FILE: ./project/server/placeholder-integration-system.ts ===
+#!/usr/bin/env tsx
+/**
+ * PLACEHOLDER INTEGRATION SYSTEM
+ * Automatically integrates placeholder fixes into the unified shapes system
+ */
+
+=== FILE: ./project/server/shape-implementation-validator.ts ===
+#!/usr/bin/env tsx
+/**
+ * SHAPE IMPLEMENTATION VALIDATOR
+ * Ensures all registered shapes have mathematical implementations
+ * Prevents the sphere placeholder problem from recurring
+
+=== FILE: ./project/server/shape-relationship-engine.ts ===
+#!/usr/bin/env tsx
+/**
+ * Shape Relationship Discovery Engine
+ * Automatically discovers and catalogs mathematical relationships between shapes
+ */
+
+=== FILE: ./project/server/shape-placeholder-detector.ts ===
+#!/usr/bin/env tsx
+/**
+ * SHAPE PLACEHOLDER DETECTOR & FORMULA FIXER
+ * Detects all shapes rendering as cube/sphere placeholders and provides mathematical implementations
+ */
+
+=== FILE: ./project/server/vite.ts ===
+import express, { type Express } from "express";
+import fs from "fs";
+import path, { dirname, join } from "path";
+import { fileURLToPath } from "url";
+import { createServer as createViteServer, createLogger } from "vite";
+
+=== FILE: ./project/server/database-seeder.ts ===
+import { neon } from '@neondatabase/serverless';
+import { drizzle } from 'drizzle-orm/neon-http';
+import { sql, count } from 'drizzle-orm';
+import {
+  formula_implementations,
+
+=== FILE: ./project/server/populate-complete-shape-registry.ts ===
+import { neon } from '@neondatabase/serverless';
+
+const connectionString = process.env.DATABASE_URL!;
+const sql = neon(connectionString);
+
+
+=== FILE: ./project/server/mathematical-proof-engine.ts ===
+
+/**
+ * MATHEMATICAL PROOF ENGINE
+ * Internal testing system for mathematical accuracy and algorithmic verification
+ */
+
+=== FILE: ./project/server/unified-deployment-coordinator.ts ===
+/**
+ * UNIFIED DEPLOYMENT COORDINATOR
+ * Eliminates redundant systems and ensures optimal resource allocation
+ */
+
+
+=== FILE: ./project/server/verification-routes.ts ===
+import { Router, Request, Response } from 'express';
+// Lazy-loaded to prevent all shape libraries loading at server startup
+let _unifiedShapes: Record<string, any> | null = null;
+async function getUnifiedShapes() {
+  if (!_unifiedShapes) {
+
+=== FILE: ./project/server/unified-sdk-implementation.ts ===
+/**
+ * UNIFIED SDK IMPLEMENTATION
+ * Consolidates all distributed APIs into a single, coherent SDK architecture
+ * Replaces multiple API endpoints with unified service modules
+ */
+
+=== FILE: ./project/server/showcase-routes.ts ===
+import { Router } from 'express';
+import multer from 'multer';
+import path from 'path';
+import fs from 'fs';
+
+
+=== FILE: ./project/server/ai-routes.ts ===
+import { Router } from 'express';
+import { mathematicalAI } from './ai-assistant';
+
+const router = Router();
+
+
+=== FILE: ./project/server/middleware/apiKeyAuth.ts ===
+import { Request, Response, NextFunction } from 'express';
+import crypto from 'crypto';
+import pg from 'pg';
+
+let pool: pg.Pool | null = null;
+
+=== FILE: ./project/server/middleware/responseFilter.ts ===
+import { Request, Response, NextFunction } from 'express';
+
+/**
+ * Response scrubbing middleware — strips sensitive fields from all outbound
+ * JSON responses so individual routes don't need to be audited one-by-one.
+
+=== FILE: ./project/server/generate-sitemaps.ts ===
+import { neon } from '@neondatabase/serverless';
+import { drizzle } from 'drizzle-orm/neon-http';
+import * as fs from 'fs';
+import { formula_implementations } from '@shared/schema';
+import { SITE_DOMAIN } from './lib/siteDomain';
+
+=== FILE: ./project/server/polygonBridgeService.ts ===
+/**
+ * Polygon Bridge Service
+ * Compiles, deploys, and weekly-updates the MerkleRootRegistry contract.
+ * Uses ethers v6 + solc for zero-dependency compilation.
+ */
+
+=== FILE: ./project/server/migrations/task122-energy-price.ts ===
+/**
+ * Migration: Task 122 — Wire energy-derived price into token system
+ *
+ * Idempotent — safe to run on every startup.
+ * Uses ALTER TABLE … IF NOT EXISTS / ADD COLUMN IF NOT EXISTS so re-runs are safe.
+
+=== FILE: ./project/server/comprehensive-sitemap-generator.ts ===
+import { neon } from '@neondatabase/serverless';
+import * as fs from 'fs';
+import * as path from 'path';
+import { SITE_DOMAIN } from './lib/siteDomain';
+
+
+=== FILE: ./project/server/seoShared.ts ===
+export interface SeoPageConfig {
+  title: string;
+  description: string;
+  canonical: string;
+  ogTitle?: string;
+
+=== FILE: ./project/server/sitemap-framework-generator.ts ===
+
+import { neon } from '@neondatabase/serverless';
+import { drizzle } from 'drizzle-orm/neon-http';
+import * as fs from 'fs';
+import { formula_implementations } from '@shared/schema';
+
+=== FILE: ./project/server/verify-mathematical-foundations.ts ===
+#!/usr/bin/env tsx
+/**
+ * Mathematical Foundation Verification System
+ * Verifies integrity and completeness of all saved mathematical algorithms and settings
+ */
+
+=== FILE: ./project/server/frontend-communication.ts ===
+
+import { Router, Request, Response } from 'express';
+
+const router = Router();
+
+
+=== FILE: ./project/server/database-optimizer.ts ===
+
+export class DatabaseOptimizer {
+  private lastOptimization = 0;
+  private readonly OPTIMIZATION_INTERVAL = 24 * 60 * 60 * 1000; // Daily
+
+
+=== FILE: ./project/server/proof-testing-routes.ts ===
+
+import { Router, Request, Response } from 'express';
+import { mathematicalProofEngine } from './mathematical-proof-engine';
+
+const router = Router();
+
+=== FILE: ./project/server/hypercomputation-routes.ts ===
+
+import { Router } from 'express';
+import { hypercomputationEngine, type OracleProblem } from './hypercomputation-engine';
+
+export const hypercomputationRoutes = Router();
+
+=== FILE: ./project/server/hypercomputation-engine.ts ===
+
+/**
+ * HYPERCOMPUTATION SIMULATION ENGINE
+ * Theoretical computing models that challenge Church-Turing thesis limitations
+ * 
+
+=== FILE: ./project/server/mathematical-patterns-database.ts ===
+export interface MathematicalPattern {
+  equations: string[];
+  properties: string[];
+  applications: string[];
+  fieldOfStudy: string[];
+
+=== FILE: ./project/server/performance-monitor.ts ===
+
+import { Router, Request, Response } from 'express';
+import { performance, PerformanceObserver } from 'perf_hooks';
+
+const router = Router();
+
+=== FILE: ./project/server/mathematical-completeness-engine.ts ===
+
+/**
+ * Mathematical Completeness Engine
+ * Ensures 99.99% mathematical accuracy across all operations
+ */
+
+=== FILE: ./project/server/geometry-engine.ts ===
+
+/**
+ * MATHEMATICAL GEOMETRY ENGINE
+ * Converts mathematical symbols to geometric representations
+ */
+
+=== FILE: ./project/server/symbol-database.ts ===
+
+/**
+ * UNIVERSAL MATHEMATICAL SYMBOL DATABASE
+ * Single source of truth for all mathematical notation across platforms
+ */
+
+=== FILE: ./project/server/3d-mapping-engine.ts ===
+
+/**
+ * 3D MAPPING ENGINE
+ * Maps mathematical symbols to 3D representations and handles transformations
+ */
+
+=== FILE: ./project/server/save-mathematical-foundations.ts ===
+#!/usr/bin/env tsx
+/**
+ * Mathematical Foundation Preservation System
+ * Saves all mathematical algorithms, shapes, and verification foundations to database
+ * This preserves advanced mathematical structures that could be lost in the stack
+
+=== FILE: ./project/server/unified-math-system.ts ===
+/**
+ * UNIFIED MATHEMATICAL AND SYMBOL SYSTEM — PLAINTEXT MODE
+ * Single source of truth for plaintext math symbols, emoji translations, and 3D mappings
+ * All symbols work in plaintext mode using code-names
+ */
+
+=== FILE: ./project/server/mathematical-ensemble-intelligence.ts ===
+
+/**
+ * MATHEMATICAL ENSEMBLE INTELLIGENCE SYSTEM
+ * Advanced multi-modal analysis combining EPU framework with mathematical validation
+ */
+
+=== FILE: ./project/server/morphing-token-generator.ts ===
+
+/**
+ * MORPHING TOKEN GENERATOR FOR AUTONOMOUS CONTRACTS
+ * Product of UUON Foundation, no undocumented reproduction or any use without written consent.
+ * Author: Phillip A. Ruiz III, Organization: UUON Foundation Inc.
+
+=== FILE: ./project/server/autonomous-intelligence-routes.ts ===
+
+/**
+ * AUTONOMOUS INTELLIGENCE ROUTES
+ * API endpoints for autonomous intelligence metrics and control
+ * Product of UUON Foundation
+
+=== FILE: ./project/server/algorithmic-feeding-system.ts ===
+import { db } from './storage';
+import { eq } from 'drizzle-orm';
+import { 
+  shape_embeddings, 
+  parameter_optimizations, 
+
+=== FILE: ./project/server/quantum-physics-processor.ts ===
+
+/**
+ * QUANTUM PHYSICS PROCESSOR
+ * Server-side computation for advanced physics equations
+ * Integrates with your existing protected shapes system
+
+=== FILE: ./project/server/physics-data-schema.ts ===
+
+/**
+ * PHYSICS DATA SCHEMA
+ * Enhanced database structure for physics equation metadata
+ */
+
+=== FILE: ./project/server/automation-startup.ts ===
+
+/**
+ * AUTOMATION STARTUP HANDLER
+ * Automatically initializes all automation systems when server starts
+ */
+
+=== FILE: ./project/server/weeklyPublisher.ts ===
+/**
+ * Weekly Publisher — Automated Bank-Format Report Scheduler
+ *
+ * Every Monday at 09:00:00 UTC this service:
+ *   1. Computes the Merkle root over all 14,990+ tokens
+
+=== FILE: ./project/server/sitemap-framework.ts ===
+
+import { SITE_DOMAIN } from './lib/siteDomain';
+
+/**
+ * UNIFIED SITEMAP FRAMEWORK SYSTEM
+
+=== FILE: ./project/server/sitemap-templates.ts ===
+
+/**
+ * STANDARDIZED SITEMAP TEMPLATES
+ * Consistent formatting for all sitemap types
+ */
+
+=== FILE: ./project/server/sitemapSEOMetadata.ts ===
+/**
+ * ENHANCED SITEMAP SEO METADATA SYSTEM
+ * Comprehensive What/Who/Why/Where/When information for optimal SEO
+ * © 2024 UUON Foundation Inc. All Rights Reserved.
+ */
+
+=== FILE: ./project/server/generate-omni-proof-sitemap.ts ===
+import { neon } from '@neondatabase/serverless';
+import { drizzle } from 'drizzle-orm/neon-http';
+import * as fs from 'fs';
+import { formula_implementations } from '@shared/schema';
+import { sql } from 'drizzle-orm';
+
+=== FILE: ./project/server/openapi.ts ===
+export const openApiSpec = {
+  openapi: '3.0.3',
+  info: {
+    title: 'Δmension Engine API',
+    version: '1.0.0',
+
+=== FILE: ./project/server/tokenLedgerService.ts ===
+/**
+ * server/tokenLedgerService.ts
+ * UUON Foundation — Token Ledger Service
+ *
+ * FIXES APPLIED:
+
+=== FILE: ./project/server/routes.ts ===
+import type { Express } from "express";
+import { createServer, type Server } from "http";
+import { storage } from "./storage";
+import aiRoutes from "./ai-routes";
+import shapeRoutes from "./shape-routes";
+
+=== FILE: ./project/server/storage.ts ===
+import { neon } from '@neondatabase/serverless';
+import { drizzle } from 'drizzle-orm/neon-http';
+import { eq } from 'drizzle-orm';
+import bcrypt from 'bcrypt';
+import { users, type User, type InsertUser } from "@shared/schema";
+
+=== FILE: ./project/server/index.ts ===
+import "./scripts/cron-morph-worker";
+import express from 'express';
+import { createServer } from 'http';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+=== FILE: ./project/server/shape-routes.ts ===
+import { Router } from 'express';
+import { dbLoader } from './database-loader';
+import { db } from './storage';
+import { sql } from 'drizzle-orm';
+import { TokenLedgerService } from './tokenLedgerService';
+
+=== FILE: ./project/shared/ai-ml-models-schema.ts ===
+import { pgTable, serial, text, integer, real, jsonb, boolean, timestamp } from "drizzle-orm/pg-core";
+
+// AI/ML Models Registry - Each mathematical shape becomes an AI/ML model
+export const ai_ml_models = pgTable("ai_ml_models", {
+ id: serial("id").primaryKey(),
+
+=== FILE: ./project/shared/blockchain-schema.ts ===
+import { pgTable, text, integer, boolean, timestamp, serial, real } from "drizzle-orm/pg-core";
+import { createInsertSchema } from "drizzle-zod";
+import { z } from "zod";
+
+export const blockchain_algorithms = pgTable("uuon_blockchain_algorithms", {
+
+=== FILE: ./project/shared/schema.ts ===
+import { pgTable, text, serial, integer, boolean, real, jsonb, timestamp, bigint, varchar } from "drizzle-orm/pg-core";
+import { createInsertSchema } from "drizzle-zod";
+import { z } from "zod";
+
+export const users = pgTable("users", {
+
+=== FILE: ./project/shared/blockchain-schema.backup.ts ===
+import { pgTable, text, integer, boolean, timestamp, serial, real } from "drizzle-orm/pg-core";
+import { createInsertSchema } from "drizzle-zod";
+import { z } from "zod";
+
+export const blockchain_algorithms = pgTable("uuon-blockchain-algorithms", {
+
+=== FILE: ./project/tailwind.config.ts ===
+import type { Config } from "tailwindcss";
+
+export default {
+  darkMode: ["class"],
+  content: ["./client/index.html", "./client/src/**/*.{js,jsx,ts,tsx}"],
+
+=== FILE: ./project/scripts/migrate-attached-assets.ts ===
+
+import fs from 'fs';
+import path from 'path';
+import { databaseMLOptimizer } from '../server/database-ml-optimizer';
+
+
+=== FILE: ./project/scripts/pre-deployment-optimizer.ts ===
+/**
+ * PRE-DEPLOYMENT OPTIMIZATION SYSTEM
+ * Full Δmension/crEYEsis System Operation
+ * 
+ * Validates and synchronizes all engines, parameters, formulas,
+
+=== FILE: ./project/scripts/asset-upgrade-scout.ts ===
+/**
+ * ASSET UPGRADE SCOUT - Automated Asset Optimization
+ * 
+ * Scans and upgrades project assets for visual fidelity,
+ * export compatibility, and runtime performance.
+
+=== FILE: ./project/scripts/seed-embeddings.ts ===
+#!/usr/bin/env tsx
+import { neon } from '@neondatabase/serverless';
+
+const sql = neon(process.env.DATABASE_URL!);
+
+
+=== FILE: ./project/scripts/seed-topology.ts ===
+#!/usr/bin/env tsx
+import { neon } from '@neondatabase/serverless';
+
+const sql = neon(process.env.DATABASE_URL!);
+
+
+=== FILE: ./project/scripts/seed-relationships.ts ===
+#!/usr/bin/env tsx
+import { neon } from '@neondatabase/serverless';
+
+const sql = neon(process.env.DATABASE_URL!);
+
+
+=== FILE: ./project/scripts/push-to-github.ts ===
+/**
+ * push-to-github.ts
+ * Pushes the Δmension codebase to uuonnouu/dmension- on GitHub.
+ * Uses GITHUB_TOKEN for authentication — no API rate limits.
+ *
+
+=== FILE: ./project/vite.production.config.ts ===
+import { defineConfig } from "vite";
+import react from "@vitejs/plugin-react";
+import path, { dirname } from "path";
+import { fileURLToPath } from "url";
+
+
+=== FILE: ./project/drizzle.config.ts ===
+import { defineConfig } from "drizzle-kit";
+if (!process.env.DATABASE_URL) {
+  throw new Error("DATABASE_URL, ensure the database is provisioned");
+}
+export default defineConfig({
+
+=== FILE: ./project/tests/unit/shape-computation.test.ts ===
+
+import { describe, it, expect } from 'vitest';
+import { computeParametricSurface } from '../../server/lib/shapes/shapeComputer';
+
+describe('Shape Computation', () => {
+
+=== FILE: ./project/monitoring/health-checks.ts ===
+
+export interface HealthCheck {
+  service: string;
+  status: 'healthy' | 'degraded' | 'down';
+  lastChecked: Date;
+
+=== FILE: ./project/security/audit-log.ts ===
+
+export interface AuditEvent {
+  timestamp: Date;
+  userId?: string;
+  action: string;
+
+=== FILE: ./project/vite.config.ts ===
+import { defineConfig } from "vite";
+import react from "@vitejs/plugin-react";
+import path, { dirname } from "path";
+import runtimeErrorOverlay from "@replit/vite-plugin-runtime-error-modal";
+import { fileURLToPath } from "url";
+
+=== FILE: ./scripts/anchor-base.ts ===
+/**
+ * UUON Foundation — Base Mainnet Calldata Anchor
+ * Sends a 0 ETH transaction to own wallet with merkle root as calldata.
+ * Permanent, timestamped, verifiable on Basescan. No contract needed.
+ * Cost: ~$0.001 on Base mainnet.
+
+=== FILE: ./scripts/check-metadata-paths.ts ===
+import { ethers } from "ethers";
+
+const COMPREHENSIVE_ABI = [
+    "function name() view returns (string)",
+    "function symbol() view returns (string)",
+
+=== FILE: ./scripts/compute-merkle-root.ts ===
+/**
+ * UUON Foundation — Merkle State Root Computation
+ * Computes a deterministic Merkle root over the complete_shape_registry.
+ * This root anchors the entire shape database to the chain.
+ *
+
+=== FILE: ./scripts/deploy-and-mint.ts ===
+/**
+ * UUON Foundation — NFT Bulk Mint v2
+ * Hardened resumable minter with:
+ *   - ETH balance check before starting
+ *   - Exponential backoff on failure
+
+=== FILE: ./scripts/deploy-and-mint-v2.ts ===
+
+=== FILE: ./scripts/deploy_contracts.ts ===
+import { createThirdwebClient } from "thirdweb";
+import { privateKeyToAccount } from "thirdweb/wallets";
+import { base } from "thirdweb/chains";
+import { deployERC1155Contract } from "thirdweb/deploys";
+
+
+=== FILE: ./scripts/deploy-matrix-to-sei.ts ===
+import { createThirdwebClient } from "thirdweb";
+import { sei } from "thirdweb/chains"; // Native Layer-1 Sei EVM parallel target identification
+import { privateKeyToAccount } from "thirdweb/wallets";
+import { neon } from "@neondatabase/serverless";
+import { ethers } from "ethers";
+
+=== FILE: ./scripts/deploy-to-sei.ts ===
+import { createThirdwebClient, getContract } from "thirdweb";
+import { sei } from "thirdweb/chains"; // Native Sei EVM target identification
+import { privateKeyToAccount, getWalletBalance } from "thirdweb/wallets";
+import { neon } from "@neondatabase/serverless";
+
+
+=== FILE: ./scripts/pin-to-ipfs.ts ===
+/**
+ * UUON Foundation — IPFS Pinata Anchor
+ * Pins MERKLE_STATE_ROOT.json to IPFS via Pinata.
+ * Returns a permanent CID — the content address of the Phase II state root.
+ *
+
+=== FILE: ./scripts/seed-missing-data.ts ===
+import { neon } from "@neondatabase/serverless";
+
+// Connecting safely through your direct environment connection keys
+const DB_URL = process.env.NEON_DATABASE_URL || "postgresql://neondb_owner@ep-curly-unit-atlt2cb4-pooler.c-9.us-east-1.aws.neon.tech/neondb?sslmode=require";
+const sql = neon(DB_URL);
+
+=== FILE: ./scripts/solve-hard-math.ts ===
+import { neon } from "@neondatabase/serverless";
+import { execSync } from "child_process";
+
+const matrixSql = neon(process.env.NEON_MATRIX_DB_URL!);
+
+
+=== FILE: ./scripts/spawn-token.ts ===
+import { createThirdwebClient } from "thirdweb";
+import { base } from "thirdweb/chains";
+import { privateKeyToAccount } from "thirdweb/wallets";
+import { deployERC20Contract } from "thirdweb/deploys";
+
+
+=== FILE: ./scripts/sync-shape-registry.ts ===
+/**
+ * UUON Foundation — Shape Registry Sync Script
+ * Reconciles formula_implementations (1,544 rows) → complete_shape_registry (817 rows)
+ * Join key: shape_type (UNIQUE on both tables)
+ * No man left behind.
+
+=== FILE: ./scripts/test-onchain-matrix.ts ===
+import { ethers } from "ethers";
+
+// The official Thirdweb ERC-1155 ABI methods to pull token state records
+const ERC1155_ABI = [
+    "function name() view returns (string)",
+
+=== FILE: ./scripts/ThreeGpuEngine.ts ===
+import * as THREE from "three";
+
+// 1. The Custom WebGL Vertex Shader Layout
+// This code compiles directly inside the graphics card, using your parameters to distort geometries
+const vertexShaderCode = `
+
+=== FILE: ./scripts/update-global-uri.ts ===
+import { ethers } from "ethers";
+
+const THIRDWEB_UPDATE_ABI = [
+    "function setURI(string _uri)",
+    "function owner() view returns (address)"
+
+=== FILE: ./scripts/populate-complete-shape-registry.ts ===
+import { neon } from '@neondatabase/serverless';
+
+const connectionString = process.env.NEON_DATABASE_URL || process.env.DATABASE_URL!;
+const sql = neon(connectionString);
+
+
+=== FILE: ./scripts/process-matrix-stream.ts ===
+import { neon } from "@neondatabase/serverless";
+
+const sql = neon(process.env.NEON_DATABASE_URL!);
+
+async function processSystemicMatrixStream() {
+
+=== FILE: ./scripts/audit-parametric-morphs.ts ===
+import { neon } from "@neondatabase/serverless";
+
+const DB_URL = process.env.NEON_DATABASE_URL!;
+const sql = neon(DB_URL);
+
+
+=== FILE: ./scripts/mint-tokens.ts ===
+import { createThirdwebClient, getContract, sendTransaction } from "thirdweb";
+import { base } from "thirdweb/chains";
+import { privateKeyToAccount } from "thirdweb/wallets";
+import { mintTo } from "thirdweb/extensions/erc20";
+
+
+=== FILE: ./scripts/pin-shape-metadata.ts ===
+import * as fs from "fs";
+
+const PINATA_JWT = process.env.PINATA_JWT!;
+const SHAPE_ID = process.env.SHAPE_ID!;
+const SHAPE_NAME = process.env.SHAPE_NAME!;
+
+=== FILE: ./scripts/pin-shape-tokens.ts ===
+import * as fs from "fs";
+
+const PINATA_JWT = process.env.PINATA_JWT!;
+
+async function pinJSON(content: object, name: string): Promise<string> {
+
+=== FILE: ./scripts/populate-final-shapes.ts ===
+/**
+ * UUON Foundation — Definitive Shape Registry Populate
+ * Reads ALL shapes directly from the app's own getAllImplementedShapes()
+ * No guessing, no column conflicts, no theater.
+ * © UUON Foundation Inc. — Phillip Aguilar Ruiz III
+
+=== FILE: ./scripts/populate-shapes-final.ts ===
+404: Not Found
+=== FILE: ./scripts/pop.ts ===
+import { neon } from "@neondatabase/serverless";
+const sql = neon(process.env.DATABASE_URL!);
+const SHAPES = [
+"yeganeh-eagle","babylonian_aries_hired_man","babylonian_taurus_bull_of_heaven",
+"babylonian_gemini_great_twins","babylonian_cancer_crayfish","babylonian_leo_lion",
+
+=== FILE: ./scripts/set-base-uri.ts ===
+import { createThirdwebClient, getContract, sendTransaction } from "thirdweb";
+import { base } from "thirdweb/chains";
+import { privateKeyToAccount } from "thirdweb/wallets";
+import { prepareContractCall } from "thirdweb";
+
+
+=== FILE: ./scripts/set-uri.ts ===
+import{createThirdwebClient,getContract,sendTransaction}from"thirdweb";import{base}from"thirdweb/chains";import{privateKeyToAccount}from"thirdweb/wallets";import{setContractURI}from"thirdweb/extensions/common";async function main(){const client=createThirdwebClient({clientId:process.env.THIRDWEB_CLIENT_ID,secretKey:process.env.THIRDWEB_SECRET_KEY});const account=privateKeyToAccount({client,privateKey:process.env.METAMASK_PRIVATE_KEY});const contract=getContract({client,chain:base,address:"0xa14c3015E6b9Ad30337bD72c94Dc236835f61165"});const tx=setContractURI({contract,uri:"https://raw.githubusercontent.com/uuonnouu/UUON-Token-Metadata/main/psent_metadata.json"});const receipt=await sendTransaction({transaction:tx,account});console.log("Done:",receipt.transactionHash);}main().catch(console.error);
+=== FILE: ./blockchainAlgorithmsEngine.ts ===
+const cryptographic_profiles = {
+  proof_of_stake: {
+    computationalComplexity: 'O(n) validators',
+    securityAssumptions: ['Honest majority stake', 'Weak subjectivity'],
+    quantumResistance: 'vulnerable',
+
+=== FILE: ./cron-morph-worker.ts ===
+import { neon } from "@neondatabase/serverless";
+import cron from "node-cron";
+
+const matrixSql = neon(process.env.NEON_MATRIX_DB_URL!);
+
+
+=== FILE: ./deploy-and-mint.ts ===
+/**
+ * UUON Foundation — Deploy NFT Contract + Bulk Mint All Shapes
+ * Deploys DmensionMathNFT (ERC-721) to Base mainnet via ethers.js
+ * Then bulk mints all shapes from complete_shape_registry
+ *
+
+=== FILE: ./useShapeMint.ts ===
+import { useState } from 'react';
+
+// Define parameters expected by your new Vercel backend
+interface MintShapeParams {
+  shapeType: string;
+
+=== FILE: ./validation_override.ts ===
+/**
+ * UUON CORE VALIDATION MAP
+ * saas replit debugging advanced
+ * Shell access in Replit Workspace
+ * Understanding of Replit container lifecycle
+
+=== FILE: ./public-release/deploy_contracts.ts ===
+import { createThirdwebClient } from "thirdweb";
+import { privateKeyToAccount } from "thirdweb/wallets";
+import { base } from "thirdweb/chains";
+import { deployERC1155Contract } from "thirdweb/deploys";
+
+
+=== FILE: ./private-release/deploy-and-mint.ts ===
+/**
+ * UUON Foundation — NFT Bulk Mint v2
+ * Hardened resumable minter with:
+ *   - ETH balance check before starting
+ *   - Exponential backoff on failure
+
+=== FILE: ./private-release/spawn-token.ts ===
+import { createThirdwebClient } from "thirdweb";
+import { base } from "thirdweb/chains";
+import { privateKeyToAccount } from "thirdweb/wallets";
+import { deployERC20Contract } from "thirdweb/deploys";
+
+
+=== FILE: ./private-release/anchor-base.ts ===
+/**
+ * UUON Foundation — Base Mainnet Calldata Anchor
+ * Sends a 0 ETH transaction to own wallet with merkle root as calldata.
+ * Permanent, timestamped, verifiable on Basescan. No contract needed.
+ * Cost: ~$0.001 on Base mainnet.
+
+=== FILE: ./private-release/mint-tokens.ts ===
+import { createThirdwebClient, getContract, sendTransaction } from "thirdweb";
+import { base } from "thirdweb/chains";
+import { privateKeyToAccount } from "thirdweb/wallets";
+import { mintTo } from "thirdweb/extensions/erc20";
+
+
+=== FILE: ./private-release/deploy_contracts.ts ===
+import { createThirdwebClient } from "thirdweb";
+import { privateKeyToAccount } from "thirdweb/wallets";
+import { base } from "thirdweb/chains";
+import { deployERC1155Contract } from "thirdweb/deploys";
+
+
+=== FILE: ./formula_implementations.ts ===
+/**
+ * UUON Foundation — Create formula_implementations table in Neon
+ * This table is required by the Dmension app's database-loader.ts
+ * Run once to create the missing table and sync from complete_shape_registry
+ * 
+
+=== FILE: ./src/   db/     index.ts     schema.ts drizzle.config.ts ===
+
+=== FILE: ./src/db/schema.ts ===
+import { pgTable, serial, text, timestamp } from "drizzle-orm/pg-core";
+
+export const users = pgTable("users", {
+  id: serial("id").primaryKey(),
+  name: text("name").notNull(),
+
+=== FILE: ./shared/schema.ts ===
+
+=== FILE: ./shared/blockchain-schema.ts ===
+
+=== FILE: ./shared/engine/schema.ts ===
+export type GeometryShape = {
+  id: string;
+  type: "circle" | "polygon" | "fractal" | "vector";
+  energy: number;
+  phiAlignment?: number;
+
+=== FILE: ./shared/engine/runtime.ts ===
+import type { GeometryShape } from "./schema";
+
+/**
+ * Create a new shape in the engine
+ */
+
+=== FILE: ./drizzle.config.ts ===
+import { defineConfig } from "drizzle-kit";
+
+export default defineConfig({
+  schema: ["./shared/schema.ts", "./shared/blockchain-schema.ts"],
+  out: "./drizzle",
+
+=== FILE: ./drizzle/schema.ts ===
+import { pgTable, unique, integer, varchar, text, numeric, jsonb, boolean, timestamp, serial, foreignKey, real, pgSequence } from "drizzle-orm/pg-core"
+import { sql } from "drizzle-orm"
+
+
+export const completeShapeRegistryIdSeq = pgSequence("complete_shape_registry_id_seq", {  startWith: "1", increment: "1", minValue: "1", maxValue: "9223372036854775807", cache: "1", cycle: false })
+
+=== FILE: ./drizzle/relations.ts ===
+import { relations } from "drizzle-orm/relations";
+import { aiMlModels, modelTrainingData, modelPerformanceLogs } from "./schema";
+
+export const modelTrainingDataRelations = relations(modelTrainingData, ({one}) => ({
+	aiMlModel: one(aiMlModels, {
+
+=== FILE: ./file.ts ===

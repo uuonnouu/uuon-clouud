@@ -1,0 +1,64 @@
+{
+  "name": "Butterfly Effect Life Path - Cascading Moments",
+  "description": "A consciousnessmath parametric surface from the Dmension Mathematical Universe.\n\nShape Type: butterfly_effect_life\nCategory: consciousnessmath\nFibonacci Level: 1\nEquation DNA: Verified — X,Y,Z parametric equations on-chain.\n\n2,856 unique parametric shapes anchored on Base Mainnet by UUON Foundation Inc.\n\nGenesis Hash: cf114022b5e4e1d6...\nMerkle Root:  54fff9e19a729a3b...\nIPFS Catalog: ipfs://QmU7zUDNF3pyuWqNsfH9QCUJcT4oCUBr5JQfeptdCVT7t8",
+  "image": "ipfs://QmU7zUDNF3pyuWqNsfH9QCUJcT4oCUBr5JQfeptdCVT7t8/butterfly_effect_life/thumbnail.png",
+  "animation_url": "ipfs://QmU7zUDNF3pyuWqNsfH9QCUJcT4oCUBr5JQfeptdCVT7t8/butterfly_effect_life/model.glb",
+  "external_url": "https://dmension.app/shapes/butterfly_effect_life",
+  "attributes": [
+    {
+      "trait_type": "Shape Type",
+      "value": "butterfly_effect_life"
+    },
+    {
+      "trait_type": "Category",
+      "value": "consciousnessmath"
+    },
+    {
+      "trait_type": "Subcategory",
+      "value": "General"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "Rare"
+    },
+    {
+      "trait_type": "Fibonacci Level",
+      "value": 1,
+      "display_type": "number"
+    },
+    {
+      "trait_type": "String Theory Dim",
+      "value": 0,
+      "display_type": "number"
+    },
+    {
+      "trait_type": "Complexity Class",
+      "value": "O(n)"
+    },
+    {
+      "trait_type": "Complexity Score",
+      "value": 5,
+      "display_type": "number"
+    },
+    {
+      "trait_type": "Equation DNA",
+      "value": "Verified"
+    },
+    {
+      "trait_type": "Verification",
+      "value": "Verified"
+    }
+  ],
+  "uuon_provenance": {
+    "genesis_hash": "cf114022b5e4e1d6fdeb36890f35f605857cf2de93b53ebcb9c8e5652413ca04",
+    "merkle_root": "54fff9e19a729a3bfffbf9926d1e09d5134cb6e12a0723211ea04904d68530af",
+    "base_block_anchored": 47403435,
+    "ipfs_catalog_cid": "QmU7zUDNF3pyuWqNsfH9QCUJcT4oCUBr5JQfeptdCVT7t8",
+    "contract_address": "0x25831C80054e1f5dE062aC57FbB7A5fA0f0c1eb9",
+    "chain_id": 8453,
+    "token_id": "1280",
+    "shape_type": "butterfly_effect_life",
+    "equation_verified": true,
+    "created_by": "Phillip Aguilar Ruiz III — UUON Foundation Inc."
+  }
+}

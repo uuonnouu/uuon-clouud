@@ -1,0 +1,52 @@
+
+{
+  "name": "Δmension Mathematical Universe - 1304 3D Shapes",
+  "short_name": "Δmension",
+  "description": "Revolutionary 3D mathematical visualization platform with 1304 interactive shapes: parametric surfaces, fractals, therapeutic geometry, quantum models",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0a0a0a",
+  "theme_color": "#00ff88",
+  "orientation": "any",
+  "icons": [
+    {
+      "src": "/dmension-logo-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/dmension-logo-512.png", 
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/dmension-logo.png",
+      "sizes": "256x256",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ],
+  "categories": ["education", "productivity", "utilities", "medical", "research", "visualization"],
+  "lang": "en-US",
+  "author": "UUON Foundation",
+  "developer": {
+    "name": "UUON Foundation",
+    "url": "https://uuonfoundation.com"
+  },
+  "screenshots": [
+    {
+      "src": "/screenshot-wide.png",
+      "sizes": "1280x720",
+      "type": "image/png",
+      "form_factor": "wide"
+    },
+    {
+      "src": "/screenshot-narrow.png",
+      "sizes": "640x1136", 
+      "type": "image/png",
+      "form_factor": "narrow"
+    }
+  ]
+}

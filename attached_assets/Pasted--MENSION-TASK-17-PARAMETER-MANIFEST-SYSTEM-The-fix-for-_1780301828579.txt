@@ -1,0 +1,450 @@
+# ΔMENSION — TASK #17: PARAMETER MANIFEST SYSTEM
+# The fix for parameters not matching shapes
+
+---
+
+## THE PROBLEM
+
+The A-Z parameter system is universal but most shapes only use A, B, C.
+D through Z sliders exist but do nothing for 90% of shapes.
+Users have no idea what "A" means for a Klein bottle vs a Lorenz attractor.
+Parameter ranges are wrong — sphere radius doesn't need to go to 180.
+
+## THE SOLUTION: Parameter Manifests
+
+Add a `parameter_manifest` JSONB column to `formula_implementations`.
+For each shape, this declares which parameters are active, what they mean,
+and what their valid range is for that specific shape.
+
+The UI then reads this manifest and:
+- Shows only active sliders
+- Labels them correctly ("Major Radius" not "A")
+- Uses shape-specific min/max ranges
+- Hides unused parameters instead of showing broken sliders
+
+## GOLDEN RULES
+- Do NOT touch ParametricSurface.tsx rendering logic
+- Do NOT change the A-Z parameter names in SurfaceParameters type
+- Do NOT change how parameters are passed to formulas
+- Only add data and update the UI display layer
+
+---
+
+## STEP 1: Add parameter_manifest column to database
+
+```bash
+psql $DATABASE_URL -c "
+ALTER TABLE formula_implementations 
+ADD COLUMN IF NOT EXISTS parameter_manifest jsonb DEFAULT '{}';
+"
+```
+
+Verify:
+```bash
+psql $DATABASE_URL -c "SELECT column_name FROM information_schema.columns WHERE table_name='formula_implementations' AND column_name='parameter_manifest';"
+```
+
+---
+
+## STEP 2: Create the manifest data file
+
+Create `client/src/lib/parameterManifests.ts`:
+
+```typescript
+// Parameter manifests for each shape
+// Defines which A-Z parameters are active, their labels, and valid ranges
+// Parameters not listed are hidden in the UI
+
+export interface ParameterSpec {
+  label: string;          // Human-readable name
+  description: string;    // What it does to the shape
+  min: number;
+  max: number;
+  step: number;
+  default: number;
+  affects: string;        // 'primary_geometry' | 'secondary' | 'detail' | 'visual'
+}
+
+export interface ShapeParameterManifest {
+  shape_type: string;
+  active_parameters: Partial<Record<'a'|'b'|'c'|'d'|'e'|'f'|'g'|'h'|'i'|'j'|'k'|'l'|'m'|'n'|'o'|'p'|'q'|'r'|'s'|'t'|'u'|'v'|'w'|'x'|'y'|'z', ParameterSpec>>;
+  parameter_notes?: string;
+}
+
+export const PARAMETER_MANIFESTS: Record<string, ShapeParameterManifest> = {
+
+  // === BASIC GEOMETRY ===
+  sphere: {
+    shape_type: 'sphere',
+    active_parameters: {
+      a: { label: 'Radius X', description: 'Width of sphere', min: 0.1, max: 10, step: 0.01, default: 1, affects: 'primary_geometry' },
+      b: { label: 'Radius Y', description: 'Height of sphere', min: 0.1, max: 10, step: 0.01, default: 1, affects: 'primary_geometry' },
+      c: { label: 'Radius Z', description: 'Depth of sphere', min: 0.1, max: 10, step: 0.01, default: 1, affects: 'primary_geometry' },
+    }
+  },
+
+  torus: {
+    shape_type: 'torus',
+    active_parameters: {
+      a: { label: 'Major Radius', description: 'Distance from center to tube center', min: 0.5, max: 10, step: 0.01, default: 2, affects: 'primary_geometry' },
+      b: { label: 'Minor Radius', description: 'Tube thickness', min: 0.01, max: 5, step: 0.01, default: 0.5, affects: 'primary_geometry' },
+    }
+  },
+
+  klein_bottle: {
+    shape_type: 'klein_bottle',
+    active_parameters: {
+      a: { label: 'Scale', description: 'Overall size', min: 0.1, max: 5, step: 0.01, default: 1, affects: 'primary_geometry' },
+      b: { label: 'Neck Width', description: 'Width of self-intersection neck', min: 0.1, max: 3, step: 0.01, default: 1, affects: 'secondary' },
+      c: { label: 'Handle Twist', description: 'Rotation of handle', min: -3.14, max: 3.14, step: 0.01, default: 0, affects: 'detail' },
+    }
+  },
+
+  mobius_strip: {
+    shape_type: 'mobius_strip',
+    active_parameters: {
+      a: { label: 'Radius', description: 'Ring radius', min: 0.5, max: 5, step: 0.01, default: 1, affects: 'primary_geometry' },
+      b: { label: 'Width', description: 'Strip width', min: 0.1, max: 2, step: 0.01, default: 0.3, affects: 'secondary' },
+      c: { label: 'Twists', description: 'Number of half-twists', min: 1, max: 5, step: 1, default: 1, affects: 'detail' },
+    }
+  },
+
+  trefoil_knot: {
+    shape_type: 'trefoil_knot',
+    active_parameters: {
+      a: { label: 'Tube Radius', description: 'Thickness of tube', min: 0.05, max: 1, step: 0.01, default: 0.2, affects: 'secondary' },
+      b: { label: 'Knot Scale', description: 'Overall knot size', min: 0.5, max: 5, step: 0.01, default: 1, affects: 'primary_geometry' },
+      c: { label: 'P Winding', description: 'Longitudinal windings', min: 1, max: 5, step: 1, default: 2, affects: 'detail' },
+      d: { label: 'Q Winding', description: 'Meridional windings', min: 1, max: 5, step: 1, default: 3, affects: 'detail' },
+    }
+  },
+
+  // === FRACTALS & CHAOS ===
+  mandelbulb: {
+    shape_type: 'mandelbulb',
+    active_parameters: {
+      a: { label: 'Power', description: 'Fractal power (8=classic)', min: 2, max: 12, step: 0.1, default: 8, affects: 'primary_geometry' },
+      b: { label: 'Iterations', description: 'Detail level (higher=slower)', min: 2, max: 20, step: 1, default: 8, affects: 'detail' },
+      c: { label: 'Bailout', description: 'Escape radius threshold', min: 1, max: 10, step: 0.1, default: 2, affects: 'secondary' },
+    }
+  },
+
+  lorenz_attractor: {
+    shape_type: 'lorenz_attractor',
+    active_parameters: {
+      a: { label: 'Sigma (σ)', description: 'Prandtl number — classic=10', min: 1, max: 30, step: 0.1, default: 10, affects: 'primary_geometry' },
+      b: { label: 'Rho (ρ)', description: 'Rayleigh number — classic=28', min: 1, max: 50, step: 0.1, default: 28, affects: 'primary_geometry' },
+      c: { label: 'Beta (β)', description: 'Physical ratio — classic=2.667', min: 0.1, max: 10, step: 0.01, default: 2.667, affects: 'primary_geometry' },
+      d: { label: 'Time Step', description: 'Integration step size', min: 0.001, max: 0.05, step: 0.001, default: 0.01, affects: 'detail' },
+    }
+  },
+
+  mandelbrot_3d: {
+    shape_type: 'mandelbrot_3d',
+    active_parameters: {
+      a: { label: 'Power', description: 'Fractal power', min: 2, max: 16, step: 0.5, default: 8, affects: 'primary_geometry' },
+      b: { label: 'Iterations', description: 'Max iterations', min: 2, max: 30, step: 1, default: 10, affects: 'detail' },
+      c: { label: 'Scale', description: 'Overall scale', min: 0.1, max: 3, step: 0.01, default: 1, affects: 'secondary' },
+    }
+  },
+
+  // === QUANTUM & PHYSICS ===
+  hydrogen_1s_orbital: {
+    shape_type: 'hydrogen_1s_orbital',
+    active_parameters: {
+      a: { label: 'Bohr Radius Scale', description: 'Scale factor for orbital size', min: 0.1, max: 5, step: 0.01, default: 1, affects: 'primary_geometry' },
+      b: { label: 'Probability Cutoff', description: 'Isosurface threshold', min: 0.01, max: 0.5, step: 0.01, default: 0.1, affects: 'secondary' },
+    }
+  },
+
+  schrodinger_time_dependent: {
+    shape_type: 'schrodinger_time_dependent',
+    active_parameters: {
+      a: { label: 'Wave Number (k)', description: 'Spatial frequency', min: 0.1, max: 10, step: 0.1, default: 1, affects: 'primary_geometry' },
+      b: { label: 'Amplitude', description: 'Wave amplitude', min: 0.1, max: 5, step: 0.1, default: 1, affects: 'secondary' },
+      c: { label: 'Phase', description: 'Phase offset', min: -3.14, max: 3.14, step: 0.01, default: 0, affects: 'detail' },
+      d: { label: 'Decay', description: 'Gaussian envelope decay', min: 0.1, max: 5, step: 0.1, default: 1, affects: 'secondary' },
+    }
+  },
+
+  wheeler_dewitt_equation: {
+    shape_type: 'wheeler_dewitt_equation',
+    active_parameters: {
+      a: { label: 'Scale Factor', description: 'Universe scale parameter', min: 0.01, max: 5, step: 0.01, default: 1, affects: 'primary_geometry' },
+      b: { label: 'Cosmological Λ', description: 'Cosmological constant', min: -2, max: 2, step: 0.01, default: 0, affects: 'secondary' },
+      c: { label: 'Curvature k', description: 'Spatial curvature (-1,0,1)', min: -1, max: 1, step: 1, default: 0, affects: 'detail' },
+    }
+  },
+
+  // === 4D HYPERDIMENSIONAL ===
+  tesseract: {
+    shape_type: 'tesseract',
+    active_parameters: {
+      a: { label: 'Edge Length', description: 'Size of hypercube edges', min: 0.1, max: 5, step: 0.01, default: 1, affects: 'primary_geometry' },
+      b: { label: 'W Rotation', description: '4D rotation angle (W-X plane)', min: -3.14, max: 3.14, step: 0.01, default: 0, affects: 'secondary' },
+      c: { label: 'Projection Dist', description: 'Distance for 4D→3D projection', min: 0.5, max: 10, step: 0.1, default: 2, affects: 'detail' },
+    }
+  },
+
+  hopf_fibration: {
+    shape_type: 'hopf_fibration',
+    active_parameters: {
+      a: { label: 'Fiber Density', description: 'Number of fiber circles', min: 4, max: 64, step: 4, default: 16, affects: 'primary_geometry' },
+      b: { label: 'Fiber Radius', description: 'Thickness of each fiber', min: 0.01, max: 0.5, step: 0.01, default: 0.05, affects: 'secondary' },
+      c: { label: 'Base Angle', description: 'Angle on S2 base sphere', min: 0, max: 3.14, step: 0.01, default: 1.57, affects: 'detail' },
+    }
+  },
+
+  clifford_torus: {
+    shape_type: 'clifford_torus',
+    active_parameters: {
+      a: { label: 'R1', description: 'First circle radius', min: 0.1, max: 5, step: 0.01, default: 1, affects: 'primary_geometry' },
+      b: { label: 'R2', description: 'Second circle radius', min: 0.1, max: 5, step: 0.01, default: 1, affects: 'primary_geometry' },
+      c: { label: 'W Rotation', description: '4D rotation parameter', min: 0, max: 6.28, step: 0.01, default: 0, affects: 'detail' },
+    }
+  },
+
+  // === CRYPTOGRAPHY ===
+  elliptic_curve_cryptography: {
+    shape_type: 'elliptic_curve_cryptography',
+    active_parameters: {
+      a: { label: 'Coefficient a', description: 'y²=x³+ax+b — curve shape', min: -5, max: 5, step: 0.1, default: -1, affects: 'primary_geometry' },
+      b: { label: 'Coefficient b', description: 'y²=x³+ax+b — vertical shift', min: -5, max: 5, step: 0.1, default: 1, affects: 'primary_geometry' },
+      c: { label: 'Domain Scale', description: 'X-axis range', min: 0.5, max: 5, step: 0.1, default: 2, affects: 'secondary' },
+    }
+  },
+
+  // === MOLECULAR BIOLOGY ===
+  dna_double_helix: {
+    shape_type: 'dna_double_helix',
+    active_parameters: {
+      a: { label: 'Helix Radius', description: 'Distance from axis to backbone', min: 0.1, max: 3, step: 0.01, default: 1, affects: 'primary_geometry' },
+      b: { label: 'Pitch', description: 'Rise per complete turn', min: 0.5, max: 5, step: 0.1, default: 2, affects: 'primary_geometry' },
+      c: { label: 'Strand Offset', description: 'Phase between strands (°)', min: 0, max: 3.14, step: 0.01, default: 2.4, affects: 'secondary' },
+      d: { label: 'Base Pair Width', description: 'Width of base pair rungs', min: 0.1, max: 2, step: 0.01, default: 0.8, affects: 'detail' },
+    }
+  },
+
+  // === GENERAL RELATIVITY ===
+  schwarzschild_metric_spacetime: {
+    shape_type: 'schwarzschild_metric_spacetime',
+    active_parameters: {
+      a: { label: 'Mass (M)', description: 'Black hole mass — affects Schwarzschild radius', min: 0.1, max: 5, step: 0.01, default: 1, affects: 'primary_geometry' },
+      b: { label: 'Radial Scale', description: 'Visualization scale factor', min: 0.1, max: 5, step: 0.1, default: 1, affects: 'secondary' },
+      c: { label: 'Time Slice', description: 'Time coordinate for embedding', min: 0, max: 6.28, step: 0.01, default: 0, affects: 'detail' },
+    }
+  },
+
+  gravitational_wave: {
+    shape_type: 'gravitational_wave',
+    active_parameters: {
+      a: { label: 'Amplitude (h)', description: 'Strain amplitude', min: 0.01, max: 2, step: 0.01, default: 0.3, affects: 'primary_geometry' },
+      b: { label: 'Frequency', description: 'Wave frequency (Hz scale)', min: 0.1, max: 10, step: 0.1, default: 1, affects: 'primary_geometry' },
+      c: { label: 'Plus Polarization', description: 'h+ polarization component', min: -1, max: 1, step: 0.01, default: 1, affects: 'secondary' },
+      d: { label: 'Cross Polarization', description: 'h× polarization component', min: -1, max: 1, step: 0.01, default: 0, affects: 'secondary' },
+    }
+  },
+
+  // === SACRED GEOMETRY ===
+  flower_of_life: {
+    shape_type: 'flower_of_life',
+    active_parameters: {
+      a: { label: 'Circle Radius', description: 'Radius of each circle', min: 0.1, max: 3, step: 0.01, default: 1, affects: 'primary_geometry' },
+      b: { label: 'Rings', description: 'Number of concentric rings', min: 1, max: 5, step: 1, default: 2, affects: 'secondary' },
+      c: { label: 'Height', description: '3D extrusion height', min: 0, max: 2, step: 0.01, default: 0.1, affects: 'detail' },
+    }
+  },
+
+  sri_yantra: {
+    shape_type: 'sri_yantra',
+    active_parameters: {
+      a: { label: 'Scale', description: 'Overall size', min: 0.1, max: 5, step: 0.01, default: 1, affects: 'primary_geometry' },
+      b: { label: 'Triangle Scale', description: 'Interlocking triangle ratio', min: 0.5, max: 2, step: 0.01, default: 1, affects: 'secondary' },
+      c: { label: 'Extrusion', description: '3D depth', min: 0, max: 1, step: 0.01, default: 0.1, affects: 'detail' },
+    }
+  },
+
+  // === ALGORITHMS ===
+  lorenz_attractor: {
+    shape_type: 'lorenz_attractor',
+    active_parameters: {
+      a: { label: 'Sigma σ', description: 'Classic value: 10', min: 1, max: 30, step: 0.1, default: 10, affects: 'primary_geometry' },
+      b: { label: 'Rho ρ', description: 'Classic value: 28 (chaos threshold)', min: 1, max: 50, step: 0.1, default: 28, affects: 'primary_geometry' },
+      c: { label: 'Beta β', description: 'Classic value: 8/3', min: 0.1, max: 10, step: 0.01, default: 2.667, affects: 'primary_geometry' },
+    }
+  },
+
+  diffusion_model: {
+    shape_type: 'diffusion_model',
+    active_parameters: {
+      a: { label: 'Noise Steps (T)', description: 'Diffusion timesteps', min: 10, max: 1000, step: 10, default: 100, affects: 'primary_geometry' },
+      b: { label: 'Beta Start', description: 'Initial noise schedule', min: 0.0001, max: 0.01, step: 0.0001, default: 0.0001, affects: 'secondary' },
+      c: { label: 'Beta End', description: 'Final noise schedule', min: 0.01, max: 0.5, step: 0.001, default: 0.02, affects: 'secondary' },
+    }
+  },
+
+  // === THEORY OF EVERYTHING ===
+  superstring_vibration_modes: {
+    shape_type: 'superstring_vibration_modes',
+    active_parameters: {
+      a: { label: 'String Length', description: 'Fundamental string length (Planck units)', min: 0.1, max: 5, step: 0.01, default: 1, affects: 'primary_geometry' },
+      b: { label: 'Mode Number', description: 'Vibration mode n', min: 1, max: 10, step: 1, default: 1, affects: 'primary_geometry' },
+      c: { label: 'Coupling', description: 'String coupling constant g_s', min: 0.01, max: 2, step: 0.01, default: 0.1, affects: 'secondary' },
+      d: { label: 'Tension', description: 'String tension T (energy scale)', min: 0.1, max: 5, step: 0.1, default: 1, affects: 'detail' },
+    }
+  },
+
+};
+
+// Helper: get manifest for a shape, with fallback to generic
+export function getParameterManifest(shapeType: string): ShapeParameterManifest | null {
+  return PARAMETER_MANIFESTS[shapeType] || null;
+}
+
+// Helper: get active parameter keys for a shape
+export function getActiveParameters(shapeType: string): string[] {
+  const manifest = PARAMETER_MANIFESTS[shapeType];
+  if (!manifest) return ['a', 'b', 'c']; // Default: show first 3
+  return Object.keys(manifest.active_parameters);
+}
+
+// Helper: get label for a parameter in context of a shape
+export function getParameterLabel(shapeType: string, param: string): string {
+  const manifest = PARAMETER_MANIFESTS[shapeType];
+  if (!manifest) return param.toUpperCase();
+  const spec = manifest.active_parameters[param as keyof typeof manifest.active_parameters];
+  return spec?.label || param.toUpperCase();
+}
+
+// Helper: get range for a parameter in context of a shape  
+export function getParameterRange(shapeType: string, param: string): {min:number, max:number, step:number} {
+  const manifest = PARAMETER_MANIFESTS[shapeType];
+  if (!manifest) return { min: -26, max: 26, step: 0.01 };
+  const spec = manifest.active_parameters[param as keyof typeof manifest.active_parameters];
+  return spec ? { min: spec.min, max: spec.max, step: spec.step } : { min: -26, max: 26, step: 0.01 };
+}
+```
+
+---
+
+## STEP 3: Update ComprehensiveParameterPanel to use manifests
+
+In `client/src/components/ComprehensiveParameterPanel.tsx`:
+
+1. Import the manifest helpers:
+```tsx
+import { getParameterManifest, getActiveParameters, getParameterLabel, getParameterRange } from '../lib/parameterManifests';
+```
+
+2. Find where it renders the A-Z sliders. It likely loops through all 26 letters.
+Find that loop and modify it to:
+- Check if the parameter is in the manifest's active_parameters
+- If YES: show it with the shape-specific label and range
+- If NO: either hide it or show it grayed out with label "Unused"
+
+The change should look something like:
+```tsx
+// Before (shows all 26 regardless):
+{['a','b','c',...,'z'].map(param => (
+  <Slider key={param} label={param.toUpperCase()} ... />
+))}
+
+// After (shows only active ones with correct labels):
+{['a','b','c',...,'z'].map(param => {
+  const isActive = activeParams.includes(param);
+  const label = getParameterLabel(parameters.type, param);
+  const range = getParameterRange(parameters.type, param);
+  if (!isActive) return null; // hide unused
+  return <Slider key={param} label={label} min={range.min} max={range.max} step={range.step} ... />
+})}
+```
+
+3. Add this near the top of the component:
+```tsx
+const activeParams = getActiveParameters(parameters.type);
+```
+
+---
+
+## STEP 4: Update the Live Algorithm display in MathVisualizer
+
+In `MathVisualizer.tsx`, find the "LIVE ALGORITHM" collapsible display (around line 1200+).
+It currently shows A, B, C values with generic labels.
+
+Update it to show shape-specific labels:
+```tsx
+import { getParameterLabel, getActiveParameters } from '../lib/parameterManifests';
+
+// In the display, replace:
+<span className="text-blue-300">A:</span>
+
+// With:
+<span className="text-blue-300">{getParameterLabel(parameters.type, 'a')}:</span>
+```
+
+---
+
+## STEP 5: Seed parameter_manifest into database
+
+After creating `parameterManifests.ts`, run a script to populate the column:
+
+```bash
+cat > scripts/seed-manifests.ts << 'EOF'
+import { db } from '../server/db';
+import { formula_implementations } from '../shared/schema';
+import { eq } from 'drizzle-orm';
+import { PARAMETER_MANIFESTS } from '../client/src/lib/parameterManifests';
+
+async function seedManifests() {
+  let updated = 0;
+  for (const [shape_type, manifest] of Object.entries(PARAMETER_MANIFESTS)) {
+    try {
+      await db.update(formula_implementations)
+        .set({ parameter_manifest: manifest.active_parameters })
+        .where(eq(formula_implementations.shape_type, shape_type));
+      updated++;
+    } catch(e) {
+      console.error(`Failed for ${shape_type}:`, e);
+    }
+  }
+  console.log(`Updated ${updated} shape manifests`);
+}
+seedManifests().catch(console.error);
+EOF
+npx tsx scripts/seed-manifests.ts
+```
+
+---
+
+## STEP 6: Verify
+
+```bash
+# Check manifests are in DB
+psql $DATABASE_URL -c "SELECT shape_type, parameter_manifest FROM formula_implementations WHERE parameter_manifest != '{}' LIMIT 5;"
+
+# Build still clean?
+npx tsc --noEmit 2>&1 | tail -5
+
+# Check the UI renders correctly
+npm run build 2>&1 | grep -E "error|✓|built"
+```
+
+---
+
+## DONE CRITERIA
+
+- [ ] `parameterManifests.ts` created with manifests for 25+ shapes
+- [ ] `ComprehensiveParameterPanel` only shows active parameters with correct labels
+- [ ] Live Algorithm display shows shape-specific parameter names
+- [ ] `parameter_manifest` column populated in DB for manifested shapes
+- [ ] Build clean — 0 TypeScript errors
+- [ ] For a torus: slider shows "Major Radius" and "Minor Radius", not "A" and "B"
+- [ ] For a Lorenz attractor: shows "Sigma σ", "Rho ρ", "Beta β" — not "A", "B", "C"
+- [ ] D-Z sliders hidden for shapes that don't use them
+
+## WHAT NOT TO DO
+
+- Do not change how parameters are passed to ParametricSurface
+- Do not change the SurfaceParameters TypeScript type
+- Do not touch formula calculation logic
+- Do not add new database tables

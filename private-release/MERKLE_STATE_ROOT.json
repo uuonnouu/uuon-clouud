@@ -1,0 +1,18 @@
+{
+  "version": "2.0",
+  "network": "UUON Foundation — Phase II",
+  "shapes_committed": 2154,
+  "merkle_root": "7d2295473f46552165f096b029d499cf74a3919638954567137672ded5d8d476",
+  "state_hash": "751392aeca5f6efbbb75817221511e37f8dbba292971b575c994cea43998c9cf",
+  "timestamp": "2026-06-12T23:59:18.555Z",
+  "anchor_target": "Base mainnet + IPFS",
+  "genesis_hash": "cf114022b5e4e1d6fdeb36890f35f605857cf2de93b53ebcb9c8e5652413ca04",
+  "copyright": "© UUON Foundation Inc. — Phillip Aguilar Ruiz III",
+  "ipfs_cid": "bafkreifk5rgcjbtke4etapbf4vpfajaieybeywdcvy4hthui62b6plwrqy",
+  "ipfs_url": "https://ipfs.io/ipfs/bafkreifk5rgcjbtke4etapbf4vpfajaieybeywdcvy4hthui62b6plwrqy",
+  "pinned_at": "2026-06-13T00:03:33.544Z",
+  "base_tx_hash": "0x27e12c79a7871c315e2b862251dcf860a8d0db925323f9216cd70e9ccd196c5c",
+  "base_block": 47259953,
+  "base_explorer": "https://basescan.org/tx/0x27e12c79a7871c315e2b862251dcf860a8d0db925323f9216cd70e9ccd196c5c",
+  "anchored_at": "2026-06-13T00:07:36.620Z"
+}

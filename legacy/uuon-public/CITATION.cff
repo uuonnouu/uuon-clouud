@@ -1,0 +1,30 @@
+cff-version: 1.2.0
+title: "Δmension Mathematical Universe"
+message: "If you use this software or API in your research or project, please cite it using this metadata."
+type: software
+version: "2.0.0"
+date-released: "2026-06-03"
+url: "https://d-dmension-mathematical-universe-uuon-foundation.replit.app"
+repository-code: "https://github.com/uuonnouu/dmension-"
+abstract: >
+  Δmension is a REST API and interactive 3D explorer providing 2,650+ mathematically
+  exact parametric shapes across 151+ categories — topology, quantum mechanics, general
+  relativity, DNA molecular structures, IFS fractals, and non-Euclidean geometry.
+  Each shape is defined by real parametric equations with 26 live parameters (A–Z)
+  and exports 3D vertex data (positions, normals, UVs, indices) ready for Three.js,
+  Unity, Unreal Engine, WebGL, and machine learning pipelines.
+keywords:
+  - parametric-geometry
+  - 3d-math
+  - topology
+  - quantum-geometry
+  - fractal
+  - REST-API
+  - openapi
+  - three-js
+  - mathematical-visualization
+  - digital-twin
+contact:
+  - email: phi1@uuonfoundation.com
+    name: "UUON Foundation"
+license: "LicenseRef-commercial"

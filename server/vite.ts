@@ -1,18 +1,32 @@
-import { type Express } from "express";
+import express, { type Express } from "express";
+import fs from "fs";
+import path, { dirname, join } from "path";
+import { fileURLToPath } from "url";
 import { createServer as createViteServer, createLogger } from "vite";
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 import { type Server } from "http";
 import viteConfig from "../vite.config";
-import fs from "fs";
-import path from "path";
 import { nanoid } from "nanoid";
 
 const viteLogger = createLogger();
 
-export async function setupVite(server: Server, app: Express) {
+export function log(message: string, source = "express") {
+  const formattedTime = new Date().toLocaleTimeString("en-US", {
+    hour: "numeric",
+    minute: "2-digit",
+    second: "2-digit",
+    hour12: true,
+  });
+
+  console.log(`${formattedTime} [${source}] ${message}`);
+}
+
+export async function setupVite(app: Express, server: Server) {
   const serverOptions = {
     middlewareMode: true,
-    hmr: { server, path: "/vite-hmr" },
-    allowedHosts: true as const,
+    hmr: { server },
+    allowedHosts: true,
   };
 
   const vite = await createViteServer({
@@ -25,18 +39,18 @@ export async function setupVite(server: Server, app: Express) {
         process.exit(1);
       },
     },
+    // @ts-ignore
     server: serverOptions,
     appType: "custom",
   });
 
   app.use(vite.middlewares);
-
-  app.use("/{*path}", async (req, res, next) => {
+  app.use("*", async (req, res, next) => {
     const url = req.originalUrl;
 
     try {
       const clientTemplate = path.resolve(
-        import.meta.dirname,
+        __dirname,
         "..",
         "client",
         "index.html",
@@ -56,3 +70,21 @@ export async function setupVite(server: Server, app: Express) {
     }
   });
 }
+
+export const serveStatic = (app: Express) => {
+  const staticPath = join(process.cwd(), "dist/public");
+
+  // Serve static files with proper headers
+  app.use(express.static(staticPath, {
+    maxAge: '1d',
+    etag: true,
+    lastModified: true,
+    setHeaders: (res, path) => {
+      if (path.endsWith('.html')) {
+        res.setHeader('Cache-Control', 'no-cache');
+      }
+    }
+  }));
+
+  console.log(`📁 Serving static files from: ${staticPath}`);
+};

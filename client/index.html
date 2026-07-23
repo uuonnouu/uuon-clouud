@@ -1,53 +1,108 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
-
-    <meta property="og:title" content="CLOUUD · by UUON Foundation" />
-    <meta property="og:description" content="UUON Clouud Æye — G°centric Intelligence System with UUON Codeχ pattern library, 33-position lattice, Ellomental Hash provenance, and 835-conversation Founder Memory. Reducing waste, fraud, and gatekeeping." />
-    <meta property="og:type" content="website" />
-    <meta property="og:image" content="https://replit.com/public/images/opengraph.png" />
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:site" content="@replit" />
-    <meta name="twitter:title" content="CLOUUD · by UUON Foundation" />
-    <meta name="twitter:description" content="UUON Clouud Æye — G°centric Intelligence System with UUON Codeχ pattern library, 33-position lattice, Ellomental Hash provenance, and 835-conversation Founder Memory. Reducing waste, fraud, and gatekeeping." />
-    <meta name="twitter:image" content="https://replit.com/public/images/opengraph.png" />
-
-    <link rel="icon" type="image/png" href="/favicon.png" />
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700&family=JetBrains+Mono:wght@400;500;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
-  </head>
-  <body oncontextmenu="return false" onselectstart="return false" ondragstart="return false">
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
     <script>
-      document.addEventListener('keydown', function(e) {
-        if (e.ctrlKey && (e.key === 'u' || e.key === 'U' || e.key === 's' || e.key === 'S' || e.key === 'p' || e.key === 'P')) {
-          e.preventDefault();
-          return false;
-        }
-        if (e.ctrlKey && e.shiftKey && (e.key === 'i' || e.key === 'I' || e.key === 'j' || e.key === 'J' || e.key === 'c' || e.key === 'C')) {
-          e.preventDefault();
-          return false;
-        }
-        if (e.key === 'F12') {
-          e.preventDefault();
-          return false;
-        }
-        if (e.ctrlKey && (e.key === 'a' || e.key === 'A' || e.key === 'c' || e.key === 'C')) {
-          e.preventDefault();
-          return false;
-        }
-      });
-      document.addEventListener('copy', function(e) { e.preventDefault(); });
-      document.addEventListener('cut', function(e) { e.preventDefault(); });
+      // Polyfill for requestIdleCallback (Safari/iOS compatibility)
+      if (!window.requestIdleCallback) {
+        window.requestIdleCallback = function(callback, options) {
+          var start = Date.now();
+          return setTimeout(function() {
+            callback({
+              didTimeout: false,
+              timeRemaining: function() { return Math.max(0, 50 - (Date.now() - start)); }
+            });
+          }, options && options.timeout ? options.timeout : 1);
+        };
+        window.cancelIdleCallback = function(id) { clearTimeout(id); };
+      }
     </script>
-    <style>
-      body { -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; }
-      input, textarea { -webkit-user-select: text; -moz-user-select: text; -ms-user-select: text; user-select: text; }
-      img { pointer-events: none; -webkit-user-drag: none; }
-    </style>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/png" href="/dmension-logo.png" />
+    <link rel="apple-touch-icon" sizes="192x192" href="/dmension-logo-192.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>UUON Foundation | Δmension Mathematical Universe</title>
+    <meta name="description" content="UUON Foundation builds topologically continuous mathematical models, anchored on-chain as Geometric Proof of Work. 2,856 parametric 3D shapes across quantum, relativity, fractal, and modulo engines." />
+
+    <meta name="google-site-verification" content="pioJjpzvNkQyKHhGF9wDC1RDipkCFHbVCZ2edpymzZk" />
+    <meta name="google-site-verification" content="UUSlDGjY4FGbP3zvfQje7lpip4u-dHsLApjYxYk6lzg" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="UUON Foundation | Δmension Mathematical Universe" />
+    <meta property="og:description" content="Topologically continuous mathematical models, computed and anchored on-chain. 2,856 parametric shapes across four compute engines." />
+    <meta property="og:site_name" content="Δmension Mathematical Universe" />
+    <meta property="og:locale" content="en_US" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="UUON Foundation | Δmension Mathematical Universe" />
+    <meta name="twitter:description" content="Topologically continuous mathematical models, computed and anchored on-chain." />
+
+    <meta name="robots" content="index, follow" />
+
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-touch-fullscreen" content="yes" />
+    <meta name="format-detection" content="telephone=no" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="theme-color" content="#0a0a0a" />
+    <meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff" />
+    <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0a0a0a" />
+
+    <link rel="manifest" href="/manifest.json" />
+
+    <link rel="apple-touch-icon" sizes="57x57" href="/apple-touch-icon-57x57.png" />
+    <link rel="apple-touch-icon" sizes="60x60" href="/apple-touch-icon-60x60.png" />
+    <link rel="apple-touch-icon" sizes="72x72" href="/apple-touch-icon-72x72.png" />
+    <link rel="apple-touch-icon" sizes="76x76" href="/apple-touch-icon-76x76.png" />
+    <link rel="apple-touch-icon" sizes="114x114" href="/apple-touch-icon-114x114.png" />
+    <link rel="apple-touch-icon" sizes="120x120" href="/apple-touch-icon-120x120.png" />
+    <link rel="apple-touch-icon" sizes="144x144" href="/apple-touch-icon-144x144.png" />
+    <link rel="apple-touch-icon" sizes="152x152" href="/apple-touch-icon-152x152.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon-180x180.png" />
+
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+    <link rel="icon" type="image/png" sizes="96x96" href="/favicon-96x96.png" />
+    <link rel="icon" type="image/png" sizes="192x192" href="/android-chrome-192x192.png" />
+    <link rel="icon" type="image/png" sizes="512x512" href="/android-chrome-512x512.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+    <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#00D4FF" />
+
+    <meta name="author" content="UUON Foundation" />
+    <meta name="contact" content="phi1@uuonfoundation.com" />
+    <meta name="url" content="https://uuon.world" />
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "Δmension Mathematical Universe",
+      "alternateName": ["Dmension", "Δmension"],
+      "description": "Interactive 3D mathematical visualization platform: 2,856 parametric shapes across quantum, relativity, fractal, and modulo compute engines, anchored on-chain as Geometric Proof of Work.",
+      "url": "https://uuon.world",
+      "applicationCategory": "EducationalApplication",
+      "operatingSystem": "Any (Web-based)",
+      "browserRequirements": "Requires WebGL 2.0, Modern JavaScript",
+      "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD", "availability": "https://schema.org/InStock" },
+      "author": {
+        "@type": "Organization",
+        "name": "UUON Foundation",
+        "email": "phi1@uuonfoundation.com",
+        "founder": { "@type": "Person", "name": "Phillip Aguilar Ruiz III" }
+      },
+      "publisher": { "@type": "Organization", "name": "UUON Foundation" }
+    }
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module">
+      import RefreshRuntime from '/@react-refresh';
+      RefreshRuntime.injectIntoGlobalHook(window);
+      window.$RefreshReg$ = () => {};
+      window.$RefreshSig$ = () => (type) => type;
+      window.__vite_plugin_react_preamble_installed__ = true;
+    </script>
+    <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

@@ -1,0 +1,52 @@
+Project: UUON Foundation Application – Authentication & Access Control Specification
+
+Objective:
+Create a secure login system that gates access to the UUON Foundation web application. All users must authenticate before entering the app. The system must support two access levels: a limited public user mode and a full administrator mode reserved for the owner.
+
+Scope Clarification (Very Important):
+This application does NOT include wallets, tokens, crypto systems, energy economies, governance mechanisms, or financial features. Any previously mentioned systems such as wallet connections, UUON tokens, shape tokens, energy systems, or administrative economies are NOT part of the public release and must be removed, hidden, or explicitly marked as inactive.
+
+Access Model:
+	1.	Entry Gate
+
+	•	Users cannot access any part of the application without logging in or creating an account.
+	•	The login screen is the first screen shown on site entry.
+
+	2.	User Accounts (Public / Limited Access)
+
+	•	Users can create an account using standard authentication (email and password or equivalent).
+	•	After login, users gain access only to the limited, safe, public-facing features of the application.
+	•	Public users must NOT see admin controls, experimental systems, internal engines, or system configuration panels.
+
+	3.	Administrator Access (Owner Only)
+
+	•	Administrator access is restricted to a specific role or credential.
+	•	Admin users can access the full application, including hidden or experimental features.
+	•	Admin functionality must be protected by server-side authorization, not just UI visibility.
+	•	Admin routes, controls, and systems must not be accessible or discoverable by public users.
+
+Authorization Rules:
+	•	The system must distinguish clearly between “user” and “admin” roles.
+	•	Feature availability is determined by role.
+	•	Role checks must be enforced securely and consistently.
+
+UI / UX Requirements:
+	•	The login page should clearly indicate that some advanced systems are restricted.
+	•	The public interface should appear complete and intentional, not “broken” or “missing features.”
+	•	Admin-only features should be completely hidden from public users.
+
+Security Requirements:
+	•	Authentication must be required on every session.
+	•	Admin privileges must not rely on frontend-only checks.
+	•	No financial, crypto, or token-related language or functionality should appear anywhere in the public interface.
+
+Content Cleanup Requirement:
+	•	Remove or archive any documentation, UI elements, or descriptions referencing:
+	•	Wallet connections
+	•	Tokens (UUON token, shape tokens, etc.)
+	•	Energy or resource systems
+	•	Governance or administrative economies
+	•	Replace with clear statements that the application is a mathematical, visual, and exploratory engine.
+
+Intent Statement:
+The purpose of this system is to safely publish an experimental, research-oriented visualization platform while maintaining full control over unfinished, sensitive, or internal features. The application should feel professional, intentional, and trustworthy to public users, while preserving full capability for the administrator.

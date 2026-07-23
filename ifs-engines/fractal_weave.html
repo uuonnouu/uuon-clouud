@@ -1,0 +1,856 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>UUON -- Fractal Weave Engine v1.000</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@300;400;600;700&display=swap');
+:root{
+  --void:#04080f;--teal:#00E5CC;--gold:#C9A84C;
+  --violet:#7B5EA7;--crimson:#CC4433;
+  --panel:#060c17;--dim:rgba(0,229,204,0.35);--border:rgba(0,229,204,0.10);
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--void);color:var(--teal);font-family:'Share Tech Mono',monospace;height:100vh;overflow:hidden;display:flex;flex-direction:column;}
+header{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;padding:8px 16px;border-bottom:1px solid var(--border);background:var(--panel);flex-shrink:0;}
+.logo{font-family:'Rajdhani',sans-serif;font-weight:700;font-size:12px;letter-spacing:5px;color:var(--gold);}
+.logo em{color:var(--teal);font-style:normal;}
+.etitle{font-family:'Rajdhani',sans-serif;font-size:11px;letter-spacing:4px;color:var(--dim);text-align:center;}
+.ver{text-align:right;font-size:9px;color:rgba(201,168,76,0.55);letter-spacing:2px;}
+.ws{display:flex;flex:1;overflow:hidden;}
+.ca{flex:1;position:relative;background:#000;}
+canvas{width:100%;height:100%;display:block;cursor:crosshair;}
+canvas:active{cursor:grabbing;}
+.hud{position:absolute;top:12px;left:14px;font-size:9px;color:var(--dim);line-height:2.2;pointer-events:none;}
+.hud .v{color:var(--teal);}.hud .g{color:var(--gold);}.hud .vi{color:var(--violet);}
+.fps-tag{position:absolute;top:12px;right:14px;font-size:9px;color:var(--dim);pointer-events:none;text-align:right;line-height:2.1;}
+.fps-tag .v{color:var(--teal);}
+.weave-badge{position:absolute;bottom:14px;right:14px;font-size:9px;color:rgba(201,168,76,0.55);letter-spacing:3px;pointer-events:none;text-align:right;line-height:1.9;}
+.panel{width:244px;flex-shrink:0;background:var(--panel);border-left:1px solid var(--border);overflow-y:auto;scrollbar-width:thin;scrollbar-color:rgba(0,229,204,0.08) transparent;}
+.ps{padding:12px 14px;border-bottom:1px solid var(--border);}
+.sl{font-family:'Rajdhani',sans-serif;font-size:9px;letter-spacing:5px;color:var(--gold);opacity:.7;text-transform:uppercase;margin-bottom:10px;}
+.cr{margin-bottom:11px;}
+.cl{display:flex;justify-content:space-between;font-size:9px;color:var(--dim);margin-bottom:4px;}
+.cl .cv{color:var(--teal);}.cl .cg{color:var(--gold);}
+input[type=range]{width:100%;height:1px;-webkit-appearance:none;background:rgba(0,229,204,0.14);outline:none;cursor:pointer;}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:8px;height:8px;border-radius:50%;background:var(--teal);box-shadow:0 0 5px rgba(0,229,204,0.7);cursor:pointer;transition:transform .1s;}
+input[type=range]::-webkit-slider-thumb:hover{transform:scale(1.6);}
+input[type=range].gold::-webkit-slider-thumb{background:var(--gold);box-shadow:0 0 5px rgba(201,168,76,0.7);}
+input[type=range].violet::-webkit-slider-thumb{background:var(--violet);}
+input[type=range].crimson::-webkit-slider-thumb{background:var(--crimson);}
+.bg{display:flex;gap:3px;flex-wrap:wrap;}
+.b{font-family:'Share Tech Mono',monospace;font-size:8.5px;padding:3px 7px;background:transparent;border:1px solid rgba(0,229,204,0.12);color:rgba(0,229,204,0.35);cursor:pointer;transition:all .12s;}
+.b:hover{border-color:var(--teal);color:var(--teal);}
+.b.on{background:rgba(0,229,204,0.07);border-color:var(--teal);color:var(--teal);}
+.b.gon{background:rgba(201,168,76,0.08);border-color:var(--gold);color:var(--gold);}
+/* Weave pattern preview */
+.weave-preview{width:100%;height:64px;background:#020508;border:1px solid rgba(0,229,204,0.1);margin-bottom:8px;position:relative;overflow:hidden;}
+.weave-preview canvas{width:100%;height:100%;}
+.pgrid{display:grid;grid-template-columns:1fr 1fr;gap:4px;margin-bottom:6px;}
+.pc{padding:6px 7px;border:1px solid rgba(0,229,204,0.10);cursor:pointer;transition:all .15s;background:transparent;}
+.pc:hover{border-color:var(--teal);}
+.pc.on{border-color:var(--gold);background:rgba(201,168,76,0.05);}
+.pc .pn{font-family:'Rajdhani',sans-serif;font-size:10px;color:var(--gold);letter-spacing:2px;}
+.pc .pd{font-size:7.5px;color:var(--dim);margin-top:2px;line-height:1.4;}
+.ir{display:flex;justify-content:space-between;font-size:8.5px;color:var(--dim);margin-bottom:4px;}
+.ir .iv{color:var(--teal);}.ir .ig{color:var(--gold);}
+.ab{width:100%;padding:7px;font-family:'Share Tech Mono',monospace;font-size:8.5px;letter-spacing:2px;background:transparent;border:1px solid var(--border);color:var(--teal);cursor:pointer;transition:all .18s;text-transform:uppercase;margin-bottom:5px;}
+.ab:hover{background:rgba(0,229,204,0.06);border-color:var(--teal);}
+.ab.gb{border-color:rgba(201,168,76,0.2);color:var(--gold);}
+.ab.gb:hover{background:rgba(201,168,76,0.06);border-color:var(--gold);}
+footer{padding:5px 16px;border-top:1px solid var(--border);background:var(--panel);display:flex;justify-content:space-between;align-items:center;font-size:8px;color:var(--dim);flex-shrink:0;}
+.fi{display:flex;gap:14px;}
+.fi span b{color:var(--teal);font-weight:normal;}
+.dna-bar{position:absolute;bottom:0;left:0;right:0;background:rgba(4,8,15,0.85);border-top:1px solid rgba(0,229,204,0.2);padding:5px 12px 6px;display:flex;flex-direction:column;gap:2px;pointer-events:none;z-index:10;}
+.dna-row1{display:flex;justify-content:space-between;align-items:center;}
+.dna-engine{font-family:'Rajdhani',sans-serif;font-size:9px;font-weight:700;letter-spacing:4px;color:var(--gold);}
+.dna-ts{font-size:8px;color:rgba(0,229,204,0.3);letter-spacing:1px;}
+.dna-zoom{font-size:8px;color:rgba(123,94,167,0.7);letter-spacing:2px;}
+.dna-string{font-family:'Share Tech Mono',monospace;font-size:8.5px;color:rgba(0,229,204,0.7);letter-spacing:0.5px;line-height:1.4;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+</style>
+</head>
+<body>
+<header>
+  <div class="logo">UUON <em>Foundation</em></div>
+  <div class="etitle">Fractal Weave Engine v1.000 -- Textile IFS</div>
+  <div class="ver">WARP x WEFT x INFINITY</div>
+</header>
+<div class="ws">
+  <div class="ca">
+    <canvas id="c"></canvas>
+    <div class="hud">
+      <div>WEAVE  <span class="g" id="hWT">PLAIN</span></div>
+      <div>WARP   <span class="v" id="hWP">6</span></div>
+      <div>WEFT   <span class="v" id="hWF">6</span></div>
+      <div>DEPTH  <span class="v" id="hDPT">4</span></div>
+      <div>RADIUS <span class="g" id="hTR">0.35</span></div>
+      <div>FLOAT  <span class="vi" id="hFL">1</span></div>
+    </div>
+    <div class="weave-badge">
+      <div id="wbName">PLAIN 1/1</div>
+      <div id="wbAxes">3-AXIS INTERLOCK</div>
+      <div id="wbDim">dim 2.727</div>
+    </div>
+    <div class="dna-bar" id="dnaBar">
+      <div class="dna-row1">
+        <span class="dna-engine">UUON Fractal Weave v1.000</span>
+        <span class="dna-zoom" id="dnaZoom">zoom 1.0x</span>
+        <span class="dna-ts" id="dnaTime">--</span>
+      </div>
+      <div class="dna-string" id="dnaStr">initializing...</div>
+    </div>
+    <div class="fps-tag">
+      <div>FPS <span class="v" id="fpsEl">--</span></div>
+      <div>RES <span class="v" id="resEl">--</span></div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <!-- WEAVE TYPE -->
+    <div class="ps">
+      <div class="sl">Weave Structure</div>
+      <!-- Miniature weave diagram -->
+      <div class="weave-preview"><canvas id="weaveDiagram"></canvas></div>
+      <div class="pgrid" id="weaveGrid">
+        <div class="pc on" data-w="0"><div class="pn">PLAIN</div><div class="pd">1/1 over-under<br>maximum interlock</div></div>
+        <div class="pc"    data-w="1"><div class="pn">TWILL</div><div class="pd">diagonal float<br>herringbone</div></div>
+        <div class="pc"    data-w="2"><div class="pn">SATEEN</div><div class="pd">long floats<br>smooth surface</div></div>
+        <div class="pc"    data-w="3"><div class="pn">HONEYCOMB</div><div class="pd">hexagonal cells<br>6-fold symmetry</div></div>
+        <div class="pc"    data-w="4"><div class="pn">LENO</div><div class="pd">twisted warp<br>open structure</div></div>
+        <div class="pc"    data-w="5"><div class="pn">JACQUARD</div><div class="pd">phi-ratio float<br>golden pattern</div></div>
+      </div>
+    </div>
+
+    <!-- THREAD PARAMS -->
+    <div class="ps">
+      <div class="sl">Thread Parameters</div>
+      <div class="cr"><div class="cl">Warp count <span class="cv" id="wpV">6</span></div><input type="range" id="wpS" min="2" max="16" step="1" value="6"></div>
+      <div class="cr"><div class="cl">Weft count <span class="cv" id="wfV">6</span></div><input type="range" id="wfS" min="2" max="16" step="1" value="6"></div>
+      <div class="cr"><div class="cl">Thread radius <span class="cg" id="trV">0.35</span></div><input type="range" class="gold" id="trS" min="0.05" max="0.8" step="0.01" value="0.35"></div>
+      <div class="cr"><div class="cl">Float length <span class="vi" id="flV">1</span></div><input type="range" class="violet" id="flS" min="1" max="8" step="1" value="1"></div>
+      <div class="cr"><div class="cl">Twist <span class="cv" id="twV">0.00</span></div><input type="range" id="twS" min="0.0" max="1.0" step="0.01" value="0.0"></div>
+    </div>
+
+    <!-- FRACTAL DEPTH -->
+    <div class="ps">
+      <div class="sl">Fractal Depth</div>
+      <div class="cr"><div class="cl">Weave depth <span class="cv" id="dptV">4</span></div><input type="range" id="dptS" min="1" max="6" step="1" value="4"></div>
+      <div class="cr"><div class="cl">Scale ratio <span class="cv" id="srV">3.00</span></div><input type="range" id="srS" min="2.0" max="5.0" step="0.05" value="3.0"></div>
+      <div class="cr"><div class="cl">Blend <span class="cv" id="blV">0.00</span></div><input type="range" id="blS" min="0.0" max="1.0" step="0.01" value="0.0"></div>
+    </div>
+
+    <!-- SECTION -->
+    <div class="ps">
+      <div class="sl">Container</div>
+      <div class="cr" style="margin-bottom:10px">
+        <div class="bg" id="cong">
+          <button class="b on" data-v="0">CUBE</button>
+          <button class="b"    data-v="1">SPHERE</button>
+          <button class="b"    data-v="2">OPEN</button>
+        </div>
+      </div>
+      <div class="sl">Cross-Section</div>
+      <div class="cr"><div class="cl">Cut plane</div>
+        <div class="bg" id="axg">
+          <button class="b on" data-v="0">OFF</button>
+          <button class="b"    data-v="1">WARP</button>
+          <button class="b"    data-v="2">WEFT</button>
+          <button class="b"    data-v="3">FILL</button>
+          <button class="b gon" data-v="4">BIAS</button>
+        </div>
+      </div>
+      <div class="cr"><div class="cl">Position <span class="cv" id="cpV">0.00</span></div><input type="range" class="violet" id="cpS" min="-1.5" max="1.5" step="0.01" value="0.0"></div>
+    </div>
+
+    <!-- SHADING -->
+    <div class="ps">
+      <div class="sl">Surface</div>
+      <div class="cr"><div class="cl">Color mode</div>
+        <div class="bg" id="cmg">
+          <button class="b on" data-v="0">FIBER</button>
+          <button class="b"    data-v="1">DEPTH</button>
+          <button class="b"    data-v="2">TENSION</button>
+          <button class="b"    data-v="3">NORMAL</button>
+        </div>
+      </div>
+      <div class="cr"><div class="cl">Brightness <span class="cv" id="brV">1.50</span></div><input type="range" id="brS" min="0.5" max="3.0" step="0.05" value="1.5"></div>
+      <div class="cr"><div class="cl">Specular <span class="cv" id="spV">0.80</span></div><input type="range" id="spS" min="0" max="2.0" step="0.05" value="0.8"></div>
+      <div class="cr"><div class="cl">Light Az <span class="cv" id="laV">45</span></div><input type="range" id="laS" min="0" max="360" step="1" value="45"></div>
+      <div class="cr"><div class="cl">Steps <span class="cv" id="rsV">140</span></div><input type="range" id="rsS" min="64" max="220" step="4" value="140"></div>
+    </div>
+
+    <!-- CAMERA -->
+    <div class="ps">
+      <div class="sl">Camera</div>
+      <div class="cr"><div class="cl">Distance <span class="cv" id="dvV">3.00</span></div><input type="range" id="dvS" min="1.0" max="14.0" step="0.1" value="3.0"></div>
+      <div class="cr"><div class="cl">FOV <span class="cv" id="fovV">55</span></div><input type="range" id="fovS" min="25" max="90" step="1" value="55"></div>
+      <div class="cr"><div class="cl">Auto-Rotate</div>
+        <div class="bg" id="arg">
+          <button class="b on" data-v="1">ON</button>
+          <button class="b"    data-v="0">OFF</button>
+        </div>
+      </div>
+      <div class="cr"><div class="cl">Speed <span class="cv" id="rspV">0.20</span></div><input type="range" id="rspS" min="0.02" max="1.0" step="0.02" value="0.2"></div>
+    </div>
+
+    <!-- DATA -->
+    <div class="ps">
+      <div class="sl">Weave Data</div>
+      <div class="ir"><span>Structure</span><span class="iv" id="dStr">Plain 1/1</span></div>
+      <div class="ir"><span>Interlacement</span><span class="ig" id="dInt">100%</span></div>
+      <div class="ir"><span>Symmetry</span><span class="iv" id="dSym">3-axis</span></div>
+      <div class="ir"><span>Void ratio</span><span class="ig" id="dVoid">~27%</span></div>
+      <div class="ir"><span>Hausdorff</span><span class="iv" id="dHaus">2.727</span></div>
+    </div>
+
+    <!-- ACTIONS -->
+    <div class="ps">
+      <button class="ab" id="resetBtn">RESET VIEW</button>
+      <button class="ab gb" id="shotBtn">PNG EXPORT</button>
+    </div>
+  </div>
+</div>
+<footer>
+  <div class="fi"><span><b>DRAG</b> rotate</span><span><b>SCROLL</b> zoom</span><span><b>SHIFT+DRAG</b> light</span></div>
+  <div>UUON Foundation -- Kassel -- Fractal Weave Engine v1.000</div>
+</footer>
+
+<script>
+const canvas = document.getElementById('c');
+const gl = canvas.getContext('webgl', { antialias:false, preserveDrawingBuffer:true });
+
+const VS = `attribute vec2 p; void main(){ gl_Position=vec4(p,0.0,1.0); }`;
+
+const FS = `
+precision highp float;
+uniform vec2  uR;
+uniform float uTime;
+uniform int   uWT;     // weave type: 0=plain 1=twill 2=sateen 3=honeycomb 4=leno 5=jacquard
+uniform float uWP;     // warp count
+uniform float uWF;     // weft count
+uniform float uTR;     // thread radius
+uniform float uFL;     // float length
+uniform float uTW;     // twist
+uniform int   uDPT;    // weave depth (MI)
+uniform float uSR;     // scale ratio
+uniform float uBL;     // blend
+uniform int   uCM;     // color mode
+uniform float uBright;
+uniform float uSP;
+uniform float uLA;
+uniform float uRS;
+uniform float uDV;
+uniform float uFOV;
+uniform vec2  uCAM;
+uniform int   uAX;     // section axis: 0=off 1=warp 2=weft 3=fill 4=bias
+uniform float uCP;
+uniform int   uCON;    // container: 0=cube 1=sphere 2=open
+
+#define PI   3.14159265359
+#define TAU  6.28318530718
+#define PHI  1.61803398875
+#define EPS  0.0007
+#define FAR  18.0
+
+// ── Weave fold functions ──────────────────────────────────────────────────────
+
+// PLAIN 1/1: maximum interlacement -- abs fold on all axes equally
+// This IS the Menger Sponge at its core -- over/under on 3 axes
+vec3 plainFold(vec3 p, float wp, float wf) {
+  p = abs(p);
+  // Warp/weft asymmetry via non-equal thresholds
+  float tx = wp / (wp + wf);
+  float ty = wf / (wp + wf);
+  if(p.x < tx) p.xy = p.yx;
+  if(p.x < p.z) p.xz = p.zx;
+  if(p.y < p.z) p.yz = p.zy;
+  return p;
+}
+
+// TWILL: diagonal float progression -- offset accumulates per row
+// Creates the characteristic diagonal line of twill fabrics
+// In IFS space: each iteration adds a diagonal bias to the fold
+vec3 twillFold(vec3 p, float fl, float twist) {
+  p = abs(p);
+  // Diagonal bias: rotate the fold plane by float length
+  float ang = fl * PI / 8.0 + twist * TAU;
+  float ca = cos(ang), sa = sin(ang);
+  // Rotate x-y before folding -- creates diagonal attractor
+  float px2 = p.x*ca - p.y*sa;
+  float py2 = p.x*sa + p.y*ca;
+  p.x = abs(px2); p.y = abs(py2);
+  if(p.x < p.y) p.xy = p.yx;
+  if(p.x < p.z) p.xz = p.zx;
+  if(p.y < p.z) p.yz = p.zy;
+  return p;
+}
+
+// SATEEN: long floats, infrequent binding points
+// Sphere inversion: the float IS the inversion radius
+// Long float = large inversion sphere = Kleinian-type fold
+vec3 sateenFold(vec3 p, float fl, float tr) {
+  // Box fold (defines the repeat unit)
+  p = clamp(p, -1.0, 1.0)*2.0 - p;
+  // Sphere inversion (the float -- point passes OVER the inversion sphere)
+  float r2 = max(dot(p,p), 0.0001);
+  float floatR = tr * fl;
+  float fixR   = floatR * 1.5;
+  if(r2 < floatR*floatR)      p *= (fixR*fixR)/(floatR*floatR);
+  else if(r2 < fixR*fixR)     p *= (fixR*fixR)/r2;
+  p = abs(p);
+  if(p.x < p.y) p.xy = p.yx;
+  if(p.x < p.z) p.xz = p.zx;
+  return p;
+}
+
+// HONEYCOMB: hexagonal cells, 6-fold symmetry
+// The hexagonal lattice fold -- maps R3 into hexagonal prism domain
+vec3 honeycombFold(vec3 p) {
+  p = abs(p);
+  // Hexagonal domain reduction: 6-fold symmetry in xy-plane
+  // Uses the three hexagonal mirror planes
+  vec2 h = p.xy;
+  float s3 = sqrt(3.0);
+  // Mirror across 60-degree planes
+  if(h.x + h.y*s3 > 2.0) h -= vec2(1.0, s3) * (h.x + h.y*s3 - 2.0);
+  if(h.x*2.0 < h.y*s3 - 1.0) {
+    float t = h.x; h.x = 0.5*(h.x + h.y*s3); h.y = 0.5*(h.y - t*s3/3.0);
+  }
+  p.xy = abs(h);
+  if(p.x < p.y) p.xy = p.yx;
+  if(p.x < p.z) p.xz = p.zx;
+  return p;
+}
+
+// LENO: twisted warp -- warp threads cross each other between picks
+// Tetrahedral fold: the twist creates 4-fold rotational symmetry
+vec3 lenoFold(vec3 p, float twist) {
+  // Apply twist rotation around y-axis (the warp direction)
+  float ang = twist * PI * 0.5;
+  float ca = cos(ang), sa = sin(ang);
+  float px2 = p.x*ca + p.z*sa;
+  float pz2 = -p.x*sa + p.z*ca;
+  p.x = px2; p.z = pz2;
+  // Tetrahedral fold for the crossing geometry
+  if(p.x+p.y < 0.0) p.xy = -p.yx;
+  if(p.x+p.z < 0.0) p.xz = -p.zx;
+  if(p.y+p.z < 0.0) p.yz = -p.zy;
+  if(p.x-p.y < 0.0) p.xy =  p.yx;
+  return abs(p);
+}
+
+// JACQUARD: phi-ratio float pattern -- complex per-thread control
+// Golden ratio spacing creates aperiodic (quasicrystalline) weave
+vec3 jacquardFold(vec3 p, float fl) {
+  p = abs(p);
+  float phi = PHI;
+  // Phi-based reflection planes (icosahedral-derived)
+  vec3 n1 = normalize(vec3(1.0, phi, 0.0));
+  vec3 n2 = normalize(vec3(phi, 0.0, 1.0));
+  vec3 n3 = normalize(vec3(0.0, 1.0, phi));
+  if(dot(p,n1) < 0.0) p -= 2.0*dot(p,n1)*n1;
+  p = abs(p);
+  if(dot(p,n2) < 0.0) p -= 2.0*dot(p,n2)*n2;
+  p = abs(p);
+  if(dot(p,n3) < 0.0) p -= 2.0*dot(p,n3)*n3;
+  p = abs(p);
+  // Float length modulates the phi scale
+  float phiScale = 1.0 + (fl - 1.0) * (phi - 1.0) / 7.0;
+  p *= phiScale;
+  if(p.x < p.y) p.xy = p.yx;
+  if(p.x < p.z) p.xz = p.zx;
+  return p;
+}
+
+vec3 applyWeaveFold(vec3 p) {
+  if(uWT==0) return plainFold(p, uWP, uWF);
+  if(uWT==1) return twillFold(p, uFL, uTW);
+  if(uWT==2) return sateenFold(p, uFL, uTR);
+  if(uWT==3) return honeycombFold(p);
+  if(uWT==4) return lenoFold(p, uTW);
+  return jacquardFold(p, uFL);  // jacquard
+}
+
+// ── Fractal Weave DE ──────────────────────────────────────────────────────────
+// Warp threads: cylinders along Z axis, spaced by warp_count
+// Weft threads: cylinders along X axis, spaced by weft_count  
+// Interlock: the IFS fold creates the over/under crossing pattern
+vec2 weaveDE(vec3 pos) {
+  vec3 p = pos;
+  float trap = 1e10;
+  float sc = uSR;
+  float ox = uWP / (uWP + uWF);   // warp offset -- asymmetric thread spacing
+  float oy = uWF / (uWP + uWF);   // weft offset
+
+  // Apply weave fold pretransform
+  for(int i=0; i<6; i++){
+    if(i >= 2) break;  // fold depth capped at 2 for stability
+    p = applyWeaveFold(p);
+    p = p * sc;
+    trap = min(trap, length(p));
+  }
+
+  // Blend: 0=pure weave attractor, 1=pure thread grid
+  vec3 pm = mix(p, pos, uBL);
+
+  // Menger IFS with warp/weft asymmetry
+  // ox != oy creates asymmetric thread spacing (different warp/weft count)
+  vec3 q = pm;
+  float ms = 1.0;
+  for(int i=0; i<6; i++){
+    if(i >= uDPT) break;
+    q = abs(q);
+    if(q.x < q.y) q.xy = q.yx;
+    if(q.x < q.z) q.xz = q.zx;
+    if(q.y < q.z) q.yz = q.zy;
+    // Asymmetric offset: warp vs weft count creates different thread densities
+    q.x = sc*q.x - ox*(sc-1.0);
+    q.y = sc*q.y - oy*(sc-1.0);
+    q.z = sc*q.z - ox*(sc-1.0);
+    ms *= sc;
+    trap = min(trap, min(length(q.xy),length(q.xz)) / ms);
+  }
+
+  // Thread cylinder DE:
+  // Three families of cylinders (warp, weft, fill) with thread radius
+  float tr = uTR;
+  float warpD = (length(q.xy) - tr) / ms;  // warp threads (Z-axis)
+  float weftD = (length(q.xz) - tr) / ms;  // weft threads (X-axis)
+  float fillD = (length(q.yz) - tr) / ms;  // fill threads (Y-axis, 3D weave)
+
+  float d;
+  if(uWT == 3) {
+    // Honeycomb: use only 2 thread families for open hex structure
+    d = min(warpD, weftD);
+  } else {
+    // All others: 3-axis interlock (the heart of Menger = 3D weave)
+    d = min(min(warpD, weftD), fillD);
+  }
+
+  // Hard container -- weave IFS contained within bounding volume
+  // d = max(weave, container) = intersection: only render inside both
+  float cDE;
+  if(uCON==0) {
+    // Cube -- natural container for the cubic Menger weave
+    vec3 boxP = abs(pos) - vec3(1.2);
+    cDE = length(max(boxP,0.0)) + min(max(boxP.x,max(boxP.y,boxP.z)),0.0);
+  } else if(uCON==1) {
+    // Sphere
+    cDE = length(pos) - 1.5;
+  } else {
+    // Open -- no container, full attractor
+    vec3 boxP = abs(pos) - vec3(3.0);
+    cDE = (length(max(boxP,0.0)) + min(max(boxP.x,max(boxP.y,boxP.z)),0.0)) * 0.12;
+  }
+  d = max(d, cDE);
+
+  return vec2(d, clamp(trap*0.4, 0.0, 1.0));
+}
+
+// ── Section plane -- warp/weft/fill/bias cuts ─────────────────────────────────
+bool clipped(vec3 p) {
+  if(uAX==0) return false;
+  if(uAX==1) return p.z > uCP;                               // warp direction
+  if(uAX==2) return p.x > uCP;                               // weft direction
+  if(uAX==3) return p.y > uCP;                               // fill (thickness)
+  // Bias cut: 45 degrees across warp+weft -- shows thread crossings directly
+  return (p.x+p.z)/sqrt(2.0) > uCP;
+}
+
+float sd(vec3 p){ if(clipped(p)) return FAR; return weaveDE(p).x; }
+vec3 normal(vec3 p){
+  vec2 e=vec2(EPS*3.0,0.0);
+  return normalize(vec3(sd(p+e.xyy)-sd(p-e.xyy),sd(p+e.yxy)-sd(p-e.yxy),sd(p+e.yyx)-sd(p-e.yyx)));
+}
+float ao(vec3 p,vec3 n){
+  float occ=0.0,w=1.0;
+  for(int i=1;i<=6;i++){float h=0.02+0.2*float(i)/6.0;occ+=max(0.0,h-sd(p+n*h))*w;w*=0.5;}
+  return clamp(1.0-4.0*occ,0.0,1.0);
+}
+mat3 camMat(vec3 ro,vec3 ta){vec3 f=normalize(ta-ro),r=normalize(cross(vec3(0,1,0),f));return mat3(r,cross(f,r),f);}
+
+// ── Fiber iridescence -- thin-film on thread surface ─────────────────────────
+vec3 fiberColor(float trap, float NdotV, vec3 p, int cm) {
+  if(cm==3) return normal(p)*0.5+0.5;
+
+  float fresnel = pow(1.0-NdotV, 2.5);
+
+  if(cm==0) {
+    // FIBER: iridescent silk/metallic thread
+    float phase = NdotV*2.8 + trap*2.4 + p.x*0.6 + p.z*0.4 + uTime*0.03;
+    vec3 ir;
+    ir.r = 0.55+0.55*cos(TAU*(phase+0.000));
+    ir.g = 0.55+0.55*cos(TAU*(phase+0.333));
+    ir.b = 0.55+0.55*cos(TAU*(phase+0.667));
+    ir = clamp(ir*1.25, 0.0, 1.0);
+    // Warp = teal, weft = gold (the UUON palette IS a weave)
+    vec3 warp_col = vec3(0.0, 0.9, 0.8);
+    vec3 weft_col = vec3(0.9, 0.72, 0.2);
+    float warp_weight = abs(sin(p.z * TAU * uWP * 0.5));
+    vec3 base = mix(weft_col, warp_col, warp_weight);
+    vec3 col = mix(base*0.6, ir, 0.5+0.5*fresnel);
+    col *= 1.0 + 0.25*pow(sin(trap*TAU*3.0)*0.5+0.5, 2.0);
+    return col;
+  }
+  if(cm==1) {
+    // DEPTH: thread crossing depth revealed by color
+    float depth = clamp(trap*2.0, 0.0, 1.0);
+    vec3 over  = vec3(0.9, 0.72, 0.2);  // gold = warp thread on top
+    vec3 under = vec3(0.0, 0.45, 0.4);  // dark teal = weft thread underneath
+    return mix(under, over, depth);
+  }
+  // TENSION: stress distribution -- where threads pull tightest
+  float tension = 1.0 - clamp(trap*3.0, 0.0, 1.0);
+  vec3 relaxed = vec3(0.0, 0.9, 0.8);
+  vec3 tight   = vec3(0.9, 0.2, 0.1);
+  return mix(relaxed, tight, tension*tension);
+}
+
+void main(){
+  vec2 uv=(gl_FragCoord.xy-0.5*uR)/uR.y;
+  float ct=uCAM.x, cp2=uCAM.y;
+  vec3 ro=vec3(uDV*sin(cp2)*cos(ct),uDV*sin(ct),uDV*cos(cp2)*cos(ct));
+  mat3 cam=camMat(ro,vec3(0.0));
+  vec3 rd=normalize(cam*vec3(uv*tan(radians(uFOV*0.5)),1.0));
+  float la=radians(uLA);
+  vec3 ld=normalize(vec3(cos(la)*0.7,0.7,sin(la)*0.7));
+
+  float t=0.01,trap=0.0;
+  bool hit=false;
+  for(int s=0;s<220;s++){
+    if(float(s)>=uRS) break;
+    vec3 p=ro+rd*t;
+    if(clipped(p)){t+=0.02;continue;}
+    vec2 res=weaveDE(p);
+    float d=res.x; trap=res.y;
+    if(d<EPS*(1.0+t*0.2)){hit=true;break;}
+    if(t>FAR) break;
+    t+=max(d*0.45,EPS*2.0);
+  }
+
+  vec3 bg=vec3(0.008,0.012,0.025);
+  bg*=1.0-dot(uv,uv)*0.25;
+  vec3 col=bg;
+
+  if(hit){
+    vec3 p=ro+rd*t;
+    vec3 n=normal(p);
+    float occ=ao(p,n);
+    float NdotV=max(0.0,dot(n,-rd));
+    float diff=max(0.0,dot(n,ld));
+    vec3 h2=normalize(ld-rd);
+    float spec=pow(max(0.0,dot(n,h2)),90.0)*uSP;
+
+    vec3 base=fiberColor(trap,NdotV,p,uCM);
+
+    // Section face: show thread cross-section in gold
+    if(uAX!=0){
+      vec3 cutN;
+      if(uAX==1) cutN=vec3(0,0,1);
+      else if(uAX==2) cutN=vec3(1,0,0);
+      else if(uAX==3) cutN=vec3(0,1,0);
+      else cutN=normalize(vec3(1,0,1));
+      float face=pow(max(0.0,1.0-abs(dot(n,cutN))*5.0),0.4);
+      // Thread cross-section: circular profile visible
+      float circleR=length(p.xy-floor(p.xy*uWP+0.5)/uWP)*uWP;
+      vec3 threadSec=mix(vec3(0.9,0.72,0.2),vec3(0.48,0.37,0.66),circleR);
+      base=mix(base,threadSec,face*0.75);
+    }
+
+    col  = base*0.10*occ;
+    col += base*diff*occ*0.90;
+    col += vec3(1.0,0.97,0.88)*spec;
+    float sh=clamp(sd(p+ld*0.05)*20.0,0.0,1.0);
+    col*=mix(0.45,1.0,sh);
+    col=mix(col,bg,clamp((t-3.0)/FAR,0.0,0.18));
+  }
+
+  col*=uBright;
+  col=pow(max(col,0.0),vec3(0.42));
+  col*=1.0-dot(uv,uv)*0.45;
+  gl_FragColor=vec4(col,1.0);
+}
+`;
+
+// Compile
+function mkS(type,src){
+  var s=gl.createShader(type);gl.shaderSource(s,src);gl.compileShader(s);
+  if(!gl.getShaderParameter(s,gl.COMPILE_STATUS))console.error(gl.getShaderInfoLog(s));
+  return s;
+}
+var prog=gl.createProgram();
+gl.attachShader(prog,mkS(gl.VERTEX_SHADER,VS));
+gl.attachShader(prog,mkS(gl.FRAGMENT_SHADER,FS));
+gl.linkProgram(prog);gl.useProgram(prog);
+var buf=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,buf);
+gl.bufferData(gl.ARRAY_BUFFER,new Float32Array([-1,-1,1,-1,-1,1,-1,1,1,-1,1,1]),gl.STATIC_DRAW);
+var ap=gl.getAttribLocation(prog,'p');gl.enableVertexAttribArray(ap);gl.vertexAttribPointer(ap,2,gl.FLOAT,false,0,0);
+var U={};
+['uR','uTime','uWT','uWP','uWF','uTR','uFL','uTW','uDPT','uSR','uBL',
+ 'uCM','uBright','uSP','uLA','uRS','uDV','uFOV','uCAM','uAX','uCP','uCON']
+.forEach(function(n){U[n]=gl.getUniformLocation(prog,n);});
+
+// State
+var S={
+  wt:0, wp:6, wf:6, tr:0.35, fl:1, tw:0.0,
+  dpt:4, sr:3.0, bl:0.0,
+  cm:0, bright:1.5, sp:0.8, la:45, rs:140,
+  dv:3.0, fov:55,
+  ax:0, cp:0.0, con:0,
+  autoRot:true, rotSpeed:0.2,
+  camTheta:0.3, camPhi:0.0,
+  t:0, lastTs:0, morph:false
+};
+
+// Weave type metadata
+var WEAVE_META = [
+  {name:'Plain 1/1',  inter:'100%', sym:'3-axis ortho',   void_:'~27%', haus:'2.727', axes:'3-AXIS INTERLOCK'},
+  {name:'Twill 2/2',  inter:'50%',  sym:'diagonal',        void_:'~35%', haus:'2.620', axes:'DIAGONAL FLOAT'},
+  {name:'Sateen 5/1', inter:'20%',  sym:'long float',      void_:'~48%', haus:'2.500', axes:'SPHERE INVERSION'},
+  {name:'Honeycomb',  inter:'33%',  sym:'6-fold hexagonal',void_:'~40%', haus:'2.585', axes:'HEX 6-FOLD'},
+  {name:'Leno',       inter:'40%',  sym:'twisted 4-fold',  void_:'~45%', haus:'2.550', axes:'LENO TWIST'},
+  {name:'Jacquard',   inter:'varies',sym:'phi-aperiodic',  void_:'~38%', haus:'2.727+',axes:'PHI QUASIWEAVE'},
+];
+
+// Weave diagram mini-renderer
+function drawWeaveDiagram(wt, wp, wf, fl) {
+  var dc = document.getElementById('weaveDiagram');
+  var dctx = dc.getContext('2d');
+  dc.width = dc.offsetWidth; dc.height = dc.offsetHeight;
+  var W=dc.width, H=dc.height;
+  dctx.fillStyle='#020508'; dctx.fillRect(0,0,W,H);
+  var gridN = Math.min(Math.floor(wp),10);
+  var cs = Math.floor(Math.min(W,H)/gridN);
+  var offX = (W-cs*gridN)/2, offY = (H-cs*gridN)/2;
+
+  // Draw weave pattern
+  for(var row=0;row<gridN;row++){
+    for(var col=0;col<gridN;col++){
+      var isOver = false;
+      if(wt===0) isOver = (row+col)%2===0;            // plain: checker
+      else if(wt===1) isOver = (row+col*Math.ceil(fl))%Math.ceil(fl+1)<Math.ceil(fl); // twill
+      else if(wt===2) isOver = col%Math.ceil(fl)===row%Math.ceil(fl); // sateen: sparse
+      else if(wt===3) isOver = (row%2===0&&col%3<2)||(row%2===1&&col%3>0); // honeycomb approx
+      else if(wt===4) isOver = (row+col)%3!==0;       // leno: open
+      else isOver = Math.abs(((row*1.618)%1)-0.5)<0.3; // jacquard: phi pattern
+      dctx.fillStyle = isOver ? '#00E5CC' : '#C9A84C';
+      dctx.fillRect(offX+col*cs+1, offY+row*cs+1, cs-2, cs-2);
+    }
+  }
+  // Grid lines
+  dctx.strokeStyle='rgba(0,229,204,0.15)'; dctx.lineWidth=0.5;
+  for(var i=0;i<=gridN;i++){
+    dctx.beginPath();dctx.moveTo(offX+i*cs,offY);dctx.lineTo(offX+i*cs,offY+gridN*cs);dctx.stroke();
+    dctx.beginPath();dctx.moveTo(offX,offY+i*cs);dctx.lineTo(offX+gridN*cs,offY+i*cs);dctx.stroke();
+  }
+}
+
+// Input
+var drag=false,lx=0,ly=0,shiftDrag=false;
+canvas.addEventListener('mousedown',function(e){
+  drag=true;lx=e.clientX;ly=e.clientY;shiftDrag=e.shiftKey;
+  if(!shiftDrag){S.autoRot=false;syncBtn('arg',0);}
+});
+window.addEventListener('mouseup',function(){drag=false;});
+window.addEventListener('mousemove',function(e){
+  if(!drag)return;
+  var dx=(e.clientX-lx)*0.006,dy=(e.clientY-ly)*0.006;
+  lx=e.clientX;ly=e.clientY;
+  if(shiftDrag){S.la=(S.la+dx*40+360)%360;sy('laS','la','laV',0);}
+  else{S.camPhi+=dx;S.camTheta=Math.max(-1.3,Math.min(1.3,S.camTheta+dy));}
+});
+canvas.addEventListener('wheel',function(e){
+  e.preventDefault();S.dv=Math.max(1.0,Math.min(14.0,S.dv+e.deltaY*0.006));
+  ss('dvS','dv','dvV',2);
+},{passive:false});
+var lt2=null;
+canvas.addEventListener('touchstart',function(e){lt2=e.touches[0];S.autoRot=false;},{passive:true});
+canvas.addEventListener('touchmove',function(e){
+  if(!lt2)return;
+  S.camPhi+=(e.touches[0].clientX-lt2.clientX)*0.006;
+  S.camTheta=Math.max(-1.3,Math.min(1.3,S.camTheta+(e.touches[0].clientY-lt2.clientY)*0.006));
+  lt2=e.touches[0];
+},{passive:true});
+
+// Helpers
+function ss(sid,key,did,dec){var el=document.getElementById(sid);if(!el)return;el.value=S[key];var d=document.getElementById(did);if(!d)return;d.textContent=(dec>0&&typeof S[key]==='number')?S[key].toFixed(dec):S[key];}
+function syncBtn(gid,val){document.querySelectorAll('#'+gid+' .b').forEach(function(b){b.classList.toggle('on',parseInt(b.dataset.v)===val);});}
+function sy(sid,key,did,dec){
+  document.getElementById(sid).addEventListener('input',function(){
+    S[key]=parseFloat(this.value);
+    var d=document.getElementById(did);if(d)d.textContent=(dec>0)?S[key].toFixed(dec):S[key];
+    syncHUD();
+    drawWeaveDiagram(S.wt,S.wp,S.wf,S.fl);
+  });
+}
+function bg2(cid,key,cb){
+  document.getElementById(cid).querySelectorAll('.b').forEach(function(b){
+    b.addEventListener('click',function(){S[key]=parseInt(b.dataset.v);syncBtn(cid,S[key]);if(cb)cb(S[key]);});
+  });
+}
+
+// Wire sliders
+sy('wpS','wp','wpV',0); sy('wfS','wf','wfV',0);
+sy('trS','tr','trV',2); sy('flS','fl','flV',0);
+sy('twS','tw','twV',2); sy('dptS','dpt','dptV',0);
+sy('srS','sr','srV',2); sy('blS','bl','blV',2);
+sy('dvS','dv','dvV',2); sy('fovS','fov','fovV',0);
+sy('spS','sp','spV',2); sy('laS','la','laV',0);
+sy('rsS','rs','rsV',0); sy('rspS','rotSpeed','rspV',2);
+sy('brS','bright','brV',2); sy('cpS','cp','cpV',2);
+
+bg2('cmg','cm');
+bg2('cong','con');
+bg2('arg','autoRot');
+bg2('axg','ax');
+
+// Weave type buttons
+document.getElementById('weaveGrid').querySelectorAll('.pc').forEach(function(card){
+  card.addEventListener('click',function(){
+    S.wt=parseInt(card.dataset.w);
+    document.querySelectorAll('.pc').forEach(function(c){c.classList.remove('on');});
+    card.classList.add('on');
+    var m=WEAVE_META[S.wt];
+    document.getElementById('wbName').textContent=m.name;
+    document.getElementById('wbAxes').textContent=m.axes;
+    document.getElementById('dStr').textContent=m.name;
+    document.getElementById('dInt').textContent=m.inter;
+    document.getElementById('dSym').textContent=m.sym;
+    document.getElementById('dVoid').textContent=m.void_;
+    document.getElementById('dHaus').textContent=m.haus;
+    // Adjust defaults per weave type
+    if(S.wt===2){S.fl=4;document.getElementById('flS').value=4;document.getElementById('flV').textContent=4;}
+    if(S.wt===5){S.fl=3;document.getElementById('flS').value=3;document.getElementById('flV').textContent=3;}
+    drawWeaveDiagram(S.wt,S.wp,S.wf,S.fl);
+    syncHUD();
+  });
+});
+
+document.getElementById('resetBtn').addEventListener('click',function(){
+  S.camTheta=0.3;S.camPhi=0;S.dv=4.0;ss('dvS','dv','dvV',2);
+});
+;
+
+// HUD
+function syncHUD(){
+  document.getElementById('hWT').textContent=WEAVE_META[S.wt].name.split(' ')[0];
+  document.getElementById('hWP').textContent=S.wp;
+  document.getElementById('hWF').textContent=S.wf;
+  document.getElementById('hDPT').textContent=S.dpt;
+  document.getElementById('hTR').textContent=S.tr.toFixed(2);
+  document.getElementById('hFL').textContent=S.fl;
+}
+
+// Render
+var lastTs=0, ffc=0, fft=0;
+function frame(ts){
+  var dt=Math.min((ts-lastTs)/1000,0.05);lastTs=ts;S.t+=dt;
+  ffc++;fft+=dt;
+  if(fft>=0.5){document.getElementById('fpsEl').textContent=(ffc/fft).toFixed(1);ffc=0;fft=0;}
+
+  var dpr=Math.min(window.devicePixelRatio,1.5);
+  var w=canvas.clientWidth*dpr|0,h=canvas.clientHeight*dpr|0;
+  if(canvas.width!==w||canvas.height!==h){canvas.width=w;canvas.height=h;gl.viewport(0,0,w,h);}
+  document.getElementById('resEl').textContent=w+'x'+h;
+
+  if(S.autoRot) S.camPhi+=dt*S.rotSpeed*0.4;
+
+  gl.uniform2f(U.uR,canvas.width,canvas.height);
+  gl.uniform1f(U.uTime,S.t);
+  gl.uniform1i(U.uWT,S.wt);
+  gl.uniform1f(U.uWP,S.wp);    gl.uniform1f(U.uWF,S.wf);
+  gl.uniform1f(U.uTR,S.tr);    gl.uniform1f(U.uFL,S.fl);
+  gl.uniform1f(U.uTW,S.tw);    gl.uniform1i(U.uDPT,S.dpt);
+  gl.uniform1f(U.uSR,S.sr);    gl.uniform1f(U.uBL,S.bl);
+  gl.uniform1i(U.uCM,S.cm);    gl.uniform1f(U.uBright,S.bright);
+  gl.uniform1f(U.uSP,S.sp);    gl.uniform1f(U.uLA,S.la);
+  gl.uniform1f(U.uRS,S.rs);    gl.uniform1f(U.uDV,S.dv);
+  gl.uniform1f(U.uFOV,S.fov);
+  gl.uniform2f(U.uCAM,S.camTheta,S.camPhi);
+  gl.uniform1i(U.uAX,S.ax);    gl.uniform1f(U.uCP,S.cp);
+  gl.uniform1i(U.uCON,S.con);
+  gl.drawArrays(gl.TRIANGLES,0,6);
+  updateDNA();
+  requestAnimationFrame(frame);
+}
+
+// Init
+syncHUD();
+drawWeaveDiagram(S.wt,S.wp,S.wf,S.fl);
+var m0=WEAVE_META[0];
+document.getElementById('wbName').textContent=m0.name;
+document.getElementById('wbAxes').textContent=m0.axes;
+document.getElementById('dStr').textContent=m0.name;
+document.getElementById('dInt').textContent=m0.inter;
+document.getElementById('dSym').textContent=m0.sym;
+document.getElementById('dVoid').textContent=m0.void_;
+document.getElementById('dHaus').textContent=m0.haus;
+requestAnimationFrame(frame);
+
+var DNA_WT = ['PLAIN','TWILL','SATEEN','HONEYCOMB','LENO','JACQUARD'];
+var DNA_CON2 = ['CUBE','SPHERE','OPEN'];
+function updateDNA() {
+  var now=new Date();
+  var ts=now.getUTCFullYear()+'-'
+    +String(now.getUTCMonth()+1).padStart(2,'0')+'-'
+    +String(now.getUTCDate()).padStart(2,'0')+' '
+    +String(now.getUTCHours()).padStart(2,'0')+':'
+    +String(now.getUTCMinutes()).padStart(2,'0')+':'
+    +String(now.getUTCSeconds()).padStart(2,'0')+' UTC';
+  var zoom=(4.0/Math.max(S.dv,0.001)).toFixed(1)+'x';
+  var dna='weave:'+DNA_WT[S.wt]
+    +'  warp:'+S.wp+'/weft:'+S.wf
+    +'  tr:'+S.tr.toFixed(2)+'  fl:'+S.fl+'  tw:'+S.tw.toFixed(2)
+    +'  depth:'+S.dpt+'  sr:'+S.sr.toFixed(2)+'  bl:'+S.bl.toFixed(3)
+    +'  con:'+(DNA_CON2[S.con]||'OPEN')
+    +'  ax:'+S.ax+'  cm:'+S.cm;
+  var el=document.getElementById('dnaStr');if(el)el.textContent=dna;
+  var te=document.getElementById('dnaTime');if(te)te.textContent=ts;
+  var ze=document.getElementById('dnaZoom');if(ze)ze.textContent='zoom '+zoom;
+}
+
+function dnaFilename(ext){
+  return 'UUON_Weave_'+DNA_WT[S.wt]+'_wp'+S.wp+'wf'+S.wf+'_'
+    +new Date().toISOString().slice(0,19).replace(/[T:]/g,'-')+'.'+ext;
+}
+
+function compositedExport(glSrc,W,H,fmt,engineLabel) {
+  var comp=document.createElement('canvas');
+  comp.width=W;comp.height=H;
+  var ctx=comp.getContext('2d');
+  ctx.drawImage(glSrc,0,0,W,H);
+  var sc=Math.max(W/canvas.width,1);
+  var barH=Math.round(40*sc),pad=Math.round(12*sc);
+  var fs1=Math.round(9*sc),fs2=Math.round(8.5*sc);
+  ctx.fillStyle='rgba(4,8,15,0.88)';
+  ctx.fillRect(0,H-barH,W,barH);
+  ctx.strokeStyle='rgba(0,229,204,0.22)';
+  ctx.lineWidth=Math.max(1,sc);
+  ctx.beginPath();ctx.moveTo(0,H-barH);ctx.lineTo(W,H-barH);ctx.stroke();
+  ctx.font='bold '+fs1+'px Rajdhani,Arial';
+  ctx.fillStyle='#C9A84C';
+  ctx.fillText(engineLabel||'UUON Foundation',pad,H-barH+Math.round(15*sc));
+  var zt=document.getElementById('dnaZoom')?document.getElementById('dnaZoom').textContent:'';
+  ctx.font=fs1+'px monospace';ctx.fillStyle='rgba(123,94,167,0.85)';
+  var zw=ctx.measureText(zt).width;
+  ctx.fillText(zt,W/2-zw/2,H-barH+Math.round(15*sc));
+  var tt=document.getElementById('dnaTime')?document.getElementById('dnaTime').textContent:'';
+  ctx.fillStyle='rgba(0,229,204,0.35)';
+  var tw2=ctx.measureText(tt).width;
+  ctx.fillText(tt,W-tw2-pad,H-barH+Math.round(15*sc));
+  var dt=document.getElementById('dnaStr')?document.getElementById('dnaStr').textContent:'';
+  ctx.font=fs2+'px monospace';ctx.fillStyle='rgba(0,229,204,0.75)';
+  ctx.fillText(dt,pad,H-Math.round(10*sc));
+  return comp.toDataURL(fmt||'image/png',0.95);
+}
+
+
+document.getElementById('shotBtn').addEventListener('click',function(){
+  triggerDownload(compositedExport(canvas,canvas.width,canvas.height,'image/png','UUON Fractal Weave v1.000'),dnaFilename('png'));
+});
+
+
+</script>
+</body>
+</html>

@@ -1,0 +1,265 @@
+{
+  "name": "Δmension Mathematical Universe API",
+  "version": "1.0.0",
+  "description": "Parametric 3D shape computation, quantum engines, fractal engines, and mathematical tools",
+  "endpoints": [
+    {
+      "path": "/api/health",
+      "methods": [
+        "GET"
+      ],
+      "description": "Server health and status check"
+    },
+    {
+      "path": "/api/auth/login",
+      "methods": [
+        "POST"
+      ],
+      "description": "User authentication"
+    },
+    {
+      "path": "/api/auth/register",
+      "methods": [
+        "POST"
+      ],
+      "description": "User registration"
+    },
+    {
+      "path": "/api/shapes",
+      "methods": [
+        "GET"
+      ],
+      "description": "List all available parametric shapes"
+    },
+    {
+      "path": "/api/shapes/:type",
+      "methods": [
+        "GET"
+      ],
+      "description": "Get shape metadata by type ID"
+    },
+    {
+      "path": "/api/shapes/analyze/:type",
+      "methods": [
+        "GET"
+      ],
+      "description": "Analyze a shape and get recommended parameters"
+    },
+    {
+      "path": "/api/engines",
+      "methods": [
+        "GET"
+      ],
+      "description": "List all compute engines"
+    },
+    {
+      "path": "/api/engines/quantum/shapes",
+      "methods": [
+        "GET"
+      ],
+      "description": "List Quantum engine shapes (requires API key)"
+    },
+    {
+      "path": "/api/engines/quantum/render",
+      "methods": [
+        "POST"
+      ],
+      "description": "Compute Quantum shape geometry (requires API key)"
+    },
+    {
+      "path": "/api/engines/relativity/shapes",
+      "methods": [
+        "GET"
+      ],
+      "description": "List Relativity engine shapes (requires API key)"
+    },
+    {
+      "path": "/api/engines/relativity/render",
+      "methods": [
+        "POST"
+      ],
+      "description": "Compute Relativity shape geometry (requires API key)"
+    },
+    {
+      "path": "/api/engines/fractal/shapes",
+      "methods": [
+        "GET"
+      ],
+      "description": "List Fractal engine shapes (requires API key)"
+    },
+    {
+      "path": "/api/engines/fractal/render",
+      "methods": [
+        "POST"
+      ],
+      "description": "Compute Fractal shape geometry (requires API key)"
+    },
+    {
+      "path": "/api/engines/modulo/shapes",
+      "methods": [
+        "GET"
+      ],
+      "description": "List Modulo engine shapes (requires API key)"
+    },
+    {
+      "path": "/api/engines/modulo/pattern",
+      "methods": [
+        "POST"
+      ],
+      "description": "Compute Modulo pattern surface (requires API key)"
+    },
+    {
+      "path": "/api/compute",
+      "methods": [
+        "POST"
+      ],
+      "description": "General surface computation endpoint"
+    },
+    {
+      "path": "/api/quantum",
+      "methods": [
+        "GET",
+        "POST"
+      ],
+      "description": "Quantum computing routes"
+    },
+    {
+      "path": "/api/tokens",
+      "methods": [
+        "GET",
+        "POST"
+      ],
+      "description": "Digital DNA token ledger"
+    },
+    {
+      "path": "/api/lexicon",
+      "methods": [
+        "GET"
+      ],
+      "description": "Universal Lexicon Engine"
+    },
+    {
+      "path": "/api/sdk",
+      "methods": [
+        "GET",
+        "POST"
+      ],
+      "description": "Unified SDK gateway"
+    },
+    {
+      "path": "/api/sdk-info",
+      "methods": [
+        "GET"
+      ],
+      "description": "SDK module descriptions"
+    },
+    {
+      "path": "/api/status",
+      "methods": [
+        "GET"
+      ],
+      "description": "API status and registered endpoint list"
+    },
+    {
+      "path": "/api/parameters/optimize",
+      "methods": [
+        "POST"
+      ],
+      "description": "Optimize parameters for a shape and intent"
+    },
+    {
+      "path": "/api/verify-export",
+      "methods": [
+        "POST"
+      ],
+      "description": "Verify a DMENSION-SIG export signature"
+    },
+    {
+      "path": "/api/ai",
+      "methods": [
+        "GET",
+        "POST"
+      ],
+      "description": "AI assistant for shape analysis"
+    },
+    {
+      "path": "/api/ai-analysis",
+      "methods": [
+        "GET",
+        "POST"
+      ],
+      "description": "AI analysis routes"
+    },
+    {
+      "path": "/api/enterprise",
+      "methods": [
+        "GET",
+        "POST"
+      ],
+      "description": "Enterprise licensing and commercial API"
+    },
+    {
+      "path": "/api/education",
+      "methods": [
+        "GET"
+      ],
+      "description": "Educational platform integration"
+    },
+    {
+      "path": "/api/nft",
+      "methods": [
+        "POST"
+      ],
+      "description": "Shape NFT minting"
+    },
+    {
+      "path": "/api/github",
+      "methods": [
+        "GET",
+        "POST"
+      ],
+      "description": "GitHub repository push integration"
+    },
+    {
+      "path": "/api/sitemap",
+      "methods": [
+        "GET"
+      ],
+      "description": "Sitemap generation"
+    },
+    {
+      "path": "/api/showcase",
+      "methods": [
+        "GET"
+      ],
+      "description": "Shape showcase routes"
+    },
+    {
+      "path": "/api/pricing",
+      "methods": [
+        "GET"
+      ],
+      "description": "Pricing and token economy"
+    },
+    {
+      "path": "/api/bridge",
+      "methods": [
+        "GET",
+        "POST"
+      ],
+      "description": "UUON cloud bridge"
+    },
+    {
+      "path": "/api/system-performance",
+      "methods": [
+        "GET"
+      ],
+      "description": "System performance metrics"
+    }
+  ],
+  "authentication": {
+    "type": "API Key (x-api-key header) for engine endpoints; session cookie for user endpoints",
+    "note": "Engine render/shape endpoints require a valid x-api-key header"
+  },
+  "docs": "/api/sdk-info"
+}

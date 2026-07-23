@@ -1,0 +1,27 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(timeout 480 npm run build:client)",
+      "Bash(node -e \"const s=require\\('./package.json'\\).scripts; for\\(const k in s\\) console.log\\(k.padEnd\\(22\\), s[k]\\)\")",
+      "Bash(npx ruflo@latest task create -t research -d \"DMENSION APP STABILITY & ENHANCEMENT AUDIT — READ ONLY\")",
+      "Bash(echo \"=== EXIT: $? ===\")",
+      "Bash(npx ruflo@latest task list)",
+      "Bash(npx tsx *)",
+      "Bash(node -e \"console.log\\('pg:', require.resolve\\('pg'\\)\\)\")",
+      "Bash(git --no-pager log --oneline -S'step={0.01}' -- client/src/components/ExpandedControlPanel.tsx)",
+      "Bash(git --no-pager log --oneline -S'0.00001' -- client/src/components/ExpandedControlPanel.tsx)",
+      "Bash(git --no-pager log --oneline -S'shiftKey' -- client/src/components/ExpandedControlPanel.tsx)",
+      "Bash(git --no-pager log --oneline -S'5x finer' -- client/src/components/ExpandedControlPanel.tsx)",
+      "Bash(git --no-pager show c384b645 --stat)",
+      "Bash(git --no-pager show ef4cbce2 --stat)",
+      "Bash(git --no-pager log --oneline -S'step: 0.00001' -- client/src/lib/parameterAuthority.ts)",
+      "Bash(git --no-pager log --oneline -S'step: 0.01' -- client/src/lib/parameterAuthority.ts)",
+      "Bash(git --no-pager show ef4cbce2 -- client/src/components/ExpandedControlPanel.tsx)"
+    ]
+  },
+  "enabledMcpjsonServers": [
+    "claude-flow",
+    "ruv-swarm",
+    "flow-nexus"
+  ]
+}

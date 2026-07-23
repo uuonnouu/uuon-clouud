@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
+  
+  <!-- Generative Models Category Overview -->
+  <url>
+    <loc>https://uuon-foundation.com/shapes/generative-models</loc>
+    <lastmod>2025-12-31</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+    <image:image>
+      <image:loc>https://uuon-foundation.com/previews/generative-models.png</image:loc>
+      <image:title>Generative Models - GAN, VAE, Diffusion Mathematical Structures</image:title>
+      <image:caption>Deep generative architectures visualized as parametric surfaces and latent space manifolds</image:caption>
+    </image:image>
+  </url>
+
+  <!-- GAN Generator Manifold -->
+  <url>
+    <loc>https://uuon-foundation.com/shape/gan_generator_manifold</loc>
+    <lastmod>2025-12-31</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://uuon-foundation.com/previews/gan_generator.png</image:loc>
+      <image:title>GAN Generator Manifold - Latent Space Mapping</image:title>
+      <image:caption>Mathematical: G(z) : R^d -> R^n, z ~ N(0,I). Generator network mapping latent vectors to data space.</image:caption>
+    </image:image>
+  </url>
+
+  <!-- GAN Discriminator Boundary -->
+  <url>
+    <loc>https://uuon-foundation.com/shape/gan_discriminator_boundary</loc>
+    <lastmod>2025-12-31</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://uuon-foundation.com/previews/gan_discriminator.png</image:loc>
+      <image:title>GAN Discriminator Boundary - Real/Fake Classification Surface</image:title>
+      <image:caption>Mathematical: D(x) = sigma(f(x)), min_G max_D E[log D(x)] + E[log(1-D(G(z)))]. Adversarial decision boundary.</image:caption>
+    </image:image>
+  </url>
+
+  <!-- WGAN Loss Landscape -->
+  <url>
+    <loc>https://uuon-foundation.com/shape/wgan_loss_landscape</loc>
+    <lastmod>2025-12-31</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://uuon-foundation.com/previews/wgan_loss.png</image:loc>
+      <image:title>WGAN Loss Landscape - Wasserstein Distance Surface</image:title>
+      <image:caption>Mathematical: W(P_r, P_g) = inf E[||x-y||], Lipschitz constraint: ||f||_L <= 1. Earth Mover's distance optimization.</image:caption>
+    </image:image>
+  </url>
+
+  <!-- VAE Latent Space -->
+  <url>
+    <loc>https://uuon-foundation.com/shape/vae_latent_manifold</loc>
+    <lastmod>2025-12-31</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://uuon-foundation.com/previews/vae_latent.png</image:loc>
+      <image:title>VAE Latent Manifold - Variational Autoencoder Space</image:title>
+      <image:caption>Mathematical: ELBO = E_q[log p(x|z)] - KL(q(z|x) || p(z)). Variational lower bound with reparameterization.</image:caption>
+    </image:image>
+  </url>
+
+  <!-- VAE Reconstruction -->
+  <url>
+    <loc>https://uuon-foundation.com/shape/vae_reconstruction_surface</loc>
+    <lastmod>2025-12-31</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+    <image:image>
+      <image:loc>https://uuon-foundation.com/previews/vae_reconstruction.png</image:loc>
+      <image:title>VAE Reconstruction Surface - Decoder Output</image:title>
+      <image:caption>Mathematical: x_hat = dec(z), z = mu + sigma * epsilon, epsilon ~ N(0,1). Reparameterized sampling.</image:caption>
+    </image:image>
+  </url>
+
+  <!-- Diffusion Forward Process -->
+  <url>
+    <loc>https://uuon-foundation.com/shape/diffusion_forward_process</loc>
+    <lastmod>2025-12-31</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://uuon-foundation.com/previews/diffusion_forward.png</image:loc>
+      <image:title>Diffusion Forward Process - Noise Addition Schedule</image:title>
+      <image:caption>Mathematical: q(x_t|x_{t-1}) = N(x_t; sqrt(1-beta_t)*x_{t-1}, beta_t*I). Markov chain noise injection.</image:caption>
+    </image:image>
+  </url>
+
+  <!-- Diffusion Reverse Process -->
+  <url>
+    <loc>https://uuon-foundation.com/shape/diffusion_reverse_denoising</loc>
+    <lastmod>2025-12-31</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://uuon-foundation.com/previews/diffusion_reverse.png</image:loc>
+      <image:title>Diffusion Reverse Process - Score-Based Denoising</image:title>
+      <image:caption>Mathematical: p_theta(x_{t-1}|x_t) = N(x_{t-1}; mu_theta(x_t,t), Sigma_theta(x_t,t)). Learned denoising distribution.</image:caption>
+    </image:image>
+  </url>
+
+  <!-- Score Function -->
+  <url>
+    <loc>https://uuon-foundation.com/shape/score_function_field</loc>
+    <lastmod>2025-12-31</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+    <image:image>
+      <image:loc>https://uuon-foundation.com/previews/score_function.png</image:loc>
+      <image:title>Score Function Field - Gradient of Log Probability</image:title>
+      <image:caption>Mathematical: s_theta(x,t) = nabla_x log p_t(x). Score matching objective for generative modeling.</image:caption>
+    </image:image>
+  </url>
+
+</urlset>

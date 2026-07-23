@@ -1,0 +1,51 @@
+{
+  "source": "Δmension Mathematical Universe",
+  "shapeId": "qubit_bloch_sphere",
+  "shapeName": "Qubit Bloch Sphere",
+  "exportDate": "2026-06-10T20:21:21.352Z",
+  "parameters": {
+    "a": 1,
+    "b": 0,
+    "c": 0,
+    "d": 1,
+    "e": 0,
+    "f": 0,
+    "uMin": 0,
+    "uMax": 6.2831853,
+    "vMin": 0,
+    "vMax": 3.1415926,
+    "uSegments": 64,
+    "vSegments": 32
+  },
+  "dmension_version": "2.0",
+  "security": {
+    "cryptographicHash": "1bffd239c7cf79e7f3dc53bccbf0f9a2f0e8895ea4aec6dfa8ee8baf812db0cf",
+    "verificationCode": "UUON-D13MON4-V1",
+    "timestamp": "2026-06-10T20:21:21.352Z",
+    "author": "UUON Foundation Inc.",
+    "organization": "Dmension Mathematical Universe",
+    "copyright": "2024 UUON Foundation Inc. All Rights Reserved.",
+    "license": "CC BY-NC 4.0",
+    "integrityVersion": "2.0",
+    "genesisAnchor": "cf114022b5e4e1d6fdeb36890f35f605857cf2de93b53ebcb9c8e5652413ca04",
+    "fixedAt": "2026-06-16T00:42:41.739Z"
+  },
+  "scene_bounds": {
+    "aabb_min": [
+      -1,
+      -1,
+      -1
+    ],
+    "aabb_max": [
+      1,
+      1,
+      1
+    ],
+    "center": [
+      0,
+      0,
+      0
+    ],
+    "scale": 2
+  }
+}

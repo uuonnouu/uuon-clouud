@@ -1,0 +1,51 @@
+{
+  "source": "Δmension Mathematical Universe",
+  "shapeId": "aes_rijndael_cipher",
+  "shapeName": "AES Rijndael - 4x4 Block Cipher Matrix Operations",
+  "exportDate": "2026-06-10T19:25:25.320Z",
+  "parameters": {
+    "a": 1,
+    "b": 1,
+    "c": 1,
+    "d": 50,
+    "e": 50,
+    "f": -0.26,
+    "uMin": 0,
+    "uMax": 1,
+    "vMin": 0,
+    "vMax": 1,
+    "uSegments": 246,
+    "vSegments": 128
+  },
+  "dmension_version": "2.0",
+  "security": {
+    "cryptographicHash": "25a9a511ee1cd5058393a3765927a4795a2032dfc5b6d654bfd8b884d4d703e4",
+    "verificationCode": "UUON-D13MON4-V1",
+    "timestamp": "2026-06-10T19:25:25.320Z",
+    "author": "UUON Foundation Inc.",
+    "organization": "Dmension Mathematical Universe",
+    "copyright": "2024 UUON Foundation Inc. All Rights Reserved.",
+    "license": "CC BY-NC 4.0",
+    "integrityVersion": "2.0",
+    "genesisAnchor": "cf114022b5e4e1d6fdeb36890f35f605857cf2de93b53ebcb9c8e5652413ca04",
+    "fixedAt": "2026-06-16T00:42:41.725Z"
+  },
+  "scene_bounds": {
+    "aabb_min": [
+      -1.7838916778564453,
+      -1.8558262586593628,
+      -0.4131806492805481
+    ],
+    "aabb_max": [
+      2.0844099521636963,
+      1.7232894897460938,
+      0.7755401134490967
+    ],
+    "center": [
+      0.1502591371536255,
+      -0.06626838445663452,
+      0.1811797320842743
+    ],
+    "scale": 3.8683016300201416
+  }
+}

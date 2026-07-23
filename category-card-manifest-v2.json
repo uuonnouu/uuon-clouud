@@ -1,0 +1,751 @@
+{
+  "ancientcivilization": {
+    "count": 25,
+    "glyph": "grid",
+    "ipfsHash": "QmYUh5SjquZRbecGY6kh36i425rCoP113onv4Cp83Hf8k8",
+    "imageUri": "ipfs://QmYUh5SjquZRbecGY6kh36i425rCoP113onv4Cp83Hf8k8",
+    "generatedAt": "2026-06-21T04:40:09.616Z"
+  },
+  "quantumgravity": {
+    "count": 43,
+    "glyph": "atom",
+    "ipfsHash": "QmcYM6RtUFfTdqZzASs7aDmpttsQE2yxoKHU87AYduZiFA",
+    "imageUri": "ipfs://QmcYM6RtUFfTdqZzASs7aDmpttsQE2yxoKHU87AYduZiFA",
+    "generatedAt": "2026-06-21T04:40:11.783Z"
+  },
+  "molecular-biology": {
+    "count": 25,
+    "glyph": "helix",
+    "ipfsHash": "QmU2GysSDH5ZwrXFFkFZrPT4ZjEbyMy3fAV55sDwg6MFc3",
+    "imageUri": "ipfs://QmU2GysSDH5ZwrXFFkFZrPT4ZjEbyMy3fAV55sDwg6MFc3",
+    "generatedAt": "2026-06-21T04:40:12.442Z"
+  },
+  "schrodinger": {
+    "count": 8,
+    "glyph": "atom",
+    "ipfsHash": "QmUYvK9bxRz7j1pDS7oW1fegv6bos6675J9H9xEBfFLCoN",
+    "imageUri": "ipfs://QmUYvK9bxRz7j1pDS7oW1fegv6bos6675J9H9xEBfFLCoN",
+    "generatedAt": "2026-06-21T04:40:14.314Z"
+  },
+  "entanglement": {
+    "count": 7,
+    "glyph": "atom",
+    "ipfsHash": "QmP1mxJDvc8S8d6rzLvvdoKSdGyKfLiuPqbLmNQccWwEAg",
+    "imageUri": "ipfs://QmP1mxJDvc8S8d6rzLvvdoKSdGyKfLiuPqbLmNQccWwEAg",
+    "generatedAt": "2026-06-21T04:40:16.224Z"
+  },
+  "advancedtopological": {
+    "count": 4,
+    "glyph": "grid",
+    "ipfsHash": "QmWew45thWeoibLGvALS3va1wSLzJjEr7YVtFYdn194cgL",
+    "imageUri": "ipfs://QmWew45thWeoibLGvALS3va1wSLzJjEr7YVtFYdn194cgL",
+    "generatedAt": "2026-06-21T04:40:16.757Z"
+  },
+  "unified": {
+    "count": 196,
+    "glyph": "grid",
+    "ipfsHash": "QmU3i2RytbKPmy7xVqug4bjnGThoQLgpsjoTyraLMgwgkN",
+    "imageUri": "ipfs://QmU3i2RytbKPmy7xVqug4bjnGThoQLgpsjoTyraLMgwgkN",
+    "generatedAt": "2026-06-21T04:40:17.256Z"
+  },
+  "alchemicalsymbol": {
+    "count": 64,
+    "glyph": "grid",
+    "ipfsHash": "QmZB3RFzZbydWiR2ip3egyDfbNp4j7oEF5ADCmE1crFvzR",
+    "imageUri": "ipfs://QmZB3RFzZbydWiR2ip3egyDfbNp4j7oEF5ADCmE1crFvzR",
+    "generatedAt": "2026-06-21T04:40:19.285Z"
+  },
+  "babylonian-zodiac": {
+    "count": 12,
+    "glyph": "grid",
+    "ipfsHash": "QmTsogWcjd6SKPPVbM4pdFD6cHASfHgTQu1VAu8y2Pnf8d",
+    "imageUri": "ipfs://QmTsogWcjd6SKPPVbM4pdFD6cHASfHgTQu1VAu8y2Pnf8d",
+    "generatedAt": "2026-06-21T04:40:21.496Z"
+  },
+  "topology": {
+    "count": 20,
+    "glyph": "cube",
+    "ipfsHash": "QmZaqVHt998z6hVCsjZ99X9XaWdYTrfrMPpB3vgQPoVgsM",
+    "imageUri": "ipfs://QmZaqVHt998z6hVCsjZ99X9XaWdYTrfrMPpB3vgQPoVgsM",
+    "generatedAt": "2026-06-21T04:40:23.331Z"
+  },
+  "waveengine": {
+    "count": 12,
+    "glyph": "wave",
+    "ipfsHash": "QmWAzuSwZvz3HpdpnMYm2kuLYUMvNYvLWPu5Fe7CaQ85pp",
+    "imageUri": "ipfs://QmWAzuSwZvz3HpdpnMYm2kuLYUMvNYvLWPu5Fe7CaQ85pp",
+    "generatedAt": "2026-06-21T04:40:24.005Z"
+  },
+  "consciousnessmath": {
+    "count": 15,
+    "glyph": "grid",
+    "ipfsHash": "QmPW9pyc14BPsdGMTBwwJvYVb77Z84qk6Bv6rjQhKz3Xxr",
+    "imageUri": "ipfs://QmPW9pyc14BPsdGMTBwwJvYVb77Z84qk6Bv6rjQhKz3Xxr",
+    "generatedAt": "2026-06-21T04:40:25.836Z"
+  },
+  "cosmicphysics": {
+    "count": 7,
+    "glyph": "orbit",
+    "ipfsHash": "QmNaA8YVTKYvuQktvGwfeXvLTWxL6jfKpmQYTCgM4zw7D1",
+    "imageUri": "ipfs://QmNaA8YVTKYvuQktvGwfeXvLTWxL6jfKpmQYTCgM4zw7D1",
+    "generatedAt": "2026-06-21T04:40:26.372Z"
+  },
+  "chakras": {
+    "count": 15,
+    "glyph": "grid",
+    "ipfsHash": "QmVDRjkb1hX7uWzV7ncP4kEPPGKJ2maihCJcnQFH9K9AWz",
+    "imageUri": "ipfs://QmVDRjkb1hX7uWzV7ncP4kEPPGKJ2maihCJcnQFH9K9AWz",
+    "generatedAt": "2026-06-21T04:40:26.918Z"
+  },
+  "minimal": {
+    "count": 30,
+    "glyph": "grid",
+    "ipfsHash": "QmYAmxusyHbXh2yLjpQvJPgfkGmW6aP1zma3JpX13MZGJ5",
+    "imageUri": "ipfs://QmYAmxusyHbXh2yLjpQvJPgfkGmW6aP1zma3JpX13MZGJ5",
+    "generatedAt": "2026-06-21T04:40:27.465Z"
+  },
+  "quantum-gravity": {
+    "count": 20,
+    "glyph": "atom",
+    "ipfsHash": "QmRXfJiopHgoq1KebCM71AyhR13nDSLtZJQTmjAteeSi8y",
+    "imageUri": "ipfs://QmRXfJiopHgoq1KebCM71AyhR13nDSLtZJQTmjAteeSi8y",
+    "generatedAt": "2026-06-21T04:40:27.965Z"
+  },
+  "universallexicon": {
+    "count": 7,
+    "glyph": "grid",
+    "ipfsHash": "Qmd5QV2E52rVCQsKWsCkH6RVhaHvx4rcw9tzn76Xgfjn8u",
+    "imageUri": "ipfs://Qmd5QV2E52rVCQsKWsCkH6RVhaHvx4rcw9tzn76Xgfjn8u",
+    "generatedAt": "2026-06-21T04:40:30.009Z"
+  },
+  "mathematical-art": {
+    "count": 1,
+    "glyph": "grid",
+    "ipfsHash": "QmQTM1kRWmQGakREJZ9yLN8GYbhjxT23tnSnLXe9h8hziy",
+    "imageUri": "ipfs://QmQTM1kRWmQGakREJZ9yLN8GYbhjxT23tnSnLXe9h8hziy",
+    "generatedAt": "2026-06-21T04:40:31.907Z"
+  },
+  "modulo-algorithms": {
+    "count": 20,
+    "glyph": "spiral",
+    "ipfsHash": "QmbYTCBJ6LrJYMeJEc9fqeLkHhpV56rv4movuFNRjcLVvU",
+    "imageUri": "ipfs://QmbYTCBJ6LrJYMeJEc9fqeLkHhpV56rv4movuFNRjcLVvU",
+    "generatedAt": "2026-06-21T04:40:33.789Z"
+  },
+  "humananatomy": {
+    "count": 50,
+    "glyph": "helix",
+    "ipfsHash": "QmYqnVgm5UF5k3ABYaWmHZ78LegZmvFGvtyj6mLNKPWJ5g",
+    "imageUri": "ipfs://QmYqnVgm5UF5k3ABYaWmHZ78LegZmvFGvtyj6mLNKPWJ5g",
+    "generatedAt": "2026-06-21T04:40:34.385Z"
+  },
+  "wave-functions": {
+    "count": 20,
+    "glyph": "wave",
+    "ipfsHash": "QmQugbJuthr2TbQ7rmqNBS1uxEHWCy1LnbFLovvZC5TRy8",
+    "imageUri": "ipfs://QmQugbJuthr2TbQ7rmqNBS1uxEHWCy1LnbFLovvZC5TRy8",
+    "generatedAt": "2026-06-21T04:40:34.999Z"
+  },
+  "completemissing": {
+    "count": 104,
+    "glyph": "grid",
+    "ipfsHash": "QmNymWTMBtLk3MLvtZHLBPWGqu25DoG1YztiM2rsxyGCNX",
+    "imageUri": "ipfs://QmNymWTMBtLk3MLvtZHLBPWGqu25DoG1YztiM2rsxyGCNX",
+    "generatedAt": "2026-06-21T04:40:37.299Z"
+  },
+  "inversesquarelaw": {
+    "count": 17,
+    "glyph": "grid",
+    "ipfsHash": "Qmbwt4RhemDDVCmBLrQvhHq6YTSMghzUxQPSasabYGWsxp",
+    "imageUri": "ipfs://Qmbwt4RhemDDVCmBLrQvhHq6YTSMghzUxQPSasabYGWsxp",
+    "generatedAt": "2026-06-21T04:40:39.498Z"
+  },
+  "sequence": {
+    "count": 21,
+    "glyph": "spiral",
+    "ipfsHash": "QmdeQjeqM8gSjEtMbgN45fwa6LkkmfPPqxkLgqLc8QmL8Z",
+    "imageUri": "ipfs://QmdeQjeqM8gSjEtMbgN45fwa6LkkmfPPqxkLgqLc8QmL8Z",
+    "generatedAt": "2026-06-21T04:40:39.995Z"
+  },
+  "dna": {
+    "count": 49,
+    "glyph": "helix",
+    "ipfsHash": "QmZCuQqpWbAp5byfPBJZzgkUA2Sqg3pMyjvugC6u38vjdC",
+    "imageUri": "ipfs://QmZCuQqpWbAp5byfPBJZzgkUA2Sqg3pMyjvugC6u38vjdC",
+    "generatedAt": "2026-06-21T04:40:40.507Z"
+  },
+  "uuonmesh": {
+    "count": 12,
+    "glyph": "network",
+    "ipfsHash": "QmTUuCfhPdEFd1zuWgfMV9xmtXPVdpReqUcp5PdGw37ry9",
+    "imageUri": "ipfs://QmTUuCfhPdEFd1zuWgfMV9xmtXPVdpReqUcp5PdGw37ry9",
+    "generatedAt": "2026-06-21T04:40:42.693Z"
+  },
+  "general-relativity": {
+    "count": 25,
+    "glyph": "orbit",
+    "ipfsHash": "QmR6zAdY8aeKWEshqYLjBMZNXp1CJV6N2GVrPq3k1Mund3",
+    "imageUri": "ipfs://QmR6zAdY8aeKWEshqYLjBMZNXp1CJV6N2GVrPq3k1Mund3",
+    "generatedAt": "2026-06-21T04:40:44.610Z"
+  },
+  "atomichapes": {
+    "count": 21,
+    "glyph": "grid",
+    "ipfsHash": "Qmf4A4q2kn1qDYK1eykTpsqDK3dpizmspEEmcgLEqpzJsc",
+    "imageUri": "ipfs://Qmf4A4q2kn1qDYK1eykTpsqDK3dpizmspEEmcgLEqpzJsc",
+    "generatedAt": "2026-06-21T04:40:46.526Z"
+  },
+  "medicaltpms": {
+    "count": 10,
+    "glyph": "grid",
+    "ipfsHash": "QmViWLCThvJGCw4ktbjsW4DCnrbEzQV61B2Vh3SMDZPL9k",
+    "imageUri": "ipfs://QmViWLCThvJGCw4ktbjsW4DCnrbEzQV61B2Vh3SMDZPL9k",
+    "generatedAt": "2026-06-21T04:40:48.896Z"
+  },
+  "consciousshapes": {
+    "count": 6,
+    "glyph": "grid",
+    "ipfsHash": "QmYTxRwbzioQ9FYDspFrPnPjLfyvo8kAWEg6S7DMQhkWn9",
+    "imageUri": "ipfs://QmYTxRwbzioQ9FYDspFrPnPjLfyvo8kAWEg6S7DMQhkWn9",
+    "generatedAt": "2026-06-21T04:40:50.926Z"
+  },
+  "nationalmotto": {
+    "count": 7,
+    "glyph": "grid",
+    "ipfsHash": "QmcXwvoyUaAqiDyoC7LosZC4DJNVkDd1JBzH32VMgeNZAp",
+    "imageUri": "ipfs://QmcXwvoyUaAqiDyoC7LosZC4DJNVkDd1JBzH32VMgeNZAp",
+    "generatedAt": "2026-06-21T04:40:51.395Z"
+  },
+  "fourdimensional": {
+    "count": 37,
+    "glyph": "grid",
+    "ipfsHash": "QmNnb3N8ohR3W8wNnKwawYx7Q3KyTKUyQPvNWMKwvSgzdB",
+    "imageUri": "ipfs://QmNnb3N8ohR3W8wNnKwawYx7Q3KyTKUyQPvNWMKwvSgzdB",
+    "generatedAt": "2026-06-21T04:40:51.868Z"
+  },
+  "tensor-algebra": {
+    "count": 20,
+    "glyph": "cube",
+    "ipfsHash": "QmPTqD2rFRK1Ya9RQTLnngHQwmNyemfeYovF2pkqVALPSc",
+    "imageUri": "ipfs://QmPTqD2rFRK1Ya9RQTLnngHQwmNyemfeYovF2pkqVALPSc",
+    "generatedAt": "2026-06-21T04:40:53.783Z"
+  },
+  "d": {
+    "count": 8,
+    "glyph": "grid",
+    "ipfsHash": "QmYQJn4qUivq3KLpj8fjdoZ73irbiUmghADPysTyNoqWHb",
+    "imageUri": "ipfs://QmYQJn4qUivq3KLpj8fjdoZ73irbiUmghADPysTyNoqWHb",
+    "generatedAt": "2026-06-21T04:40:55.641Z"
+  },
+  "educational": {
+    "count": 1,
+    "glyph": "grid",
+    "ipfsHash": "QmZjZF18rDTSzZuPs6xLBnD8iUVKk4u1YPTwMvZCw1NWtT",
+    "imageUri": "ipfs://QmZjZF18rDTSzZuPs6xLBnD8iUVKk4u1YPTwMvZCw1NWtT",
+    "generatedAt": "2026-06-21T04:40:57.515Z"
+  },
+  "jacobiantransformation": {
+    "count": 17,
+    "glyph": "grid",
+    "ipfsHash": "QmQWMvQWV8MAJezCfkNM4MZjyabrfPe2No2HGxFjVUwGVq",
+    "imageUri": "ipfs://QmQWMvQWV8MAJezCfkNM4MZjyabrfPe2No2HGxFjVUwGVq",
+    "generatedAt": "2026-06-21T04:40:59.422Z"
+  },
+  "aiml": {
+    "count": 56,
+    "glyph": "network",
+    "ipfsHash": "QmZDJtH5aZRj1ZCCoBSifJ9qRynCpuDoW25GNvcVWbQTXt",
+    "imageUri": "ipfs://QmZDJtH5aZRj1ZCCoBSifJ9qRynCpuDoW25GNvcVWbQTXt",
+    "generatedAt": "2026-06-21T04:41:00.109Z"
+  },
+  "generative": {
+    "count": 3,
+    "glyph": "grid",
+    "ipfsHash": "Qma9r4ap59ji5uHw6zLb4BvieHmJt377ho4hutx8iWAe3k",
+    "imageUri": "ipfs://Qma9r4ap59ji5uHw6zLb4BvieHmJt377ho4hutx8iWAe3k",
+    "generatedAt": "2026-06-21T04:41:01.997Z"
+  },
+  "fractalanalysis": {
+    "count": 34,
+    "glyph": "vortex",
+    "ipfsHash": "QmXYmwD5BwPcvtgrEjvs1RooUCSDRTXrjQYhYnABW3qJir",
+    "imageUri": "ipfs://QmXYmwD5BwPcvtgrEjvs1RooUCSDRTXrjQYhYnABW3qJir",
+    "generatedAt": "2026-06-21T04:41:03.975Z"
+  },
+  "diatom": {
+    "count": 12,
+    "glyph": "helix",
+    "ipfsHash": "QmQiRGTvXL2tXSqwgC2NvML1Bg68bsoZjWQZHRX6vn2rYS",
+    "imageUri": "ipfs://QmQiRGTvXL2tXSqwgC2NvML1Bg68bsoZjWQZHRX6vn2rYS",
+    "generatedAt": "2026-06-21T04:41:04.558Z"
+  },
+  "neural-networks": {
+    "count": 20,
+    "glyph": "network",
+    "ipfsHash": "QmcUs7s4ty7JcV5fSKeWSd4JaLqCKaQ4dzSYcQ5QCZ6Gw7",
+    "imageUri": "ipfs://QmcUs7s4ty7JcV5fSKeWSd4JaLqCKaQ4dzSYcQ5QCZ6Gw7",
+    "generatedAt": "2026-06-21T04:41:06.402Z"
+  },
+  "riemann": {
+    "count": 16,
+    "glyph": "grid",
+    "ipfsHash": "QmQX5CxkYJc9VT3iM2GaiuXnWQFdcYSoj8yXu68Wh1BVKx",
+    "imageUri": "ipfs://QmQX5CxkYJc9VT3iM2GaiuXnWQFdcYSoj8yXu68Wh1BVKx",
+    "generatedAt": "2026-06-21T04:41:06.943Z"
+  },
+  "field-theory": {
+    "count": 20,
+    "glyph": "pulse",
+    "ipfsHash": "QmVakn1eUqv3wVFnkBZpYLSHzUDH7HTGDzDeFryXYcbVQN",
+    "imageUri": "ipfs://QmVakn1eUqv3wVFnkBZpYLSHzUDH7HTGDzDeFryXYcbVQN",
+    "generatedAt": "2026-06-21T04:41:07.404Z"
+  },
+  "harmonywave": {
+    "count": 18,
+    "glyph": "wave",
+    "ipfsHash": "QmU6HcYZV8z9mRqVgRajRhxH1fPjPt8LEBFm4beEVYkaST",
+    "imageUri": "ipfs://QmU6HcYZV8z9mRqVgRajRhxH1fPjPt8LEBFm4beEVYkaST",
+    "generatedAt": "2026-06-21T04:41:09.230Z"
+  },
+  "perspectiveengine": {
+    "count": 4,
+    "glyph": "pulse",
+    "ipfsHash": "QmYgPxZnrVn5kdtNA7cCQqcjLChYYtFpYHCQDQzEFDTTi1",
+    "imageUri": "ipfs://QmYgPxZnrVn5kdtNA7cCQqcjLChYYtFpYHCQDQzEFDTTi1",
+    "generatedAt": "2026-06-21T04:41:11.092Z"
+  },
+  "higherdimensional": {
+    "count": 18,
+    "glyph": "grid",
+    "ipfsHash": "QmUoEgKQsYFiBCS4M5xEvi8ZuzUCFw6XUgQYtrxaA1Fg8n",
+    "imageUri": "ipfs://QmUoEgKQsYFiBCS4M5xEvi8ZuzUCFw6XUgQYtrxaA1Fg8n",
+    "generatedAt": "2026-06-21T04:41:11.718Z"
+  },
+  "earthsciences": {
+    "count": 9,
+    "glyph": "grid",
+    "ipfsHash": "QmY7sz66LnLNuFh2MSdZBkPF7zFYSXGAZevpyMgdCQabio",
+    "imageUri": "ipfs://QmY7sz66LnLNuFh2MSdZBkPF7zFYSXGAZevpyMgdCQabio",
+    "generatedAt": "2026-06-21T04:41:12.237Z"
+  },
+  "uuon-acas": {
+    "count": 17,
+    "glyph": "grid",
+    "ipfsHash": "QmTKgYaPVfYznS4MU33mMvKoaPpcgsMFuDNRBs68xNvg1J",
+    "imageUri": "ipfs://QmTKgYaPVfYznS4MU33mMvKoaPpcgsMFuDNRBs68xNvg1J",
+    "generatedAt": "2026-06-21T04:41:12.748Z"
+  },
+  "modulo": {
+    "count": 149,
+    "glyph": "spiral",
+    "ipfsHash": "QmdTJ121JRRDF4xHNS48geF1nACeMEs16tYaKVSjCHMav7",
+    "imageUri": "ipfs://QmdTJ121JRRDF4xHNS48geF1nACeMEs16tYaKVSjCHMav7",
+    "generatedAt": "2026-06-21T04:41:13.252Z"
+  },
+  "missing": {
+    "count": 13,
+    "glyph": "grid",
+    "ipfsHash": "QmPnAjQnuwD3tV3d9Jy6JwH8fzHiBNtGJhTAfd5L9p2rM3",
+    "imageUri": "ipfs://QmPnAjQnuwD3tV3d9Jy6JwH8fzHiBNtGJhTAfd5L9p2rM3",
+    "generatedAt": "2026-06-21T04:41:13.810Z"
+  },
+  "advancedphysics": {
+    "count": 10,
+    "glyph": "grid",
+    "ipfsHash": "QmSABmSpTJzpVRhcnRnVmJLXyqgd2WiD7ufcqXHYwWqEf9",
+    "imageUri": "ipfs://QmSABmSpTJzpVRhcnRnVmJLXyqgd2WiD7ufcqXHYwWqEf9",
+    "generatedAt": "2026-06-21T04:41:15.691Z"
+  },
+  "consciousness": {
+    "count": 8,
+    "glyph": "grid",
+    "ipfsHash": "QmZW2JcCgwheEcL6NXkSAFvDTYrk1RZjpMThmZT2g6coEK",
+    "imageUri": "ipfs://QmZW2JcCgwheEcL6NXkSAFvDTYrk1RZjpMThmZT2g6coEK",
+    "generatedAt": "2026-06-21T04:41:16.248Z"
+  },
+  "basic": {
+    "count": 29,
+    "glyph": "grid",
+    "ipfsHash": "QmcCk942yaGfpLxPYf1ZaXu1jSz8fq2NsM6qfRi192bHZA",
+    "imageUri": "ipfs://QmcCk942yaGfpLxPYf1ZaXu1jSz8fq2NsM6qfRi192bHZA",
+    "generatedAt": "2026-06-21T04:41:18.142Z"
+  },
+  "black-holes": {
+    "count": 20,
+    "glyph": "orbit",
+    "ipfsHash": "QmeHynFRdcvg3WyEE75eywvEXAU4uvY7KYab4Ai8SkZLQ9",
+    "imageUri": "ipfs://QmeHynFRdcvg3WyEE75eywvEXAU4uvY7KYab4Ai8SkZLQ9",
+    "generatedAt": "2026-06-21T04:41:18.615Z"
+  },
+  "general": {
+    "count": 364,
+    "glyph": "grid",
+    "ipfsHash": "QmWDGoB9TMNnnWSLTmrBspTP8DceNtyfDbHtngRkPg5kBX",
+    "imageUri": "ipfs://QmWDGoB9TMNnnWSLTmrBspTP8DceNtyfDbHtngRkPg5kBX",
+    "generatedAt": "2026-06-21T04:41:20.524Z"
+  },
+  "weather": {
+    "count": 5,
+    "glyph": "grid",
+    "ipfsHash": "QmPiCq81H6bzSDBDTTuVLUe4vpLoKfsyk1fVieKvbkx8y5",
+    "imageUri": "ipfs://QmPiCq81H6bzSDBDTTuVLUe4vpLoKfsyk1fVieKvbkx8y5",
+    "generatedAt": "2026-06-21T04:41:22.374Z"
+  },
+  "evolutionarystringshapes": {
+    "count": 19,
+    "glyph": "grid",
+    "ipfsHash": "QmXfyVBZqqYCmye4ikrDtd6qrvNykhPmJFXqGnMmNpRd8f",
+    "imageUri": "ipfs://QmXfyVBZqqYCmye4ikrDtd6qrvNykhPmJFXqGnMmNpRd8f",
+    "generatedAt": "2026-06-21T04:41:24.345Z"
+  },
+  "entropic-principles": {
+    "count": 20,
+    "glyph": "grid",
+    "ipfsHash": "QmZqVxRkcfHqAHSrR2ScHRUknnYwBXX61BCuSKcbJNfKxG",
+    "imageUri": "ipfs://QmZqVxRkcfHqAHSrR2ScHRUknnYwBXX61BCuSKcbJNfKxG",
+    "generatedAt": "2026-06-21T04:41:26.208Z"
+  },
+  "algorithms": {
+    "count": 20,
+    "glyph": "spiral",
+    "ipfsHash": "QmYs5g4dXNCjNQCzUuMSen1ZHaUT7CfBtHQJ5ddoVN2Wss",
+    "imageUri": "ipfs://QmYs5g4dXNCjNQCzUuMSen1ZHaUT7CfBtHQJ5ddoVN2Wss",
+    "generatedAt": "2026-06-21T04:41:28.078Z"
+  },
+  "sacred-geometry": {
+    "count": 20,
+    "glyph": "crystal",
+    "ipfsHash": "QmRMpdxUF52x6pSyYbMFLUsEiFLPruoqJL61QtBS8yNPJc",
+    "imageUri": "ipfs://QmRMpdxUF52x6pSyYbMFLUsEiFLPruoqJL61QtBS8yNPJc",
+    "generatedAt": "2026-06-21T04:41:29.908Z"
+  },
+  "fractals": {
+    "count": 25,
+    "glyph": "vortex",
+    "ipfsHash": "QmYqjJaYFbyDijfSW1phckJxgRz3D48dG8f4T3qdgjiGgJ",
+    "imageUri": "ipfs://QmYqjJaYFbyDijfSW1phckJxgRz3D48dG8f4T3qdgjiGgJ",
+    "generatedAt": "2026-06-21T04:41:31.870Z"
+  },
+  "maxwellfield": {
+    "count": 6,
+    "glyph": "pulse",
+    "ipfsHash": "QmfD4nmjy6hjx8JCiu64Eu4enmPYxX1NV2LaMjoxLs53Ek",
+    "imageUri": "ipfs://QmfD4nmjy6hjx8JCiu64Eu4enmPYxX1NV2LaMjoxLs53Ek",
+    "generatedAt": "2026-06-21T04:41:33.737Z"
+  },
+  "setshapes": {
+    "count": 4,
+    "glyph": "spiral",
+    "ipfsHash": "QmNTawD4VYGvU9pjiXtszecQQhwNtPTghLSckczFDqMdpU",
+    "imageUri": "ipfs://QmNTawD4VYGvU9pjiXtszecQQhwNtPTghLSckczFDqMdpU",
+    "generatedAt": "2026-06-21T04:41:35.566Z"
+  },
+  "theory-of-everything": {
+    "count": 20,
+    "glyph": "spiral",
+    "ipfsHash": "QmPQ8fsL9dzS2HxLxvR2hwJ1jTKHjSaBgmLo6kbfm5Uyym",
+    "imageUri": "ipfs://QmPQ8fsL9dzS2HxLxvR2hwJ1jTKHjSaBgmLo6kbfm5Uyym",
+    "generatedAt": "2026-06-21T04:41:37.718Z"
+  },
+  "quantum-mechanics": {
+    "count": 21,
+    "glyph": "atom",
+    "ipfsHash": "QmbrF1v5KAT8J1LJD9CMVWoHyTpbb7h5zVEo3QgbjdPYgP",
+    "imageUri": "ipfs://QmbrF1v5KAT8J1LJD9CMVWoHyTpbb7h5zVEo3QgbjdPYgP",
+    "generatedAt": "2026-06-21T04:41:38.227Z"
+  },
+  "cryptography": {
+    "count": 24,
+    "glyph": "hexlattice",
+    "ipfsHash": "QmTffjCnj88LKFhQb2AV9AMJ1LPsydAVwPVKt6J6pJgLDf",
+    "imageUri": "ipfs://QmTffjCnj88LKFhQb2AV9AMJ1LPsydAVwPVKt6J6pJgLDf",
+    "generatedAt": "2026-06-21T04:41:40.260Z"
+  },
+  "hypercomputation": {
+    "count": 11,
+    "glyph": "grid",
+    "ipfsHash": "QmUJ4w2fHWGzU4DiZxSGdhApiTh1Ducmh7ANvtyVFSWgTs",
+    "imageUri": "ipfs://QmUJ4w2fHWGzU4DiZxSGdhApiTh1Ducmh7ANvtyVFSWgTs",
+    "generatedAt": "2026-06-21T04:41:42.167Z"
+  },
+  "historical": {
+    "count": 28,
+    "glyph": "grid",
+    "ipfsHash": "Qmc9g7z4iE9GsBsbdNKszXWw9o5iZutpXmWtV3kz7UiqDq",
+    "imageUri": "ipfs://Qmc9g7z4iE9GsBsbdNKszXWw9o5iZutpXmWtV3kz7UiqDq",
+    "generatedAt": "2026-06-21T04:41:42.776Z"
+  },
+  "4d-hyperdimensional": {
+    "count": 20,
+    "glyph": "cube",
+    "ipfsHash": "QmRHZ3ZJbdHPXf3ktqTTrquZLtdWhkiSdkwG9BMvURX86L",
+    "imageUri": "ipfs://QmRHZ3ZJbdHPXf3ktqTTrquZLtdWhkiSdkwG9BMvURX86L",
+    "generatedAt": "2026-06-21T04:41:44.638Z"
+  },
+  "tissue": {
+    "count": 3,
+    "glyph": "helix",
+    "ipfsHash": "QmaDSzofEwWaMqG5veNvNYAHn6BtBeGZMECN2o36FVpf5P",
+    "imageUri": "ipfs://QmaDSzofEwWaMqG5veNvNYAHn6BtBeGZMECN2o36FVpf5P",
+    "generatedAt": "2026-06-21T04:41:45.176Z"
+  },
+  "universal": {
+    "count": 10,
+    "glyph": "grid",
+    "ipfsHash": "QmU7oo5xoafdSCoztjyaPZa3Ez5meY1hr6dGgrPVpkcuLR",
+    "imageUri": "ipfs://QmU7oo5xoafdSCoztjyaPZa3Ez5meY1hr6dGgrPVpkcuLR",
+    "generatedAt": "2026-06-21T04:41:47.097Z"
+  },
+  "efvunified": {
+    "count": 8,
+    "glyph": "grid",
+    "ipfsHash": "QmSfpzDoNm7qgWdqqrMT9U6ChGYrKEEDzfzdd2Pn8WzMnT",
+    "imageUri": "ipfs://QmSfpzDoNm7qgWdqqrMT9U6ChGYrKEEDzfzdd2Pn8WzMnT",
+    "generatedAt": "2026-06-21T04:41:48.958Z"
+  },
+  "tenpercent": {
+    "count": 18,
+    "glyph": "grid",
+    "ipfsHash": "QmXHBLumimhvP3PdqxWU5mRgMdqhUVELxM6Zho7nwt1Tgj",
+    "imageUri": "ipfs://QmXHBLumimhvP3PdqxWU5mRgMdqhUVELxM6Zho7nwt1Tgj",
+    "generatedAt": "2026-06-21T04:41:50.848Z"
+  },
+  "topologydifferential": {
+    "count": 28,
+    "glyph": "cube",
+    "ipfsHash": "QmSoZPXqHQWUDrvHeY8Fqm1SfkwJZ3nMtnUVEDGzTcyB8T",
+    "imageUri": "ipfs://QmSoZPXqHQWUDrvHeY8Fqm1SfkwJZ3nMtnUVEDGzTcyB8T",
+    "generatedAt": "2026-06-21T04:41:52.745Z"
+  },
+  "thermaleringshapes": {
+    "count": 32,
+    "glyph": "grid",
+    "ipfsHash": "QmSt2NaoBYiidHPNRtDTfkPu13vPjwV62AkCeS8dkdGxv3",
+    "imageUri": "ipfs://QmSt2NaoBYiidHPNRtDTfkPu13vPjwV62AkCeS8dkdGxv3",
+    "generatedAt": "2026-06-21T04:41:53.322Z"
+  },
+  "quantum-machine-learning": {
+    "count": 20,
+    "glyph": "atom",
+    "ipfsHash": "QmSdPdtLnrv5ZX2xcDJrzy89ePv4xDmdx9RkcQZeVsPnaL",
+    "imageUri": "ipfs://QmSdPdtLnrv5ZX2xcDJrzy89ePv4xDmdx9RkcQZeVsPnaL",
+    "generatedAt": "2026-06-21T04:41:55.170Z"
+  },
+  "chakra": {
+    "count": 13,
+    "glyph": "grid",
+    "ipfsHash": "QmUSJLi9aeWjaftTa6unHqE1X75dBGFWH8F6LqCp1XgVGB",
+    "imageUri": "ipfs://QmUSJLi9aeWjaftTa6unHqE1X75dBGFWH8F6LqCp1XgVGB",
+    "generatedAt": "2026-06-21T04:41:56.942Z"
+  },
+  "ofeverythingshapes": {
+    "count": 10,
+    "glyph": "grid",
+    "ipfsHash": "QmUEBrujJhWuEnH3LSxQgqXzCZfucbPXBaz8S6okhRM7wZ",
+    "imageUri": "ipfs://QmUEBrujJhWuEnH3LSxQgqXzCZfucbPXBaz8S6okhRM7wZ",
+    "generatedAt": "2026-06-21T04:41:58.782Z"
+  },
+  "group": {
+    "count": 3,
+    "glyph": "spiral",
+    "ipfsHash": "Qmdc1e8Vjkm9RXvqNEzAbTskAFfKxoSCbXbUKYTaspdPkY",
+    "imageUri": "ipfs://Qmdc1e8Vjkm9RXvqNEzAbTskAFfKxoSCbXbUKYTaspdPkY",
+    "generatedAt": "2026-06-21T04:41:59.357Z"
+  },
+  "noise": {
+    "count": 5,
+    "glyph": "grid",
+    "ipfsHash": "QmNNfUVEyE59HcsjXoqJQUGb9TsprUNQJpnX3AAMJUg3GW",
+    "imageUri": "ipfs://QmNNfUVEyE59HcsjXoqJQUGb9TsprUNQJpnX3AAMJUg3GW",
+    "generatedAt": "2026-06-21T04:41:59.906Z"
+  },
+  "crossdomainhybrid": {
+    "count": 8,
+    "glyph": "network",
+    "ipfsHash": "QmQG7vUJmUCp6C1L6pA6RxpvNJNvgEsnuX6Coo6YDvR2ch",
+    "imageUri": "ipfs://QmQG7vUJmUCp6C1L6pA6RxpvNJNvgEsnuX6Coo6YDvR2ch",
+    "generatedAt": "2026-06-21T04:42:01.822Z"
+  },
+  "category": {
+    "count": 1,
+    "glyph": "grid",
+    "ipfsHash": "QmY7sQhjaTjRSbBbjwvozBw1SUtKGXiPapEUuXXv6H5K3u",
+    "imageUri": "ipfs://QmY7sQhjaTjRSbBbjwvozBw1SUtKGXiPapEUuXXv6H5K3u",
+    "generatedAt": "2026-06-21T04:42:03.722Z"
+  },
+  "quantumgap": {
+    "count": 3,
+    "glyph": "atom",
+    "ipfsHash": "QmbxxTcH6UXhaqTxpyybBiNrqXBNUtmLbUV2A8oB23ERkR",
+    "imageUri": "ipfs://QmbxxTcH6UXhaqTxpyybBiNrqXBNUtmLbUV2A8oB23ERkR",
+    "generatedAt": "2026-06-21T04:42:04.278Z"
+  },
+  "neurallattice": {
+    "count": 33,
+    "glyph": "network",
+    "ipfsHash": "QmStHSSijBkMVMYhpX2Em7M98dpxhCJRApT62Dv3ZW4Mgh",
+    "imageUri": "ipfs://QmStHSSijBkMVMYhpX2Em7M98dpxhCJRApT62Dv3ZW4Mgh",
+    "generatedAt": "2026-06-21T04:42:04.767Z"
+  },
+  "scientificexpansion": {
+    "count": 57,
+    "glyph": "grid",
+    "ipfsHash": "QmbAMreJ9bT8QhjaMB98B7Z7yVwp7V8FyD38bzKv6PHxS8",
+    "imageUri": "ipfs://QmbAMreJ9bT8QhjaMB98B7Z7yVwp7V8FyD38bzKv6PHxS8",
+    "generatedAt": "2026-06-21T04:42:06.603Z"
+  },
+  "generalrelativity": {
+    "count": 22,
+    "glyph": "orbit",
+    "ipfsHash": "QmQSM1cKd51Cb54ZzxNFdNrtQnRotL5sQfRcTpH6ajgEh5",
+    "imageUri": "ipfs://QmQSM1cKd51Cb54ZzxNFdNrtQnRotL5sQfRcTpH6ajgEh5",
+    "generatedAt": "2026-06-21T04:42:08.471Z"
+  },
+  "chaosshapes": {
+    "count": 33,
+    "glyph": "vortex",
+    "ipfsHash": "QmfBM5skR7xcMVP7TPfAmcUPm8yvofgRyhi4psaCdqdfKg",
+    "imageUri": "ipfs://QmfBM5skR7xcMVP7TPfAmcUPm8yvofgRyhi4psaCdqdfKg",
+    "generatedAt": "2026-06-21T04:42:08.986Z"
+  },
+  "scientificidentity": {
+    "count": 23,
+    "glyph": "grid",
+    "ipfsHash": "QmbUVX2XjE1sLquywXs1R9eXKqJXadtd5J8bkmCYD8b6Li",
+    "imageUri": "ipfs://QmbUVX2XjE1sLquywXs1R9eXKqJXadtd5J8bkmCYD8b6Li",
+    "generatedAt": "2026-06-21T04:42:10.805Z"
+  },
+  "nasaplanetary": {
+    "count": 3,
+    "glyph": "orbit",
+    "ipfsHash": "QmSCwXzUECd9vw6TXVvMtK35g1pGt4QSvukGXBhLb9xWUk",
+    "imageUri": "ipfs://QmSCwXzUECd9vw6TXVvMtK35g1pGt4QSvukGXBhLb9xWUk",
+    "generatedAt": "2026-06-21T04:42:12.944Z"
+  },
+  "tensoralgebra": {
+    "count": 12,
+    "glyph": "cube",
+    "ipfsHash": "QmSzAfAopVgtrwGGzSW9HhTdfxMJ3gDTjJ843wBV3AraXV",
+    "imageUri": "ipfs://QmSzAfAopVgtrwGGzSW9HhTdfxMJ3gDTjJ843wBV3AraXV",
+    "generatedAt": "2026-06-21T04:42:13.589Z"
+  },
+  "astronomical": {
+    "count": 6,
+    "glyph": "orbit",
+    "ipfsHash": "QmTScmNFR2QR3bCG8WSjeU1CX5h3gAadPMgWA1VjhPriJM",
+    "imageUri": "ipfs://QmTScmNFR2QR3bCG8WSjeU1CX5h3gAadPMgWA1VjhPriJM",
+    "generatedAt": "2026-06-21T04:42:15.441Z"
+  },
+  "protein": {
+    "count": 7,
+    "glyph": "helix",
+    "ipfsHash": "QmS4zReJUrjMjzR46WPWqoGuQNcMyVVrkvSYPJ2HcM1XbJ",
+    "imageUri": "ipfs://QmS4zReJUrjMjzR46WPWqoGuQNcMyVVrkvSYPJ2HcM1XbJ",
+    "generatedAt": "2026-06-21T04:42:15.983Z"
+  },
+  "lifesciences": {
+    "count": 13,
+    "glyph": "helix",
+    "ipfsHash": "QmNduxwGFooLJG3SbnUZwqjsrPq3hc2Tk43GqStd1s8gaC",
+    "imageUri": "ipfs://QmNduxwGFooLJG3SbnUZwqjsrPq3hc2Tk43GqStd1s8gaC",
+    "generatedAt": "2026-06-21T04:42:17.846Z"
+  },
+  "quantumparametric": {
+    "count": 46,
+    "glyph": "atom",
+    "ipfsHash": "QmTZznWE6oCjmv3hRfMAEU5NtPMhaDVZ2PSbTvYXBF5xix",
+    "imageUri": "ipfs://QmTZznWE6oCjmv3hRfMAEU5NtPMhaDVZ2PSbTvYXBF5xix",
+    "generatedAt": "2026-06-21T04:42:19.725Z"
+  },
+  "qpuquantumcomputing": {
+    "count": 34,
+    "glyph": "atom",
+    "ipfsHash": "QmSEAe8XUbt7UXL2ervfJAkceYK7uJR6rt4Q9LhBJipD4L",
+    "imageUri": "ipfs://QmSEAe8XUbt7UXL2ervfJAkceYK7uJR6rt4Q9LhBJipD4L",
+    "generatedAt": "2026-06-21T04:42:21.767Z"
+  },
+  "cleanmath": {
+    "count": 185,
+    "glyph": "grid",
+    "ipfsHash": "QmdhSXPo22BXzbr5BXtL2m2MrUiYyjLjz7yiHcK5Fm7Kc7",
+    "imageUri": "ipfs://QmdhSXPo22BXzbr5BXtL2m2MrUiYyjLjz7yiHcK5Fm7Kc7",
+    "generatedAt": "2026-06-21T04:42:23.687Z"
+  },
+  "quantumcomputing": {
+    "count": 52,
+    "glyph": "atom",
+    "ipfsHash": "QmakJH9m7JCpmJnD55BTP1EbvQqx8EKjJd9sCGZSPz2ESY",
+    "imageUri": "ipfs://QmakJH9m7JCpmJnD55BTP1EbvQqx8EKjJd9sCGZSPz2ESY",
+    "generatedAt": "2026-06-21T04:42:25.557Z"
+  },
+  "quantum-computing": {
+    "count": 20,
+    "glyph": "atom",
+    "ipfsHash": "QmZo1yy1ADkMVTKC9sLyVjcPvZ36kkvcKcChPTuqtW6HCV",
+    "imageUri": "ipfs://QmZo1yy1ADkMVTKC9sLyVjcPvZ36kkvcKcChPTuqtW6HCV",
+    "generatedAt": "2026-06-21T04:42:26.031Z"
+  },
+  "set-theory": {
+    "count": 20,
+    "glyph": "spiral",
+    "ipfsHash": "QmdYqoE2hHWWpvtoBA6RGvrr7d2vVDc7Cno8ADnDWUqYbA",
+    "imageUri": "ipfs://QmdYqoE2hHWWpvtoBA6RGvrr7d2vVDc7Cno8ADnDWUqYbA",
+    "generatedAt": "2026-06-21T04:42:27.832Z"
+  },
+  "parametric": {
+    "count": 7,
+    "glyph": "grid",
+    "ipfsHash": "QmYjC55ME9KnAhRdyrV1PwTiSHScqiCa7TVBwWDRJm7MJz",
+    "imageUri": "ipfs://QmYjC55ME9KnAhRdyrV1PwTiSHScqiCa7TVBwWDRJm7MJz",
+    "generatedAt": "2026-06-21T04:42:28.295Z"
+  },
+  "socialsciences": {
+    "count": 22,
+    "glyph": "grid",
+    "ipfsHash": "QmbadLfgJ2cT3JFctfw4moLzTSRZLUpr3BDswpEbZSeXtZ",
+    "imageUri": "ipfs://QmbadLfgJ2cT3JFctfw4moLzTSRZLUpr3BDswpEbZSeXtZ",
+    "generatedAt": "2026-06-21T04:42:30.108Z"
+  },
+  "financial": {
+    "count": 3,
+    "glyph": "grid",
+    "ipfsHash": "QmefBVLUneU6g3jSvUWuEFJntL7CijGZcF8HhpzNdgoPwA",
+    "imageUri": "ipfs://QmefBVLUneU6g3jSvUWuEFJntL7CijGZcF8HhpzNdgoPwA",
+    "generatedAt": "2026-06-21T04:42:31.988Z"
+  },
+  "cosmology": {
+    "count": 20,
+    "glyph": "grid",
+    "ipfsHash": "QmZUGaMcnRzD1tGoq9f4KGspULM2s1agn1UNMpQVP5zui5",
+    "imageUri": "ipfs://QmZUGaMcnRzD1tGoq9f4KGspULM2s1agn1UNMpQVP5zui5",
+    "generatedAt": "2026-06-21T04:42:33.841Z"
+  },
+  "mechanical": {
+    "count": 5,
+    "glyph": "grid",
+    "ipfsHash": "QmaTyY46PbwzNGvVSr2s3wo5CzBYC1SW37mejVf6TXKcWK",
+    "imageUri": "ipfs://QmaTyY46PbwzNGvVSr2s3wo5CzBYC1SW37mejVf6TXKcWK",
+    "generatedAt": "2026-06-21T04:42:35.849Z"
+  },
+  "attractor": {
+    "count": 11,
+    "glyph": "vortex",
+    "ipfsHash": "QmSzSMEXqmQyHCmMXcYhQkjqJZNjAqzUyTUzkj2uZEiVjG",
+    "imageUri": "ipfs://QmSzSMEXqmQyHCmMXcYhQkjqJZNjAqzUyTUzkj2uZEiVjG",
+    "generatedAt": "2026-06-21T04:42:36.373Z"
+  },
+  "voronoi": {
+    "count": 2,
+    "glyph": "grid",
+    "ipfsHash": "QmP4Na8WpQL72aKfJN4XPM1o1HjF1KTDkQyRUa7J9BqEV4",
+    "imageUri": "ipfs://QmP4Na8WpQL72aKfJN4XPM1o1HjF1KTDkQyRUa7J9BqEV4",
+    "generatedAt": "2026-06-21T04:42:36.872Z"
+  },
+  "fieldengine": {
+    "count": 39,
+    "glyph": "pulse",
+    "ipfsHash": "QmUSzuW8nTYVUVVFAYW1LWQR7ed94q9Zyjp38sD1uERP4A",
+    "imageUri": "ipfs://QmUSzuW8nTYVUVVFAYW1LWQR7ed94q9Zyjp38sD1uERP4A",
+    "generatedAt": "2026-06-21T04:42:38.839Z"
+  }
+}

@@ -1,0 +1,747 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>UUON -- IFS + L-System Growth Engine v1.000</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@300;400;600;700&display=swap');
+:root{--void:#04080f;--teal:#00E5CC;--gold:#C9A84C;--violet:#7B5EA7;--crimson:#CC4433;--panel:#060c17;--dim:rgba(0,229,204,0.35);--border:rgba(0,229,204,0.10);}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--void);color:var(--teal);font-family:'Share Tech Mono',monospace;height:100vh;overflow:hidden;display:flex;flex-direction:column;}
+header{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;padding:8px 16px;border-bottom:1px solid var(--border);background:var(--panel);flex-shrink:0;}
+.logo{font-family:'Rajdhani',sans-serif;font-weight:700;font-size:12px;letter-spacing:5px;color:var(--gold);}
+.logo em{color:var(--teal);font-style:normal;}
+.etitle{font-family:'Rajdhani',sans-serif;font-size:11px;letter-spacing:4px;color:var(--dim);text-align:center;}
+.ver{text-align:right;font-size:9px;color:rgba(201,168,76,0.55);letter-spacing:2px;}
+.ws{display:flex;flex:1;overflow:hidden;}
+.ca{flex:1;position:relative;background:#000;}
+canvas{width:100%;height:100%;display:block;cursor:crosshair;}
+canvas:active{cursor:grabbing;}
+.hud{position:absolute;top:12px;left:14px;font-size:9px;color:var(--dim);line-height:2.1;pointer-events:none;}
+.hud .v{color:var(--teal);}.hud .g{color:var(--gold);}.hud .vi{color:var(--violet);}.hud .cr{color:var(--crimson);}
+.fps-tag{position:absolute;top:12px;right:14px;font-size:9px;color:var(--dim);pointer-events:none;text-align:right;line-height:2.1;}
+.fps-tag .v{color:var(--teal);}
+.dna-bar{position:absolute;bottom:0;left:0;right:0;background:rgba(4,8,15,0.85);border-top:1px solid rgba(0,229,204,0.2);padding:5px 12px 6px;display:flex;flex-direction:column;gap:2px;pointer-events:none;z-index:10;}
+.dna-row1{display:flex;justify-content:space-between;align-items:center;}
+.dna-engine{font-family:'Rajdhani',sans-serif;font-size:9px;font-weight:700;letter-spacing:4px;color:var(--gold);}
+.dna-ts{font-size:8px;color:rgba(0,229,204,0.3);letter-spacing:1px;}
+.dna-zoom{font-size:8px;color:rgba(123,94,167,0.7);letter-spacing:2px;}
+.dna-string{font-family:'Share Tech Mono',monospace;font-size:8.5px;color:rgba(0,229,204,0.7);letter-spacing:0.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.panel{width:250px;flex-shrink:0;background:var(--panel);border-left:1px solid var(--border);overflow-y:auto;scrollbar-width:thin;scrollbar-color:rgba(0,229,204,0.08) transparent;}
+.ps{padding:12px 14px;border-bottom:1px solid var(--border);}
+.sl{font-family:'Rajdhani',sans-serif;font-size:9px;letter-spacing:5px;color:var(--gold);opacity:.7;text-transform:uppercase;margin-bottom:10px;}
+.cr2{margin-bottom:11px;}
+.cl{display:flex;justify-content:space-between;font-size:9px;color:var(--dim);margin-bottom:4px;}
+.cl .cv{color:var(--teal);}.cl .cg{color:var(--gold);}
+input[type=range]{width:100%;height:1px;-webkit-appearance:none;background:rgba(0,229,204,0.14);outline:none;cursor:pointer;}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:8px;height:8px;border-radius:50%;background:var(--teal);box-shadow:0 0 5px rgba(0,229,204,0.7);cursor:pointer;}
+input[type=range].gold::-webkit-slider-thumb{background:var(--gold);box-shadow:0 0 5px rgba(201,168,76,0.7);}
+input[type=range].violet::-webkit-slider-thumb{background:var(--violet);}
+input[type=range].crimson::-webkit-slider-thumb{background:var(--crimson);}
+.bg{display:flex;gap:3px;flex-wrap:wrap;}
+.b{font-family:'Share Tech Mono',monospace;font-size:8.5px;padding:3px 7px;background:transparent;border:1px solid rgba(0,229,204,0.12);color:rgba(0,229,204,0.35);cursor:pointer;transition:all .12s;}
+.b:hover{border-color:var(--teal);color:var(--teal);}
+.b.on{background:rgba(0,229,204,0.07);border-color:var(--teal);color:var(--teal);}
+.pgrid{display:grid;grid-template-columns:1fr 1fr;gap:4px;margin-bottom:4px;}
+.pc{padding:6px 7px;border:1px solid rgba(0,229,204,0.10);cursor:pointer;transition:all .15s;}
+.pc:hover{border-color:var(--teal);}
+.pc.on{border-color:var(--gold);background:rgba(201,168,76,0.05);}
+.pc .pn{font-family:'Rajdhani',sans-serif;font-size:10px;color:var(--gold);letter-spacing:2px;}
+.pc .pd{font-size:7.5px;color:var(--dim);margin-top:2px;line-height:1.4;}
+.ir{display:flex;justify-content:space-between;font-size:8.5px;color:var(--dim);margin-bottom:4px;}
+.ir .iv{color:var(--teal);}.ir .ig{color:var(--gold);}
+.ab{width:100%;padding:7px;font-family:'Share Tech Mono',monospace;font-size:8.5px;letter-spacing:2px;background:transparent;border:1px solid var(--border);color:var(--teal);cursor:pointer;transition:all .18s;text-transform:uppercase;margin-bottom:5px;}
+.ab:hover{background:rgba(0,229,204,0.06);border-color:var(--teal);}
+.ab.gb{border-color:rgba(201,168,76,0.2);color:var(--gold);}
+.ab.gb:hover{background:rgba(201,168,76,0.06);border-color:var(--gold);}
+footer{padding:5px 16px;border-top:1px solid var(--border);background:var(--panel);display:flex;justify-content:space-between;font-size:8px;color:var(--dim);flex-shrink:0;}
+.fi{display:flex;gap:14px;}
+.fi span b{color:var(--teal);font-weight:normal;}
+</style>
+</head>
+<body>
+<header>
+  <div class="logo">UUON <em>Foundation</em></div>
+  <div class="etitle">IFS + L-System Growth Engine v1.000 -- Path 2</div>
+  <div class="ver">IFS SURFACE + BIOLOGICAL BRANCHING</div>
+</header>
+<div class="ws">
+  <div class="ca">
+    <canvas id="c"></canvas>
+    <div class="hud">
+      <div>IFS    <span class="g" id="hFT">NONE</span></div>
+      <div>mi     <span class="v" id="hMI">3</span></div>
+      <div>GROWTH <span class="cr" id="hLS">VASCULAR</span></div>
+      <div>depth  <span class="v" id="hLD">4</span></div>
+      <div>radius <span class="g" id="hLR">0.03</span></div>
+      <div>tropism<span class="vi" id="hTR">0.30</span></div>
+    </div>
+    <div class="dna-bar" id="dnaBar">
+      <div class="dna-row1">
+        <span class="dna-engine">UUON IFS+L-System v1.000</span>
+        <span class="dna-zoom" id="dnaZoom">zoom 1.0x</span>
+        <span class="dna-ts" id="dnaTime">--</span>
+      </div>
+      <div class="dna-string" id="dnaStr">initializing...</div>
+    </div>
+    <div class="fps-tag">
+      <div>FPS <span class="v" id="fpsEl">--</span></div>
+      <div>RES <span class="v" id="resEl">--</span></div>
+    </div>
+  </div>
+
+  <div class="panel">
+
+    <!-- GROWTH TYPE -->
+    <div class="ps">
+      <div class="sl">Growth System</div>
+      <div class="pgrid" id="lsGrid">
+        <div class="pc on" data-l="0"><div class="pn">VASCULAR</div><div class="pd">Murray law<br>blood vessel</div></div>
+        <div class="pc"    data-l="1"><div class="pn">NEURAL</div><div class="pd">dendritic<br>arborization</div></div>
+        <div class="pc"    data-l="2"><div class="pn">MYCELIUM</div><div class="pd">fungal network<br>space-filling</div></div>
+        <div class="pc"    data-l="3"><div class="pn">CRYSTAL</div><div class="pd">mineral growth<br>crystallographic</div></div>
+      </div>
+      <div style="font-size:8px;color:rgba(0,229,204,0.2);margin-top:6px;line-height:1.7" id="lsDesc">
+        Murray branching law: radius^3 = sum(child_radius^3). Minimizes biological transport cost.
+      </div>
+    </div>
+
+    <!-- L-SYSTEM PARAMETERS -->
+    <div class="ps">
+      <div class="sl">Growth Parameters</div>
+      <div class="cr2"><div class="cl">Depth <span class="cv" id="ldV">4</span></div><input type="range" id="ldS" min="1" max="6" step="1" value="4"></div>
+      <div class="cr2"><div class="cl">Branch radius <span class="cg" id="lrV">0.030</span></div><input type="range" class="gold" id="lrS" min="0.005" max="0.12" step="0.005" value="0.03"></div>
+      <div class="cr2"><div class="cl">Branch angle <span class="cv" id="laV2">35</span></div><input type="range" id="laS2" min="10" max="80" step="1" value="35"></div>
+      <div class="cr2"><div class="cl">Tropism <span class="vi" id="ltV">0.30</span></div><input type="range" class="violet" id="ltS" min="0.0" max="1.0" step="0.01" value="0.3"></div>
+      <div class="cr2"><div class="cl">Growth scale <span class="cv" id="lgV">0.65</span></div><input type="range" id="lgS" min="0.3" max="0.95" step="0.01" value="0.65"></div>
+      <div class="cr2"><div class="cl">Root position</div>
+        <div class="bg" id="rootG">
+          <button class="b on" data-v="0">CENTER</button>
+          <button class="b"    data-v="1">TOP</button>
+          <button class="b"    data-v="2">FACE</button>
+          <button class="b"    data-v="3">VOID</button>
+        </div>
+      </div>
+      <div class="cr2"><div class="cl">Blend IFS+L <span class="cv" id="lbV">0.50</span></div><input type="range" id="lbS" min="0.0" max="1.0" step="0.01" value="0.5"></div>
+    </div>
+
+    <!-- IFS BASE -->
+    <div class="ps">
+      <div class="sl">IFS Base</div>
+      <div class="cr2"><div class="cl">Fold type</div>
+        <div class="bg" id="ftg">
+          <button class="b on" data-v="0">NONE</button>
+          <button class="b"    data-v="1">BOX</button>
+          <button class="b"    data-v="2">KLEINIAN</button>
+          <button class="b"    data-v="3">LATTICE</button>
+          <button class="b"    data-v="4">TETRA</button>
+        </div>
+      </div>
+      <div class="cr2"><div class="cl">Iterations <span class="cv" id="miV">3</span></div><input type="range" id="miS" min="1" max="5" step="1" value="3"></div>
+      <div class="cr2"><div class="cl">Scale <span class="cv" id="scV">3.00</span></div><input type="range" id="scS" min="2.0" max="4.5" step="0.02" value="3.0"></div>
+      <div class="cr2"><div class="cl">Fold scale <span class="cv" id="fscV">1.70</span></div><input type="range" id="fscS" min="1.0" max="1.85" step="0.01" value="1.7"></div>
+      <div class="cr2"><div class="cl">Blend <span class="cv" id="blV">0.20</span></div><input type="range" id="blS" min="0.0" max="1.0" step="0.01" value="0.2"></div>
+    </div>
+
+    <!-- COLOR -->
+    <div class="ps">
+      <div class="sl">Color</div>
+      <div class="cr2"><div class="cl">Mode</div>
+        <div class="bg" id="cmg">
+          <button class="b on" data-v="0">BIOFILM</button>
+          <button class="b"    data-v="1">DEPTH</button>
+          <button class="b"    data-v="2">STRESS</button>
+          <button class="b"    data-v="3">IRID</button>
+        </div>
+      </div>
+      <div class="cr2"><div class="cl">Brightness <span class="cv" id="brV">1.50</span></div><input type="range" id="brS" min="0.5" max="3.0" step="0.05" value="1.5"></div>
+      <div class="cr2"><div class="cl">Steps <span class="cv" id="rsV">130</span></div><input type="range" id="rsS" min="64" max="220" step="4" value="130"></div>
+    </div>
+
+    <!-- CAMERA -->
+    <div class="ps">
+      <div class="sl">Camera</div>
+      <div class="cr2"><div class="cl">Distance <span class="cv" id="dvV">5.00</span></div><input type="range" id="dvS" min="1.0" max="12.0" step="0.1" value="5.0"></div>
+      <div class="cr2"><div class="cl">Auto-Rotate</div>
+        <div class="bg" id="arg">
+          <button class="b on" data-v="1">ON</button>
+          <button class="b"    data-v="0">OFF</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- DATA -->
+    <div class="ps">
+      <div class="sl">System Data</div>
+      <div class="ir"><span>L-system type</span><span class="ig" id="dType">Vascular</span></div>
+      <div class="ir"><span>Branch count</span><span class="iv" id="dBranch">--</span></div>
+      <div class="ir"><span>Growth law</span><span class="iv" id="dLaw">Murray r^3</span></div>
+      <div class="ir"><span>IFS Hausdorff</span><span class="ig" id="dHaus">2.727</span></div>
+      <div class="ir"><span>Combined dim</span><span class="iv" id="dComb">--</span></div>
+    </div>
+
+    <div class="ps">
+      <button class="ab" id="resetBtn">RESET VIEW</button>
+      <button class="ab gb" id="shotBtn">PNG EXPORT</button>
+    </div>
+
+  </div>
+</div>
+<footer>
+  <div class="fi"><span><b>DRAG</b> rotate</span><span><b>SCROLL</b> zoom</span><span><b>SHIFT+DRAG</b> light</span></div>
+  <div>UUON Foundation -- IFS + L-System Growth Engine v1.000 -- Path 2</div>
+</footer>
+
+<script>
+const canvas = document.getElementById('c');
+const gl = canvas.getContext('webgl', { antialias:false, preserveDrawingBuffer:true });
+
+const VS = `attribute vec2 p; void main(){ gl_Position=vec4(p,0.0,1.0); }`;
+
+const FS = `
+precision highp float;
+
+uniform vec2  uR;
+uniform float uTime;
+
+// IFS parameters
+uniform int   uMI;
+uniform float uSC;
+uniform float uOX;
+uniform int   uFT;
+uniform float uFSC;
+uniform float uBL;
+
+// L-system parameters
+uniform int   uLS;     // growth type: 0=vascular 1=neural 2=mycelium 3=crystal
+uniform int   uLD;     // depth: 1-6
+uniform float uLR;     // branch radius
+uniform float uLA;     // branch angle (radians)
+uniform float uLT;     // tropism (pull toward center)
+uniform float uLG;     // growth scale per iteration
+uniform int   uROOT;   // root position: 0=center 1=top 2=face 3=void
+uniform float uLBL;    // blend IFS vs L-system
+uniform int   uCM;     // color mode
+uniform float uBright;
+uniform float uRS;
+uniform float uDV;
+uniform float uFOV;
+uniform vec2  uCAM;
+
+#define PI  3.14159265359
+#define TAU 6.28318530718
+#define PHI 1.61803398875
+#define EPS 0.0006
+#define FAR 18.0
+
+// ── IFS fold functions ────────────────────────────────────────────────────────
+vec3 boxFold(vec3 p,float s){return clamp(p,-s,s)*2.0-p;}
+vec3 sphereFold(vec3 p,float minR,float fixR){
+  float r2=max(dot(p,p),0.0001);
+  if(r2<minR*minR) return p*(fixR*fixR)/(minR*minR);
+  else if(r2<fixR*fixR) return p*(fixR*fixR)/r2;
+  return p;
+}
+vec3 latticeFold(vec3 p,float s){return mod(p+vec3(s),2.0*s)-vec3(s);}
+vec3 tetraFold(vec3 p){
+  if(p.x+p.y<0.0)p.xy=-p.yx;
+  if(p.x+p.z<0.0)p.xz=-p.zx;
+  if(p.y+p.z<0.0)p.yz=-p.zy;
+  if(p.x-p.y<0.0)p.xy=p.yx;
+  return abs(p);
+}
+
+// ── IFS Distance Estimator ────────────────────────────────────────────────────
+vec2 ifsDE(vec3 pos) {
+  vec3 p=pos; float scale=1.0,trap=1e10;
+  if(uFT==1){for(int i=0;i<10;i++){if(i>=3)break;p=boxFold(p,1.0);p=sphereFold(p,0.5,1.0);p*=uFSC;scale*=uFSC;trap=min(trap,length(p));}}
+  else if(uFT==2){for(int i=0;i<10;i++){if(i>=3)break;p=boxFold(p,1.0);p=sphereFold(p,0.5,1.0);p=p*uFSC+pos;scale*=uFSC;trap=min(trap,length(p));}}
+  else if(uFT==3){for(int i=0;i<10;i++){if(i>=2)break;p=latticeFold(p,0.8);p*=uFSC;scale*=uFSC;trap=min(trap,length(p));}}
+  else if(uFT==4){for(int i=0;i<10;i++){if(i>=2)break;p=tetraFold(p);p=p*uFSC-vec3(0.8);scale*=uFSC;trap=min(trap,length(p));}}
+  vec3 pm=mix(p,pos,uBL);
+  vec3 q=pm; float ms=1.0;
+  for(int i=0;i<6;i++){
+    if(i>=uMI)break;
+    q=abs(q);
+    if(q.x<q.y)q.xy=q.yx;
+    if(q.x<q.z)q.xz=q.zx;
+    if(q.y<q.z)q.yz=q.zy;
+    q=uSC*q-vec3(uOX)*(uSC-1.0);
+    ms*=uSC;
+    trap=min(trap,min(length(q.xy),length(q.xz))/ms);
+  }
+  float cyl=min(min(length(q.xy),length(q.xz)),length(q.yz));
+  float d=(cyl-1.0)/ms;
+  float guideR=max(1.0*uFSC,2.0);
+  vec3 bx=abs(pos)-vec3(guideR);
+  d=max(d,length(max(bx,0.0))+min(max(bx.x,max(bx.y,bx.z)),0.0)*0.15);
+  return vec2(d,clamp(trap*0.5,0.0,1.0));
+}
+
+// ============================================================
+// L-SYSTEM BRANCHING
+// Procedural branching using recursive rotation matrices
+// Each branch is a capsule SDF
+// The L-system grows in the parameter space of the IFS orbit trap
+// ============================================================
+
+// Capsule SDF: distance from point p to segment (a,b) with radius r
+float sdCapsule(vec3 p, vec3 a, vec3 b, float r) {
+  vec3 ab=b-a, ap=p-a;
+  float t=clamp(dot(ap,ab)/dot(ab,ab),0.0,1.0);
+  return length(ap-ab*t)-r;
+}
+
+// Rotation matrices
+mat3 rotX(float a){float c=cos(a),s=sin(a);return mat3(1,0,0,0,c,-s,0,s,c);}
+mat3 rotY(float a){float c=cos(a),s=sin(a);return mat3(c,0,s,0,1,0,-s,0,c);}
+mat3 rotZ(float a){float c=cos(a),s=sin(a);return mat3(c,-s,0,s,c,0,0,0,1);}
+
+// Hash for procedural variation
+float hash(float n){return fract(sin(n)*43758.5453);}
+float hash2(vec2 v){return fract(sin(dot(v,vec2(127.1,311.7)))*43758.5453);}
+
+// ── VASCULAR: Murray's law branching ─────────────────────────────────────────
+// Parent radius^3 = sum of child radii^3 (Murray 1926)
+// Minimizes transport work -- the law all blood vessels follow
+// Each branch splits into 2 children at angle uLA
+float vascularBranch(vec3 p, vec3 origin, vec3 dir, float r, int depth) {
+  float d=FAR;
+  vec3 end=origin+dir*(r*20.0);
+  d=min(d,sdCapsule(p,origin,end,r));
+  if(depth<=0) return d;
+
+  // Child radius from Murray's law: r_child = r_parent * (0.5)^(1/3)
+  float rc=r*0.794; // 2^(-1/3) = 0.794
+  float angle=uLA;
+  float twist=hash(float(depth)*3.7)*TAU;
+
+  // Two children
+  vec3 perp=normalize(cross(dir,vec3(0,1,0.01)));
+  vec3 c1dir=normalize(dir*cos(angle)+perp*sin(angle));
+  vec3 c2dir=normalize(dir*cos(angle)-perp*sin(angle));
+
+  // Tropism: pull branches toward center (gravity analog)
+  c1dir=normalize(c1dir-vec3(0,uLT*0.3,0));
+  c2dir=normalize(c2dir-vec3(0,uLT*0.3,0));
+
+  d=min(d,vascularBranch(p,end,c1dir,rc*uLG,depth-1));
+  d=min(d,vascularBranch(p,end,c2dir,rc*uLG,depth-1));
+  return d;
+}
+
+// ── NEURAL: Dendritic arborization ───────────────────────────────────────────
+// Random walk with phi-ratio branching angles
+// Models cortical neuron dendrite spreading
+// Tropism pulls toward the IFS attractor surface (tropism to information)
+float neuralBranch(vec3 p, vec3 origin, vec3 dir, float r, int depth, float seed) {
+  float d=FAR;
+  vec3 end=origin+dir*(r*15.0);
+  d=min(d,sdCapsule(p,origin,end,r));
+  if(depth<=0) return d;
+
+  float rc=r*0.72;
+  // Phi-ratio branching angle: 137.5 degrees between successive branches
+  float phiAngle=2.399; // golden angle in radians
+  float a1=uLA+hash(seed)*0.3;
+  float a2=uLA*PHI; // second branch at phi multiple of first angle
+
+  vec3 perp=normalize(cross(dir,vec3(sin(seed*7.3),cos(seed*3.1),sin(seed*5.7))));
+  vec3 c1dir=normalize(dir*cos(a1)+perp*sin(a1));
+  vec3 c2dir=normalize(rotY(phiAngle)*(dir*cos(a2)+perp*sin(a2)));
+
+  // Neural tropism: branches seek the IFS void boundaries (high trap gradient)
+  c1dir=normalize(c1dir+vec3(hash(seed+1.0)-0.5,hash(seed+2.0)-0.5,hash(seed+3.0)-0.5)*uLT*0.4);
+  c2dir=normalize(c2dir+vec3(hash(seed+4.0)-0.5,hash(seed+5.0)-0.5,hash(seed+6.0)-0.5)*uLT*0.4);
+
+  d=min(d,neuralBranch(p,end,c1dir,rc*uLG,depth-1,seed*1.3+7.3));
+  if(depth>1)
+    d=min(d,neuralBranch(p,end,c2dir,rc*uLG,depth-2,seed*2.1+3.7));
+  return d;
+}
+
+// ── MYCELIUM: Fungal network ──────────────────────────────────────────────────
+// Space-filling branching with anastomosis loops
+// Models mycelial network that maximizes coverage
+// Three children per node, lower growth scale
+float myceliumBranch(vec3 p, vec3 origin, vec3 dir, float r, int depth, float seed) {
+  float d=FAR;
+  vec3 end=origin+dir*(r*12.0);
+  d=min(d,sdCapsule(p,origin,end,r));
+  if(depth<=0) return d;
+
+  float rc=r*0.65;
+  float a=uLA*0.8;
+
+  // Three children at 120-degree spacing (hexagonal mycelial growth)
+  for(int k=0;k<3;k++){
+    float angle=float(k)*TAU/3.0+hash(seed+float(k)*2.3)*0.5;
+    mat3 rot=rotY(angle);
+    vec3 cdir=normalize(rot*(dir*cos(a)+vec3(1,0,0)*sin(a)));
+    // Mycelium has strong gravity tropism -- grows outward and downward
+    cdir=normalize(cdir+vec3(0,-uLT*0.4,0)+vec3(hash(seed+float(k))-0.5,0,0)*0.3);
+    if(k<2)
+      d=min(d,myceliumBranch(p,end,cdir,rc*uLG,depth-1,seed*1.7+float(k)*3.3));
+  }
+
+  // Anastomosis: occasional reconnection (creates loops in mycelium)
+  // Approximate with a thin connector branch pulling back
+  if(hash(seed*7.3)>0.6&&depth>2){
+    vec3 loopdir=normalize(-dir+vec3(hash(seed*2.1)-0.5,0,hash(seed*3.1)-0.5)*0.5);
+    d=min(d,sdCapsule(p,end,end+loopdir*r*8.0,r*0.4));
+  }
+  return d;
+}
+
+// ── CRYSTAL: Crystallographic growth axes ────────────────────────────────────
+// Branches along fixed crystallographic directions
+// Models mineral crystal growth from nucleation points
+// Angles snap to specific crystallographic values
+float crystalBranch(vec3 p, vec3 origin, vec3 dir, float r, int depth) {
+  float d=FAR;
+  vec3 end=origin+dir*(r*18.0);
+  d=min(d,sdCapsule(p,origin,end,r));
+  if(depth<=0) return d;
+
+  float rc=r*0.7;
+  // Crystal branches along 3 fixed axes (cubic symmetry)
+  // Plus secondary branches at tetrahedral angles
+  vec3 axes[4];
+  axes[0]=vec3(1,0,0);
+  axes[1]=vec3(0,1,0);
+  axes[2]=vec3(0,0,1);
+  axes[3]=normalize(vec3(1,1,1)); // body diagonal
+
+  for(int k=0;k<4;k++){
+    vec3 caxis=axes[k];
+    // Only branch if the axis is mostly forward (avoid backward growth)
+    if(dot(caxis,dir)>-0.2){
+      vec3 cdir=normalize(mix(dir,caxis,uLA/PI));
+      d=min(d,crystalBranch(p,end,cdir,rc*uLG,depth-1));
+    }
+    // Mirror branch
+    cdir=normalize(mix(dir,-caxis,uLA/PI));
+    if(dot(cdir,dir)>0.0&&depth>2)
+      d=min(d,sdCapsule(p,end,end+cdir*r*10.0,rc));
+  }
+  return d;
+}
+
+// ── Combined L-system DE ──────────────────────────────────────────────────────
+float lsystemDE(vec3 p) {
+  // Root position
+  vec3 root;
+  if(uROOT==1)      root=vec3(0.0,1.2,0.0);  // top
+  else if(uROOT==2) root=vec3(1.2,0.0,0.0);  // face
+  else if(uROOT==3) root=vec3(0.5,0.5,0.5);  // void corner
+  else              root=vec3(0.0);            // center
+
+  vec3 mainDir=normalize(vec3(0,1,0));
+  float angle=uLA;
+  float r=uLR;
+  int depth=uLD;
+
+  if(uLS==0) return vascularBranch(p,root,mainDir,r,depth);
+  else if(uLS==1) return neuralBranch(p,root,mainDir,r,depth,1.0);
+  else if(uLS==2) return myceliumBranch(p,root,mainDir,r,depth,1.0);
+  else return crystalBranch(p,root,mainDir,r,depth);
+}
+
+// ── Combined scene DE ─────────────────────────────────────────────────────────
+// The L-system and IFS combine via a smooth minimum (smin)
+// This creates biological surface connection -- branches appear to grow
+// FROM the IFS surface rather than floating over it
+float smin(float a, float b, float k) {
+  float h=max(k-abs(a-b),0.0)/k;
+  return min(a,b)-h*h*k/4.0;
+}
+
+vec2 sceneDE(vec3 pos) {
+  vec2 ifs=ifsDE(pos);
+  float ls=lsystemDE(pos);
+
+  // Blend: uLBL=0 -> pure IFS, uLBL=1 -> pure L-system, 0.5 -> combined
+  float d;
+  if(uLBL<0.05) {
+    d=ifs.x;
+  } else if(uLBL>0.95) {
+    d=ls;
+  } else {
+    // Smooth union with connection radius
+    float k=0.15*(1.0-uLBL)*uLBL*4.0; // max at bl=0.5
+    d=smin(ifs.x, ls, k);
+  }
+  return vec2(d, ifs.y);
+}
+
+float sd(vec3 p){return sceneDE(p).x;}
+
+vec3 calcNormal(vec3 p){
+  vec2 e=vec2(EPS*3.0,0.0);
+  return normalize(vec3(sd(p+e.xyy)-sd(p-e.xyy),sd(p+e.yxy)-sd(p-e.yxy),sd(p+e.yyx)-sd(p-e.yyx)));
+}
+
+float calcAO(vec3 p,vec3 n){
+  float occ=0.0,w=1.0;
+  for(int i=1;i<=6;i++){float h=0.02+0.18*float(i)/6.0;occ+=max(0.0,h-sd(p+n*h))*w;w*=0.5;}
+  return clamp(1.0-4.0*occ,0.0,1.0);
+}
+
+mat3 camMat(vec3 ro,vec3 ta){vec3 f=normalize(ta-ro),r=normalize(cross(vec3(0,1,0),f));return mat3(r,cross(f,r),f);}
+
+// ── Color modes ───────────────────────────────────────────────────────────────
+// BIOFILM: green/teal biological stain appearance
+// The L-system branches appear as stained biological structures
+vec3 biofilmColor(float trap, vec3 p, float lsDist, float NdotV) {
+  // IFS surface: deep teal like cell membrane stain
+  vec3 membrane=vec3(0.0,0.55,0.5)+vec3(0.0,0.3,0.2)*sin(trap*12.0+p.x*3.0);
+  // L-system branches: green like biological stain (hematoxylin-eosin like)
+  vec3 branch=mix(vec3(0.1,0.7,0.2),vec3(0.9,0.3,0.2),clamp(1.0-lsDist*15.0,0.0,1.0));
+  // Blend by distance to L-system
+  float inBranch=clamp(1.0-lsDist*20.0,0.0,1.0);
+  vec3 col=mix(membrane,branch,inBranch*0.8);
+  float fresnel=pow(1.0-NdotV,2.5);
+  col*=0.7+0.5*fresnel;
+  col+=vec3(0.0,0.1,0.08)*sin(uTime*0.5+trap*8.0);
+  return col;
+}
+
+// DEPTH: cold blue deep to warm surface
+vec3 depthColor(float trap, float t) {
+  return mix(vec3(0.0,0.3,0.8),vec3(0.9,0.5,0.1),clamp(t/6.0,0.0,1.0));
+}
+
+// STRESS: red=high stress (branch points), blue=low stress (free ends)
+vec3 stressColor(float trap, vec3 p) {
+  float stress=1.0-trap;
+  return mix(vec3(0.0,0.5,0.9),vec3(0.9,0.1,0.1),stress*stress);
+}
+
+// IRIDESCENT: same as queuePIT
+vec3 iridColor(float trap, float NdotV, vec3 p) {
+  float fresnel=pow(1.0-NdotV,2.5);
+  float phase=NdotV*3.4+trap*2.1+p.x*0.5+p.z*0.35+uTime*0.035;
+  vec3 ir;
+  ir.r=0.55+0.55*cos(TAU*(phase+0.0));
+  ir.g=0.55+0.55*cos(TAU*(phase+0.333));
+  ir.b=0.55+0.55*cos(TAU*(phase+0.667));
+  ir=clamp(ir*1.3,0.0,1.0);
+  return mix(mix(vec3(0.02,0.03,0.05),ir,0.72+0.28*fresnel),
+             mix(vec3(0.0,0.9,0.8),vec3(0.9,0.72,0.2),trap)*1.2,(1.0-fresnel)*0.22);
+}
+
+void main(){
+  vec2 uv=(gl_FragCoord.xy-0.5*uR)/uR.y;
+  float ct=uCAM.x,cp2=uCAM.y;
+  vec3 ro=vec3(uDV*sin(cp2)*cos(ct),uDV*sin(ct),uDV*cos(cp2)*cos(ct));
+  mat3 cam=camMat(ro,vec3(0.0));
+  vec3 rd=normalize(cam*vec3(uv*tan(radians(uFOV*0.5)),1.0));
+  vec3 ld=normalize(vec3(cos(0.785)*0.7,0.7,sin(0.785)*0.7));
+
+  float t=0.01,trap=0.0;
+  bool hit=false;
+  for(int s=0;s<220;s++){
+    if(float(s)>=uRS)break;
+    vec3 p=ro+rd*t;
+    vec2 res=sceneDE(p);
+    float d=res.x;trap=res.y;
+    if(d<EPS*(1.0+t*0.2)){hit=true;break;}
+    if(t>FAR)break;
+    t+=max(d*0.45,EPS*2.0);
+  }
+
+  vec3 bg=vec3(0.008,0.012,0.025);
+  bg*=1.0-dot(uv,uv)*0.28;
+  vec3 col=bg;
+
+  if(hit){
+    vec3 p=ro+rd*t;
+    vec3 n=calcNormal(p);
+    float occ=calcAO(p,n);
+    float NdotV=max(0.0,dot(n,-rd));
+    float diff=max(0.0,dot(n,ld));
+    vec3 h2=normalize(ld-rd);
+    float spec=pow(max(0.0,dot(n,h2)),80.0)*0.7;
+    float lsDist=lsystemDE(p);
+
+    vec3 base;
+    if(uCM==0)      base=biofilmColor(trap,p,lsDist,NdotV);
+    else if(uCM==1) base=depthColor(trap,t);
+    else if(uCM==2) base=stressColor(trap,p);
+    else            base=iridColor(trap,NdotV,p);
+
+    col  = base*0.11*occ;
+    col += base*diff*occ*0.90;
+    col += vec3(1.0,0.97,0.88)*spec;
+    float sh=clamp(sd(p+ld*0.04)*20.0,0.0,1.0);
+    col*=mix(0.45,1.0,sh);
+    col=mix(col,bg,clamp((t-3.0)/FAR,0.0,0.18));
+  }
+
+  col*=uBright;
+  col=pow(max(col,0.0),vec3(0.42));
+  col*=1.0-dot(uv,uv)*0.45;
+  gl_FragColor=vec4(col,1.0);
+}
+`;
+
+// Compile
+function mkS(type,src){var s=gl.createShader(type);gl.shaderSource(s,src);gl.compileShader(s);if(!gl.getShaderParameter(s,gl.COMPILE_STATUS))console.error(gl.getShaderInfoLog(s));return s;}
+var prog=gl.createProgram();
+gl.attachShader(prog,mkS(gl.VERTEX_SHADER,VS));
+gl.attachShader(prog,mkS(gl.FRAGMENT_SHADER,FS));
+gl.linkProgram(prog);gl.useProgram(prog);
+var buf=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,buf);
+gl.bufferData(gl.ARRAY_BUFFER,new Float32Array([-1,-1,1,-1,-1,1,-1,1,1,-1,1,1]),gl.STATIC_DRAW);
+var ap=gl.getAttribLocation(prog,'p');gl.enableVertexAttribArray(ap);gl.vertexAttribPointer(ap,2,gl.FLOAT,false,0,0);
+var U={};
+['uR','uTime','uMI','uSC','uOX','uFT','uFSC','uBL',
+ 'uLS','uLD','uLR','uLA','uLT','uLG','uROOT','uLBL',
+ 'uCM','uBright','uRS','uDV','uFOV','uCAM']
+.forEach(function(n){U[n]=gl.getUniformLocation(prog,n);});
+
+var S={
+  mi:3,sc:3.0,ox:1.0,ft:0,fsc:1.7,bl:0.2,
+  ls:0,ld:4,lr:0.03,la:35,lt:0.3,lg:0.65,root:0,lbl:0.5,
+  cm:0,bright:1.5,rs:130,dv:5.0,fov:55,
+  autoRot:true,rotSpeed:0.2,
+  camTheta:0.3,camPhi:0.0,t:0,lastTs:0
+};
+
+var LS_META=[
+  {name:'Vascular',law:'Murray r^3',dim:'~1.7',branches:31},
+  {name:'Neural',law:'Phi-ratio angles',dim:'~1.65',branches:21},
+  {name:'Mycelium',law:'3-way + anastomosis',dim:'~1.85',branches:40},
+  {name:'Crystal',law:'Crystallographic axes',dim:'~1.5',branches:24},
+];
+var LS_DESC=[
+  'Murray branching law: radius^3 = sum(child_radius^3). Minimizes biological transport cost. Models blood vessels, xylem, phloem.',
+  'Phi-ratio branching angles (137.5 deg golden angle). Models cortical neuron dendrites. Branches seek the IFS void boundaries.',
+  'Three-way branching with anastomosis (loop reconnection). Models fungal mycelium and vascular networks in leaves.',
+  'Crystallographic axes: branches grow along cubic and tetrahedral directions. Models mineral crystal growth from nucleation.',
+];
+
+// Input
+var drag=false,lx=0,ly=0,shiftDrag=false;
+canvas.addEventListener('mousedown',function(e){drag=true;lx=e.clientX;ly=e.clientY;shiftDrag=e.shiftKey;if(!shiftDrag){S.autoRot=false;syncBtn('arg',0);}});
+window.addEventListener('mouseup',function(){drag=false;});
+window.addEventListener('mousemove',function(e){
+  if(!drag)return;
+  var dx=(e.clientX-lx)*0.006,dy=(e.clientY-ly)*0.006;
+  lx=e.clientX;ly=e.clientY;
+  if(shiftDrag){} else{S.camPhi+=dx;S.camTheta=Math.max(-1.3,Math.min(1.3,S.camTheta+dy));}
+});
+canvas.addEventListener('wheel',function(e){e.preventDefault();S.dv=Math.max(1.0,Math.min(12.0,S.dv+e.deltaY*0.006));ss('dvS','dv','dvV',2);},{passive:false});
+
+function ss(sid,key,did,dec){var el=document.getElementById(sid);if(!el)return;el.value=S[key];var d=document.getElementById(did);if(!d)return;d.textContent=(dec>0&&typeof S[key]==='number')?S[key].toFixed(dec):S[key];}
+function syncBtn(gid,val){document.querySelectorAll('#'+gid+' .b').forEach(function(b){b.classList.toggle('on',parseInt(b.dataset.v)===val);});}
+function sl(sid,key,did,dec){document.getElementById(sid).addEventListener('input',function(){S[key]=parseFloat(this.value);var d=document.getElementById(did);if(d)d.textContent=(dec>0)?S[key].toFixed(dec):S[key];syncHUD();});}
+function bg2(cid,key,cb){document.getElementById(cid).querySelectorAll('.b').forEach(function(b){b.addEventListener('click',function(){S[key]=parseInt(b.dataset.v);syncBtn(cid,S[key]);if(cb)cb(S[key]);});});}
+
+sl('ldS','ld','ldV',0);sl('lrS','lr','lrV',3);sl('laS2','la','laV2',0);
+sl('ltS','lt','ltV',2);sl('lgS','lg','lgV',2);sl('lbS','lbl','lbV',2);
+sl('miS','mi','miV',0);sl('scS','sc','scV',2);sl('fscS','fsc','fscV',2);sl('blS','bl','blV',2);
+sl('dvS','dv','dvV',2);sl('brS','bright','brV',2);sl('rsS','rs','rsV',0);
+
+bg2('lsGrid'.replace('Grid','Grid'),'_dummy'); // handled below
+document.getElementById('lsGrid').querySelectorAll('.pc').forEach(function(card){
+  card.addEventListener('click',function(){
+    S.ls=parseInt(card.dataset.l);
+    document.querySelectorAll('.pc').forEach(function(c){c.classList.remove('on');});
+    card.classList.add('on');
+    var m=LS_META[S.ls];
+    document.getElementById('hLS').textContent=['VASCULAR','NEURAL','MYCELIUM','CRYSTAL'][S.ls];
+    document.getElementById('dType').textContent=m.name;
+    document.getElementById('dLaw').textContent=m.law;
+    document.getElementById('dHaus').textContent=m.dim;
+    document.getElementById('dBranch').textContent=m.branches;
+    document.getElementById('lsDesc').textContent=LS_DESC[S.ls];
+    var combined=(2.727+parseFloat(m.dim.replace('~','')))/2;
+    document.getElementById('dComb').textContent='~'+combined.toFixed(2);
+    syncHUD();
+  });
+});
+
+bg2('ftg','ft',function(v){document.getElementById('hFT').textContent=['NONE','BOX','KLEINIAN','LATTICE','TETRA'][v];});
+bg2('cmg','cm');bg2('arg','autoRot');bg2('rootG','root');
+
+document.getElementById('resetBtn').addEventListener('click',function(){S.camTheta=0.3;S.camPhi=0;S.dv=5.0;ss('dvS','dv','dvV',2);});
+
+function triggerDownload(uri,name){var a=document.createElement('a');a.href=uri;a.download=name;a.style.display='none';document.body.appendChild(a);a.click();setTimeout(function(){document.body.removeChild(a);},200);}
+
+document.getElementById('shotBtn').addEventListener('click',function(){
+  var comp=document.createElement('canvas');comp.width=canvas.width;comp.height=canvas.height;
+  var ctx=comp.getContext('2d');ctx.drawImage(canvas,0,0);
+  var barH=38,pad=12,fs1=9,fs2=8.5;
+  ctx.fillStyle='rgba(4,8,15,0.88)';ctx.fillRect(0,comp.height-barH,comp.width,barH);
+  ctx.strokeStyle='rgba(0,229,204,0.22)';ctx.lineWidth=1;
+  ctx.beginPath();ctx.moveTo(0,comp.height-barH);ctx.lineTo(comp.width,comp.height-barH);ctx.stroke();
+  ctx.font='bold '+fs1+'px Rajdhani,Arial';ctx.fillStyle='#C9A84C';
+  ctx.fillText('UUON IFS+L-System v1.000',pad,comp.height-barH+15);
+  var dt=document.getElementById('dnaStr').textContent;
+  ctx.font=fs2+'px monospace';ctx.fillStyle='rgba(0,229,204,0.75)';
+  ctx.fillText(dt,pad,comp.height-10);
+  var ts=document.getElementById('dnaTime').textContent;
+  ctx.font=fs1+'px monospace';ctx.fillStyle='rgba(0,229,204,0.35)';
+  var tw=ctx.measureText(ts).width;ctx.fillText(ts,comp.width-tw-pad,comp.height-barH+15);
+  triggerDownload(comp.toDataURL('image/png'),
+    'UUON_IFS_LS_'+['VASCULAR','NEURAL','MYCELIUM','CRYSTAL'][S.ls]+'_'+Date.now()+'.png');
+});
+
+var LS_NAMES=['VASCULAR','NEURAL','MYCELIUM','CRYSTAL'];
+var FT_NAMES=['NONE','BOX','KLEINIAN','LATTICE','TETRA'];
+
+function updateDNA(){
+  var now=new Date();
+  var ts=now.getUTCFullYear()+'-'+String(now.getUTCMonth()+1).padStart(2,'0')+'-'+String(now.getUTCDate()).padStart(2,'0')+' '+String(now.getUTCHours()).padStart(2,'0')+':'+String(now.getUTCMinutes()).padStart(2,'0')+':'+String(now.getUTCSeconds()).padStart(2,'0')+' UTC';
+  var zoom=(5.0/Math.max(S.dv,0.001)).toFixed(1)+'x';
+  var dna='IFS:'+FT_NAMES[S.ft]+' mi:'+S.mi+' sc:'+S.sc.toFixed(2)+' fsc:'+S.fsc.toFixed(2)+' bl:'+S.bl.toFixed(2)+'  |  LS:'+LS_NAMES[S.ls]+' depth:'+S.ld+' r:'+S.lr.toFixed(3)+' ang:'+S.la+' trop:'+S.lt.toFixed(2)+' scale:'+S.lg.toFixed(2)+' blend:'+S.lbl.toFixed(2);
+  var el=document.getElementById('dnaStr');if(el)el.textContent=dna;
+  var te=document.getElementById('dnaTime');if(te)te.textContent=ts;
+  var ze=document.getElementById('dnaZoom');if(ze)ze.textContent='zoom '+zoom;
+}
+
+function syncHUD(){
+  document.getElementById('hFT').textContent=FT_NAMES[S.ft];
+  document.getElementById('hMI').textContent=S.mi;
+  document.getElementById('hLS').textContent=LS_NAMES[S.ls];
+  document.getElementById('hLD').textContent=S.ld;
+  document.getElementById('hLR').textContent=S.lr.toFixed(3);
+  document.getElementById('hTR').textContent=S.lt.toFixed(2);
+}
+
+var lastTs=0,ffc=0,fft=0;
+function frame(ts){
+  var dt=Math.min((ts-lastTs)/1000,0.05);lastTs=ts;S.t+=dt;
+  ffc++;fft+=dt;
+  if(fft>=0.5){document.getElementById('fpsEl').textContent=(ffc/fft).toFixed(1);ffc=0;fft=0;}
+  var dpr=Math.min(window.devicePixelRatio,1.5);
+  var w=canvas.clientWidth*dpr|0,h=canvas.clientHeight*dpr|0;
+  if(canvas.width!==w||canvas.height!==h){canvas.width=w;canvas.height=h;gl.viewport(0,0,w,h);}
+  document.getElementById('resEl').textContent=w+'x'+h;
+  if(S.autoRot) S.camPhi+=dt*S.rotSpeed*0.4;
+  updateDNA();
+
+  gl.uniform2f(U.uR,canvas.width,canvas.height);
+  gl.uniform1f(U.uTime,S.t);
+  gl.uniform1i(U.uMI,S.mi);gl.uniform1f(U.uSC,S.sc);
+  gl.uniform1f(U.uOX,S.ox);gl.uniform1i(U.uFT,S.ft);
+  gl.uniform1f(U.uFSC,S.fsc);gl.uniform1f(U.uBL,S.bl);
+  gl.uniform1i(U.uLS,S.ls);gl.uniform1i(U.uLD,S.ld);
+  gl.uniform1f(U.uLR,S.lr);gl.uniform1f(U.uLA,S.la*Math.PI/180.0);
+  gl.uniform1f(U.uLT,S.lt);gl.uniform1f(U.uLG,S.lg);
+  gl.uniform1i(U.uROOT,S.root);gl.uniform1f(U.uLBL,S.lbl);
+  gl.uniform1i(U.uCM,S.cm);gl.uniform1f(U.uBright,S.bright);
+  gl.uniform1f(U.uRS,S.rs);gl.uniform1f(U.uDV,S.dv);
+  gl.uniform1f(U.uFOV,S.fov);
+  gl.uniform2f(U.uCAM,S.camTheta,S.camPhi);
+  gl.drawArrays(gl.TRIANGLES,0,6);
+  requestAnimationFrame(frame);
+}
+
+syncHUD();
+requestAnimationFrame(frame);
+</script>
+</body>
+</html>

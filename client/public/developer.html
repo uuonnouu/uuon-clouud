@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Developer — UUON.UUORLD</title>
+<style>
+  :root { --black:#000; --line:rgba(255,255,255,0.14); --white:#fff; --dim:rgba(255,255,255,0.55); }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { background:var(--black); color:var(--white); font-family:'Arial Narrow','Helvetica Neue',Arial,sans-serif; min-height:100vh; }
+  a { color:inherit; text-decoration:none; }
+  a:focus-visible { outline:2px solid var(--white); outline-offset:3px; }
+  header { padding:24px 36px; border-bottom:1px solid var(--line); display:flex; align-items:center; justify-content:space-between; }
+  .back { font-size:12px; letter-spacing:0.1em; text-transform:uppercase; color:var(--dim); font-weight:700; }
+  .back:hover { color:var(--white); }
+  .crumb { font-size:11px; letter-spacing:0.14em; text-transform:uppercase; color:var(--dim); font-weight:600; }
+  main { max-width:760px; margin:0 auto; padding:90px 32px; text-align:center; }
+  h1 { font-size:32px; font-weight:800; text-transform:uppercase; letter-spacing:0.03em; margin-bottom:18px; }
+  p.lead { color:var(--dim); font-size:14px; line-height:1.7; max-width:540px; margin:0 auto 50px; }
+  .row { display:flex; flex-direction:column; gap:1px; background:var(--line); border:1px solid var(--line); text-align:left; margin-bottom:36px; }
+  .item { background:#050505; padding:20px 26px; display:flex; justify-content:space-between; align-items:center; gap:16px; }
+  .item .label { font-size:13px; font-weight:700; letter-spacing:0.02em; }
+  .item .desc { font-size:12px; color:var(--dim); }
+  .tag { font-size:10px; letter-spacing:0.12em; text-transform:uppercase; color:var(--dim); border:1px solid var(--line); padding:4px 9px; white-space:nowrap; }
+  .auth-note { font-size:12px; color:var(--dim); border-top:1px solid var(--line); padding-top:24px; }
+</style>
+</head>
+<body>
+<header>
+  <a class="back" href="/">&larr; UUON.UUORLD</a>
+  <div class="crumb">Developer</div>
+</header>
+<main>
+  <h1>Developer</h1>
+  <p class="lead">SDKs, API keys, and integration docs for building on the Mathematical Operating System. Geometry-only transmission — endpoints return computed surfaces, never formulas.</p>
+
+  <div class="row">
+    <div class="item"><div><div class="label">API Reference</div><div class="desc">Endpoints, auth headers, rate limits</div></div><span class="tag">Coming soon</span></div>
+    <div class="item"><div><div class="label">Token Gate</div><div class="desc">PSENT / PIEZ balance check required for engine routes</div></div><span class="tag">Live</span></div>
+    <div class="item"><div><div class="label">API Keys</div><div class="desc">Generate and manage keys (requires sign-in)</div></div><span class="tag">Coming soon</span></div>
+    <div class="item"><div><div class="label">Example Requests</div><div class="desc">cURL / SDK snippets per engine</div></div><span class="tag">Coming soon</span></div>
+  </div>
+
+  <p class="auth-note">Sign in with GitHub from the portal to generate an API key once account linking is wired up.</p>
+</main>
+</body>
+</html>

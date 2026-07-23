@@ -1,0 +1,51 @@
+~/workspace$ ~/workspace$ PUSH_TO_GITHUB=1 git commit -m "your message"
+# or just run push.sh manually
+On branch main
+nothing to commit, working tree clean
+~/workspace$ 
+bash: /home/runner/workspace$: No such file or directory
+bash: On: command not found
+bash: nothing: command not found
+bash: /home/runner/workspace$: No such file or directory
+~/workspace$ # Normal commit — should be instant, no upload
+touch test-file.txt
+git add test-file.txt
+git commit -m "test: verify hook guard works"
+
+# Should see nothing about GitHub push. Then clean up:
+git rm test-file.txt
+git commit -m "chore: remove test file" --no-verify
+
+# When you actually want to push to GitHub:
+PUSH_TO_GITHUB=1 bash push.sh
+🚀 Auto-pushing to GitHub...
+✅ Connected as: uuonnouu
+
+📦 Creating private repo: uuonnouu/dmension-private...
+
+❌ Push failed: GitHub API POST /user/repos → 403: {"message":"API rate limit exceeded for user ID 217780164. If you reach out to GitHub Support for help, please include the request ID ECAA:35D02C:12A9749F:12EE7981:6A1D6233 and timestamp 2026-06-01 10:42:59 UTC. For more on scraping GitHub and how it may affect your rights, please review our Terms of Service (https://docs.github.com/en/site-policy/github-terms/github-terms-of-service)","documentation_url":"https://docs.github.com/rest/overview/rate-limits-for-the-rest-api","status":"403"}
+✅ Push complete
+[main c3d90a88] test: verify hook guard works
+ 1 file changed, 0 insertions(+), 0 deletions(-)
+ create mode 100644 test-file.txt
+rm 'test-file.txt'
+🚀 Auto-pushing to GitHub...
+✅ Connected as: uuonnouu
+
+📦 Creating private repo: uuonnouu/dmension-private...
+
+❌ Push failed: GitHub API POST /user/repos → 403: {"message":"API rate limit exceeded for user ID 217780164. If you reach out to GitHub Support for help, please include the request ID ECB4:9FD2A:12D92225:131E7D1A:6A1D6235 and timestamp 2026-06-01 10:43:01 UTC. For more on scraping GitHub and how it may affect your rights, please review our Terms of Service (https://docs.github.com/en/site-policy/github-terms/github-terms-of-service)","documentation_url":"https://docs.github.com/rest/overview/rate-limits-for-the-rest-api","status":"403"}
+✅ Push complete
+[main b46bb11e] chore: remove test file
+ 1 file changed, 0 insertions(+), 0 deletions(-)
+ delete mode 100644 test-file.txt
+📦 Committing and pushing to GitHub...
+On branch main
+nothing to commit, working tree clean
+
+🔐 Getting GitHub token...
+✅ Connected as: uuonnouu
+
+📦 Creating private repo: uuonnouu/dmension-private...
+
+❌ Push failed: GitHub API POST /user/repos → 403: {"message":"API rate limit exceeded for user ID 217780164. If you reach out to GitHub Support for help, please include the request ID ECC2:35D02C:12A98D1C:12EE9253:6A1D6237 and timestamp 2026-06-01 10:43:03 UTC. For more on scraping GitHub and how it may affect your rights, please review our Terms of Service (https://docs.github.com/en/site-policy/github-terms/github-terms-of-service)","documentation_url":"https://docs.github.com/rest/overview/rate-limits-for-the-rest-api","status":"403"}
