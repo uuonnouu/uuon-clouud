@@ -1,0 +1,977 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>UUON — Mandelbulb Engine</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@300;400;600;700&display=swap');
+
+  :root {
+    --void: #04080f;
+    --teal: #00E5CC;
+    --gold: #C9A84C;
+    --violet: #7B5EA7;
+    --electric: #3A7BFF;
+    --dim: #0a1020;
+    --panel: #080e1a;
+    --border: rgba(0,229,204,0.15);
+    --text-dim: rgba(0,229,204,0.45);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--void);
+    color: var(--teal);
+    font-family: 'Share Tech Mono', monospace;
+    height: 100vh;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* HEADER */
+  header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 20px;
+    border-bottom: 1px solid var(--border);
+    background: var(--panel);
+    flex-shrink: 0;
+    z-index: 10;
+  }
+
+  .logo {
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 700;
+    font-size: 13px;
+    letter-spacing: 4px;
+    color: var(--gold);
+    text-transform: uppercase;
+  }
+
+  .logo span { color: var(--teal); }
+
+  .engine-title {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 11px;
+    letter-spacing: 6px;
+    color: var(--text-dim);
+    text-transform: uppercase;
+  }
+
+  .version {
+    font-size: 10px;
+    color: var(--gold);
+    opacity: 0.7;
+  }
+
+  /* MAIN LAYOUT */
+  .workspace {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+  }
+
+  /* CANVAS */
+  .canvas-area {
+    flex: 1;
+    position: relative;
+    background: #000;
+  }
+
+  canvas {
+    width: 100%;
+    height: 100%;
+    display: block;
+    cursor: grab;
+  }
+  canvas:active { cursor: grabbing; }
+
+  /* OVERLAY STATS */
+  .stats-overlay {
+    position: absolute;
+    top: 14px;
+    left: 14px;
+    font-size: 10px;
+    color: var(--text-dim);
+    pointer-events: none;
+    line-height: 1.7;
+  }
+
+  .stats-overlay .val { color: var(--teal); }
+  .stats-overlay .gold { color: var(--gold); }
+
+  /* RENDER STATE BADGE */
+  .render-badge {
+    position: absolute;
+    bottom: 14px;
+    left: 14px;
+    font-size: 10px;
+    color: var(--text-dim);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .pulse {
+    width: 6px; height: 6px;
+    background: var(--teal);
+    border-radius: 50%;
+    animation: pulse 1.5s ease-in-out infinite;
+  }
+  .pulse.busy { background: var(--gold); animation-duration: 0.4s; }
+
+  @keyframes pulse {
+    0%,100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.3; transform: scale(0.7); }
+  }
+
+  /* CONTROL PANEL */
+  .panel {
+    width: 240px;
+    flex-shrink: 0;
+    background: var(--panel);
+    border-left: 1px solid var(--border);
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    scrollbar-width: thin;
+    scrollbar-color: var(--border) transparent;
+  }
+
+  .panel-section {
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .section-label {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 10px;
+    letter-spacing: 4px;
+    color: var(--gold);
+    text-transform: uppercase;
+    margin-bottom: 12px;
+    opacity: 0.8;
+  }
+
+  .control-row {
+    margin-bottom: 14px;
+  }
+
+  .control-label {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 10px;
+    color: var(--text-dim);
+    margin-bottom: 5px;
+  }
+
+  .control-label .cval {
+    color: var(--teal);
+    font-size: 11px;
+  }
+
+  input[type=range] {
+    width: 100%;
+    height: 2px;
+    -webkit-appearance: none;
+    background: var(--border);
+    border-radius: 1px;
+    outline: none;
+    cursor: pointer;
+  }
+
+  input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    background: var(--teal);
+    box-shadow: 0 0 8px var(--teal);
+    cursor: pointer;
+    transition: transform 0.1s;
+  }
+
+  input[type=range]::-webkit-slider-thumb:hover {
+    transform: scale(1.4);
+  }
+
+  /* SELECT BUTTONS */
+  .btn-group {
+    display: flex;
+    gap: 4px;
+    flex-wrap: wrap;
+  }
+
+  .btn {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px;
+    padding: 4px 8px;
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text-dim);
+    cursor: pointer;
+    transition: all 0.15s;
+    letter-spacing: 1px;
+  }
+
+  .btn:hover {
+    border-color: var(--teal);
+    color: var(--teal);
+  }
+
+  .btn.active {
+    background: rgba(0,229,204,0.1);
+    border-color: var(--teal);
+    color: var(--teal);
+    box-shadow: 0 0 8px rgba(0,229,204,0.2);
+  }
+
+  /* ACTION BUTTONS */
+  .action-btn {
+    width: 100%;
+    padding: 8px;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 2px;
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--teal);
+    cursor: pointer;
+    transition: all 0.2s;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+
+  .action-btn:hover {
+    background: rgba(0,229,204,0.08);
+    border-color: var(--teal);
+    box-shadow: 0 0 12px rgba(0,229,204,0.15);
+  }
+
+  .action-btn.gold-btn {
+    border-color: rgba(201,168,76,0.3);
+    color: var(--gold);
+  }
+  .action-btn.gold-btn:hover {
+    background: rgba(201,168,76,0.08);
+    border-color: var(--gold);
+    box-shadow: 0 0 12px rgba(201,168,76,0.15);
+  }
+
+  /* FORMULA DISPLAY */
+  .formula-box {
+    background: rgba(0,0,0,0.4);
+    border: 1px solid var(--border);
+    padding: 10px;
+    font-size: 9px;
+    color: var(--text-dim);
+    line-height: 2;
+    margin-top: 8px;
+  }
+
+  .formula-box .f-hi { color: var(--teal); }
+  .formula-box .f-gold { color: var(--gold); }
+  .formula-box .f-vi { color: var(--violet); }
+
+  /* INFO BOX */
+  .info-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 9px;
+    color: var(--text-dim);
+    margin-bottom: 4px;
+  }
+  .info-row .ival { color: var(--teal); }
+
+  /* FOOTER */
+  footer {
+    padding: 6px 20px;
+    border-top: 1px solid var(--border);
+    background: var(--panel);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 9px;
+    color: var(--text-dim);
+    flex-shrink: 0;
+  }
+
+  .instructions {
+    display: flex;
+    gap: 16px;
+  }
+
+  .instructions span { color: var(--text-dim); }
+  .instructions span b { color: var(--teal); font-weight: normal; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">UUON <span>Foundation</span></div>
+  <div class="engine-title">Mandelbulb Engine · v1.000«</div>
+  <div class="version">Power-8 Raymarcher</div>
+</header>
+
+<div class="workspace">
+  <div class="canvas-area">
+    <canvas id="glCanvas"></canvas>
+    <div class="stats-overlay" id="statsOverlay">
+      <div>POWER  <span class="val" id="sPow">8</span></div>
+      <div>ITERS  <span class="val" id="sIter">6</span></div>
+      <div>STEPS  <span class="val" id="sSteps">96</span></div>
+      <div>BAILOUT <span class="gold" id="sBail">2.000</span></div>
+      <div>AO     <span class="val" id="sAO">ON</span></div>
+    </div>
+    <div class="render-badge">
+      <div class="pulse" id="pulseDot"></div>
+      <span id="renderState">RENDERING</span>
+    </div>
+  </div>
+
+  <div class="panel">
+    <!-- GEOMETRY -->
+    <div class="panel-section">
+      <div class="section-label">Geometry</div>
+
+      <div class="control-row">
+        <div class="control-label">Power (n) <span class="cval" id="powVal">8</span></div>
+        <input type="range" id="powSlider" min="2" max="16" step="1" value="8">
+      </div>
+
+      <div class="control-row">
+        <div class="control-label">Power Presets</div>
+        <div class="btn-group" id="powBtns">
+          <button class="btn" data-val="2">2</button>
+          <button class="btn" data-val="3">3</button>
+          <button class="btn" data-val="4">4</button>
+          <button class="btn active" data-val="8">8</button>
+          <button class="btn" data-val="12">12</button>
+          <button class="btn" data-val="16">16</button>
+        </div>
+      </div>
+
+      <div class="control-row">
+        <div class="control-label">Iterations <span class="cval" id="iterVal">6</span></div>
+        <input type="range" id="iterSlider" min="2" max="12" step="1" value="6">
+      </div>
+
+      <div class="control-row">
+        <div class="control-label">Ray Steps <span class="cval" id="stepsVal">96</span></div>
+        <input type="range" id="stepsSlider" min="32" max="192" step="8" value="96">
+      </div>
+
+      <div class="control-row">
+        <div class="control-label">Bailout <span class="cval" id="bailVal">2.0</span></div>
+        <input type="range" id="bailSlider" min="1.5" max="4.0" step="0.1" value="2.0">
+      </div>
+    </div>
+
+    <!-- CAMERA -->
+    <div class="panel-section">
+      <div class="section-label">Camera</div>
+
+      <div class="control-row">
+        <div class="control-label">Distance <span class="cval" id="distVal">2.6</span></div>
+        <input type="range" id="distSlider" min="1.2" max="5.0" step="0.05" value="2.6">
+      </div>
+
+      <div class="control-row">
+        <div class="control-label">FOV <span class="cval" id="fovVal">60</span>°</div>
+        <input type="range" id="fovSlider" min="30" max="90" step="1" value="60">
+      </div>
+    </div>
+
+    <!-- SHADING -->
+    <div class="panel-section">
+      <div class="section-label">Shading</div>
+
+      <div class="control-row">
+        <div class="control-label">Color Mode</div>
+        <div class="btn-group" id="colorBtns">
+          <button class="btn active" data-val="0">ORBIT</button>
+          <button class="btn" data-val="1">ITER</button>
+          <button class="btn" data-val="2">NORMAL</button>
+          <button class="btn" data-val="3">VOID</button>
+        </div>
+      </div>
+
+      <div class="control-row">
+        <div class="control-label">Ambient Occlusion</div>
+        <div class="btn-group" id="aoBtns">
+          <button class="btn active" data-val="1">ON</button>
+          <button class="btn" data-val="0">OFF</button>
+        </div>
+      </div>
+
+      <div class="control-row">
+        <div class="control-label">Specular <span class="cval" id="specVal">0.6</span></div>
+        <input type="range" id="specSlider" min="0" max="1.5" step="0.05" value="0.6">
+      </div>
+
+      <div class="control-row">
+        <div class="control-label">Light Angle <span class="cval" id="lightVal">45</span>°</div>
+        <input type="range" id="lightSlider" min="0" max="360" step="1" value="45">
+      </div>
+    </div>
+
+    <!-- ANIMATION -->
+    <div class="panel-section">
+      <div class="section-label">Animation</div>
+
+      <div class="control-row">
+        <div class="control-label">Auto-Rotate</div>
+        <div class="btn-group" id="rotateBtns">
+          <button class="btn active" data-val="1">ON</button>
+          <button class="btn" data-val="0">OFF</button>
+        </div>
+      </div>
+
+      <div class="control-row">
+        <div class="control-label">Rotate Speed <span class="cval" id="rspeedVal">0.3</span></div>
+        <input type="range" id="rspeedSlider" min="0.05" max="1.0" step="0.05" value="0.3">
+      </div>
+
+      <div class="control-row">
+        <div class="control-label">Power Animate</div>
+        <div class="btn-group" id="powAnimBtns">
+          <button class="btn" data-val="1">ON</button>
+          <button class="btn active" data-val="0">OFF</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- FORMULA -->
+    <div class="panel-section">
+      <div class="section-label">Formula</div>
+      <div class="formula-box">
+        <div><span class="f-gold">r</span> = √(x²+y²+z²)</div>
+        <div><span class="f-gold">θ</span> = atan2(√(x²+y²), z)</div>
+        <div><span class="f-gold">φ</span> = atan2(y, x)</div>
+        <div style="margin-top:4px"><span class="f-hi">zⁿ</span> = rⁿ · {</div>
+        <div style="padding-left:8px">sin(nθ)cos(nφ),</div>
+        <div style="padding-left:8px">sin(nθ)sin(nφ),</div>
+        <div style="padding-left:8px">cos(nθ) }</div>
+        <div style="margin-top:4px"><span class="f-vi">z → zⁿ + c</span></div>
+      </div>
+    </div>
+
+    <!-- STATS -->
+    <div class="panel-section">
+      <div class="section-label">Info</div>
+      <div class="info-row"><span>Volume (P8)</span><span class="ival">≈ 2.945</span></div>
+      <div class="info-row"><span>Volume (P2)</span><span class="ival">≈ 0.869</span></div>
+      <div class="info-row"><span>FPS</span><span class="ival" id="fpsDisplay">--</span></div>
+      <div class="info-row"><span>Resolution</span><span class="ival" id="resDisplay">--</span></div>
+    </div>
+
+    <!-- ACTIONS -->
+    <div class="panel-section">
+      <button class="action-btn" id="resetBtn">↺ RESET VIEW</button>
+      <button class="action-btn gold-btn" id="screenshotBtn">⬇ SCREENSHOT</button>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="instructions">
+    <span><b>DRAG</b> · rotate</span>
+    <span><b>SCROLL</b> · zoom</span>
+    <span><b>SHIFT+DRAG</b> · light</span>
+  </div>
+  <div>UUON Foundation · Kassel · Mandelbulb Raymarching Engine</div>
+</footer>
+
+<script>
+// ─────────────────────────────────────────────
+// UUON MANDELBULB ENGINE
+// Spherical-coordinate triplex raymarcher
+// Distance Estimator: Inigo Quilez / White & Nylander
+// ─────────────────────────────────────────────
+
+const canvas = document.getElementById('glCanvas');
+const gl = canvas.getContext('webgl', { antialias: false, preserveDrawingBuffer: true });
+if (!gl) { alert('WebGL not supported'); }
+
+// ─── SHADERS ───────────────────────────────────
+const VS = `
+attribute vec2 a_pos;
+void main() { gl_Position = vec4(a_pos, 0.0, 1.0); }
+`;
+
+const FS = `
+precision highp float;
+uniform vec2  u_res;
+uniform float u_time;
+uniform float u_power;
+uniform int   u_iters;
+uniform int   u_steps;
+uniform float u_bailout;
+uniform float u_dist;
+uniform float u_fov;
+uniform vec2  u_rot;       // theta, phi for camera
+uniform int   u_colorMode;
+uniform int   u_ao;
+uniform float u_spec;
+uniform float u_lightAngle;
+
+#define MAX_STEPS 192
+#define MAX_ITER  12
+#define EPSILON   0.0002
+#define FAR       20.0
+#define PI        3.14159265359
+
+// ─── Mandelbulb DE ───────────────────────────
+// Returns (distance, orbit trap)
+vec2 mandelbulbDE(vec3 pos) {
+  vec3 z = pos;
+  float dr = 1.0;
+  float r  = 0.0;
+  float trap = 1e10;
+
+  for (int i = 0; i < MAX_ITER; i++) {
+    if (i >= u_iters) break;
+
+    r = length(z);
+    if (r > u_bailout) break;
+
+    // Orbit trap — min distance to origin
+    trap = min(trap, length(z));
+
+    // Spherical coords
+    float theta = acos(clamp(z.z / r, -1.0, 1.0));
+    float phi   = atan(z.y, z.x);
+    float n     = u_power;
+
+    // DE derivative accumulation
+    dr = pow(r, n - 1.0) * n * dr + 1.0;
+
+    // Raise to power n in spherical space
+    float rn      = pow(r, n);
+    float thetan   = theta * n;
+    float phin     = phi   * n;
+
+    // Back to Cartesian
+    float sinTn = sin(thetan);
+    z = rn * vec3(
+      sinTn * cos(phin),
+      sinTn * sin(phin),
+      cos(thetan)
+    );
+    z += pos;
+  }
+
+  float d = 0.5 * log(r) * r / dr;
+  return vec2(d, trap);
+}
+
+// ─── Scene DE ────────────────────────────────
+vec2 scene(vec3 p) {
+  return mandelbulbDE(p);
+}
+
+// ─── Normal via finite differences ───────────
+vec3 calcNormal(vec3 p) {
+  vec2 e = vec2(EPSILON * 2.0, 0.0);
+  return normalize(vec3(
+    scene(p + e.xyy).x - scene(p - e.xyy).x,
+    scene(p + e.yxy).x - scene(p - e.yxy).x,
+    scene(p + e.yyx).x - scene(p - e.yyx).x
+  ));
+}
+
+// ─── AO ───────────────────────────────────
+float ambientOcclusion(vec3 p, vec3 n) {
+  float occ = 0.0;
+  float scale = 1.0;
+  for (int i = 0; i < 5; i++) {
+    float h = 0.02 + 0.15 * float(i) / 4.0;
+    float d = scene(p + n * h).x;
+    occ += (h - d) * scale;
+    scale *= 0.6;
+  }
+  return clamp(1.0 - 3.5 * occ, 0.0, 1.0);
+}
+
+// ─── Camera matrix ────────────────────────────
+mat3 camMatrix(vec3 ro, vec3 ta) {
+  vec3 f = normalize(ta - ro);
+  vec3 r = normalize(cross(vec3(0.0, 1.0, 0.0), f));
+  vec3 u = cross(f, r);
+  return mat3(r, u, f);
+}
+
+// ─── Colour palettes ──────────────────────────
+vec3 paletteOrbit(float t, float trap) {
+  // UUON teal/gold/void
+  vec3 col = mix(
+    vec3(0.0, 0.898, 0.8),    // teal
+    vec3(0.788, 0.659, 0.298), // gold
+    smoothstep(0.0, 1.2, trap)
+  );
+  col = mix(col, vec3(0.48, 0.37, 0.66), sin(trap * 3.14) * 0.5 + 0.5); // violet
+  return col;
+}
+
+vec3 paletteIter(float t) {
+  // Smooth iteration coloring
+  vec3 a = vec3(0.02, 0.05, 0.08);
+  vec3 b = vec3(0.0, 0.898, 0.8);
+  vec3 c = vec3(0.788, 0.659, 0.298);
+  float f = fract(t * 0.05);
+  return mix(a, mix(b, c, f), smoothstep(0.0, 0.5, f));
+}
+
+// ─── Main ─────────────────────────────────────
+void main() {
+  vec2 uv = (gl_FragCoord.xy - 0.5 * u_res) / u_res.y;
+
+  // Camera
+  float camTheta = u_rot.x;
+  float camPhi   = u_rot.y;
+  float cd = u_dist;
+
+  vec3 ro = vec3(
+    cd * sin(camPhi) * cos(camTheta),
+    cd * sin(camTheta),
+    cd * cos(camPhi) * cos(camTheta)
+  );
+  vec3 ta = vec3(0.0);
+  mat3 cam = camMatrix(ro, ta);
+
+  float fovScale = tan(radians(u_fov * 0.5));
+  vec3 rd = normalize(cam * vec3(uv * fovScale, 1.0));
+
+  // Light direction
+  float la = radians(u_lightAngle);
+  vec3 lightDir = normalize(vec3(cos(la), 0.8, sin(la)));
+
+  // ─── Raymarching ──────────────────────────────
+  float t = 0.0;
+  float trap = 1e10;
+  bool hit = false;
+  int hitStep = 0;
+
+  for (int s = 0; s < MAX_STEPS; s++) {
+    if (s >= u_steps) break;
+    vec3 p = ro + rd * t;
+    vec2 res = scene(p);
+    float d = res.x;
+    trap = res.y;
+
+    if (d < EPSILON) {
+      hit = true;
+      hitStep = s;
+      break;
+    }
+    if (t > FAR) break;
+    t += d * 0.7; // conservative step
+  }
+
+  // ─── Shading ──────────────────────────────────
+  vec3 col = vec3(0.016, 0.031, 0.059); // void bg
+
+  if (hit) {
+    vec3 p  = ro + rd * t;
+    vec3 n  = calcNormal(p);
+    float ao = (u_ao == 1) ? ambientOcclusion(p, n) : 1.0;
+
+    // Diffuse
+    float diff = clamp(dot(n, lightDir), 0.0, 1.0);
+
+    // Specular (Blinn-Phong)
+    vec3 h = normalize(lightDir - rd);
+    float spec = pow(clamp(dot(n, h), 0.0, 1.0), 64.0) * u_spec;
+
+    // Colour selection
+    vec3 baseCol;
+    if (u_colorMode == 0) {
+      baseCol = paletteOrbit(t, trap);
+    } else if (u_colorMode == 1) {
+      baseCol = paletteIter(float(hitStep));
+    } else if (u_colorMode == 2) {
+      baseCol = n * 0.5 + 0.5;
+    } else {
+      baseCol = vec3(0.02, 0.05, 0.08);
+    }
+
+    // Lighting assembly
+    vec3 amb = baseCol * 0.12;
+    col = amb
+        + baseCol * diff * ao * 0.85
+        + vec3(1.0, 0.97, 0.85) * spec
+        + baseCol * ao * 0.08;
+
+    // Fog / depth fade
+    col = mix(col, vec3(0.016, 0.031, 0.059), clamp(t / FAR * 0.5, 0.0, 1.0));
+  } else {
+    // Background: faint gradient
+    float bg = length(uv) * 0.3;
+    col += vec3(0.0, 0.03, 0.05) * (1.0 - bg);
+  }
+
+  // Gamma
+  col = pow(clamp(col, 0.0, 1.0), vec3(0.4545));
+
+  // Vignette
+  float vig = 1.0 - dot(uv, uv) * 0.6;
+  col *= vig;
+
+  gl_FragColor = vec4(col, 1.0);
+}
+`;
+
+// ─── Compile ──────────────────────────────────
+function compileShader(type, src) {
+  const s = gl.createShader(type);
+  gl.shaderSource(s, src);
+  gl.compileShader(s);
+  if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)) {
+    console.error(gl.getShaderInfoLog(s));
+    return null;
+  }
+  return s;
+}
+
+function buildProgram(vs, fs) {
+  const p = gl.createProgram();
+  gl.attachShader(p, compileShader(gl.VERTEX_SHADER, vs));
+  gl.attachShader(p, compileShader(gl.FRAGMENT_SHADER, fs));
+  gl.linkProgram(p);
+  if (!gl.getProgramParameter(p, gl.LINK_STATUS)) {
+    console.error(gl.getProgramInfoLog(p));
+    return null;
+  }
+  return p;
+}
+
+const prog = buildProgram(VS, FS);
+gl.useProgram(prog);
+
+// ─── Geometry (fullscreen quad) ──────────────
+const buf = gl.createBuffer();
+gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([
+  -1,-1, 1,-1, -1,1, -1,1, 1,-1, 1,1
+]), gl.STATIC_DRAW);
+const apos = gl.getAttribLocation(prog, 'a_pos');
+gl.enableVertexAttribArray(apos);
+gl.vertexAttribPointer(apos, 2, gl.FLOAT, false, 0, 0);
+
+// ─── Uniforms ─────────────────────────────────
+const U = {};
+['u_res','u_time','u_power','u_iters','u_steps','u_bailout',
+ 'u_dist','u_fov','u_rot','u_colorMode','u_ao','u_spec','u_lightAngle']
+.forEach(n => U[n] = gl.getUniformLocation(prog, n));
+
+// ─── State ────────────────────────────────────
+const state = {
+  power: 8, iters: 6, steps: 96, bailout: 2.0,
+  dist: 2.6, fov: 60,
+  colorMode: 0, ao: 1, spec: 0.6, lightAngle: 45,
+  autoRotate: true, rotSpeed: 0.3, powAnim: false,
+  camTheta: 0.3, camPhi: 0.0,
+  time: 0, lastTime: 0
+};
+
+// ─── Resize ───────────────────────────────────
+function resize() {
+  const dpr = Math.min(window.devicePixelRatio, 1.5);
+  const w = canvas.clientWidth * dpr | 0;
+  const h = canvas.clientHeight * dpr | 0;
+  if (canvas.width !== w || canvas.height !== h) {
+    canvas.width = w; canvas.height = h;
+    gl.viewport(0, 0, w, h);
+  }
+  document.getElementById('resDisplay').textContent = `${w}×${h}`;
+}
+
+// ─── Drag interaction ─────────────────────────
+let drag = false, lastX = 0, lastY = 0, shiftDrag = false;
+canvas.addEventListener('mousedown', e => {
+  drag = true; lastX = e.clientX; lastY = e.clientY;
+  shiftDrag = e.shiftKey;
+  state.autoRotate = false;
+  document.querySelector('[data-group="rotate"][data-val="1"]');
+  // disable auto-rotate btn visual
+  document.querySelectorAll('#rotateBtns .btn').forEach(b => b.classList.remove('active'));
+  document.querySelector('#rotateBtns .btn[data-val="0"]').classList.add('active');
+});
+window.addEventListener('mouseup', () => drag = false);
+window.addEventListener('mousemove', e => {
+  if (!drag) return;
+  const dx = (e.clientX - lastX) * 0.007;
+  const dy = (e.clientY - lastY) * 0.007;
+  lastX = e.clientX; lastY = e.clientY;
+  if (shiftDrag) {
+    state.lightAngle = (state.lightAngle + dx * 30 + 360) % 360;
+    document.getElementById('lightVal').textContent = state.lightAngle.toFixed(0);
+    document.getElementById('lightSlider').value = state.lightAngle;
+  } else {
+    state.camPhi   += dx;
+    state.camTheta  = Math.max(-1.4, Math.min(1.4, state.camTheta + dy));
+  }
+});
+canvas.addEventListener('wheel', e => {
+  e.preventDefault();
+  state.dist = Math.max(1.2, Math.min(5.0, state.dist + e.deltaY * 0.003));
+  document.getElementById('distVal').textContent = state.dist.toFixed(2);
+  document.getElementById('distSlider').value = state.dist;
+}, { passive: false });
+
+// Touch support
+let lastTouch = null;
+canvas.addEventListener('touchstart', e => {
+  lastTouch = e.touches[0];
+  state.autoRotate = false;
+}, { passive: true });
+canvas.addEventListener('touchmove', e => {
+  if (!lastTouch) return;
+  const dx = (e.touches[0].clientX - lastTouch.clientX) * 0.007;
+  const dy = (e.touches[0].clientY - lastTouch.clientY) * 0.007;
+  state.camPhi   += dx;
+  state.camTheta  = Math.max(-1.4, Math.min(1.4, state.camTheta + dy));
+  lastTouch = e.touches[0];
+}, { passive: true });
+
+// ─── Control Wiring ───────────────────────────
+function slider(id, key, display, fmt) {
+  const el = document.getElementById(id);
+  el.addEventListener('input', () => {
+    state[key] = parseFloat(el.value);
+    document.getElementById(display).textContent = fmt ? state[key].toFixed(fmt) : state[key];
+    syncStats();
+  });
+}
+
+slider('powSlider',   'power',     'powVal',   0);
+slider('iterSlider',  'iters',     'iterVal',  0);
+slider('stepsSlider', 'steps',     'stepsVal', 0);
+slider('bailSlider',  'bailout',   'bailVal',  1);
+slider('distSlider',  'dist',      'distVal',  2);
+slider('fovSlider',   'fov',       'fovVal',   0);
+slider('specSlider',  'spec',      'specVal',  2);
+slider('lightSlider', 'lightAngle','lightVal', 0);
+slider('rspeedSlider','rotSpeed',  'rspeedVal',2);
+
+// Power presets
+document.getElementById('powBtns').querySelectorAll('.btn').forEach(b => {
+  b.addEventListener('click', () => {
+    const v = parseInt(b.dataset.val);
+    state.power = v;
+    document.getElementById('powSlider').value = v;
+    document.getElementById('powVal').textContent = v;
+    document.getElementById('sPow').textContent = v;
+    document.querySelectorAll('#powBtns .btn').forEach(x => x.classList.remove('active'));
+    b.classList.add('active');
+  });
+});
+
+function btnGroup(containerId, key, callback) {
+  document.getElementById(containerId).querySelectorAll('.btn').forEach(b => {
+    b.addEventListener('click', () => {
+      state[key] = parseInt(b.dataset.val);
+      document.querySelectorAll('#' + containerId + ' .btn').forEach(x => x.classList.remove('active'));
+      b.classList.add('active');
+      if (callback) callback(state[key]);
+    });
+  });
+}
+
+btnGroup('colorBtns', 'colorMode');
+btnGroup('aoBtns',    'ao', v => {
+  document.getElementById('sAO').textContent = v ? 'ON' : 'OFF';
+});
+btnGroup('rotateBtns','autoRotate');
+btnGroup('powAnimBtns','powAnim');
+
+// Reset
+document.getElementById('resetBtn').addEventListener('click', () => {
+  state.camTheta = 0.3; state.camPhi = 0.0; state.dist = 2.6;
+  document.getElementById('distSlider').value = 2.6;
+  document.getElementById('distVal').textContent = '2.6';
+});
+
+// Screenshot
+document.getElementById('screenshotBtn').addEventListener('click', () => {
+  const link = document.createElement('a');
+  link.download = `mandelbulb_p${state.power}_${Date.now()}.png`;
+  link.href = canvas.toDataURL();
+  link.click();
+});
+
+// ─── Stats sync ───────────────────────────────
+function syncStats() {
+  document.getElementById('sPow').textContent   = state.power;
+  document.getElementById('sIter').textContent  = state.iters;
+  document.getElementById('sSteps').textContent = state.steps;
+  document.getElementById('sBail').textContent  = state.bailout.toFixed(3);
+}
+
+// ─── FPS ──────────────────────────────────────
+let frameCount = 0, fpsTimer = 0;
+const fpsEl = document.getElementById('fpsDisplay');
+
+// ─── Render Loop ──────────────────────────────
+let busy = false;
+const pulse = document.getElementById('pulseDot');
+const renderState = document.getElementById('renderState');
+
+function render(ts) {
+  const dt = (ts - state.lastTime) / 1000;
+  state.lastTime = ts;
+  state.time += dt;
+
+  // FPS
+  frameCount++;
+  fpsTimer += dt;
+  if (fpsTimer >= 0.5) {
+    fpsEl.textContent = (frameCount / fpsTimer).toFixed(1);
+    frameCount = 0; fpsTimer = 0;
+  }
+
+  resize();
+
+  // Auto rotate
+  if (state.autoRotate) {
+    state.camPhi += dt * state.rotSpeed * 0.5;
+  }
+
+  // Power animate
+  let renderPower = state.power;
+  if (state.powAnim) {
+    renderPower = 2.0 + (state.power - 2.0) * (0.5 + 0.5 * Math.sin(state.time * 0.4));
+  }
+
+  // Upload uniforms
+  gl.uniform2f(U.u_res, canvas.width, canvas.height);
+  gl.uniform1f(U.u_time, state.time);
+  gl.uniform1f(U.u_power, renderPower);
+  gl.uniform1i(U.u_iters, state.iters);
+  gl.uniform1i(U.u_steps, state.steps);
+  gl.uniform1f(U.u_bailout, state.bailout);
+  gl.uniform1f(U.u_dist, state.dist);
+  gl.uniform1f(U.u_fov, state.fov);
+  gl.uniform2f(U.u_rot, state.camTheta, state.camPhi);
+  gl.uniform1i(U.u_colorMode, state.colorMode);
+  gl.uniform1i(U.u_ao, state.ao);
+  gl.uniform1f(U.u_spec, state.spec);
+  gl.uniform1f(U.u_lightAngle, state.lightAngle);
+
+  gl.drawArrays(gl.TRIANGLES, 0, 6);
+
+  // Pulse visual
+  pulse.className = 'pulse';
+  renderState.textContent = 'RENDERING';
+
+  requestAnimationFrame(render);
+}
+
+requestAnimationFrame(render);
+</script>
+</body>
+</html>

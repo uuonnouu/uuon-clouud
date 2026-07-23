@@ -1,0 +1,556 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Δmension Mathematical Universe API",
+    "description": "The world's largest parametric 3D math shape library. Generate, render, and export 2,650+ mathematically exact 3D shapes — from topology and quantum geometry to DNA structures and IFS fractals — via a simple REST API.\n\n## What you can do\n- **Render any shape** into 3D vertex data using 26 real-time parameters (A–Z)\n- **Compute quantum geometry** — Bloch spheres, bell states, quantum interference\n- **Generate fractal geometry** — Menger sponge, Mandelbox, Kleinian and more\n- **Look up mathematical symbols** — 2,650+ Unicode/LaTeX symbols with 3D render data\n- **Export-ready outputs** — GLB, PLY, and parametric JSON formats\n- **AI shape generation** — describe a shape in plain English, get parametric data back\n\n## Authentication\nPublic endpoints require no key. Engine endpoints require `x-api-key` header.",
+    "version": "2.0.0",
+    "contact": {
+      "name": "Δmension API Support",
+      "url": "https://d-dmension-mathematical-universe-uuon-foundation.replit.app/developer"
+    },
+    "license": {
+      "name": "Commercial",
+      "url": "https://d-dmension-mathematical-universe-uuon-foundation.replit.app/developer"
+    }
+  },
+  "servers": [
+    {
+      "url": "https://d-dmension-mathematical-universe-uuon-foundation.replit.app",
+      "description": "Production"
+    }
+  ],
+  "tags": [
+    { "name": "Shapes", "description": "Shape data, categories, and metadata" },
+    { "name": "Compute", "description": "Parametric surface computation and 3D rendering" },
+    { "name": "Unified Math", "description": "Symbol lookup, constants, and batch rendering" },
+    { "name": "Quantum", "description": "Quantum geometry — Bloch spheres, bell states, circuits" },
+    { "name": "Fractals", "description": "IFS fractal geometry generation" },
+    { "name": "AI", "description": "AI-powered shape generation and analysis" },
+    { "name": "Tokens", "description": "Digital DNA token ledger" },
+    { "name": "System", "description": "Health, status, and API info" }
+  ],
+  "paths": {
+    "/api": {
+      "get": {
+        "tags": ["System"],
+        "summary": "API info and endpoint index",
+        "description": "Returns the full list of registered API endpoints, version, and status.",
+        "operationId": "getApiIndex",
+        "responses": {
+          "200": {
+            "description": "API info",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ApiIndex" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/health": {
+      "get": {
+        "tags": ["System"],
+        "summary": "Health check",
+        "description": "Returns server health status. Use this to verify the API is reachable.",
+        "operationId": "getHealth",
+        "responses": {
+          "200": {
+            "description": "Server is healthy",
+            "content": {
+              "application/json": {
+                "example": { "status": "ok", "uptime": 3600 }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/shapes/categories": {
+      "get": {
+        "tags": ["Shapes"],
+        "summary": "List all shape categories",
+        "description": "Returns all 151+ shape categories available in the library.",
+        "operationId": "getShapeCategories",
+        "responses": {
+          "200": {
+            "description": "Array of category names",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "type": "string" },
+                  "example": ["topology", "quantum", "minimal-surfaces", "dna", "fractals", "4d-polytopes"]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/shape-data/{shapeType}": {
+      "get": {
+        "tags": ["Shapes"],
+        "summary": "Get shape definition and default parameters",
+        "description": "Returns the full mathematical definition, default A–Z parameters, UV domain, and metadata for any shape.",
+        "operationId": "getShapeData",
+        "parameters": [
+          {
+            "name": "shapeType",
+            "in": "path",
+            "required": true,
+            "description": "The shape identifier (e.g. `torus`, `klein-bottle`, `menger-sponge`)",
+            "schema": { "type": "string", "example": "torus" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Shape definition",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ShapeData" }
+              }
+            }
+          },
+          "404": { "description": "Shape not found" }
+        }
+      }
+    },
+    "/api/compute/surface": {
+      "post": {
+        "tags": ["Compute"],
+        "summary": "Compute parametric surface vertices",
+        "description": "Generates 3D vertex data for any parametric surface using A–Z parameters. Returns arrays of x, y, z coordinates ready for WebGL or Three.js.",
+        "operationId": "computeSurface",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/ComputeRequest" },
+              "example": {
+                "shapeType": "torus",
+                "parameters": { "a": 2, "b": 1, "c": 1 },
+                "uSegments": 32,
+                "vSegments": 16,
+                "uMin": 0,
+                "uMax": 6.28318,
+                "vMin": 0,
+                "vMax": 6.28318
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Computed vertex data",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ComputeResponse" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/compute/dual": {
+      "post": {
+        "tags": ["Compute"],
+        "summary": "Compute dual surface (two shapes blended)",
+        "description": "Blends two parametric shapes with a morphing weight parameter.",
+        "operationId": "computeDual",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "shapeA": { "type": "string", "example": "torus" },
+                  "shapeB": { "type": "string", "example": "sphere" },
+                  "morphWeight": { "type": "number", "minimum": 0, "maximum": 1, "example": 0.5 },
+                  "parameters": { "$ref": "#/components/schemas/Parameters" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Blended vertex data" }
+        }
+      }
+    },
+    "/api/compute/fractal/render": {
+      "post": {
+        "tags": ["Fractals"],
+        "summary": "Render IFS fractal geometry",
+        "description": "Generates 3D geometry for IFS fractals: Menger Sponge, Mandelbox, Kleinian, Tetrahedral, Anisotropic Menger, Chaos Boundary, Compound Blend.",
+        "operationId": "renderFractal",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "fractalType": {
+                    "type": "string",
+                    "enum": ["menger-sponge", "mandelbox", "kleinian", "tetrahedral", "anisotropic-menger", "chaos-boundary", "compound-blend"],
+                    "example": "menger-sponge"
+                  },
+                  "iterations": { "type": "integer", "minimum": 1, "maximum": 8, "example": 3 },
+                  "scale": { "type": "number", "example": 1.0 }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Fractal geometry data" }
+        }
+      }
+    },
+    "/api/compute/fractal/shapes": {
+      "get": {
+        "tags": ["Fractals"],
+        "summary": "List available fractal types",
+        "operationId": "listFractals",
+        "responses": {
+          "200": {
+            "description": "List of fractal types",
+            "content": {
+              "application/json": {
+                "example": ["menger-sponge", "mandelbox", "kleinian", "tetrahedral", "anisotropic-menger", "chaos-boundary", "compound-blend", "lattice"]
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/compute/quantum/render": {
+      "post": {
+        "tags": ["Quantum"],
+        "summary": "Render quantum geometry shape",
+        "description": "Generates 3D geometry for quantum physics visualizations: wave functions, probability clouds, spin states.",
+        "operationId": "renderQuantumShape",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "shapeType": { "type": "string", "example": "bloch-sphere" },
+                  "parameters": { "$ref": "#/components/schemas/Parameters" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Quantum shape geometry" }
+        }
+      }
+    },
+    "/api/quantum/bloch-sphere": {
+      "post": {
+        "tags": ["Quantum"],
+        "summary": "Bloch sphere qubit visualization",
+        "description": "Renders the Bloch sphere representation of a qubit state |ψ⟩ = cos(θ/2)|0⟩ + e^(iφ)sin(θ/2)|1⟩.",
+        "operationId": "blochSphere",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "example": { "theta": 1.047, "phi": 0.785 }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Bloch sphere geometry and state vector" }
+        }
+      }
+    },
+    "/api/quantum/bell-state": {
+      "post": {
+        "tags": ["Quantum"],
+        "summary": "Bell state entanglement visualization",
+        "description": "Visualizes one of the four Bell states (Φ+, Φ−, Ψ+, Ψ−) as 3D geometry.",
+        "operationId": "bellState",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "example": { "state": "phi-plus" }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Bell state geometry" }
+        }
+      }
+    },
+    "/api/unified-math/symbols": {
+      "get": {
+        "tags": ["Unified Math"],
+        "summary": "List all mathematical symbols",
+        "description": "Returns the full catalog of 2,650+ mathematical symbols with names, Unicode, and LaTeX.",
+        "operationId": "listSymbols",
+        "parameters": [
+          {
+            "name": "category",
+            "in": "query",
+            "schema": { "type": "string", "example": "greek" },
+            "description": "Filter by category"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": { "type": "integer", "default": 50 }
+          }
+        ],
+        "responses": {
+          "200": { "description": "Symbol list" }
+        }
+      }
+    },
+    "/api/unified-math/symbol/{key}": {
+      "get": {
+        "tags": ["Unified Math"],
+        "summary": "Get single symbol with 3D render data",
+        "description": "Returns full data for one mathematical symbol including its parametric 3D form.",
+        "operationId": "getSymbol",
+        "parameters": [
+          {
+            "name": "key",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string", "example": "pi" }
+          }
+        ],
+        "responses": {
+          "200": { "description": "Symbol data with 3D geometry" }
+        }
+      }
+    },
+    "/api/unified-math/render3d": {
+      "post": {
+        "tags": ["Unified Math"],
+        "summary": "Render a math expression as 3D geometry",
+        "description": "Parses a mathematical expression and returns 3D vertex data.",
+        "operationId": "renderMath3d",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "example": { "expression": "sin(u)*cos(v)", "uRange": [0, 6.28], "vRange": [0, 3.14], "segments": 32 }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "3D geometry data" }
+        }
+      }
+    },
+    "/api/unified-math/constants": {
+      "get": {
+        "tags": ["Unified Math"],
+        "summary": "Get mathematical constants",
+        "description": "Returns π, φ, e, and hundreds of mathematical and physical constants with full precision.",
+        "operationId": "getConstants",
+        "responses": {
+          "200": { "description": "Constants catalog" }
+        }
+      }
+    },
+    "/api/unified-math/batch-render": {
+      "post": {
+        "tags": ["Unified Math"],
+        "summary": "Batch render multiple shapes",
+        "description": "Render up to 20 shapes in a single request.",
+        "operationId": "batchRender",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "example": {
+                "shapes": [
+                  { "shapeType": "sphere", "parameters": { "a": 1 } },
+                  { "shapeType": "torus", "parameters": { "a": 2, "b": 1 } }
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Array of geometry results" }
+        }
+      }
+    },
+    "/api/ai-analysis/shapes/generate": {
+      "post": {
+        "tags": ["AI"],
+        "summary": "Generate shape from text description",
+        "description": "Describe a shape in plain English and get back parametric data, the matched shape type, and default parameters.",
+        "operationId": "generateShapeFromText",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "example": { "description": "a donut-shaped surface that twists once", "style": "mathematical" }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Generated shape data",
+            "content": {
+              "application/json": {
+                "example": {
+                  "shapeType": "torus-knot",
+                  "confidence": 0.92,
+                  "parameters": { "a": 2, "b": 1, "p": 2, "q": 3 },
+                  "description": "A (2,3) torus knot — a curve that wraps twice around the torus and 3 times through the hole"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/ai-analysis/shape-summary": {
+      "get": {
+        "tags": ["AI"],
+        "summary": "Get educational summary for a shape",
+        "description": "Returns a human-readable mathematical description, history, and applications for any shape.",
+        "operationId": "getShapeSummary",
+        "parameters": [
+          {
+            "name": "shape",
+            "in": "query",
+            "required": true,
+            "schema": { "type": "string", "example": "klein-bottle" }
+          }
+        ],
+        "responses": {
+          "200": { "description": "Educational shape summary" }
+        }
+      }
+    },
+    "/api/tokens/ledger": {
+      "get": {
+        "tags": ["Tokens"],
+        "summary": "Get Digital DNA token ledger",
+        "description": "Returns the cryptographic ledger of shape tokens with Digital DNA fingerprints.",
+        "operationId": "getTokenLedger",
+        "responses": {
+          "200": { "description": "Token ledger entries" }
+        }
+      }
+    },
+    "/api/enterprise/tiers": {
+      "get": {
+        "tags": ["System"],
+        "summary": "Get API pricing tiers",
+        "description": "Returns available API access tiers and rate limits.",
+        "operationId": "getEnterpriseTiers",
+        "responses": {
+          "200": { "description": "Pricing tiers" }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "ApiIndex": {
+        "type": "object",
+        "properties": {
+          "name": { "type": "string", "example": "Δmension Mathematical Universe API" },
+          "version": { "type": "string", "example": "2.0.0" },
+          "status": { "type": "string", "example": "operational" },
+          "endpoints": { "type": "array", "items": { "type": "object" } }
+        }
+      },
+      "Parameters": {
+        "type": "object",
+        "description": "A–Z parameter controls. All values range from -50 to 50.",
+        "additionalProperties": { "type": "number" },
+        "example": { "a": 1, "b": 1, "c": 1, "x": 1, "y": 1, "z": 1 }
+      },
+      "ComputeRequest": {
+        "type": "object",
+        "required": ["shapeType"],
+        "properties": {
+          "shapeType": { "type": "string", "description": "Shape identifier", "example": "torus" },
+          "parameters": { "$ref": "#/components/schemas/Parameters" },
+          "uSegments": { "type": "integer", "minimum": 5, "maximum": 50, "default": 32 },
+          "vSegments": { "type": "integer", "minimum": 5, "maximum": 50, "default": 16 },
+          "uMin": { "type": "number", "default": 0 },
+          "uMax": { "type": "number", "default": 6.28318 },
+          "vMin": { "type": "number", "default": 0 },
+          "vMax": { "type": "number", "default": 6.28318 }
+        }
+      },
+      "ComputeResponse": {
+        "type": "object",
+        "properties": {
+          "vertices": {
+            "type": "array",
+            "items": { "type": "number" },
+            "description": "Flat array of x,y,z vertex coordinates"
+          },
+          "normals": {
+            "type": "array",
+            "items": { "type": "number" },
+            "description": "Flat array of surface normal vectors"
+          },
+          "uvs": {
+            "type": "array",
+            "items": { "type": "number" },
+            "description": "UV texture coordinates"
+          },
+          "indices": {
+            "type": "array",
+            "items": { "type": "integer" },
+            "description": "Triangle face indices"
+          },
+          "shapeType": { "type": "string" },
+          "vertexCount": { "type": "integer" }
+        }
+      },
+      "ShapeData": {
+        "type": "object",
+        "properties": {
+          "shapeType": { "type": "string" },
+          "displayName": { "type": "string" },
+          "category": { "type": "string" },
+          "description": { "type": "string" },
+          "defaultParameters": { "$ref": "#/components/schemas/Parameters" },
+          "uvDomain": {
+            "type": "object",
+            "properties": {
+              "uMin": { "type": "number" },
+              "uMax": { "type": "number" },
+              "vMin": { "type": "number" },
+              "vMax": { "type": "number" }
+            }
+          },
+          "equations": {
+            "type": "object",
+            "properties": {
+              "x": { "type": "string" },
+              "y": { "type": "string" },
+              "z": { "type": "string" }
+            }
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "ApiKeyAuth": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "x-api-key"
+      }
+    }
+  }
+}

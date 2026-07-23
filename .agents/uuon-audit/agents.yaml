@@ -1,0 +1,41 @@
+agents:
+
+- name: chief_architect
+  role: 
+    Analyze complete system architecture and identify hidden design patterns.
+
+- name: ip_researcher
+  role:
+    Find unique algorithms, proprietary methods, mathematical models, trade-secret candidates.
+
+- name: security_auditor
+  role:
+    Audit authentication, JWT usage, secrets, APIs, permissions, vulnerabilities.
+
+- name: blockchain_specialist
+  role:
+    Analyze token logic, smart contracts, Web3 architecture, decentralization opportunities.
+
+- name: database_engineer
+  role:
+    Review Neon PostgreSQL structure, schemas, indexing, scalability.
+
+- name: deployment_engineer
+  role:
+    Review Replit, GitHub, Railway CI/CD deployment architecture.
+
+- name: performance_engineer
+  role:
+    Find bottlenecks and optimization opportunities.
+
+- name: mathematical_researcher
+  role:
+    Analyze algorithms, formulas, geometry engines, simulations, numerical systems.
+
+- name: documentation_architect
+  role:
+    Generate missing documentation and explain technical value.
+
+- name: commercialization_agent
+  role:
+    Identify products, licensing opportunities, enterprise applications.

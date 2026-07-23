@@ -1,0 +1,677 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  
+  <!-- ====================== IBM QUANTUM ADVANCED ALGORITHMS ====================== -->
+  <!-- Comprehensive quantum computing algorithms for scientific discovery -->
+  <!-- Part of Δmension Mathematical Universe - Queens Bridge Integration -->
+  <!-- Last Updated: 2025-11-29 -->
+  
+  <!-- ====================== SAMPLE-BASED QUANTUM DIAGONALIZATION (SQD) ====================== -->
+  <!-- Chemistry Hamiltonian & Molecular Simulation -->
+  
+  <url>
+    <loc>https://uuon-foundation.com/quantum/algorithms/sqd</loc>
+    <lastmod>2025-11-30</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.95</priority>
+  </url>
+  
+  <url>
+    <loc>https://uuon-foundation.com/quantum/algorithms/sqd/chemistry-hamiltonian</loc>
+    <lastmod>2025-11-30</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  
+  <url>
+    <loc>https://uuon-foundation.com/quantum/algorithms/sqd/nitrogen-molecule</loc>
+    <lastmod>2025-11-30</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  
+  <url>
+    <loc>https://uuon-foundation.com/quantum/algorithms/sqd/lucj-ansatz</loc>
+    <lastmod>2025-11-30</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  
+  <url>
+    <loc>https://uuon-foundation.com/quantum/algorithms/sqd/hartree-fock</loc>
+    <lastmod>2025-11-30</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  
+  <url>
+    <loc>https://uuon-foundation.com/quantum/algorithms/sqd/configuration-recovery</loc>
+    <lastmod>2025-11-30</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  
+  <url>
+    <loc>https://uuon-foundation.com/quantum/algorithms/sqd/second-quantization</loc>
+    <lastmod>2025-11-30</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
+  <url>
+    <loc>https://uuon-foundation.com/quantum/algorithms/sqd/fermionic-operators</loc>
+    <lastmod>2025-11-30</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
+  <!-- ====================== SAMPLE-BASED KRYLOV QUANTUM DIAGONALIZATION (SQKD) ====================== -->
+  <!-- Fermionic Lattice Models & Anderson Model -->
+  
+  <url>
+    <loc>https://uuon-foundation.com/quantum/algorithms/sqkd</loc>
+    <lastmod>2025-11-30</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.95</priority>
+  </url>
+  
+  <url>
+    <loc>https://uuon-foundation.com/quantum/algorithms/sqkd/fermionic-lattice</loc>
+    <lastmod>2025-11-30</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  
+  <url>
+    <loc>https://uuon-foundation.com/quantum/algorithms/sqkd/anderson-model</loc>
+    <lastmod>2025-11-30</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  
+  <url>
+    <loc>https://uuon-foundation.com/quantum/algorithms/sqkd/siam-hamiltonian</loc>
+    <lastmod>2025-11-30</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  
+  <url>
+    <loc>https://uuon-foundation.com/quantum/algorithms/sqkd/time-evolution</loc>
+    <lastmod>2025-11-30</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  
+  <url>
+    <loc>https://uuon-foundation.com/quantum/algorithms/sqkd/ground-state-energy</loc>
+    <lastmod>2025-11-30</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  
+  <url>
+    <loc>https://uuon-foundation.com/quantum/algorithms/sqkd/krylov-subspace</loc>
+    <lastmod>2025-11-30</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
+  <!-- ====================== QAOA - QUANTUM APPROXIMATE OPTIMIZATION ====================== -->
+  <!-- Max-Cut Problem & Combinatorial Optimization -->
+  
+  <url>
+    <loc>https://uuon-foundation.com/quantum/algorithms/qaoa</loc>
+    <lastmod>2025-11-30</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.95</priority>
+  </url>
+  
+  <url>
+    <loc>https://uuon-foundation.com/quantum/algorithms/qaoa/max-cut</loc>
+    <lastmod>2025-11-30</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  
+  <url>
+    <loc>https://uuon-foundation.com/quantum/algorithms/qaoa/cost-hamiltonian</loc>
+    <lastmod>2025-11-30</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  
+  <url>
+    <loc>https://uuon-foundation.com/quantum/algorithms/qaoa/qubo-formulation</loc>
+    <lastmod>2025-11-30</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  
+  <url>
+    <loc>https://uuon-foundation.com/quantum/algorithms/qaoa/variational-optimization</loc>
+    <lastmod>2025-11-30</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  
+  <url>
+    <loc>https://uuon-foundation.com/quantum/algorithms/qaoa/utility-scale</loc>
+    <lastmod>2025-11-30</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  
+  <!-- ====================== ADVANCED QAOA TECHNIQUES ====================== -->
+  <!-- SWAP Strategy, SAT Mapping, CVaR -->
+  
+  <url>
+    <loc>https://uuon-foundation.com/quantum/algorithms/qaoa-advanced</loc>
+    <lastmod>2025-11-30</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.95</priority>
+  </url>
+  
+  <url>
+    <loc>https://uuon-foundation.com/quantum/algorithms/qaoa-advanced/swap-strategy</loc>
+    <lastmod>2025-11-30</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  
+  <url>
+    <loc>https://uuon-foundation.com/quantum/algorithms/qaoa-advanced/sat-mapping</loc>
+    <lastmod>2025-11-30</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  
+  <url>
+    <loc>https://uuon-foundation.com/quantum/algorithms/qaoa-advanced/cvar-optimization</loc>
+    <lastmod>2025-11-30</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  
+  <url>
+    <loc>https://uuon-foundation.com/quantum/algorithms/qaoa-advanced/100-qubit</loc>
+    <lastmod>2025-11-30</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  
+  <url>
+    <loc>https://uuon-foundation.com/quantum/algorithms/qaoa-advanced/commuting-gates</loc>
+    <lastmod>2025-11-30</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  
+  <!-- ====================== PAULI CORRELATION ENCODING (PCE) ====================== -->
+  <!-- Polynomial Compression for MaxCut -->
+  
+  <url>
+    <loc>https://uuon-foundation.com/quantum/algorithms/pce</loc>
+    <lastmod>2025-11-30</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.95</priority>
+  </url>
+  
+  <url>
+    <loc>https://uuon-foundation.com/quantum/algorithms/pce/maxcut-encoding</loc>
+    <lastmod>2025-11-30</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  
+  <url>
+    <loc>https://uuon-foundation.com/quantum/algorithms/pce/correlation-matrix</loc>
+    <lastmod>2025-11-30</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  
+  <url>
+    <loc>https://uuon-foundation.com/quantum/algorithms/pce/polynomial-compression</loc>
+    <lastmod>2025-11-30</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  
+  <url>
+    <loc>https://uuon-foundation.com/quantum/algorithms/pce/1000-node-graph</loc>
+    <lastmod>2025-11-30</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  
+  <url>
+    <loc>https://uuon-foundation.com/quantum/algorithms/pce/barren-plateau-mitigation</loc>
+    <lastmod>2025-11-30</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  
+  <!-- ====================== MULTI-PRODUCT FORMULA (MPF) ====================== -->
+  <!-- Trotter Error Reduction -->
+  
+  <url>
+    <loc>https://uuon-foundation.com/quantum/algorithms/mpf</loc>
+    <lastmod>2025-11-30</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.95</priority>
+  </url>
+  
+  <url>
+    <loc>https://uuon-foundation.com/quantum/algorithms/mpf/trotter-error</loc>
+    <lastmod>2025-11-30</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  
+  <url>
+    <loc>https://uuon-foundation.com/quantum/algorithms/mpf/lie-trotter-suzuki</loc>
+    <lastmod>2025-11-30</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  
+  <url>
+    <loc>https://uuon-foundation.com/quantum/algorithms/mpf/heisenberg-model</loc>
+    <lastmod>2025-11-30</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  
+  <url>
+    <loc>https://uuon-foundation.com/quantum/algorithms/mpf/time-evolution</loc>
+    <lastmod>2025-11-30</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  
+  <url>
+    <loc>https://uuon-foundation.com/quantum/algorithms/mpf/weighted-combination</loc>
+    <lastmod>2025-11-30</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
+  <!-- ====================== GROVER'S ALGORITHM ====================== -->
+  <!-- Amplitude Amplification & Unstructured Search -->
+  
+  <url>
+    <loc>https://uuon-foundation.com/quantum/algorithms/grover</loc>
+    <lastmod>2025-11-30</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.95</priority>
+  </url>
+  
+  <url>
+    <loc>https://uuon-foundation.com/quantum/algorithms/grover/oracle</loc>
+    <lastmod>2025-11-30</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  
+  <url>
+    <loc>https://uuon-foundation.com/quantum/algorithms/grover/amplitude-amplification</loc>
+    <lastmod>2025-11-30</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  
+  <url>
+    <loc>https://uuon-foundation.com/quantum/algorithms/grover/marked-states</loc>
+    <lastmod>2025-11-30</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  
+  <url>
+    <loc>https://uuon-foundation.com/quantum/algorithms/grover/mcmt-gate</loc>
+    <lastmod>2025-11-30</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  
+  <url>
+    <loc>https://uuon-foundation.com/quantum/algorithms/grover/optimal-iterations</loc>
+    <lastmod>2025-11-30</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  
+  <!-- ====================== FRACTIONAL GATES ====================== -->
+  <!-- RZZ and RX Direct Execution on Heron QPUs -->
+  
+  <url>
+    <loc>https://uuon-foundation.com/quantum/algorithms/fractional-gates</loc>
+    <lastmod>2025-11-30</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.95</priority>
+  </url>
+  
+  <url>
+    <loc>https://uuon-foundation.com/quantum/algorithms/fractional-gates/rzz</loc>
+    <lastmod>2025-11-30</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  
+  <url>
+    <loc>https://uuon-foundation.com/quantum/algorithms/fractional-gates/rx</loc>
+    <lastmod>2025-11-30</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  
+  <url>
+    <loc>https://uuon-foundation.com/quantum/algorithms/fractional-gates/fold-rzz-angle</loc>
+    <lastmod>2025-11-30</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  
+  <url>
+    <loc>https://uuon-foundation.com/quantum/algorithms/fractional-gates/heron-r2</loc>
+    <lastmod>2025-11-30</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  
+  <url>
+    <loc>https://uuon-foundation.com/quantum/algorithms/fractional-gates/zz-feature-map</loc>
+    <lastmod>2025-11-30</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  
+  <!-- ====================== AI-POWERED TRANSPILER ====================== -->
+  <!-- Machine Learning Optimized Routing & Synthesis -->
+  
+  <url>
+    <loc>https://uuon-foundation.com/quantum/algorithms/ai-transpiler</loc>
+    <lastmod>2025-11-30</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.95</priority>
+  </url>
+  
+  <url>
+    <loc>https://uuon-foundation.com/quantum/algorithms/ai-transpiler/ai-routing</loc>
+    <lastmod>2025-11-30</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  
+  <url>
+    <loc>https://uuon-foundation.com/quantum/algorithms/ai-transpiler/ai-synthesis</loc>
+    <lastmod>2025-11-30</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  
+  <url>
+    <loc>https://uuon-foundation.com/quantum/algorithms/ai-transpiler/clifford-synthesis</loc>
+    <lastmod>2025-11-30</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  
+  <url>
+    <loc>https://uuon-foundation.com/quantum/algorithms/ai-transpiler/permutation-synthesis</loc>
+    <lastmod>2025-11-30</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  
+  <url>
+    <loc>https://uuon-foundation.com/quantum/algorithms/ai-transpiler/linear-function</loc>
+    <lastmod>2025-11-30</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  
+  <url>
+    <loc>https://uuon-foundation.com/quantum/algorithms/ai-transpiler/depth-reduction</loc>
+    <lastmod>2025-11-30</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
+  <!-- ====================== QUANTUM MACHINE LEARNING ====================== -->
+  <!-- Kernel Methods, Feature Maps, Classification -->
+  
+  <url>
+    <loc>https://uuon-foundation.com/quantum/algorithms/qml</loc>
+    <lastmod>2025-11-30</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.95</priority>
+  </url>
+  
+  <url>
+    <loc>https://uuon-foundation.com/quantum/algorithms/qml/quantum-kernel</loc>
+    <lastmod>2025-11-30</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  
+  <url>
+    <loc>https://uuon-foundation.com/quantum/algorithms/qml/kernel-training</loc>
+    <lastmod>2025-11-30</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  
+  <url>
+    <loc>https://uuon-foundation.com/quantum/algorithms/qml/projected-kernels</loc>
+    <lastmod>2025-11-30</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  
+  <url>
+    <loc>https://uuon-foundation.com/quantum/algorithms/qml/classification</loc>
+    <lastmod>2025-11-30</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  
+  <url>
+    <loc>https://uuon-foundation.com/quantum/algorithms/qml/feature-map</loc>
+    <lastmod>2025-11-30</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  
+  <url>
+    <loc>https://uuon-foundation.com/quantum/algorithms/qml/zz-feature-map</loc>
+    <lastmod>2025-11-30</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  
+  <!-- ====================== VQE - VARIATIONAL QUANTUM EIGENSOLVER ====================== -->
+  <!-- Ground State Energy Calculation -->
+  
+  <url>
+    <loc>https://uuon-foundation.com/quantum/algorithms/vqe</loc>
+    <lastmod>2025-11-30</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.95</priority>
+  </url>
+  
+  <url>
+    <loc>https://uuon-foundation.com/quantum/algorithms/vqe/ansatz</loc>
+    <lastmod>2025-11-30</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  
+  <url>
+    <loc>https://uuon-foundation.com/quantum/algorithms/vqe/parameter-optimization</loc>
+    <lastmod>2025-11-30</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  
+  <url>
+    <loc>https://uuon-foundation.com/quantum/algorithms/vqe/estimator-primitive</loc>
+    <lastmod>2025-11-30</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  
+  <url>
+    <loc>https://uuon-foundation.com/quantum/algorithms/vqe/molecular-simulation</loc>
+    <lastmod>2025-11-30</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  
+  <!-- ====================== ERROR MITIGATION ====================== -->
+  <!-- Zero Noise Extrapolation, Dynamical Decoupling -->
+  
+  <url>
+    <loc>https://uuon-foundation.com/quantum/algorithms/error-mitigation</loc>
+    <lastmod>2025-11-30</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  
+  <url>
+    <loc>https://uuon-foundation.com/quantum/algorithms/error-mitigation/zne</loc>
+    <lastmod>2025-11-30</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  
+  <url>
+    <loc>https://uuon-foundation.com/quantum/algorithms/error-mitigation/dynamical-decoupling</loc>
+    <lastmod>2025-11-30</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  
+  <url>
+    <loc>https://uuon-foundation.com/quantum/algorithms/error-mitigation/pec</loc>
+    <lastmod>2025-11-30</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  
+  <url>
+    <loc>https://uuon-foundation.com/quantum/algorithms/error-mitigation/readout-m3</loc>
+    <lastmod>2025-11-30</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  
+  <!-- ====================== CIRCUIT CUTTING ====================== -->
+  <!-- Wire Cutting, Periodic Boundary Conditions -->
+  
+  <url>
+    <loc>https://uuon-foundation.com/quantum/algorithms/circuit-cutting</loc>
+    <lastmod>2025-11-30</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  
+  <url>
+    <loc>https://uuon-foundation.com/quantum/algorithms/circuit-cutting/wire-cutting</loc>
+    <lastmod>2025-11-30</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  
+  <url>
+    <loc>https://uuon-foundation.com/quantum/algorithms/circuit-cutting/periodic-boundary</loc>
+    <lastmod>2025-11-30</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  
+  <url>
+    <loc>https://uuon-foundation.com/quantum/algorithms/circuit-cutting/depth-reduction</loc>
+    <lastmod>2025-11-30</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  
+  <!-- ====================== IBM QUANTUM BACKENDS ====================== -->
+  <!-- Hardware Access & Configuration -->
+  
+  <url>
+    <loc>https://uuon-foundation.com/quantum/backends</loc>
+    <lastmod>2025-11-30</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  
+  <url>
+    <loc>https://uuon-foundation.com/quantum/backends/heron-r2</loc>
+    <lastmod>2025-11-30</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  
+  <url>
+    <loc>https://uuon-foundation.com/quantum/backends/heron-r3</loc>
+    <lastmod>2025-11-30</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  
+  <url>
+    <loc>https://uuon-foundation.com/quantum/backends/eagle-r3</loc>
+    <lastmod>2025-11-30</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  
+  <url>
+    <loc>https://uuon-foundation.com/quantum/backends/ibm-brisbane</loc>
+    <lastmod>2025-11-30</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  
+  <url>
+    <loc>https://uuon-foundation.com/quantum/backends/ibm-fez</loc>
+    <lastmod>2025-11-30</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  
+  <!-- ====================== QISKIT RUNTIME PRIMITIVES ====================== -->
+  <!-- Estimator & Sampler V2 -->
+  
+  <url>
+    <loc>https://uuon-foundation.com/quantum/primitives</loc>
+    <lastmod>2025-11-30</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  
+  <url>
+    <loc>https://uuon-foundation.com/quantum/primitives/estimator-v2</loc>
+    <lastmod>2025-11-30</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  
+  <url>
+    <loc>https://uuon-foundation.com/quantum/primitives/sampler-v2</loc>
+    <lastmod>2025-11-30</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  
+  <url>
+    <loc>https://uuon-foundation.com/quantum/primitives/pub-format</loc>
+    <lastmod>2025-11-30</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
+</urlset>

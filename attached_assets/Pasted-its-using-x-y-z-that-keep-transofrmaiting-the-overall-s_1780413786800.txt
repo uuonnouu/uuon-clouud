@@ -1,0 +1,49 @@
+its using x,y,z that keep transofrmaiting the overall size fo the model than followig the path it needs to. i also have these tesnor points mapped out and was wondering if they provide any benefit for animation fo 3d models. this is my own appl 📦
+Volume
+42.1477 m³
+Total 3D space enclosed by the surface, computed via triple integration
+
+🎨
+Surface Area
+146.7919 m²
+Total area of the outer surface, computed from mesh triangles
+
+⚖️
+Mass
+42147.6961 kg
+Volume multiplied by material density (m = ρV)
+
+⚙️
+Center of Mass
+X
+-0.4
+Y
+0.7
+Z
+-0.0
+Balance point where the shape would be perfectly balanced
+
+🔄
+Moment of Inertia Tensor
+Ixx
+1.02e+5
+Ixy
+9.95e+3
+Ixz
+-1.28e+3
+Ixy
+9.95e+3
+Iyy
+9.70e+4
+Iyz
+-5.41e+3
+Ixz
+-1.28e+3
+Iyz
+-5.41e+3
+Izz
+6.95e+4
+Resistance to rotational acceleration around each axis
+
+Computed in 2888.5ms
+Triple Integration • Differential GeometryThe scaling glitch happens because your code is likely applying the incoming data to the Model Matrix scaling factors instead of its Translation vectors, or you are multiplying the translation directly into a matrix that still contains raw scale data.Your inertia tensor and mass properties are incredibly valuable. They can completely fix your animation problems if you switch from a "pure math" movement system to a physics-based simulation.Here is how to fix the scaling bug and how to use your tensor data to create realistic 3D animations.1. Fix the Scaling Glitch ImmediatelyIf your model is changing size, your engine is accidentally altering the diagonal elements (\(M_{00}, M_{11}, M_{22}\)) of your \(4 \times 4\) transformation matrix.The Cause: You might be multiplying your position vectors directly into the wrong matrix slots, or your path-following algorithm is normalizing a vector incorrectly, bleeding spatial scale into the transformation matrix.The Fix: Completely isolate your transformations. Rebuild your model matrix every frame using three distinct steps in this exact order:\(\mathbf{Matrix}_{\mathbf{Model}}=\mathbf{Translation}\times \mathbf{Rotation}\times \mathbf{Scale}\)Keep your Scale matrix locked at \((1,1,1)\) unless you explicitly want to resize the model.2. How to Use Your Tensor Points for Better AnimationYour custom application is successfully calculating a Moment of Inertia Tensor, Center of Mass, and Mass. In a custom 3D engine, this data provides massive benefits for three specific animation techniques:Pivot-Perfect RotationsThe Benefit: No more "wobbly" or off-center rotations when your model follows a curved path.How to use it: Do not rotate your model around its raw mesh origin \((0,0,0)\). Translate your model's origin to your computed Center of Mass \((X: -0.4, Y: 0.7, Z: -0.0)\) before applying any path-following rotation matrices, then translate it back. This ensures the model banks, leans, and turns realistically around its true physical balance point.Realistic Angular Momentum (Leaning and Drifting)The Benefit: Your object will naturally "lean" into turns along its path based on its actual weight and distribution.How to use it: Your tensor values (\(I_{xx}, I_{yy}, I_{zz}\)) tell you how hard it is to rotate the object around each axis. Because your \(I_{xx}\) (\(1.02e+5\)) is much higher than your \(I_{zz}\) (\(6.95e+4\)), your engine knows this model requires much more torque to pitch up/down than it does to yawn/spin. You can use this to calculate realistic body roll and lag when it changes direction on the path.Physics-Driven Path Following (Torque vs. Teleportation)The Benefit: Eliminates the "glitchy" snapping entirely by replacing coordinate hacking with physical forces.How to use it: Instead of forcefully teleporting the object to the next \(X, Y, Z\) coordinate on your path, look at the next path point as a target. Use your Mass (\(42147.7 \text{ kg}\)) to calculate the physical force needed to push the object there, and use the Inertia Tensor to calculate the torque needed to rotate it toward the path's heading.

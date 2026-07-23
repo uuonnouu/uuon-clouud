@@ -1,0 +1,83 @@
+{
+  "tasks": {
+    "task-1781967121668-phqm88": {
+      "taskId": "task-1781967121668-phqm88",
+      "type": "research",
+      "description": "Research and draft a written implementation plan for two things, output as a markdown report only — do not write, edit, or commit any files, do not deploy anything, do not call any external APIs:\n\n1. Connecting to real IBM Quantum hardware via the qiskit-ibm-runtime SDK — what's needed to submit a circuit and retrieve real measurement results (account setup, API token, job submission/polling flow), and whether this is feasible to call directly from a Node/Express backend vs requiring a separate Python service.\n\n2. A calibrated noise-aware simulator as a fallback, using IBM's publicly published hardware calibration data (qubit error rates, T1/T2 decoherence times) — similar to how Qiskit's own FakeBackend classes work. Be explicit that this is a labeled simulation/approximation, not real hardware, and flag this clearly in the plan.\n\nCite real, verifiable sources for any technical claims (Qiskit docs, IBM Quantum docs). Do not invent API endpoints, package names, or capabilities that don't actually exist — if uncertain about a detail, say so explicitly rather than guessing.",
+      "priority": "high",
+      "status": "pending",
+      "progress": 0,
+      "assignedTo": [],
+      "tags": [],
+      "createdAt": "2026-06-20T14:52:01.668Z",
+      "startedAt": null,
+      "completedAt": null
+    },
+    "task-1782080218853-rpewab": {
+      "taskId": "task-1782080218853-rpewab",
+      "type": "research",
+      "description": "AUDIT ONLY, NO WRITES/COMMITS/DEPLOYS. Find dead code, orphaned files, and duplicate logic across server/ and client/src/. Specifically: (1) any file imported by zero other files (orphaned engines like mathematical-ensemble-intelligence.ts, shape-relationship-engine.ts, advanced-pattern-recognition.ts already suspected), (2) any import that points to a nonexistent file (epu-framework-engine.ts already found missing), (3) duplicate route registration systems — server/routes.ts appears to be entirely disconnected from the live server/index.ts deferredApiRouter, confirm scope of this and list every route defined in routes.ts that has no equivalent in index.ts, (4) any function/logic duplicated near-verbatim across multiple files. Output a markdown report: categorized list of dead files (safe to archive), broken imports (need fixing or removal), and duplicate logic (candidates for consolidation). Do not delete or modify anything.",
+      "priority": "normal",
+      "status": "pending",
+      "progress": 0,
+      "assignedTo": [],
+      "tags": [],
+      "createdAt": "2026-06-21T22:16:58.853Z",
+      "startedAt": null,
+      "completedAt": null
+    },
+    "task-1782087357450-21y2r6": {
+      "taskId": "task-1782087357450-21y2r6",
+      "type": "research",
+      "description": "DMENSION APP STABILITY & ENHANCEMENT AUDIT — READ ONLY, NO WRITES, NO COMMITS. For every finding, output the EXACT change as a unified diff or a 'before → after' snippet — Phillip will manually apply approved changes himself, one at a time. Do not modify any file directly.\n\n1. PARAMETER PRECISION REGRESSION (priority — user-reported, real bug):\nPhillip reports parameter controls used to support smooth movement down to the 5th-6th decimal place, allowing shapes to unfold/expand symmetrically and fluidly. Controls now feel rigid/stepped. Investigate: check parameter_definitions table's precision_step column and any client-side slider step values in ExpandedControlPanel.tsx, ParametricSurface.tsx, and related control components. Check git history for any commit that changed step/precision values, rounding logic, or decimal truncation on parameter state. Identify exactly what changed and when. Report the specific commit(s) and lines responsible, with a proposed fix diff — do not apply it.\n\n2. DUPLICATE/SIMILAR-LOOKING SHAPE RENDERS:\nPhillip reports some shapes render visually similar despite being distinct entries. Cross-reference formula_implementations for shapes with near-identical equation_x/equation_y/equation_z or default_parameters. Report genuine near-duplicates (not just same category) with shape IDs and a similarity assessment.\n\n3. FORMULA RE-EVALUATION:\nSpot-check a sample of formula_implementations entries (start with 50, expand if time allows) against their stated mathematical_family — confirm the actual equation matches what the shape claims to be. Report any mismatches or formulas that look incomplete/placeholder.\n\n4. UI — EXCESSIVE/OVERLAPPING CONTROLS:\nAudit ExpandedControlPanel.tsx and CanvasOverlayControls.tsx for overlapping UI elements, redundant buttons (multiple controls doing the same thing), or controls that don't correspond to any active parameter. Report specific component/line findings with screenshots if possible (or a description of the DOM structure issue).\n\n5. ENGINE INVENTORY — DMENSION-SPECIFIC ONLY (explicitly excludes Clouud Æye, which is a separate, paused review):\nCatalog every engine/service file actually wired into the live Δmension server (server/services/, server/*.ts reachable from index.ts) — name, purpose, real vs orphaned status, line count. This is the Dmension equivalent of the Clouud inventory already started separately.\n\n6. NEW SHAPE PROPOSAL — 10 BRIGHTEST STARS:\nPropose (do not implement) a parametric approach for adding the 10 brightest stars (Sirius, Canopus, Arcturus, Vega, Capella, Rigel, Procyon, Achernar, Betelgeuse, Hadar — confirm exact list/order against an authoritative source) as new shape entries: a mathematically-defined stellar shell/surface (e.g. based on actual stellar radius/luminosity/temperature ratios for relative scale) as the geometry layer, with a separate proposal for visual enhancement (particle/glow/atmosphere effects) layered on top — clarify this is a rendering-layer addition, not altering the underlying parametric math. Report the proposed schema entries and rendering approach for review before any code is written.\n\nOUTPUT: One consolidated markdown report covering all 6 sections, each with concrete file/line citations and proposed diffs where applicable. Nothing applied, nothing committed. Phillip reviews and approves changes individually.",
+      "priority": "normal",
+      "status": "pending",
+      "progress": 0,
+      "assignedTo": [],
+      "tags": [],
+      "createdAt": "2026-06-22T00:15:57.450Z",
+      "startedAt": null,
+      "completedAt": null
+    },
+    "task-1782088376914-g8c95o": {
+      "taskId": "task-1782088376914-g8c95o",
+      "type": "research",
+      "description": "DMENSION APP STABILITY & ENHANCEMENT AUDIT — READ ONLY, NO WRITES, NO COMMITS. For every finding, output the EXACT change as a unified diff or a 'before → after' snippet — Phillip will manually apply approved changes himself, one at a time. Do not modify any file directly.\n\n1. PARAMETER PRECISION REGRESSION (priority — user-reported, real bug): Phillip reports parameter controls used to support smooth movement down to the 5th-6th decimal place. Now rigid/stepped. Investigate precision_step column and client-side slider step values in ExpandedControlPanel.tsx, ParametricSurface.tsx. Check git history. Report commits/lines with proposed fix diff — do not apply.\n\n2. DUPLICATE/SIMILAR-LOOKING SHAPE RENDERS: Cross-reference formula_implementations for near-identical equation_x/y/z or default_parameters. Report near-duplicates with shape IDs.\n\n3. FORMULA RE-EVALUATION: Spot-check 50 formula_implementations against mathematical_family. Report mismatches/placeholders.\n\n4. UI — EXCESSIVE/OVERLAPPING CONTROLS: Audit ExpandedControlPanel.tsx and CanvasOverlayControls.tsx for overlapping/redundant controls.\n\n5. ENGINE INVENTORY — DMENSION-SPECIFIC ONLY (excludes Clouud Æye): Catalog every engine/service wired into live Δmension server.\n\n6. NEW SHAPE PROPOSAL — 10 BRIGHTEST STARS: Propose parametric approach for 10 brightest stars as new shape entries.\n\nOUTPUT: One consolidated markdown report, file/line citations, proposed diffs. Nothing applied, nothing committed.",
+      "priority": "normal",
+      "status": "pending",
+      "progress": 0,
+      "assignedTo": [],
+      "tags": [],
+      "createdAt": "2026-06-22T00:32:56.914Z",
+      "startedAt": null,
+      "completedAt": null
+    },
+    "task-1782089228925-hycjw2": {
+      "taskId": "task-1782089228925-hycjw2",
+      "type": "research",
+      "description": "DMENSION APP STABILITY & ENHANCEMENT AUDIT — READ ONLY, NO WRITES, NO COMMITS. For every finding, output the EXACT change as a unified diff or a 'before → after' snippet — Phillip will manually apply approved changes himself, one at a time. Do not modify any file directly.\n\n1. PARAMETER PRECISION REGRESSION (priority — user-reported, real bug):\nPhillip reports parameter controls used to support smooth movement down to the 5th-6th decimal place, allowing shapes to unfold/expand symmetrically and fluidly. Controls now feel rigid/stepped. Investigate: check parameter_definitions table's precision_step column and any client-side slider step values in ExpandedControlPanel.tsx, ParametricSurface.tsx, and related control components. Check git history for any commit that changed step/precision values, rounding logic, or decimal truncation on parameter state. Identify exactly what changed and when. Report the specific commit(s) and lines responsible, with a proposed fix diff — do not apply it.\n\n2. DUPLICATE/SIMILAR-LOOKING SHAPE RENDERS:\nPhillip reports some shapes render visually similar despite being distinct entries. Cross-reference formula_implementations for shapes with near-identical equation_x/equation_y/equation_z or default_parameters. Report genuine near-duplicates (not just same category) with shape IDs and a similarity assessment.\n\n3. FORMULA RE-EVALUATION:\nSpot-check a sample of formula_implementations entries (start with 50, expand if time allows) against their stated mathematical_family — confirm the actual equation matches what the shape claims to be. Report any mismatches or formulas that look incomplete/placeholder.\n\n4. UI — EXCESSIVE/OVERLAPPING CONTROLS:\nAudit ExpandedControlPanel.tsx and CanvasOverlayControls.tsx for overlapping UI elements, redundant buttons (multiple controls doing the same thing), or controls that don't correspond to any active parameter. Report specific component/line findings with screenshots if possible (or a description of the DOM structure issue).\n\n5. ENGINE INVENTORY — DMENSION-SPECIFIC ONLY (explicitly excludes Clouud Æye, which is a separate, paused review):\nCatalog every engine/service file actually wired into the live Δmension server (server/services/, server/*.ts reachable from index.ts) — name, purpose, real vs orphaned status, line count. This is the Dmension equivalent of the Clouud inventory already started separately.\n\n6. NEW SHAPE PROPOSAL — 10 BRIGHTEST STARS:\nPropose (do not implement) a parametric approach for adding the 10 brightest stars (Sirius, Canopus, Arcturus, Vega, Capella, Rigel, Procyon, Achernar, Betelgeuse, Hadar — confirm exact list/order against an authoritative source) as new shape entries: a mathematically-defined stellar shell/surface (e.g. based on actual stellar radius/luminosity/temperature ratios for relative scale) as the geometry layer, with a separate proposal for visual enhancement (particle/glow/atmosphere effects) layered on top — clarify this is a rendering-layer addition, not altering the underlying parametric math. Report the proposed schema entries and rendering approach for review before any code is written.\n\nOUTPUT: One consolidated markdown report covering all 6 sections, each with concrete file/line citations and proposed diffs where applicable. Nothing applied, nothing committed. Phillip reviews and approves changes individually.",
+      "priority": "critical",
+      "status": "pending",
+      "progress": 0,
+      "assignedTo": [],
+      "tags": [],
+      "createdAt": "2026-06-22T00:47:08.925Z",
+      "startedAt": null,
+      "completedAt": null
+    },
+    "task-1782089513647-ru8zc6": {
+      "taskId": "task-1782089513647-ru8zc6",
+      "type": "research",
+      "description": "DMENSION APP STABILITY & ENHANCEMENT AUDIT — READ ONLY",
+      "priority": "normal",
+      "status": "pending",
+      "progress": 0,
+      "assignedTo": [],
+      "tags": [],
+      "createdAt": "2026-06-22T00:51:53.648Z",
+      "startedAt": null,
+      "completedAt": null
+    }
+  },
+  "version": "3.0.0"
+}

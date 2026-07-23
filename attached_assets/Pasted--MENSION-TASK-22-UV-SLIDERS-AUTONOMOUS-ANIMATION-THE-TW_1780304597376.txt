@@ -1,0 +1,342 @@
+# ΔMENSION — TASK #22: UV SLIDERS + AUTONOMOUS ANIMATION
+
+## THE TWO PROBLEMS
+
+### Problem 1: UV sliders too tight
+Current version locks UV to shape domain (0 to 2π).
+Old version uses min=-10, max=10 which lets shapes expand and breathe.
+That loose range IS the feature — shapes distort, wrap, and expand artistically.
+
+### Problem 2: Animation doesn't affect visible geometry
+AutonomousAnimation.tsx from old version animates parameters b through u.
+But most shape formulas only read a, b, c — so animation runs but nothing moves.
+Fix: make animation also modulate `a` (scale) and `uMax` (domain expansion).
+These two changes make EVERY shape visibly animate regardless of formula.
+
+## GOLDEN RULES
+- Do NOT touch ParametricSurface.tsx
+- Do NOT change SurfaceParameters type
+- Do NOT change formula math
+- Do NOT remove existing animationPreset system
+
+---
+
+## TASK 22A — FIX UV SLIDERS (5 minutes)
+
+Open `client/src/components/ExpandedControlPanel.tsx`.
+
+Find the UV slider section (around lines 540-583 in current version).
+It has 4 sliders: uMin, uMax, vMin, vMax.
+
+Change ALL FOUR sliders to use these exact ranges:
+```tsx
+min={-10}
+max={10}
+step={0.00001}
+```
+
+Before (current — too tight):
+```tsx
+<Slider
+  value={[parameters.uMin]}
+  onValueChange={(value) => onParameterChange({ uMin: value[0] })}
+  min={-6.28}   // ← TOO TIGHT, locked to domain
+  max={0}
+  step={0.001}
+```
+
+After (correct — loose and explorable):
+```tsx
+<Slider
+  value={[parameters.uMin]}
+  onValueChange={(value) => onParameterChange({ uMin: value[0] })}
+  min={-10}     // ← OPEN RANGE, lets shapes expand
+  max={10}
+  step={0.00001}
+```
+
+Also update uSegments and vSegments max to 200 (currently 150):
+```tsx
+min={5}
+max={200}
+step={1}
+```
+
+Verify: `grep -n "min={" client/src/components/ExpandedControlPanel.tsx | grep -A1 "uMin\|vMin\|uMax\|vMax"`
+
+---
+
+## TASK 22B — CREATE AutonomousAnimation.tsx (improved version)
+
+Create `client/src/components/AutonomousAnimation.tsx` with this exact content.
+This is the old version PLUS the critical fix that makes animation visible on all shapes:
+
+```tsx
+import { useRef } from 'react';
+import { useFrame } from '@react-three/fiber';
+import { SurfaceParameters } from '../types/math';
+
+interface AutonomousAnimationProps {
+  parameters: SurfaceParameters;
+  onParameterChange: (params: Partial<SurfaceParameters>) => void;
+  enabled?: boolean;
+  intensity?: number;
+  mode?: 'breathe' | 'wave' | 'morph' | 'expand';
+}
+
+export default function AutonomousAnimation({ 
+  parameters, 
+  onParameterChange,
+  enabled = true,
+  intensity = 1.0,
+  mode = 'breathe'
+}: AutonomousAnimationProps) {
+  const animationStateRef = useRef({
+    phase: 0,
+    morphCycle: 0,
+    lastUpdate: 0,
+    baseA: parameters.a,
+    baseUMax: parameters.uMax,
+    baseVMax: parameters.vMax,
+  });
+  
+  useFrame((state) => {
+    if (!enabled) return;
+    
+    const time = state.clock.elapsedTime;
+    const deltaTime = time - animationStateRef.current.lastUpdate;
+    
+    if (deltaTime < 0.033) return; // 30 FPS cap
+    animationStateRef.current.lastUpdate = time;
+    
+    const animState = animationStateRef.current;
+    const base = animState.baseA || 1;
+    
+    // BREATHING — scale pulses in and out
+    const breathe = Math.sin(time * 0.8) * intensity * 0.15 + 1.0;
+    
+    // WAVE — harmonic motion on secondary params
+    const wave1 = Math.sin(time * 0.4 + animState.phase) * intensity * 0.15;
+    const wave2 = Math.cos(time * 0.6 + animState.phase * 1.2) * intensity * 0.12;
+    const wave3 = Math.sin(time * 0.3 + animState.phase * 0.8) * intensity * 0.18;
+    
+    // EXPAND — UV domain pulses to create shape blooming
+    const expandPulse = Math.sin(time * 0.5) * intensity * 0.3;
+    
+    // ROTATION EFFECTS on d,e,f
+    const rotX = Math.sin(time * 0.8) * intensity * 0.25;
+    const rotY = Math.cos(time * 0.6) * intensity * 0.2;
+    const rotZ = Math.sin(time * 0.5) * intensity * 0.3;
+    
+    // HARMONIC RESONANCE
+    const harm1 = Math.sin(time * 1.2) * Math.cos(time * 0.9) * intensity * 0.1;
+    const harm2 = Math.cos(time * 1.0) * Math.sin(time * 1.1) * intensity * 0.12;
+    const harm3 = Math.sin(time * 0.7) * Math.cos(time * 1.3) * intensity * 0.08;
+
+    let animatedParams: Partial<SurfaceParameters> = {};
+
+    if (mode === 'breathe') {
+      animatedParams = {
+        // A drives scale on ALL shapes — this always works
+        a: base * breathe,
+        b: Math.max(0.1, parameters.b + wave1 * 0.5),
+        c: Math.max(0.1, parameters.c + wave2 * 0.5),
+        d: parameters.d + wave3 * 0.3,
+        e: parameters.e + rotX * 0.3,
+        f: parameters.f + rotY * 0.3,
+      };
+    } else if (mode === 'wave') {
+      animatedParams = {
+        a: base * breathe,
+        b: Math.max(0.1, parameters.b + wave1),
+        c: Math.max(0.1, parameters.c + wave2),
+        d: parameters.d + wave3,
+        e: parameters.e + rotX,
+        f: parameters.f + rotY,
+        g: parameters.g + rotZ,
+        h: parameters.h + harm1,
+        i: parameters.i + harm2,
+        j: parameters.j + harm3,
+        k: Math.max(0.1, parameters.k * breathe),
+        l: Math.max(0.1, parameters.l * breathe),
+        m: parameters.m + Math.sin(time * 0.5) * intensity * 0.08,
+        n: parameters.n + Math.cos(time * 0.4) * intensity * 0.06,
+      };
+    } else if (mode === 'expand') {
+      // UV domain expansion — makes shapes bloom and contract
+      // This works on ALL shapes regardless of which params they use
+      animatedParams = {
+        a: base * breathe,
+        uMax: animState.baseUMax + expandPulse,
+        vMax: animState.baseVMax + expandPulse * 0.7,
+        b: Math.max(0.1, parameters.b + wave1 * 0.3),
+        c: Math.max(0.1, parameters.c + wave2 * 0.3),
+      };
+    } else if (mode === 'morph') {
+      // Full morph — all parameters
+      animatedParams = {
+        a: base * breathe,
+        b: Math.max(0.1, parameters.b + wave1),
+        c: Math.max(0.1, parameters.c + wave2),
+        d: parameters.d + wave3,
+        e: parameters.e + rotX,
+        f: parameters.f + rotY,
+        g: parameters.g + rotZ,
+        h: parameters.h + harm1,
+        i: parameters.i + harm2,
+        j: parameters.j + harm3,
+        k: Math.max(0.1, parameters.k * breathe),
+        l: Math.max(0.1, parameters.l * breathe),
+        m: parameters.m + Math.sin(time * 0.5) * intensity * 0.08,
+        n: parameters.n + Math.cos(time * 0.4) * intensity * 0.06,
+        o: parameters.o + Math.sin(time * 0.3) * intensity * 0.07,
+        p: parameters.p + Math.sin(time * 0.6) * intensity * 0.05,
+        q: parameters.q + Math.cos(time * 0.7) * intensity * 0.06,
+        r: parameters.r + Math.sin(time * 0.45) * intensity * 0.04,
+        s: parameters.s + Math.sin(time * 0.35) * intensity * 0.03,
+        t: parameters.t + Math.cos(time * 0.25) * intensity * 0.04,
+        u: parameters.u + Math.sin(time * 0.55) * intensity * 0.05,
+      };
+    }
+    
+    // Smooth state evolution
+    animState.phase += deltaTime * 0.2;
+    animState.morphCycle += deltaTime * 0.15;
+    
+    onParameterChange(animatedParams);
+  });
+  
+  return null; // No visual output — pure parameter driver
+}
+```
+
+---
+
+## TASK 22C — WIRE AutonomousAnimation INTO MathVisualizer
+
+Open `client/src/components/MathVisualizer.tsx`.
+
+### Step 1: Add import near top with other imports
+```tsx
+import AutonomousAnimation from './AutonomousAnimation';
+```
+
+### Step 2: Add state variables (near showQuantumCore state)
+```tsx
+const [autonomousEnabled, setAutonomousEnabled] = useState(false);
+const [autonomousIntensity, setAutonomousIntensity] = useState(1.0);
+const [autonomousMode, setAutonomousMode] = useState<'breathe'|'wave'|'morph'|'expand'>('breathe');
+```
+
+### Step 3: Mount INSIDE the Canvas component
+Find the `<Canvas>` component in MathVisualizer.tsx.
+Inside it, after `<ProfessionalLighting />` and before `</Canvas>`, add:
+
+```tsx
+{/* Autonomous Animation — parameter-driven shape animation */}
+{autonomousEnabled && !isIFSShape(parameters.type) && (
+  <AutonomousAnimation
+    parameters={parameters}
+    onParameterChange={handleParameterChange}
+    enabled={autonomousEnabled}
+    intensity={autonomousIntensity}
+    mode={autonomousMode}
+  />
+)}
+```
+
+### Step 4: Add control buttons to the bottom-right button bar
+Find the existing bottom-right buttons (around line 1400+, near the Animate button).
+Add BEFORE the existing Animate button:
+
+```tsx
+{/* Autonomous Animation Controls */}
+<div className="flex gap-1 items-center">
+  <button
+    onClick={() => setAutonomousEnabled(!autonomousEnabled)}
+    className={`px-2 py-1.5 rounded text-[11px] backdrop-blur-md transition-all font-medium flex items-center gap-1 border ${
+      autonomousEnabled
+        ? 'bg-gradient-to-r from-emerald-600/70 to-teal-600/70 border-emerald-400/60 text-white'
+        : 'bg-gradient-to-r from-slate-600/50 to-slate-700/50 border-slate-400/40 text-gray-300 hover:from-slate-500/60'
+    }`}
+    title="Autonomous Shape Animation"
+  >
+    <span>{autonomousEnabled ? '⏸' : '🌊'}</span>
+    <span className="hidden sm:inline">{autonomousEnabled ? 'Stop' : 'Breathe'}</span>
+  </button>
+  {autonomousEnabled && (
+    <>
+      <select
+        value={autonomousMode}
+        onChange={(e) => setAutonomousMode(e.target.value as any)}
+        className="bg-black/60 text-white text-[10px] border border-emerald-500/30 rounded px-1 py-1"
+      >
+        <option value="breathe">Breathe</option>
+        <option value="wave">Wave</option>
+        <option value="expand">Expand</option>
+        <option value="morph">Morph</option>
+      </select>
+      <input
+        type="range"
+        min={0.1}
+        max={3.0}
+        step={0.1}
+        value={autonomousIntensity}
+        onChange={(e) => setAutonomousIntensity(parseFloat(e.target.value))}
+        className="w-16 h-4"
+        title={`Intensity: ${autonomousIntensity.toFixed(1)}`}
+      />
+    </>
+  )}
+</div>
+```
+
+---
+
+## TASK 22D — VERIFY
+
+```bash
+# Build clean?
+npm run build 2>&1 | grep -E "error|✓|built in"
+
+# UV sliders updated?
+grep -n "min={-10}" client/src/components/ExpandedControlPanel.tsx | wc -l
+# Should return 4 (all four UV sliders)
+
+# AutonomousAnimation exists?
+wc -l client/src/components/AutonomousAnimation.tsx
+
+# Wired into MathVisualizer?
+grep -n "AutonomousAnimation\|autonomousEnabled" client/src/components/MathVisualizer.tsx | head -10
+```
+
+Expected:
+- Build: ✓ built in ~15s
+- UV min={-10} count: 4
+- AutonomousAnimation lines: ~100+
+- MathVisualizer references: 4+ lines
+
+---
+
+## WHAT THIS GIVES YOU
+
+**UV sliders (immediate):**
+Select any shape → drag uMax from 6.28 to 8 → shape blooms and wraps.
+Push vMin negative → shape distorts from below. This is the exploratory feel from the old version.
+
+**Breathe mode:**
+Shape gently scales in and out. Works on ALL shapes because it modulates `a`.
+
+**Wave mode:**
+Parameters b through n oscillate harmonically. Works well on shapes that use those params.
+
+**Expand mode:**
+UV domain pulses — shape blooms open and contracts. Works on ALL shapes because UV always matters.
+
+**Morph mode:**
+Full parameter animation, b through u. Maximum effect on complex shapes.
+
+## DO NOT
+- Do not remove the existing physics animation system (animationPreset)
+- Do not change ParametricSurface.tsx
+- Do not touch IFS shapes (AutonomousAnimation is skipped for IFS)

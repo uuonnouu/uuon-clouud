@@ -1,0 +1,81 @@
+# Δmension Mathematical Universe - robots.txt
+# UUON Foundation - Updated: 2025-11-29
+
+User-agent: *
+Allow: /
+Allow: /shapes/
+Allow: /gallery/
+Allow: /tutorials/
+Allow: /docs/
+Allow: /api/public/
+Allow: /mathematical-universe/
+Allow: /therapeutic-geometry/
+Allow: /consciousness-research/
+
+# Disallow private and admin areas
+Disallow: /api/private/
+Disallow: /admin/
+Disallow: /user/settings/
+Disallow: /temp/
+Disallow: /secrets/
+Disallow: /internal/
+
+# Performance optimization
+Crawl-delay: 1
+
+# Sitemaps - Correct Replit domain
+Sitemap: https://uuon-foundation.com/sitemap-index.xml
+Sitemap: https://uuon-foundation.com/sitemap.xml
+Sitemap: https://uuon-foundation.com/sitemap-shapes.xml
+Sitemap: https://uuon-foundation.com/sitemap-modulo-algorithms.xml
+Sitemap: https://uuon-foundation.com/sitemap-gmod6-functions.xml
+Sitemap: https://uuon-foundation.com/sitemap-hierarchy.xml
+Sitemap: https://uuon-foundation.com/sitemap-api.xml
+Sitemap: https://uuon-foundation.com/sitemap-products.xml
+Sitemap: https://uuon-foundation.com/sitemap-docs.xml
+Sitemap: https://uuon-foundation.com/sitemap-wave-vectors.xml
+Sitemap: https://uuon-foundation.com/sitemap-chaos-theory.xml
+Sitemap: https://uuon-foundation.com/sitemap-neural-lattice.xml
+Sitemap: https://uuon-foundation.com/sitemap-quantum-computing.xml
+Sitemap: https://uuon-foundation.com/sitemap-dual-mirror-energy.xml
+
+# Bot-specific rules
+User-agent: Googlebot
+Allow: /
+Crawl-delay: 0.5
+
+User-agent: Bingbot
+Allow: /
+Crawl-delay: 1
+
+User-agent: GPTBot
+Allow: /
+Disallow: /api/
+
+User-agent: CCBot
+Allow: /
+Disallow: /api/
+
+User-agent: anthropic-ai
+Allow: /
+Disallow: /api/
+
+User-agent: facebookexternalhit
+Allow: /
+
+User-agent: Twitterbot  
+Allow: /
+
+# Educational crawlers
+User-agent: ia_archiver
+Allow: /
+
+# Block malicious bots
+User-agent: AhrefsBot
+Disallow: /
+
+User-agent: MJ12bot
+Disallow: /
+
+User-agent: DotBot
+Disallow: /

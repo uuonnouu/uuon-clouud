@@ -1,0 +1,51 @@
+{
+  "source": "Δmension Mathematical Universe",
+  "shapeId": "hadamard_gate",
+  "shapeName": "Hadamard Gate - Superposition Creator",
+  "exportDate": "2026-06-10T20:30:58.758Z",
+  "parameters": {
+    "a": 0.7071,
+    "b": 0.7071,
+    "c": 0.7071,
+    "d": 0.7071,
+    "e": 0,
+    "f": 0,
+    "uMin": 0,
+    "uMax": 6.2831853,
+    "vMin": 0,
+    "vMax": 3.1415926,
+    "uSegments": 64,
+    "vSegments": 32
+  },
+  "dmension_version": "2.0",
+  "security": {
+    "cryptographicHash": "1585c9c9b7fd13de8a694b6d3f3325cb03c7721622a991961e18c3e8b160c2e9",
+    "verificationCode": "UUON-D13MON4-V1",
+    "timestamp": "2026-06-10T20:30:58.758Z",
+    "author": "UUON Foundation Inc.",
+    "organization": "Dmension Mathematical Universe",
+    "copyright": "2024 UUON Foundation Inc. All Rights Reserved.",
+    "license": "CC BY-NC 4.0",
+    "integrityVersion": "2.0",
+    "genesisAnchor": "cf114022b5e4e1d6fdeb36890f35f605857cf2de93b53ebcb9c8e5652413ca04",
+    "fixedAt": "2026-06-16T00:42:41.735Z"
+  },
+  "scene_bounds": {
+    "aabb_min": [
+      -1,
+      -1,
+      -1
+    ],
+    "aabb_max": [
+      1,
+      1,
+      1
+    ],
+    "center": [
+      0,
+      0,
+      0
+    ],
+    "scale": 2
+  }
+}

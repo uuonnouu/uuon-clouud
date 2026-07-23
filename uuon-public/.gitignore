@@ -1,0 +1,44 @@
+# NEVER COMMIT — secrets
+.env
+.env.*
+*.pem
+*.key
+*private_key*
+*deployer_key*
+WALLET_PRIVATE_KEY
+THIRDWEB_SECRET_KEY
+PLATFORM_SECRET
+SESSION_SECRET
+UUON_TOKEN_SECRET
+
+# NEVER COMMIT — engine internals
+parametricSurfacesClean.ts
+blockchainAlgorithmsEngine.ts
+shapeFusionEngine.ts
+cryptoEngine.ts
+advancedCryptography.ts
+postQuantumCrypto.ts
+d13mon4HashEngine.ts
+centralOrchestrator.ts
+tokenLedgerService.ts
+genesis-ledger.ts
+deploy-uuon.mjs
+deploy-*.mjs
+
+# NEVER COMMIT — production data
+*.db
+*.sqlite
+calibration_data/
+internal_telemetry/
+nerf_training_pipeline/
+lut_generation/
+field_composition_recipes/
+
+# Standard
+node_modules/
+dist/
+build/
+.cache/
+*.log
+.DS_Store
+*.ingp

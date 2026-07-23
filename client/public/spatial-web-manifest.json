@@ -1,0 +1,150 @@
+{
+  "$schema": "https://schema.org/3DModel",
+  "@context": "https://schema.org",
+  "@type": "3DModelCollection",
+  "name": "Dmension Mathematical Universe",
+  "description": "2,587+ parametric mathematical shapes for Spatial Web, AR/VR, and museum-quality visualization",
+  "version": "1.0.0",
+  "license": "Proprietary",
+  "creator": {
+    "@type": "Organization",
+    "name": "Dmension",
+    "url": "https://dmension.xyz"
+  },
+  "spatialWebMetadata": {
+    "compatible": ["Sketchfab", "AR Quick Look", "WebXR", "Unity", "Unreal", "Blender"],
+    "exportFormats": ["glb", "gltf", "ply", "obj", "nerf"],
+    "namingConvention": "lowercase-kebab-case",
+    "seoOptimized": true
+  },
+  "assets": {
+    "textures": [
+      {
+        "id": "8k-saturn",
+        "path": "/textures/8k-saturn.jpg",
+        "resolution": "8192x4096",
+        "format": "jpg",
+        "category": "planetary"
+      },
+      {
+        "id": "8k-saturn-ring-alpha",
+        "path": "/textures/8k-saturn-ring-alpha.png",
+        "resolution": "8192x512",
+        "format": "png",
+        "category": "planetary"
+      },
+      {
+        "id": "earth-map",
+        "path": "/textures/earth-map.webp",
+        "resolution": "4096x2048",
+        "format": "webp",
+        "category": "planetary"
+      },
+      {
+        "id": "hello-uuorld-earth",
+        "path": "/textures/hello-uuorld-earth.jpg",
+        "resolution": "2048x1024",
+        "format": "jpg",
+        "category": "branding"
+      }
+    ],
+    "models": [
+      {
+        "id": "fractalskin-tanh-wave",
+        "path": "/models/fractalskin-tanh-wave.glb",
+        "format": "glb",
+        "category": "fractal",
+        "resolution": "64x64"
+      },
+      {
+        "id": "fractalskin-vector-field",
+        "path": "/models/fractalskin-vector-field.glb",
+        "format": "glb",
+        "category": "fractal",
+        "resolution": "256x256"
+      },
+      {
+        "id": "fractalskin-tangent-wave",
+        "path": "/models/fractalskin-tangent-wave.obj",
+        "format": "obj",
+        "category": "fractal",
+        "resolution": "256x256"
+      },
+      {
+        "id": "fractalskin-mandelbrot",
+        "path": "/models/fractalskin-mandelbrot.obj",
+        "format": "obj",
+        "category": "fractal",
+        "resolution": "256x256"
+      },
+      {
+        "id": "fractalskin-spherical-h",
+        "path": "/models/fractalskin-spherical-h.obj",
+        "format": "obj",
+        "category": "fractal",
+        "resolution": "256x256"
+      },
+      {
+        "id": "letter-a",
+        "path": "/models/letter-a.glb",
+        "format": "glb",
+        "category": "typography"
+      }
+    ],
+    "sitemaps": [
+      {
+        "id": "sitemap-index",
+        "path": "/sitemap-index.xml",
+        "type": "index"
+      },
+      {
+        "id": "sitemap-shapes-core",
+        "path": "/sitemap-shapes-core.xml",
+        "type": "shapes"
+      },
+      {
+        "id": "sitemap-shapes-advanced",
+        "path": "/sitemap-shapes-advanced.xml",
+        "type": "shapes"
+      },
+      {
+        "id": "sitemap-shapes-museum",
+        "path": "/sitemap-shapes-museum.xml",
+        "type": "shapes"
+      },
+      {
+        "id": "sitemap-shapes-scientific",
+        "path": "/sitemap-shapes-scientific.xml",
+        "type": "shapes"
+      },
+      {
+        "id": "sitemap-shapes-categories",
+        "path": "/sitemap-shapes-categories.xml",
+        "type": "categories"
+      }
+    ]
+  },
+  "shapeCategories": {
+    "totalShapes": 2587,
+    "totalCategories": 148,
+    "featured": [
+      "Egyptian Museum Collection (21 shapes)",
+      "Greek Mathematical Heritage (20 shapes)",
+      "NASA Planetary Systems",
+      "Hyperdimensional Polytopes",
+      "Medical Imaging Surfaces",
+      "Linguistic Geometry"
+    ]
+  },
+  "renderingCapabilities": {
+    "materials": 49,
+    "materialCategories": ["neon-glow", "topological", "metallic", "crystalline", "energy", "organic"],
+    "morphingAlgorithms": 10,
+    "exportResolutions": ["SD-512", "HD-1024", "FHD-2048", "4K-4096"]
+  },
+  "webVR": {
+    "supported": true,
+    "frameworks": ["WebXR", "A-Frame", "Three.js"],
+    "optimizedFor": ["Oculus Quest", "Apple Vision Pro", "HTC Vive"]
+  }
+}

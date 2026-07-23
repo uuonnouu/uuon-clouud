@@ -1,0 +1,292 @@
+{
+  "metadata": {
+    "title": "Δmension Taxonomy Map",
+    "version": "1.0.0",
+    "generatedAt": "2025-12-10T12:00:00.000Z",
+    "source": "Δmension Mathematical Universe",
+    "description": "Hierarchical ontology of mathematical terms and their relationships"
+  },
+  "root": {
+    "id": "mathematical_universe",
+    "term": "Mathematical Universe",
+    "description": "All mathematical shapes, concepts, and formulas in Δmension",
+    "level": 0,
+    "children": [
+      {
+        "id": "geometry",
+        "term": "Geometry",
+        "description": "Study of shapes, sizes, positions, and properties of space",
+        "level": 1,
+        "children": [
+          {
+            "id": "basic_shapes",
+            "term": "Basic Shapes",
+            "description": "Fundamental 3D geometric primitives",
+            "level": 2,
+            "terms": ["sphere", "cube", "cylinder", "cone", "torus", "ellipsoid", "paraboloid", "hyperboloid"],
+            "children": [
+              {
+                "id": "surfaces_of_revolution",
+                "term": "Surfaces of Revolution",
+                "description": "Surfaces created by rotating a curve around an axis",
+                "level": 3,
+                "terms": ["sphere", "torus", "cone", "cylinder", "paraboloid"]
+              },
+              {
+                "id": "quadric_surfaces",
+                "term": "Quadric Surfaces",
+                "description": "Second-degree algebraic surfaces",
+                "level": 3,
+                "terms": ["sphere", "ellipsoid", "hyperboloid", "hyperbolic_paraboloid", "paraboloid"]
+              }
+            ]
+          },
+          {
+            "id": "curves",
+            "term": "Curves",
+            "description": "One-dimensional geometric objects",
+            "level": 2,
+            "terms": ["helix", "spiral", "lemniscate", "cycloid", "catenary"],
+            "children": [
+              {
+                "id": "spirals",
+                "term": "Spirals",
+                "description": "Curves that wind around a point or axis",
+                "level": 3,
+                "terms": ["archimedean_spiral", "logarithmic_spiral", "fibonacci_spiral", "golden_spiral"]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "topology",
+        "term": "Topology",
+        "description": "Study of properties preserved under continuous deformation",
+        "level": 1,
+        "children": [
+          {
+            "id": "topological_surfaces",
+            "term": "Topological Surfaces",
+            "description": "Surfaces with interesting topological properties",
+            "level": 2,
+            "terms": ["klein_bottle", "mobius_strip", "cross_cap", "boy_surface", "roman_surface"],
+            "children": [
+              {
+                "id": "non_orientable",
+                "term": "Non-Orientable Surfaces",
+                "description": "Surfaces where you cannot consistently define a normal direction",
+                "level": 3,
+                "terms": ["klein_bottle", "mobius_strip", "cross_cap", "projective_plane"]
+              }
+            ]
+          },
+          {
+            "id": "minimal_surfaces",
+            "term": "Minimal Surfaces",
+            "description": "Surfaces with zero mean curvature (soap film behavior)",
+            "level": 2,
+            "terms": ["catenoid", "helicoid", "enneper_surface", "costa_surface", "scherk_surface", "schwarz_surface"],
+            "children": [
+              {
+                "id": "soap_films",
+                "term": "Soap Film Surfaces",
+                "description": "Physical realizations of minimal surfaces",
+                "level": 3,
+                "terms": ["catenoid", "helicoid", "enneper_surface"]
+              },
+              {
+                "id": "triply_periodic",
+                "term": "Triply Periodic Minimal Surfaces",
+                "description": "Minimal surfaces with 3D translational symmetry",
+                "level": 3,
+                "terms": ["schwarz_p_surface", "schwarz_d_surface", "gyroid"]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "hyperdimensional",
+        "term": "Hyperdimensional Mathematics",
+        "description": "Geometry beyond three dimensions",
+        "level": 1,
+        "children": [
+          {
+            "id": "4D_polytopes",
+            "term": "4D Polytopes",
+            "description": "Four-dimensional analogs of polyhedra",
+            "level": 2,
+            "terms": ["tesseract", "120_cell", "600_cell", "24_cell", "5_cell", "16_cell"],
+            "children": [
+              {
+                "id": "regular_4_polytopes",
+                "term": "Regular 4-Polytopes",
+                "description": "The six convex regular 4D polytopes",
+                "level": 3,
+                "terms": ["5_cell", "tesseract", "16_cell", "24_cell", "120_cell", "600_cell"]
+              }
+            ]
+          },
+          {
+            "id": "string_theory",
+            "term": "String Theory Geometry",
+            "description": "Higher-dimensional spaces from theoretical physics",
+            "level": 2,
+            "terms": ["calabi_yau", "hopf_fibration", "compactification"],
+            "children": []
+          }
+        ]
+      },
+      {
+        "id": "sacred_geometry",
+        "term": "Sacred Geometry",
+        "description": "Geometric patterns with spiritual or mystical significance",
+        "level": 1,
+        "children": [
+          {
+            "id": "golden_forms",
+            "term": "Golden Ratio Forms",
+            "description": "Shapes based on the golden ratio φ ≈ 1.618",
+            "level": 2,
+            "terms": ["golden_ratio", "fibonacci_spiral", "golden_rectangle", "pentagram"],
+            "children": []
+          },
+          {
+            "id": "platonic_forms",
+            "term": "Platonic & Archimedean Solids",
+            "description": "Regular and semi-regular polyhedra",
+            "level": 2,
+            "terms": ["tetrahedron", "cube", "octahedron", "dodecahedron", "icosahedron", "truncated_icosahedron"],
+            "children": []
+          },
+          {
+            "id": "mystical_patterns",
+            "term": "Mystical Patterns",
+            "description": "Traditional sacred geometric designs",
+            "level": 2,
+            "terms": ["flower_of_life", "metatrons_cube", "sri_yantra", "seed_of_life", "vesica_piscis"],
+            "children": []
+          }
+        ]
+      },
+      {
+        "id": "fractals",
+        "term": "Fractals",
+        "description": "Self-similar patterns at every scale",
+        "level": 1,
+        "children": [
+          {
+            "id": "complex_dynamics",
+            "term": "Complex Dynamics",
+            "description": "Fractals from iteration of complex functions",
+            "level": 2,
+            "terms": ["mandelbrot", "julia_set", "burning_ship", "tricorn"],
+            "children": []
+          },
+          {
+            "id": "iterated_function_systems",
+            "term": "Iterated Function Systems",
+            "description": "Fractals from repeated geometric transformations",
+            "level": 2,
+            "terms": ["sierpinski", "menger_sponge", "cantor_set", "koch_snowflake"],
+            "children": []
+          }
+        ]
+      },
+      {
+        "id": "physics_surfaces",
+        "term": "Physics Surfaces",
+        "description": "Geometric representations of physical phenomena",
+        "level": 1,
+        "children": [
+          {
+            "id": "general_relativity",
+            "term": "General Relativity",
+            "description": "Spacetime geometry and gravity",
+            "level": 2,
+            "terms": ["schwarzschild", "kerr_black_hole", "gravitational_wave", "wormhole"],
+            "children": []
+          },
+          {
+            "id": "quantum_mechanics",
+            "term": "Quantum Mechanics",
+            "description": "Geometric representations of quantum phenomena",
+            "level": 2,
+            "terms": ["higgs_field", "wave_function", "probability_cloud", "electron_orbital"],
+            "children": []
+          }
+        ]
+      },
+      {
+        "id": "biological_forms",
+        "term": "Biological Forms",
+        "description": "Mathematical shapes found in living organisms",
+        "level": 1,
+        "children": [
+          {
+            "id": "molecular_structures",
+            "term": "Molecular Structures",
+            "description": "Shapes of biological molecules",
+            "level": 2,
+            "terms": ["dna_helix", "protein_fold", "lipid_bilayer", "virus_capsid"],
+            "children": []
+          },
+          {
+            "id": "natural_patterns",
+            "term": "Natural Patterns",
+            "description": "Mathematical patterns in nature",
+            "level": 2,
+            "terms": ["nautilus_shell", "sunflower_phyllotaxis", "branching_patterns", "cell_membrane"],
+            "children": []
+          }
+        ]
+      },
+      {
+        "id": "mathematical_concepts",
+        "term": "Mathematical Concepts",
+        "description": "Abstract mathematical ideas and structures",
+        "level": 1,
+        "children": [
+          {
+            "id": "algebra",
+            "term": "Algebra",
+            "description": "Algebraic structures and number systems",
+            "level": 2,
+            "terms": ["quaternion", "octonion", "complex_number", "matrix"],
+            "children": []
+          },
+          {
+            "id": "analysis",
+            "term": "Analysis",
+            "description": "Continuous mathematics and calculus",
+            "level": 2,
+            "terms": ["riemann_surface", "manifold", "tangent_bundle", "differential_form"],
+            "children": []
+          }
+        ]
+      }
+    ]
+  },
+  "relationships": {
+    "parent_child": [
+      {"parent": "geometry", "child": "basic_shapes"},
+      {"parent": "geometry", "child": "curves"},
+      {"parent": "topology", "child": "topological_surfaces"},
+      {"parent": "topology", "child": "minimal_surfaces"},
+      {"parent": "basic_shapes", "child": "surfaces_of_revolution"},
+      {"parent": "basic_shapes", "child": "quadric_surfaces"}
+    ],
+    "siblings": [
+      {"terms": ["sphere", "torus", "cube", "cylinder"], "category": "basic_shapes"},
+      {"terms": ["klein_bottle", "mobius_strip", "cross_cap"], "category": "non_orientable"},
+      {"terms": ["catenoid", "helicoid", "enneper_surface"], "category": "minimal_surfaces"},
+      {"terms": ["mandelbrot", "julia_set", "burning_ship"], "category": "complex_dynamics"}
+    ],
+    "associates": [
+      {"term": "catenoid", "associates": ["helicoid"], "reason": "Associate family transformation"},
+      {"term": "golden_ratio", "associates": ["fibonacci_spiral", "nautilus_shell"], "reason": "Golden ratio connection"},
+      {"term": "quaternion", "associates": ["rotation_matrix", "euler_angles"], "reason": "3D rotation methods"}
+    ]
+  }
+}

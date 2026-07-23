@@ -1,0 +1,95 @@
+pip install -r requirements.txt
+31s
+Collecting qiskit==1.2.0 (from -r requirements.txt (line 2))
+  Using cached qiskit-1.2.0-cp38-abi3-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (12 kB)
+Collecting qiskit-ibm-runtime==0.30.0 (from -r requirements.txt (line 3))
+  Using cached qiskit_ibm_runtime-0.30.0-py3-none-any.whl.metadata (19 kB)
+Collecting qiskit-aer==0.15.0 (from -r requirements.txt (line 4))
+  Using cached qiskit-aer-0.15.0.tar.gz (6.5 MB)
+  Installing build dependencies: started
+  Installing build dependencies: finished with status 'done'
+  Getting requirements to build wheel: started
+  Getting requirements to build wheel: finished with status 'done'
+  Preparing metadata (pyproject.toml): started
+  Preparing metadata (pyproject.toml): finished with status 'done'
+Collecting rustworkx==0.15.0 (from -r requirements.txt (line 5))
+  Using cached rustworkx-0.15.0-cp38-abi3-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (9.9 kB)
+Collecting scipy==1.13.0 (from -r requirements.txt (line 6))
+  Using cached scipy-1.13.0.tar.gz (57.2 MB)
+  Installing build dependencies: started
+  Installing build dependencies: finished with status 'done'
+  Getting requirements to build wheel: started
+  Getting requirements to build wheel: finished with status 'done'
+  Installing backend dependencies: started
+  Installing backend dependencies: finished with status 'done'
+  Preparing metadata (pyproject.toml): started
+  Preparing metadata (pyproject.toml): finished with status 'error'
+  error: subprocess-exited-with-error
+
+  
+  × Preparing metadata (pyproject.toml) did not run successfully.
+  │ exit code: 1
+  ╰─> [53 lines of output]
+      + meson setup /tmp/pip-install-3vpnqlsc/scipy_c6312d1e430a4b7fb24009fbf0143f5e /tmp/pip-install-3vpnqlsc/scipy_c6312d1e430a4b7fb24009fbf0143f5e/.mesonpy-xfiperma -Dbuildtype=release -Db_ndebug=if-release -Db_vscrt=md --native-file=/tmp/pip-install-3vpnqlsc/scipy_c6312d1e430a4b7fb24009fbf0143f5e/.mesonpy-xfiperma/meson-python-native-file.ini
+      The Meson build system
+      Version: 1.11.1
+      Source dir: /tmp/pip-install-3vpnqlsc/scipy_c6312d1e430a4b7fb24009fbf0143f5e
+      Build dir: /tmp/pip-install-3vpnqlsc/scipy_c6312d1e430a4b7fb24009fbf0143f5e/.mesonpy-xfiperma
+      Build type: native build
+      Project name: scipy
+      Project version: 1.13.0
+      C compiler for the host machine: cc (gcc 12.2.0 "cc (Debian 12.2.0-14+deb12u1) 12.2.0")
+      C linker for the host machine: cc ld.bfd 2.40
+      C++ compiler for the host machine: c++ (gcc 12.2.0 "c++ (Debian 12.2.0-14+deb12u1) 12.2.0")
+      C++ linker for the host machine: c++ ld.bfd 2.40
+      Cython compiler for the host machine: cython (cython 3.0.12)
+      Host machine cpu family: x86_64
+      Host machine cpu: x86_64
+      Program python found: YES (/app/.venv/bin/python)
+      Found pkg-config: YES (/usr/bin/pkg-config) 1.8.1
+      Run-time dependency python found: YES 3.13
+      Program cython found: YES (/tmp/pip-build-env-b1afpz17/overlay/bin/cython)
+      Compiler for C supports arguments -Wno-unused-but-set-variable: YES
+      Compiler for C supports arguments -Wno-unused-function: YES
+      Compiler for C supports arguments -Wno-conversion: YES
+      Compiler for C supports arguments -Wno-misleading-indentation: YES
+      Library m found: YES
+      
+      ../meson.build:78:0: ERROR: Unknown compiler(s): [['gfortran'], ['flang-new'], ['flang'], ['nvfortran'], ['pgfortran'], ['ifort'], ['ifx'], ['g95']]
+      The following exception(s) were encountered:
+      Running `gfortran --help` gave "[Errno 2] No such file or directory: 'gfortran'"
+      Running `gfortran --version` gave "[Errno 2] No such file or directory: 'gfortran'"
+      Running `gfortran -V` gave "[Errno 2] No such file or directory: 'gfortran'"
+      Running `flang-new --help` gave "[Errno 2] No such file or directory: 'flang-new'"
+      Running `flang-new --version` gave "[Errno 2] No such file or directory: 'flang-new'"
+      Running `flang-new -V` gave "[Errno 2] No such file or directory: 'flang-new'"
+      Running `flang --help` gave "[Errno 2] No such file or directory: 'flang'"
+      Running `flang --version` gave "[Errno 2] No such file or directory: 'flang'"
+      Running `flang -V` gave "[Errno 2] No such file or directory: 'flang'"
+      Running `nvfortran --help` gave "[Errno 2] No such file or directory: 'nvfortran'"
+      Running `nvfortran --version` gave "[Errno 2] No such file or directory: 'nvfortran'"
+      Running `nvfortran -V` gave "[Errno 2] No such file or directory: 'nvfortran'"
+      Running `pgfortran --help` gave "[Errno 2] No such file or directory: 'pgfortran'"
+      Running `pgfortran --version` gave "[Errno 2] No such file or directory: 'pgfortran'"
+      Running `pgfortran -V` gave "[Errno 2] No such file or directory: 'pgfortran'"
+      Running `ifort --help` gave "[Errno 2] No such file or directory: 'ifort'"
+      Running `ifort --version` gave "[Errno 2] No such file or directory: 'ifort'"
+      Running `ifort -V` gave "[Errno 2] No such file or directory: 'ifort'"
+      Running `ifx --help` gave "[Errno 2] No such file or directory: 'ifx'"
+      Running `ifx --version` gave "[Errno 2] No such file or directory: 'ifx'"
+      Running `ifx -V` gave "[Errno 2] No such file or directory: 'ifx'"
+      Running `g95 --help` gave "[Errno 2] No such file or directory: 'g95'"
+      Running `g95 --version` gave "[Errno 2] No such file or directory: 'g95'"
+      Running `g95 -V` gave "[Errno 2] No such file or directory: 'g95'"
+      
+      A full log can be found at /tmp/pip-install-3vpnqlsc/scipy_c6312d1e430a4b7fb24009fbf0143f5e/.mesonpy-xfiperma/meson-logs/meson-log.txt
+      [end of output]
+  
+  note: This error originates from a subprocess, and is likely not a problem with pip.
+error: metadata-generation-failed
+
+× Encountered error while generating package metadata.
+╰─> scipy
+note: This is an issue with the package mentioned above, not pip.
+hint: See above for details.
+Build Failed: build daemon returned an error < failed to solve: process "pip install -r requirements.txt" did not complete successfully: exit code: 1 >

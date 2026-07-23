@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <!-- Thermodynamics & Entropy - Physics Education -->
+  
+  <!-- Entropy -->
+  <url>
+    <loc>https://uuon-foundation.com/?shape=boltzmann_entropy_landscape</loc>
+    <lastmod>2025-11-30</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>1.0</priority>
+  </url>
+  <url>
+    <loc>https://uuon-foundation.com/?shape=shannon_entropy_surface</loc>
+    <lastmod>2025-11-30</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://uuon-foundation.com/?shape=von_neumann_entropy</loc>
+    <lastmod>2025-11-30</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://uuon-foundation.com/?shape=entropy_production_flow</loc>
+    <lastmod>2025-11-30</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
+  <!-- Thermodynamic Principles -->
+  <url>
+    <loc>https://uuon-foundation.com/?shape=thermodynamic_arrow</loc>
+    <lastmod>2025-11-30</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://uuon-foundation.com/?shape=thermal_energy_boltzmann</loc>
+    <lastmod>2025-11-30</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://uuon-foundation.com/?shape=diffusion_heat_equation</loc>
+    <lastmod>2025-11-30</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  
+  <!-- Information Theory -->
+  <url>
+    <loc>https://uuon-foundation.com/?shape=landauer_principle</loc>
+    <lastmod>2025-11-30</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
+  <!-- Cosmological Thermodynamics -->
+  <url>
+    <loc>https://uuon-foundation.com/?shape=cosmic_entropy_budget</loc>
+    <lastmod>2025-11-30</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://uuon-foundation.com/?shape=heat_death_horizon</loc>
+    <lastmod>2025-11-30</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
+  <!-- Causal Entropic Principle -->
+  <url>
+    <loc>https://uuon-foundation.com/?shape=causal_entropic_principle</loc>
+    <lastmod>2025-11-30</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+</urlset>

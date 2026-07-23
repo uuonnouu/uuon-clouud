@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <!-- Protein Structures & Biochemistry - Biology Education -->
+  
+  <!-- Protein Folding -->
+  <url>
+    <loc>https://uuon-foundation.com/?shape=alphafold_prediction_001</loc>
+    <lastmod>2025-11-30</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>1.0</priority>
+  </url>
+  
+  <!-- Secondary Structures -->
+  <url>
+    <loc>https://uuon-foundation.com/?shape=alpha_helix</loc>
+    <lastmod>2025-11-30</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://uuon-foundation.com/?shape=beta_sheet</loc>
+    <lastmod>2025-11-30</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  
+  <!-- Polymer Chemistry -->
+  <url>
+    <loc>https://uuon-foundation.com/?shape=polymer_chain_random_coil</loc>
+    <lastmod>2025-11-30</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://uuon-foundation.com/?shape=polymer_helix_structure</loc>
+    <lastmod>2025-11-30</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
+  <!-- Molecular Dynamics -->
+  <url>
+    <loc>https://uuon-foundation.com/?shape=molecular_dynamics_001</loc>
+    <lastmod>2025-11-30</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  
+  <!-- Tissue Structures -->
+  <url>
+    <loc>https://uuon-foundation.com/?shape=collagen_triple_helix</loc>
+    <lastmod>2025-11-30</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://uuon-foundation.com/?shape=keratin_intermediate</loc>
+    <lastmod>2025-11-30</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+</urlset>

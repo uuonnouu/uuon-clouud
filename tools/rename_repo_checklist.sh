@@ -1,0 +1,21 @@
+#!/bin/bash
+echo "Run this AFTER you've renamed the repo on GitHub.com first."
+echo ""
+echo "--- Step 1: Update your local git remote to the new URL ---"
+echo "(Replace NEW-NAME with whatever you actually named it on GitHub)"
+echo ""
+echo "git remote set-url origin https://github.com/UUON-Foundation/NEW-NAME.git"
+echo "git fetch origin"
+echo "git remote -v"
+echo ""
+echo "--- Step 2: Find every place the OLD name is hardcoded in your own files ---"
+echo "(Run this for real, right now, no placeholder)"
+grep -rln "UUON-State-Root" --include="*.md" --include="*.json" --include="*.ts" --include="*.toml" --include="*.yml" --include="*.yaml" . 2>/dev/null | grep -v node_modules
+
+echo ""
+echo "--- Step 3: Manual checks outside this repo (not automatable from here) ---"
+echo "  - Railway: Settings -> Source -> confirm it still points to the repo"
+echo "    (Railway usually tracks by repo ID, survives a rename automatically,"
+echo "    but verify the deploy still triggers after pushing once)"
+echo "  - Any GitHub Actions / webhook URLs hardcoding the old repo name"
+echo "  - Any README badges or shields.io links referencing the old URL"

@@ -1,0 +1,302 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Embedded 3D Engine</title>
+    <script src="https://unpkg.com/three@0.155.0/build/three.min.js"></script>
+    <script src="https://unpkg.com/three@0.155.0/examples/js/loaders/GLTFLoader.js"></script>
+    <script src="https://unpkg.com/three@0.155.0/examples/js/loaders/OBJLoader.js"></script>
+    <script src="https://unpkg.com/three@0.155.0/examples/js/controls/OrbitControls.js"></script>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background: #000;
+            color: white;
+        }
+        
+        .container {
+            width: 100vw;
+            height: 100vh;
+            position: relative;
+        }
+        
+        .controls {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            z-index: 100;
+            background: rgba(0,0,0,0.8);
+            padding: 20px;
+            border-radius: 10px;
+            min-width: 200px;
+        }
+        
+        .control-group {
+            margin-bottom: 10px;
+        }
+        
+        label {
+            display: inline-block;
+            width: 40px;
+            font-size: 14px;
+        }
+        
+        input[type="range"] {
+            width: 100px;
+            margin: 0 5px;
+        }
+        
+        .value {
+            display: inline-block;
+            width: 30px;
+            text-align: right;
+        }
+        
+        .file-input {
+            width: 100%;
+            margin-bottom: 15px;
+            padding: 5px;
+            background: #333;
+            color: white;
+            border: 1px solid #555;
+            border-radius: 3px;
+        }
+        
+        #canvas-container {
+            width: 100%;
+            height: 100%;
+        }
+        
+        .title {
+            color: #00ff88;
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="controls">
+            <div class="title">🎮 3D Engine Controls</div>
+            
+            <input type="file" class="file-input" id="fileInput" accept=".gltf,.glb,.obj">
+            
+            <div class="control-group">
+                <label>U:</label>
+                <input type="range" id="u-slider" min="0" max="10" step="0.1" value="1">
+                <span class="value" id="u-value">1.0</span>
+            </div>
+            
+            <div class="control-group">
+                <label>P:</label>
+                <input type="range" id="p-slider" min="0" max="10" step="0.1" value="1">
+                <span class="value" id="p-value">1.0</span>
+            </div>
+            
+            <div class="control-group">
+                <label>A:</label>
+                <input type="range" id="a-slider" min="0.1" max="3" step="0.1" value="1">
+                <span class="value" id="a-value">1.0</span>
+            </div>
+            
+            <div class="control-group">
+                <label>B:</label>
+                <input type="range" id="b-slider" min="0.1" max="3" step="0.1" value="1">
+                <span class="value" id="b-value">1.0</span>
+            </div>
+            
+            <div class="control-group">
+                <label>C:</label>
+                <input type="range" id="c-slider" min="0.1" max="3" step="0.1" value="1">
+                <span class="value" id="c-value">1.0</span>
+            </div>
+            
+            <div class="control-group">
+                <label>U Seg:</label>
+                <input type="range" id="useg-slider" min="4" max="64" step="4" value="32">
+                <span class="value" id="useg-value">32</span>
+            </div>
+            
+            <div class="control-group">
+                <label>V Seg:</label>
+                <input type="range" id="vseg-slider" min="4" max="64" step="4" value="16">
+                <span class="value" id="vseg-value">16</span>
+            </div>
+        </div>
+        
+        <div id="canvas-container"></div>
+    </div>
+
+    <script>
+        // 3D Engine Variables
+        let scene, camera, renderer, controls;
+        let model = null;
+        let parameters = {
+            u: 1,
+            p: 1,
+            a: 1,
+            b: 1,
+            c: 1,
+            uSegments: 32,
+            vSegments: 16
+        };
+
+        // Initialize 3D Scene
+        function init() {
+            // Scene
+            scene = new THREE.Scene();
+            scene.background = new THREE.Color(0x1a1a1a);
+
+            // Camera
+            camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+            camera.position.set(5, 5, 5);
+
+            // Renderer
+            renderer = new THREE.WebGLRenderer({ antialias: true });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.shadowMap.enabled = true;
+            renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+            document.getElementById('canvas-container').appendChild(renderer.domElement);
+
+            // Controls
+            controls = new THREE.OrbitControls(camera, renderer.domElement);
+            controls.enableDamping = true;
+            controls.dampingFactor = 0.05;
+
+            // Lighting
+            const ambientLight = new THREE.AmbientLight(0x404040, 0.4);
+            scene.add(ambientLight);
+
+            const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
+            directionalLight.position.set(10, 10, 5);
+            directionalLight.castShadow = true;
+            scene.add(directionalLight);
+
+            const pointLight = new THREE.PointLight(0xffffff, 0.5);
+            pointLight.position.set(-10, -10, -5);
+            scene.add(pointLight);
+
+            // Setup controls
+            setupControls();
+            
+            // Start animation loop
+            animate();
+        }
+
+        // Setup UI Controls
+        function setupControls() {
+            const sliders = ['u', 'p', 'a', 'b', 'c', 'useg', 'vseg'];
+            
+            sliders.forEach(param => {
+                const slider = document.getElementById(`${param}-slider`);
+                const value = document.getElementById(`${param}-value`);
+                
+                slider.addEventListener('input', (e) => {
+                    const val = parseFloat(e.target.value);
+                    if (param === 'useg') {
+                        parameters.uSegments = val;
+                        value.textContent = val;
+                    } else if (param === 'vseg') {
+                        parameters.vSegments = val;
+                        value.textContent = val;
+                    } else {
+                        parameters[param] = val;
+                        value.textContent = val.toFixed(1);
+                    }
+                });
+            });
+
+            // File input
+            document.getElementById('fileInput').addEventListener('change', (e) => {
+                const file = e.target.files[0];
+                if (file) {
+                    loadModel(file);
+                }
+            });
+        }
+
+        // Load 3D Model
+        function loadModel(file) {
+            const url = URL.createObjectURL(file);
+            const extension = file.name.split('.').pop().toLowerCase();
+            
+            // Remove existing model
+            if (model) {
+                scene.remove(model);
+            }
+
+            if (extension === 'gltf' || extension === 'glb') {
+                const loader = new THREE.GLTFLoader();
+                loader.load(url, (gltf) => {
+                    model = gltf.scene;
+                    scene.add(model);
+                    console.log('GLTF model loaded successfully');
+                });
+            } else if (extension === 'obj') {
+                const loader = new THREE.OBJLoader();
+                loader.load(url, (obj) => {
+                    model = obj;
+                    scene.add(model);
+                    console.log('OBJ model loaded successfully');
+                });
+            }
+        }
+
+        // Animation Loop
+        function animate() {
+            requestAnimationFrame(animate);
+
+            if (model) {
+                // Apply parameter transformations
+                // U parameter controls rotation speed
+                model.rotation.y += parameters.u * 0.01;
+                
+                // P parameter controls pulsing scale
+                const pulseScale = 1 + Math.sin(Date.now() * 0.001 * parameters.p) * 0.1;
+                
+                // A, B, C parameters control scaling
+                model.scale.set(
+                    parameters.a * pulseScale,
+                    parameters.b * pulseScale,
+                    parameters.c * pulseScale
+                );
+
+                // UV segments affect material properties
+                model.traverse((child) => {
+                    if (child.isMesh && child.material) {
+                        if (child.material.map) {
+                            child.material.map.repeat.set(
+                                parameters.uSegments / 16,
+                                parameters.vSegments / 16
+                            );
+                            child.material.map.wrapS = THREE.RepeatWrapping;
+                            child.material.map.wrapT = THREE.RepeatWrapping;
+                        }
+                    }
+                });
+            }
+
+            controls.update();
+            renderer.render(scene, camera);
+        }
+
+        // Handle window resize
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+
+        // Start the engine
+        init();
+    </script>
+</body>
+</html>
+</script>
+</body>
+</html>

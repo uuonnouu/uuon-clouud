@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <!-- String Theory & Higher Dimensions - Theoretical Physics -->
+  
+  <!-- String Theory Fundamentals -->
+  <url>
+    <loc>https://uuon-foundation.com/?shape=nambu_goto_string</loc>
+    <lastmod>2025-11-30</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>1.0</priority>
+  </url>
+  <url>
+    <loc>https://uuon-foundation.com/?shape=polyakov_action_worldsheet</loc>
+    <lastmod>2025-11-30</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://uuon-foundation.com/?shape=superstring_vibration_modes</loc>
+    <lastmod>2025-11-30</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  
+  <!-- M-Theory -->
+  <url>
+    <loc>https://uuon-foundation.com/?shape=m_theory_11d_membrane</loc>
+    <lastmod>2025-11-30</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>1.0</priority>
+  </url>
+  
+  <!-- Extra Dimensions -->
+  <url>
+    <loc>https://uuon-foundation.com/?shape=extra_dimensions_10d</loc>
+    <lastmod>2025-11-30</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://uuon-foundation.com/?shape=kaluza_klein_compactification</loc>
+    <lastmod>2025-11-30</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  
+  <!-- Branes -->
+  <url>
+    <loc>https://uuon-foundation.com/?shape=brane_tension_visualization</loc>
+    <lastmod>2025-11-30</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
+  <!-- Grand Unified Theories -->
+  <url>
+    <loc>https://uuon-foundation.com/?shape=grand_unified_theory_gut</loc>
+    <lastmod>2025-11-30</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://uuon-foundation.com/?shape=electroweak_unification</loc>
+    <lastmod>2025-11-30</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://uuon-foundation.com/?shape=supersymmetry_transformation</loc>
+    <lastmod>2025-11-30</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  
+  <!-- QCD -->
+  <url>
+    <loc>https://uuon-foundation.com/?shape=qcd_gluon_field</loc>
+    <lastmod>2025-11-30</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
+  <!-- Holographic Principle -->
+  <url>
+    <loc>https://uuon-foundation.com/?shape=holographic_principle_boundary</loc>
+    <lastmod>2025-11-30</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  
+  <!-- Multiverse -->
+  <url>
+    <loc>https://uuon-foundation.com/?shape=multiverse_landscape</loc>
+    <lastmod>2025-11-30</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  
+  <!-- Loop Quantum Gravity -->
+  <url>
+    <loc>https://uuon-foundation.com/?shape=ashtekar_connection_reformulation</loc>
+    <lastmod>2025-11-30</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://uuon-foundation.com/?shape=lqg_hamiltonian_constraint</loc>
+    <lastmod>2025-11-30</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://uuon-foundation.com/?shape=spin_network_vertex</loc>
+    <lastmod>2025-11-30</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://uuon-foundation.com/?shape=spin_foam_amplitude</loc>
+    <lastmod>2025-11-30</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+</urlset>

@@ -1,0 +1,226 @@
+[
+  {
+    "category": "cryptography",
+    "shape_count": "24",
+    "tok_lo": 51,
+    "tok_hi": 234,
+    "energy": 1000,
+    "hero_name": "Threshold Signature"
+  },
+  {
+    "category": "theory-of-everything",
+    "shape_count": "20",
+    "tok_lo": 295,
+    "tok_hi": 314,
+    "energy": 999,
+    "hero_name": "Mathematical Universe"
+  },
+  {
+    "category": "quantum-gravity",
+    "shape_count": "20",
+    "tok_lo": 169,
+    "tok_hi": 188,
+    "energy": 980,
+    "hero_name": "Regge Calculus"
+  },
+  {
+    "category": "black-holes",
+    "shape_count": "20",
+    "tok_lo": 75,
+    "tok_hi": 412,
+    "energy": 970,
+    "hero_name": "Quasi Normal Modes"
+  },
+  {
+    "category": "quantum-machine-learning",
+    "shape_count": "20",
+    "tok_lo": 550,
+    "tok_hi": 569,
+    "energy": 960,
+    "hero_name": "Expressibility"
+  },
+  {
+    "category": "cosmology",
+    "shape_count": "20",
+    "tok_lo": 374,
+    "tok_hi": 393,
+    "energy": 960,
+    "hero_name": "Heat Death"
+  },
+  {
+    "category": "quantum-computing",
+    "shape_count": "20",
+    "tok_lo": 13,
+    "tok_hi": 373,
+    "energy": 950,
+    "hero_name": "Quantum Error Correction"
+  },
+  {
+    "category": "quantum-mechanics",
+    "shape_count": "21",
+    "tok_lo": 148,
+    "tok_hi": 168,
+    "energy": 940,
+    "hero_name": "Quantum Tunneling"
+  },
+  {
+    "category": "4d-hyperdimensional",
+    "shape_count": "20",
+    "tok_lo": 44,
+    "tok_hi": 275,
+    "energy": 930,
+    "hero_name": "Tesseract"
+  },
+  {
+    "category": "uuon-acas",
+    "shape_count": "17",
+    "tok_lo": 533,
+    "tok_hi": 549,
+    "energy": 920,
+    "hero_name": "Acas Trajectory Prediction"
+  },
+  {
+    "category": "general-relativity",
+    "shape_count": "25",
+    "tok_lo": 74,
+    "tok_hi": 211,
+    "energy": 920,
+    "hero_name": "Light Cone Structure"
+  },
+  {
+    "category": "field-theory",
+    "shape_count": "20",
+    "tok_lo": 473,
+    "tok_hi": 492,
+    "energy": 910,
+    "hero_name": "Yang Mills Field"
+  },
+  {
+    "category": "tensor-algebra",
+    "shape_count": "20",
+    "tok_lo": 453,
+    "tok_hi": 472,
+    "energy": 900,
+    "hero_name": "Lie Derivative"
+  },
+  {
+    "category": "topology",
+    "shape_count": "20",
+    "tok_lo": 41,
+    "tok_hi": 124,
+    "energy": 890,
+    "hero_name": "Chinese Button Knot"
+  },
+  {
+    "category": "entropic-principles",
+    "shape_count": "20",
+    "tok_lo": 513,
+    "tok_hi": 532,
+    "energy": 880,
+    "hero_name": "Von Neumann Entropy"
+  },
+  {
+    "category": "wave-functions",
+    "shape_count": "20",
+    "tok_lo": 433,
+    "tok_hi": 452,
+    "energy": 870,
+    "hero_name": "Wave Dispersion"
+  },
+  {
+    "category": "neural-networks",
+    "shape_count": "20",
+    "tok_lo": 57,
+    "tok_hi": 368,
+    "energy": 850,
+    "hero_name": "Variational Autoencoder"
+  },
+  {
+    "category": "algorithms",
+    "shape_count": "20",
+    "tok_lo": 315,
+    "tok_hi": 334,
+    "energy": 800,
+    "hero_name": "Floyd Warshall"
+  },
+  {
+    "category": "fractals",
+    "shape_count": "25",
+    "tok_lo": 67,
+    "tok_hi": 147,
+    "energy": 780,
+    "hero_name": "Julia 3d"
+  },
+  {
+    "category": "modulo-algorithms",
+    "shape_count": "20",
+    "tok_lo": 413,
+    "tok_hi": 432,
+    "energy": 760,
+    "hero_name": "Mod 6 Hexary"
+  },
+  {
+    "category": "set-theory",
+    "shape_count": "20",
+    "tok_lo": 493,
+    "tok_hi": 512,
+    "energy": 750,
+    "hero_name": "Cartesian Product"
+  },
+  {
+    "category": "molecular-biology",
+    "shape_count": "25",
+    "tok_lo": 70,
+    "tok_hi": 257,
+    "energy": 700,
+    "hero_name": "Mitochondria"
+  },
+  {
+    "category": "sacred-geometry",
+    "shape_count": "20",
+    "tok_lo": 81,
+    "tok_hi": 294,
+    "energy": 650,
+    "hero_name": "Tree Of Life"
+  },
+  {
+    "category": "mathematical-art",
+    "shape_count": "1",
+    "tok_lo": 0,
+    "tok_hi": 0,
+    "energy": 600,
+    "hero_name": "Yeganeh Eagle"
+  },
+  {
+    "category": "chakras",
+    "shape_count": "15",
+    "tok_lo": 335,
+    "tok_hi": 349,
+    "energy": 500,
+    "hero_name": "Solar Plexus Chakra"
+  },
+  {
+    "category": "babylonian-zodiac",
+    "shape_count": "12",
+    "tok_lo": 1,
+    "tok_hi": 12,
+    "energy": 480,
+    "hero_name": "Babylonian Libra Scales"
+  },
+  {
+    "category": "basic",
+    "shape_count": "29",
+    "tok_lo": 32,
+    "tok_hi": 107,
+    "energy": 300,
+    "hero_name": "Pentagonal Prism"
+  },
+  {
+    "category": "general",
+    "shape_count": "36",
+    "tok_lo": 28,
+    "tok_hi": 87,
+    "energy": 300,
+    "hero_name": "Neural Loss Landscape"
+  }
+]

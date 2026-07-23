@@ -1,0 +1,185 @@
+ /**
+  * UUON Foundation — Merkle State Root Computation  v2.1
+  * FIX: Leaves now commit equation_x/y/z_formula + default_parameters
+  *      so the on-chain anchor proves MATHEMATICAL content, not just names.
+  *
+  * Usage:
+  *   DATABASE_URL="postgresql://..." npx tsx scripts/compute-merkle-root.ts
+  *
+  * © UUON Foundation Inc. — Phillip Aguilar Ruiz III
+  */
+
+ import { createHash } from "crypto";
+ import { neon } from "@neondatabase/serverless";
+ import * as fs from "fs";
+
+ const DATABASE_URL = process.env.DATABASE_URL;
+ if (!DATABASE_URL) {
+   console.error("FATAL: DATABASE_URL is not set.");
+   process.exit(1);
+ }
+
+ const sql = neon(DATABASE_URL);
+
+ // ── Merkle Tree ───────────────────────────────────────────────────────────────
+
+ function sha256(data: string): string {
+   return createHash("sha256").update(data, "utf8").digest("hex");
+ }
+
+ function buildMerkleTree(leaves: string[]): string {
+   if (leaves.length === 0) throw new Error("Cannot build Merkle tree from empty leaves.");
+   if (leaves.length === 1) return leaves[0];
+
+   const next: string[] = [];
+   for (let i = 0; i < leaves.length; i += 2) {
+     const left  = leaves[i];
+     const right = i + 1 < leaves.length ? leaves[i + 1] : leaves[i];
+     next.push(sha256(left + right));
+   }
+   return buildMerkleTree(next);
+ }
+
+ // ── Validation ────────────────────────────────────────────────────────────────
+
+ function isPlaceholderEquation(eq: string | null): boolean {
+   if (!eq) return true;
+   const placeholders = ["u", "v", "0", "undefined", "null", ""];
+   return placeholders.includes(eq.trim());
+ }
+
+ // ── Main ──────────────────────────────────────────────────────────────────────
+
+ async function main() {
+   console.log("═══════════════════════════════════════════════════════");
+   console.log("  UUON Merkle State Root — Phase II  (v2.1 — Math DNA)");
+   console.log("═══════════════════════════════════════════════════════\n");
+
+   // ── Step 1: Pull registry rows joined with equation data ──────────────────
+   console.log("► Fetching complete_shape_registry JOIN formula_implementations...");
+
+   const shapes = await sql`
+     SELECT
+       r.id,
+       r.shape_type,
+       r.display_name,
+       r.category,
+       r.source,
+       r.is_active,
+       r.created_at,
+       -- equation fields (the actual mathematical content)
+       COALESCE(f.equation_x_formula, 'MISSING') AS eq_x,
+       COALESCE(f.equation_y_formula, 'MISSING') AS eq_y,
+       COALESCE(f.equation_z_formula, 'MISSING') AS eq_z,
+       COALESCE(f.default_parameters::text, '{}')  AS default_params,
+       COALESCE(f.mathematical_foundation, '')      AS math_foundation,
+       COALESCE(f.security_level, 'standard')       AS security_level,
+       COALESCE(f.is_verified, false)               AS is_verified
+     FROM complete_shape_registry r
+     LEFT JOIN formula_implementations f
+       ON f.shape_type = r.shape_type
+     WHERE r.is_active = true
+     ORDER BY r.id ASC
+   `;
+
+   console.log(`  Total active shapes: ${shapes.length}\n`);
+
+   // ── Step 2: Audit equation coverage ──────────────────────────────────────
+   let missingEquations = 0;
+   let placeholderEquations = 0;
+   let verifiedCount = 0;
+
+   const leaves = (shapes as any[]).map((row) => {
+     const hasRealEq =
+       !isPlaceholderEquation(row.eq_x) &&
+       !isPlaceholderEquation(row.eq_y) &&
+       !isPlaceholderEquation(row.eq_z);
+
+     if (row.eq_x === "MISSING") missingEquations++;
+     else if (!hasRealEq) placeholderEquations++;
+     if (row.is_verified) verifiedCount++;
+
+     // Canonical leaf — includes math DNA, not just display names
+     const canonical = JSON.stringify({
+       id:              row.id,
+       shape_type:      row.shape_type,
+       display_name:    row.display_name,
+       category:        row.category,
+       source:          row.source,
+       is_active:       row.is_active,
+       created_at:      row.created_at,
+       // ↓ NEW — mathematical content fields
+       eq_x:            row.eq_x,
+       eq_y:            row.eq_y,
+       eq_z:            row.eq_z,
+       default_params:  row.default_params,
+       math_foundation: row.math_foundation,
+       security_level:  row.security_level,
+       is_verified:     row.is_verified,
+     });
+
+     return sha256(canonical);
+   });
+
+   // ── Step 3: Equation coverage report ─────────────────────────────────────
+   const totalShapes    = shapes.length;
+   const withRealEq     = totalShapes - missingEquations - placeholderEquations;
+   const coveragePct    = ((withRealEq / totalShapes) * 100).toFixed(1);
+
+   console.log("► Equation coverage audit:");
+   console.log(`  With real equations:   ${withRealEq} / ${totalShapes} (${coveragePct}%)`);
+   console.log(`  Missing from fi table: ${missingEquations}`);
+   console.log(`  Placeholder (u/v/0):   ${placeholderEquations}`);
+   console.log(`  Verified:              ${verifiedCount}\n`);
+
+   if (withRealEq < totalShapes * 0.5) {
+     console.warn("⚠  WARNING: Less than 50% of shapes have real equations.");
+     console.warn("   Run sync-shape-registry.ts first to improve coverage.\n");
+   }
+
+   // ── Step 4: Build Merkle tree ─────────────────────────────────────────────
+   console.log("► Building Merkle tree...");
+   const merkleRoot = buildMerkleTree(leaves);
+   const timestamp  = new Date().toISOString();
+   const stateHash  = sha256(`${merkleRoot}:${timestamp}:${shapes.length}`);
+
+   // ── Step 5: Output ────────────────────────────────────────────────────────
+   console.log("═══════════════════════════════════════════════════════");
+   console.log("  MERKLE STATE ROOT — UUON FOUNDATION  (Math-DNA v2.1)");
+   console.log("═══════════════════════════════════════════════════════");
+   console.log(`  Shapes committed:   ${shapes.length}`);
+   console.log(`  Equation coverage:  ${coveragePct}%`);
+   console.log(`  Verified shapes:    ${verifiedCount}`);
+   console.log(`  Merkle root:        ${merkleRoot}`);
+   console.log(`  State hash:         ${stateHash}`);
+   console.log(`  Timestamp:          ${timestamp}`);
+   console.log("═══════════════════════════════════════════════════════");
+
+   const manifest = {
+     version:           "2.1",
+     network:           "UUON Foundation — Phase II",
+     shapes_committed:  shapes.length,
+     equation_coverage: `${coveragePct}%`,
+     verified_shapes:   verifiedCount,
+     merkle_root:       merkleRoot,
+     state_hash:        stateHash,
+     timestamp,
+     anchor_target:     "Base mainnet + IPFS",
+     leaf_fields:       ["id","shape_type","display_name","category","source","is_active",
+                         "created_at","eq_x","eq_y","eq_z","default_params",
+                         "math_foundation","security_level","is_verified"],
+     genesis_hash:      "cf114022b5e4e1d6fdeb36890f35f605857cf2de93b53ebcb9c8e5652413ca04",
+     copyright:         "© UUON Foundation Inc. — Phillip Aguilar Ruiz III",
+   };
+
+   fs.writeFileSync("MERKLE_STATE_ROOT.json", JSON.stringify(manifest, null, 2), "utf8");
+   console.log("\n  ✓ Written to MERKLE_STATE_ROOT.json");
+   console.log("  ✓ Leaves now commit equation DNA — anchor is mathematically valid.\n");
+
+   process.exit(0);
+ }
+
+ main().catch((err) => {
+   console.error("\nFATAL:", err);
+   process.exit(1);
+ });

@@ -1,0 +1,51 @@
+{
+  "source": "Δmension Mathematical Universe",
+  "shapeId": "qubit_superposition_state",
+  "shapeName": "Qubit Superposition State",
+  "exportDate": "2026-06-10T20:24:20.870Z",
+  "parameters": {
+    "a": 0.7071,
+    "b": 0.7071,
+    "c": 0,
+    "d": 0,
+    "e": 0,
+    "f": 0,
+    "uMin": 0,
+    "uMax": 6.2831853,
+    "vMin": 0,
+    "vMax": 3.1415926,
+    "uSegments": 64,
+    "vSegments": 32
+  },
+  "dmension_version": "2.0",
+  "security": {
+    "cryptographicHash": "e41ba4df374e92db24257d3c5ab55508fed077e9c1fe89594776eac771df5282",
+    "verificationCode": "UUON-D13MON4-V1",
+    "timestamp": "2026-06-10T20:24:20.870Z",
+    "author": "UUON Foundation Inc.",
+    "organization": "Dmension Mathematical Universe",
+    "copyright": "2024 UUON Foundation Inc. All Rights Reserved.",
+    "license": "CC BY-NC 4.0",
+    "integrityVersion": "2.0",
+    "genesisAnchor": "cf114022b5e4e1d6fdeb36890f35f605857cf2de93b53ebcb9c8e5652413ca04",
+    "fixedAt": "2026-06-16T00:42:41.740Z"
+  },
+  "scene_bounds": {
+    "aabb_min": [
+      -1,
+      -1,
+      -1
+    ],
+    "aabb_max": [
+      1,
+      1,
+      1
+    ],
+    "center": [
+      0,
+      0,
+      0
+    ],
+    "scale": 2
+  }
+}

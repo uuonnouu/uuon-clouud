@@ -1,0 +1,8 @@
+added: '2026-06-03'
+info:
+  x-apisguru-categories:
+    - science
+    - open_data
+  x-logo:
+    url: 'https://d-dmension-mathematical-universe-uuon-foundation.replit.app/og-mathematical-universe.jpg'
+swaggerUrl: 'https://d-dmension-mathematical-universe-uuon-foundation.replit.app/api/openapi.json'

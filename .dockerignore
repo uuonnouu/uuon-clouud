@@ -1,14 +1,43 @@
-node_modules
-dist
-.git
+# === SOURCE FILES ARE REQUIRED — DO NOT EXCLUDE ===
+# Railway builds from source: client/, server/, shared/, vite.config.ts are all needed
+
+# Git internals
+.git/
+.gitignore
+
+# Replit-specific (not needed in Railway container)
+.local/
+.cache/
+.config/
+.replit
+replit.nix
+replit.md
+.upm/
+.npm/
+.breakpoints
+
+# Local node_modules (Railway installs fresh)
+node_modules/
+
+# Previously built output (Railway rebuilds from source)
+dist/
+
+# Environment files (inject via Railway Variables)
 .env
-.DS_Store
-uploads
-backups
+.env.local
+.env.*.local
+
+# Development assets not needed for build
+attached_assets/
+automation-reports/
+marketing/
+
+# Logs and temp
 *.log
-.next
-.vite
-coverage
-docs
-examples
-generated_images
+npm-debug.log*
+tmp/
+temp/
+
+# OS files
+.DS_Store
+Thumbs.db

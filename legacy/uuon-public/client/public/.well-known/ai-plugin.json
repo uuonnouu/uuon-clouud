@@ -1,0 +1,18 @@
+{
+  "schema_version": "v1",
+  "name_for_human": "Δmension Math API",
+  "name_for_model": "dmension_math_api",
+  "description_for_human": "Generate 3D geometry for 2,650+ mathematically exact shapes — topology, quantum physics, DNA structures, IFS fractals, and more. Returns vertices, normals, and UVs ready for Three.js, Unity, or any 3D engine.",
+  "description_for_model": "Use this to compute 3D parametric surface data for any named mathematical shape. Supports 26 real-time parameters (A-Z) per shape, covers 151+ categories including topology, quantum geometry, general relativity, DNA structures, IFS fractals, and non-Euclidean geometry. Returns vertex arrays (x,y,z), normals, UVs, and face indices in JSON. Exports GLB, PLY, and NeRF formats. All public endpoints are free with no API key.",
+  "auth": {
+    "type": "none"
+  },
+  "api": {
+    "type": "openapi",
+    "url": "https://distinguished-rebirth-production.up.railway.app/api/openapi.json",
+    "is_user_authenticated": false
+  },
+  "logo_url": "https://distinguished-rebirth-production.up.railway.app/og-mathematical-universe.jpg",
+  "contact_email": "phi1@uuonfoundation.com",
+  "legal_info_url": "https://distinguished-rebirth-production.up.railway.app/"
+}

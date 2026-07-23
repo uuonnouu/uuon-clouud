@@ -1,0 +1,238 @@
+{
+  "metadata": {
+    "title": "Δmension SEO Master Index",
+    "version": "1.0.0",
+    "generatedAt": "2025-12-10T12:00:00.000Z",
+    "source": "Δmension Mathematical Universe",
+    "description": "SEO metadata for all mathematical terms, optimized for search engines"
+  },
+  "seoEntries": [
+    {
+      "id": "sphere",
+      "title": "Sphere - Interactive 3D Mathematical Visualization | Δmension",
+      "description": "Explore the perfect sphere with real-time 3D visualization. A fundamental shape where every surface point is equidistant from the center. Interactive parametric controls available.",
+      "keywords": ["sphere", "3D sphere", "parametric sphere", "sphere geometry", "ball", "globe", "spherical surface", "round shape", "3D visualization"],
+      "h1": "Sphere: The Perfect 3D Round Shape",
+      "ogTitle": "Interactive 3D Sphere Visualization",
+      "ogDescription": "Explore spheres with adjustable parameters. Part of 2,097+ mathematical shapes in the Δmension Mathematical Universe.",
+      "canonicalUrl": "/shapes/sphere",
+      "structuredData": {
+        "@type": "MathSolver",
+        "name": "Sphere Parametric Equations",
+        "potentialAction": {
+          "@type": "SolveMathAction",
+          "mathExpression": "x = r·sin(φ)·cos(θ), y = r·sin(φ)·sin(θ), z = r·cos(φ)"
+        }
+      }
+    },
+    {
+      "id": "torus",
+      "title": "Torus - Interactive 3D Donut Shape Visualization | Δmension",
+      "description": "Explore the torus (donut shape) with real-time 3D visualization. A surface of revolution with adjustable major and minor radii. Interactive parametric controls.",
+      "keywords": ["torus", "donut shape", "ring shape", "toroid", "parametric torus", "3D donut", "toroidal surface", "surface of revolution"],
+      "h1": "Torus: The Mathematical Donut Shape",
+      "ogTitle": "Interactive 3D Torus Visualization",
+      "ogDescription": "Explore tori with adjustable radii. Part of 2,097+ mathematical shapes in the Δmension Mathematical Universe.",
+      "canonicalUrl": "/shapes/torus",
+      "structuredData": {
+        "@type": "MathSolver",
+        "name": "Torus Parametric Equations",
+        "potentialAction": {
+          "@type": "SolveMathAction",
+          "mathExpression": "x = (R + r·cos(v))·cos(u), y = (R + r·cos(v))·sin(u), z = r·sin(v)"
+        }
+      }
+    },
+    {
+      "id": "klein_bottle",
+      "title": "Klein Bottle - 4D Non-Orientable Surface Visualization | Δmension",
+      "description": "Explore the Klein bottle, a fascinating non-orientable surface with no inside or outside. 3D projection of a 4D mathematical object. Interactive visualization.",
+      "keywords": ["Klein bottle", "non-orientable surface", "4D geometry", "topology", "impossible bottle", "Felix Klein", "one-sided surface", "mathematical oddity"],
+      "h1": "Klein Bottle: The Surface with No Inside",
+      "ogTitle": "Interactive Klein Bottle 3D Visualization",
+      "ogDescription": "Explore the Klein bottle's impossible geometry. Part of 2,097+ mathematical shapes in the Δmension Mathematical Universe.",
+      "canonicalUrl": "/shapes/klein-bottle",
+      "structuredData": {
+        "@type": "MathSolver",
+        "name": "Klein Bottle Figure-8 Immersion",
+        "potentialAction": {
+          "@type": "SolveMathAction",
+          "mathExpression": "Non-orientable surface in R³"
+        }
+      }
+    },
+    {
+      "id": "tesseract",
+      "title": "Tesseract - 4D Hypercube Visualization | Δmension",
+      "description": "Explore the tesseract, a four-dimensional hypercube. Watch it rotate in 4D space with real-time 3D projection. 8 cubic cells, 24 faces, 32 edges, 16 vertices.",
+      "keywords": ["tesseract", "hypercube", "4D cube", "fourth dimension", "4D geometry", "8-cell", "octachoron", "4D visualization"],
+      "h1": "Tesseract: The 4D Hypercube",
+      "ogTitle": "Interactive 4D Tesseract Visualization",
+      "ogDescription": "Explore the tesseract rotating in 4D space. Part of 2,097+ mathematical shapes in the Δmension Mathematical Universe.",
+      "canonicalUrl": "/shapes/tesseract",
+      "structuredData": {
+        "@type": "MathSolver",
+        "name": "Tesseract 4D to 3D Projection",
+        "potentialAction": {
+          "@type": "SolveMathAction",
+          "mathExpression": "P₃D = (w/(w+d))·(x, y, z)"
+        }
+      }
+    },
+    {
+      "id": "golden_ratio",
+      "title": "Golden Ratio φ - Divine Proportion Visualization | Δmension",
+      "description": "Explore the golden ratio (φ ≈ 1.618), the divine proportion found in nature, art, and architecture. Interactive visualization of phi-based geometric forms.",
+      "keywords": ["golden ratio", "phi", "1.618", "divine proportion", "golden mean", "golden section", "Fibonacci", "sacred geometry", "nature mathematics"],
+      "h1": "Golden Ratio: The Divine Proportion",
+      "ogTitle": "Interactive Golden Ratio Visualization",
+      "ogDescription": "Explore φ = 1.618... the ratio found throughout nature and art. Part of 2,097+ mathematical shapes in the Δmension Mathematical Universe.",
+      "canonicalUrl": "/concepts/golden-ratio",
+      "structuredData": {
+        "@type": "MathSolver",
+        "name": "Golden Ratio",
+        "potentialAction": {
+          "@type": "SolveMathAction",
+          "mathExpression": "φ = (1 + √5) / 2 ≈ 1.618034"
+        }
+      }
+    },
+    {
+      "id": "mandelbrot",
+      "title": "Mandelbrot Set - Fractal Visualization | Δmension",
+      "description": "Explore the Mandelbrot set, the most famous fractal with infinite complexity at every scale. Interactive visualization with zoom and color mapping.",
+      "keywords": ["Mandelbrot set", "fractal", "M-set", "complex dynamics", "chaos theory", "Benoit Mandelbrot", "self-similar", "infinite complexity"],
+      "h1": "Mandelbrot Set: Infinite Fractal Complexity",
+      "ogTitle": "Interactive Mandelbrot Set Visualization",
+      "ogDescription": "Explore the infinitely complex Mandelbrot fractal. Part of 2,097+ mathematical shapes in the Δmension Mathematical Universe.",
+      "canonicalUrl": "/shapes/mandelbrot",
+      "structuredData": {
+        "@type": "MathSolver",
+        "name": "Mandelbrot Set Iteration",
+        "potentialAction": {
+          "@type": "SolveMathAction",
+          "mathExpression": "z(n+1) = z(n)² + c"
+        }
+      }
+    },
+    {
+      "id": "calabi_yau",
+      "title": "Calabi-Yau Manifold - String Theory Visualization | Δmension",
+      "description": "Explore Calabi-Yau manifolds, the 6-dimensional shapes where extra dimensions hide in string theory. Cross-section visualization of theoretical physics.",
+      "keywords": ["Calabi-Yau manifold", "string theory", "extra dimensions", "theoretical physics", "6D space", "compactification", "Shing-Tung Yau"],
+      "h1": "Calabi-Yau Manifold: String Theory's Hidden Dimensions",
+      "ogTitle": "Interactive Calabi-Yau Visualization",
+      "ogDescription": "Explore the hidden dimensions of string theory. Part of 2,097+ mathematical shapes in the Δmension Mathematical Universe.",
+      "canonicalUrl": "/shapes/calabi-yau",
+      "structuredData": {
+        "@type": "MathSolver",
+        "name": "Calabi-Yau Manifold",
+        "potentialAction": {
+          "@type": "SolveMathAction",
+          "mathExpression": "Complex manifold with Ricci-flat Kähler metric"
+        }
+      }
+    },
+    {
+      "id": "quaternion",
+      "title": "Quaternion - 4D Rotation Mathematics | Δmension",
+      "description": "Learn about quaternions, the 4D number system used for 3D rotations in computer graphics and physics. No gimbal lock, smooth interpolation.",
+      "keywords": ["quaternion", "3D rotation", "Hamilton numbers", "hypercomplex", "gimbal lock", "SLERP", "computer graphics", "game development"],
+      "h1": "Quaternion: 4D Numbers for 3D Rotation",
+      "ogTitle": "Understanding Quaternions for 3D Rotation",
+      "ogDescription": "Learn how quaternions power 3D graphics rotation. Part of 2,097+ mathematical shapes in the Δmension Mathematical Universe.",
+      "canonicalUrl": "/concepts/quaternion",
+      "structuredData": {
+        "@type": "MathSolver",
+        "name": "Quaternion",
+        "potentialAction": {
+          "@type": "SolveMathAction",
+          "mathExpression": "q = a + bi + cj + dk where i² = j² = k² = ijk = -1"
+        }
+      }
+    },
+    {
+      "id": "catenoid",
+      "title": "Catenoid - Minimal Surface Visualization | Δmension",
+      "description": "Explore the catenoid, a minimal surface shaped like two funnels meeting at a waist. The shape of soap films between two rings.",
+      "keywords": ["catenoid", "minimal surface", "soap film", "catenary", "surface tension", "Euler", "calculus of variations"],
+      "h1": "Catenoid: The Minimal Surface of Revolution",
+      "ogTitle": "Interactive Catenoid Visualization",
+      "ogDescription": "Explore the first discovered non-planar minimal surface. Part of 2,097+ mathematical shapes in the Δmension Mathematical Universe.",
+      "canonicalUrl": "/shapes/catenoid",
+      "structuredData": {
+        "@type": "MathSolver",
+        "name": "Catenoid Parametric Equations",
+        "potentialAction": {
+          "@type": "SolveMathAction",
+          "mathExpression": "x = c·cosh(v/c)·cos(u), y = c·cosh(v/c)·sin(u), z = v"
+        }
+      }
+    },
+    {
+      "id": "mobius_strip",
+      "title": "Möbius Strip - One-Sided Surface Visualization | Δmension",
+      "description": "Explore the Möbius strip, a one-sided surface with only one edge. Created by giving a strip a half-twist. Classic topology example.",
+      "keywords": ["Mobius strip", "Möbius band", "one-sided surface", "topology", "twisted loop", "August Möbius", "non-orientable"],
+      "h1": "Möbius Strip: The One-Sided Surface",
+      "ogTitle": "Interactive Möbius Strip Visualization",
+      "ogDescription": "Explore the classic one-sided surface. Part of 2,097+ mathematical shapes in the Δmension Mathematical Universe.",
+      "canonicalUrl": "/shapes/mobius-strip",
+      "structuredData": {
+        "@type": "MathSolver",
+        "name": "Möbius Strip Parametric Equations",
+        "potentialAction": {
+          "@type": "SolveMathAction",
+          "mathExpression": "x = (1 + v/2·cos(u/2))·cos(u), y = (1 + v/2·cos(u/2))·sin(u), z = v/2·sin(u/2)"
+        }
+      }
+    }
+  ],
+  "globalSeoSettings": {
+    "siteName": "Δmension Mathematical Universe",
+    "siteTagline": "2,097+ Interactive Mathematical Visualizations",
+    "defaultDescription": "Explore the mathematical universe with interactive 3D visualizations of 2,097+ shapes, from basic geometry to string theory manifolds.",
+    "defaultKeywords": ["mathematical visualization", "3D geometry", "parametric surfaces", "interactive math", "educational", "STEM"],
+    "twitterHandle": "@DmensionMath",
+    "ogImage": "/og-image.png",
+    "locale": "en_US"
+  },
+  "categoryPages": [
+    {
+      "category": "basic_shapes",
+      "title": "Basic 3D Shapes - Interactive Geometry | Δmension",
+      "description": "Explore fundamental 3D shapes: spheres, cubes, cylinders, cones, and more with interactive parametric controls.",
+      "keywords": ["3D shapes", "geometry", "sphere", "cube", "cylinder", "cone", "torus"]
+    },
+    {
+      "category": "minimal_surfaces",
+      "title": "Minimal Surfaces - Soap Film Mathematics | Δmension",
+      "description": "Explore minimal surfaces: catenoids, helicoids, Enneper surfaces, and more. The mathematics of soap films.",
+      "keywords": ["minimal surfaces", "soap films", "catenoid", "helicoid", "surface tension"]
+    },
+    {
+      "category": "topological_surfaces",
+      "title": "Topological Surfaces - Klein Bottles & Möbius Strips | Δmension",
+      "description": "Explore non-orientable surfaces: Klein bottles, Möbius strips, and other topological oddities.",
+      "keywords": ["topology", "Klein bottle", "Möbius strip", "non-orientable", "one-sided surface"]
+    },
+    {
+      "category": "hyperdimensional",
+      "title": "4D Geometry - Tesseracts & Hypercubes | Δmension",
+      "description": "Explore four-dimensional geometry: tesseracts, 120-cells, Calabi-Yau manifolds, and higher dimensions.",
+      "keywords": ["4D geometry", "tesseract", "hypercube", "fourth dimension", "string theory"]
+    },
+    {
+      "category": "fractals",
+      "title": "Fractals - Mandelbrot Set & Julia Sets | Δmension",
+      "description": "Explore fractals: Mandelbrot set, Julia sets, Sierpinski triangles, and infinite self-similar patterns.",
+      "keywords": ["fractals", "Mandelbrot", "Julia set", "self-similar", "chaos theory"]
+    },
+    {
+      "category": "sacred_geometry",
+      "title": "Sacred Geometry - Golden Ratio & Fibonacci | Δmension",
+      "description": "Explore sacred geometry: golden ratio, Fibonacci spirals, Flower of Life, and divine proportions.",
+      "keywords": ["sacred geometry", "golden ratio", "phi", "Fibonacci", "divine proportion"]
+    }
+  ]
+}

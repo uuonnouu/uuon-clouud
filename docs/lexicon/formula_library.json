@@ -1,0 +1,173 @@
+{
+  "metadata": {
+    "title": "Δmension Formula Library",
+    "version": "1.0.0",
+    "generatedAt": "2025-12-10T12:00:00.000Z",
+    "source": "Δmension Mathematical Universe",
+    "description": "Multi-language implementations of mathematical formulas for 3D visualization",
+    "languages": ["javascript", "python", "typescript", "cpp", "rust"],
+    "totalFormulas": 8
+  },
+  "formulas": [
+    {
+      "id": "sphere_parametric",
+      "name": "Sphere Parametric Equations",
+      "latex": "x = r\\sin(\\phi)\\cos(\\theta), \\quad y = r\\sin(\\phi)\\sin(\\theta), \\quad z = r\\cos(\\phi)",
+      "description": "Parametric equations for a sphere of radius r using spherical coordinates",
+      "variables": [
+        {"symbol": "r", "meaning": "radius of the sphere", "range": "r > 0"},
+        {"symbol": "φ", "meaning": "polar angle (latitude)", "range": "[0, π]"},
+        {"symbol": "θ", "meaning": "azimuthal angle (longitude)", "range": "[0, 2π]"}
+      ],
+      "implementations": {
+        "javascript": "function sphere(u, v, r = 1) {\n  const phi = u * Math.PI;\n  const theta = v * 2 * Math.PI;\n  return [\n    r * Math.sin(phi) * Math.cos(theta),\n    r * Math.sin(phi) * Math.sin(theta),\n    r * Math.cos(phi)\n  ];\n}",
+        "python": "def sphere(u: float, v: float, r: float = 1.0) -> tuple:\n    import math\n    phi = u * math.pi\n    theta = v * 2 * math.pi\n    return (\n        r * math.sin(phi) * math.cos(theta),\n        r * math.sin(phi) * math.sin(theta),\n        r * math.cos(phi)\n    )",
+        "typescript": "function sphere(u: number, v: number, r: number = 1): [number, number, number] {\n  const phi = u * Math.PI;\n  const theta = v * 2 * Math.PI;\n  return [\n    r * Math.sin(phi) * Math.cos(theta),\n    r * Math.sin(phi) * Math.sin(theta),\n    r * Math.cos(phi)\n  ];\n}",
+        "cpp": "#include <cmath>\n#include <tuple>\n\nstd::tuple<double, double, double> sphere(double u, double v, double r = 1.0) {\n    double phi = u * M_PI;\n    double theta = v * 2 * M_PI;\n    return {\n        r * sin(phi) * cos(theta),\n        r * sin(phi) * sin(theta),\n        r * cos(phi)\n    };\n}",
+        "rust": "use std::f64::consts::PI;\n\nfn sphere(u: f64, v: f64, r: f64) -> (f64, f64, f64) {\n    let phi = u * PI;\n    let theta = v * 2.0 * PI;\n    (\n        r * phi.sin() * theta.cos(),\n        r * phi.sin() * theta.sin(),\n        r * phi.cos()\n    )\n}"
+      },
+      "category": "basic_shapes",
+      "relatedShapes": ["sphere", "ellipsoid", "ovoid"]
+    },
+    {
+      "id": "torus_parametric",
+      "name": "Torus Parametric Equations",
+      "latex": "x = (R + r\\cos(v))\\cos(u), \\quad y = (R + r\\cos(v))\\sin(u), \\quad z = r\\sin(v)",
+      "description": "Parametric equations for a torus with major radius R and minor radius r",
+      "variables": [
+        {"symbol": "R", "meaning": "major radius (center to tube center)", "range": "R > r"},
+        {"symbol": "r", "meaning": "minor radius (tube radius)", "range": "r > 0"},
+        {"symbol": "u", "meaning": "angle around the main circle", "range": "[0, 2π]"},
+        {"symbol": "v", "meaning": "angle around the tube", "range": "[0, 2π]"}
+      ],
+      "implementations": {
+        "javascript": "function torus(u, v, R = 2, r = 0.5) {\n  const theta = u * 2 * Math.PI;\n  const phi = v * 2 * Math.PI;\n  return [\n    (R + r * Math.cos(phi)) * Math.cos(theta),\n    (R + r * Math.cos(phi)) * Math.sin(theta),\n    r * Math.sin(phi)\n  ];\n}",
+        "python": "def torus(u: float, v: float, R: float = 2.0, r: float = 0.5) -> tuple:\n    import math\n    theta = u * 2 * math.pi\n    phi = v * 2 * math.pi\n    return (\n        (R + r * math.cos(phi)) * math.cos(theta),\n        (R + r * math.cos(phi)) * math.sin(theta),\n        r * math.sin(phi)\n    )",
+        "typescript": "function torus(u: number, v: number, R: number = 2, r: number = 0.5): [number, number, number] {\n  const theta = u * 2 * Math.PI;\n  const phi = v * 2 * Math.PI;\n  return [\n    (R + r * Math.cos(phi)) * Math.cos(theta),\n    (R + r * Math.cos(phi)) * Math.sin(theta),\n    r * Math.sin(phi)\n  ];\n}",
+        "cpp": "#include <cmath>\n#include <tuple>\n\nstd::tuple<double, double, double> torus(double u, double v, double R = 2.0, double r = 0.5) {\n    double theta = u * 2 * M_PI;\n    double phi = v * 2 * M_PI;\n    return {\n        (R + r * cos(phi)) * cos(theta),\n        (R + r * cos(phi)) * sin(theta),\n        r * sin(phi)\n    };\n}",
+        "rust": "use std::f64::consts::PI;\n\nfn torus(u: f64, v: f64, r_major: f64, r_minor: f64) -> (f64, f64, f64) {\n    let theta = u * 2.0 * PI;\n    let phi = v * 2.0 * PI;\n    (\n        (r_major + r_minor * phi.cos()) * theta.cos(),\n        (r_major + r_minor * phi.cos()) * theta.sin(),\n        r_minor * phi.sin()\n    )\n}"
+      },
+      "category": "basic_shapes",
+      "relatedShapes": ["torus", "clifford_torus", "horn_torus"]
+    },
+    {
+      "id": "klein_bottle_parametric",
+      "name": "Klein Bottle Figure-8 Immersion",
+      "latex": "\\text{Figure-8 immersion in } \\mathbb{R}^3",
+      "description": "Parametric equations for a Klein bottle immersion in 3D space using the figure-8 formulation",
+      "variables": [
+        {"symbol": "u", "meaning": "parameter along the bottle", "range": "[0, 2π]"},
+        {"symbol": "v", "meaning": "parameter around the cross-section", "range": "[0, 2π]"},
+        {"symbol": "r", "meaning": "radius scaling factor", "range": "r > 0"}
+      ],
+      "implementations": {
+        "javascript": "function kleinBottle(u, v, r = 1) {\n  const halfU = u / 2;\n  const cosU = Math.cos(u), sinU = Math.sin(u);\n  const cosV = Math.cos(v), sinV = Math.sin(v);\n  \n  const x = r * (cosU * (1 + sinU) + sinV * (1 - cosU / 2));\n  const y = r * sinU + cosV * (1 - cosU / 2);\n  const z = r * Math.sin(halfU) * sinV;\n  \n  return [x, y, z];\n}",
+        "python": "def klein_bottle(u: float, v: float, r: float = 1.0) -> tuple:\n    import math\n    half_u = u / 2\n    cos_u, sin_u = math.cos(u), math.sin(u)\n    cos_v, sin_v = math.cos(v), math.sin(v)\n    \n    x = r * (cos_u * (1 + sin_u) + sin_v * (1 - cos_u / 2))\n    y = r * sin_u + cos_v * (1 - cos_u / 2)\n    z = r * math.sin(half_u) * sin_v\n    \n    return (x, y, z)",
+        "typescript": "function kleinBottle(u: number, v: number, r: number = 1): [number, number, number] {\n  const halfU = u / 2;\n  const cosU = Math.cos(u), sinU = Math.sin(u);\n  const cosV = Math.cos(v), sinV = Math.sin(v);\n  \n  const x = r * (cosU * (1 + sinU) + sinV * (1 - cosU / 2));\n  const y = r * sinU + cosV * (1 - cosU / 2);\n  const z = r * Math.sin(halfU) * sinV;\n  \n  return [x, y, z];\n}",
+        "cpp": "#include <cmath>\n#include <tuple>\n\nstd::tuple<double, double, double> klein_bottle(double u, double v, double r = 1.0) {\n    double half_u = u / 2;\n    double cos_u = cos(u), sin_u = sin(u);\n    double cos_v = cos(v), sin_v = sin(v);\n    \n    double x = r * (cos_u * (1 + sin_u) + sin_v * (1 - cos_u / 2));\n    double y = r * sin_u + cos_v * (1 - cos_u / 2);\n    double z = r * sin(half_u) * sin_v;\n    \n    return {x, y, z};\n}",
+        "rust": "fn klein_bottle(u: f64, v: f64, r: f64) -> (f64, f64, f64) {\n    let half_u = u / 2.0;\n    let (cos_u, sin_u) = (u.cos(), u.sin());\n    let (cos_v, sin_v) = (v.cos(), v.sin());\n    \n    let x = r * (cos_u * (1.0 + sin_u) + sin_v * (1.0 - cos_u / 2.0));\n    let y = r * sin_u + cos_v * (1.0 - cos_u / 2.0);\n    let z = r * half_u.sin() * sin_v;\n    \n    (x, y, z)\n}"
+      },
+      "category": "topological_surfaces",
+      "relatedShapes": ["klein_bottle", "mobius_strip", "cross_cap"]
+    },
+    {
+      "id": "mobius_strip_parametric",
+      "name": "Möbius Strip Parametric Equations",
+      "latex": "x = (1 + \\frac{v}{2}\\cos(\\frac{u}{2}))\\cos(u), \\quad y = (1 + \\frac{v}{2}\\cos(\\frac{u}{2}))\\sin(u), \\quad z = \\frac{v}{2}\\sin(\\frac{u}{2})",
+      "description": "Parametric equations for a Möbius strip with half-twist",
+      "variables": [
+        {"symbol": "u", "meaning": "parameter around the strip", "range": "[0, 2π]"},
+        {"symbol": "v", "meaning": "parameter across the strip width", "range": "[-1, 1]"},
+        {"symbol": "R", "meaning": "radius of the central circle", "range": "R > 0"}
+      ],
+      "implementations": {
+        "javascript": "function mobiusStrip(u, v, R = 1) {\n  const theta = u * 2 * Math.PI;\n  const s = v - 0.5;\n  const halfTheta = theta / 2;\n  \n  const x = (R + s * Math.cos(halfTheta)) * Math.cos(theta);\n  const y = (R + s * Math.cos(halfTheta)) * Math.sin(theta);\n  const z = s * Math.sin(halfTheta);\n  \n  return [x, y, z];\n}",
+        "python": "def mobius_strip(u: float, v: float, R: float = 1.0) -> tuple:\n    import math\n    theta = u * 2 * math.pi\n    s = v - 0.5\n    half_theta = theta / 2\n    \n    x = (R + s * math.cos(half_theta)) * math.cos(theta)\n    y = (R + s * math.cos(half_theta)) * math.sin(theta)\n    z = s * math.sin(half_theta)\n    \n    return (x, y, z)",
+        "typescript": "function mobiusStrip(u: number, v: number, R: number = 1): [number, number, number] {\n  const theta = u * 2 * Math.PI;\n  const s = v - 0.5;\n  const halfTheta = theta / 2;\n  \n  const x = (R + s * Math.cos(halfTheta)) * Math.cos(theta);\n  const y = (R + s * Math.cos(halfTheta)) * Math.sin(theta);\n  const z = s * Math.sin(halfTheta);\n  \n  return [x, y, z];\n}",
+        "cpp": "#include <cmath>\n#include <tuple>\n\nstd::tuple<double, double, double> mobius_strip(double u, double v, double R = 1.0) {\n    double theta = u * 2 * M_PI;\n    double s = v - 0.5;\n    double half_theta = theta / 2;\n    \n    double x = (R + s * cos(half_theta)) * cos(theta);\n    double y = (R + s * cos(half_theta)) * sin(theta);\n    double z = s * sin(half_theta);\n    \n    return {x, y, z};\n}",
+        "rust": "use std::f64::consts::PI;\n\nfn mobius_strip(u: f64, v: f64, r: f64) -> (f64, f64, f64) {\n    let theta = u * 2.0 * PI;\n    let s = v - 0.5;\n    let half_theta = theta / 2.0;\n    \n    let x = (r + s * half_theta.cos()) * theta.cos();\n    let y = (r + s * half_theta.cos()) * theta.sin();\n    let z = s * half_theta.sin();\n    \n    (x, y, z)\n}"
+      },
+      "category": "topological_surfaces",
+      "relatedShapes": ["mobius_strip", "klein_bottle"]
+    },
+    {
+      "id": "catenoid_parametric",
+      "name": "Catenoid Parametric Equations",
+      "latex": "x = c\\cosh(\\frac{v}{c})\\cos(u), \\quad y = c\\cosh(\\frac{v}{c})\\sin(u), \\quad z = v",
+      "description": "Parametric equations for a catenoid, the minimal surface of revolution",
+      "variables": [
+        {"symbol": "c", "meaning": "waist radius parameter", "range": "c > 0"},
+        {"symbol": "u", "meaning": "angle around the axis", "range": "[0, 2π]"},
+        {"symbol": "v", "meaning": "height along the axis", "range": "[-2, 2]"}
+      ],
+      "implementations": {
+        "javascript": "function catenoid(u, v, c = 1) {\n  const theta = u * 2 * Math.PI;\n  const height = (v - 0.5) * 4;\n  const cosh_val = Math.cosh(height / c);\n  \n  return [\n    c * cosh_val * Math.cos(theta),\n    c * cosh_val * Math.sin(theta),\n    height\n  ];\n}",
+        "python": "def catenoid(u: float, v: float, c: float = 1.0) -> tuple:\n    import math\n    theta = u * 2 * math.pi\n    height = (v - 0.5) * 4\n    cosh_val = math.cosh(height / c)\n    \n    return (\n        c * cosh_val * math.cos(theta),\n        c * cosh_val * math.sin(theta),\n        height\n    )",
+        "typescript": "function catenoid(u: number, v: number, c: number = 1): [number, number, number] {\n  const theta = u * 2 * Math.PI;\n  const height = (v - 0.5) * 4;\n  const cosh_val = Math.cosh(height / c);\n  \n  return [\n    c * cosh_val * Math.cos(theta),\n    c * cosh_val * Math.sin(theta),\n    height\n  ];\n}",
+        "cpp": "#include <cmath>\n#include <tuple>\n\nstd::tuple<double, double, double> catenoid(double u, double v, double c = 1.0) {\n    double theta = u * 2 * M_PI;\n    double height = (v - 0.5) * 4;\n    double cosh_val = cosh(height / c);\n    \n    return {\n        c * cosh_val * cos(theta),\n        c * cosh_val * sin(theta),\n        height\n    };\n}",
+        "rust": "use std::f64::consts::PI;\n\nfn catenoid(u: f64, v: f64, c: f64) -> (f64, f64, f64) {\n    let theta = u * 2.0 * PI;\n    let height = (v - 0.5) * 4.0;\n    let cosh_val = (height / c).cosh();\n    \n    (\n        c * cosh_val * theta.cos(),\n        c * cosh_val * theta.sin(),\n        height\n    )\n}"
+      },
+      "category": "minimal_surfaces",
+      "relatedShapes": ["catenoid", "helicoid", "costa_surface"]
+    },
+    {
+      "id": "helicoid_parametric",
+      "name": "Helicoid Parametric Equations",
+      "latex": "x = v\\cos(u), \\quad y = v\\sin(u), \\quad z = cu",
+      "description": "Parametric equations for a helicoid, a ruled minimal surface",
+      "variables": [
+        {"symbol": "c", "meaning": "pitch of the helix", "range": "c ≠ 0"},
+        {"symbol": "u", "meaning": "angle of rotation", "range": "[0, 2π]"},
+        {"symbol": "v", "meaning": "distance from axis", "range": "[-1, 1]"}
+      ],
+      "implementations": {
+        "javascript": "function helicoid(u, v, c = 0.5) {\n  const theta = u * 4 * Math.PI;\n  const r = (v - 0.5) * 2;\n  \n  return [\n    r * Math.cos(theta),\n    r * Math.sin(theta),\n    c * theta\n  ];\n}",
+        "python": "def helicoid(u: float, v: float, c: float = 0.5) -> tuple:\n    import math\n    theta = u * 4 * math.pi\n    r = (v - 0.5) * 2\n    \n    return (\n        r * math.cos(theta),\n        r * math.sin(theta),\n        c * theta\n    )",
+        "typescript": "function helicoid(u: number, v: number, c: number = 0.5): [number, number, number] {\n  const theta = u * 4 * Math.PI;\n  const r = (v - 0.5) * 2;\n  \n  return [\n    r * Math.cos(theta),\n    r * Math.sin(theta),\n    c * theta\n  ];\n}",
+        "cpp": "#include <cmath>\n#include <tuple>\n\nstd::tuple<double, double, double> helicoid(double u, double v, double c = 0.5) {\n    double theta = u * 4 * M_PI;\n    double r = (v - 0.5) * 2;\n    \n    return {\n        r * cos(theta),\n        r * sin(theta),\n        c * theta\n    };\n}",
+        "rust": "use std::f64::consts::PI;\n\nfn helicoid(u: f64, v: f64, c: f64) -> (f64, f64, f64) {\n    let theta = u * 4.0 * PI;\n    let r = (v - 0.5) * 2.0;\n    \n    (\n        r * theta.cos(),\n        r * theta.sin(),\n        c * theta\n    )\n}"
+      },
+      "category": "minimal_surfaces",
+      "relatedShapes": ["helicoid", "catenoid", "helix"]
+    },
+    {
+      "id": "enneper_surface_parametric",
+      "name": "Enneper Surface Parametric Equations",
+      "latex": "x = u - \\frac{u^3}{3} + uv^2, \\quad y = v - \\frac{v^3}{3} + vu^2, \\quad z = u^2 - v^2",
+      "description": "Polynomial parametric equations for the Enneper minimal surface",
+      "variables": [
+        {"symbol": "u", "meaning": "first parameter", "range": "[-2, 2]"},
+        {"symbol": "v", "meaning": "second parameter", "range": "[-2, 2]"}
+      ],
+      "implementations": {
+        "javascript": "function enneperSurface(u, v) {\n  const uu = (u - 0.5) * 4;\n  const vv = (v - 0.5) * 4;\n  \n  return [\n    uu - uu * uu * uu / 3 + uu * vv * vv,\n    vv - vv * vv * vv / 3 + vv * uu * uu,\n    uu * uu - vv * vv\n  ];\n}",
+        "python": "def enneper_surface(u: float, v: float) -> tuple:\n    uu = (u - 0.5) * 4\n    vv = (v - 0.5) * 4\n    \n    return (\n        uu - uu**3 / 3 + uu * vv**2,\n        vv - vv**3 / 3 + vv * uu**2,\n        uu**2 - vv**2\n    )",
+        "typescript": "function enneperSurface(u: number, v: number): [number, number, number] {\n  const uu = (u - 0.5) * 4;\n  const vv = (v - 0.5) * 4;\n  \n  return [\n    uu - Math.pow(uu, 3) / 3 + uu * vv * vv,\n    vv - Math.pow(vv, 3) / 3 + vv * uu * uu,\n    uu * uu - vv * vv\n  ];\n}",
+        "cpp": "#include <cmath>\n#include <tuple>\n\nstd::tuple<double, double, double> enneper_surface(double u, double v) {\n    double uu = (u - 0.5) * 4;\n    double vv = (v - 0.5) * 4;\n    \n    return {\n        uu - pow(uu, 3) / 3 + uu * vv * vv,\n        vv - pow(vv, 3) / 3 + vv * uu * uu,\n        uu * uu - vv * vv\n    };\n}",
+        "rust": "fn enneper_surface(u: f64, v: f64) -> (f64, f64, f64) {\n    let uu = (u - 0.5) * 4.0;\n    let vv = (v - 0.5) * 4.0;\n    \n    (\n        uu - uu.powi(3) / 3.0 + uu * vv * vv,\n        vv - vv.powi(3) / 3.0 + vv * uu * uu,\n        uu * uu - vv * vv\n    )\n}"
+      },
+      "category": "minimal_surfaces",
+      "relatedShapes": ["enneper_surface", "catenoid", "helicoid"]
+    },
+    {
+      "id": "tesseract_projection",
+      "name": "Tesseract 4D to 3D Projection",
+      "latex": "P_{3D} = \\frac{w}{w + d} \\cdot (x, y, z) \\text{ where } d \\text{ is viewing distance}",
+      "description": "Perspective projection of a 4D tesseract (hypercube) into 3D space",
+      "variables": [
+        {"symbol": "w", "meaning": "fourth dimension coordinate", "range": "w > -d"},
+        {"symbol": "d", "meaning": "viewing distance from 4D origin", "range": "d > 0"},
+        {"symbol": "x,y,z", "meaning": "3D coordinates", "range": "any real"}
+      ],
+      "implementations": {
+        "javascript": "function tesseractProject(x, y, z, w, d = 2) {\n  const scale = d / (d + w);\n  return [\n    x * scale,\n    y * scale,\n    z * scale\n  ];\n}\n\nfunction tesseractVertices(size = 1) {\n  const vertices = [];\n  for (let w = -1; w <= 1; w += 2) {\n    for (let z = -1; z <= 1; z += 2) {\n      for (let y = -1; y <= 1; y += 2) {\n        for (let x = -1; x <= 1; x += 2) {\n          vertices.push([x * size, y * size, z * size, w * size]);\n        }\n      }\n    }\n  }\n  return vertices;\n}",
+        "python": "def tesseract_project(x: float, y: float, z: float, w: float, d: float = 2.0) -> tuple:\n    scale = d / (d + w)\n    return (x * scale, y * scale, z * scale)\n\ndef tesseract_vertices(size: float = 1.0) -> list:\n    vertices = []\n    for w in [-1, 1]:\n        for z in [-1, 1]:\n            for y in [-1, 1]:\n                for x in [-1, 1]:\n                    vertices.append([x * size, y * size, z * size, w * size])\n    return vertices",
+        "typescript": "function tesseractProject(x: number, y: number, z: number, w: number, d: number = 2): [number, number, number] {\n  const scale = d / (d + w);\n  return [x * scale, y * scale, z * scale];\n}\n\nfunction tesseractVertices(size: number = 1): number[][] {\n  const vertices: number[][] = [];\n  for (let w = -1; w <= 1; w += 2) {\n    for (let z = -1; z <= 1; z += 2) {\n      for (let y = -1; y <= 1; y += 2) {\n        for (let x = -1; x <= 1; x += 2) {\n          vertices.push([x * size, y * size, z * size, w * size]);\n        }\n      }\n    }\n  }\n  return vertices;\n}",
+        "cpp": "#include <vector>\n#include <array>\n\nstd::array<double, 3> tesseract_project(double x, double y, double z, double w, double d = 2.0) {\n    double scale = d / (d + w);\n    return {x * scale, y * scale, z * scale};\n}\n\nstd::vector<std::array<double, 4>> tesseract_vertices(double size = 1.0) {\n    std::vector<std::array<double, 4>> vertices;\n    for (double w : {-1.0, 1.0}) {\n        for (double z : {-1.0, 1.0}) {\n            for (double y : {-1.0, 1.0}) {\n                for (double x : {-1.0, 1.0}) {\n                    vertices.push_back({x * size, y * size, z * size, w * size});\n                }\n            }\n        }\n    }\n    return vertices;\n}",
+        "rust": "fn tesseract_project(x: f64, y: f64, z: f64, w: f64, d: f64) -> (f64, f64, f64) {\n    let scale = d / (d + w);\n    (x * scale, y * scale, z * scale)\n}\n\nfn tesseract_vertices(size: f64) -> Vec<[f64; 4]> {\n    let mut vertices = Vec::new();\n    for &w in &[-1.0, 1.0] {\n        for &z in &[-1.0, 1.0] {\n            for &y in &[-1.0, 1.0] {\n                for &x in &[-1.0, 1.0] {\n                    vertices.push([x * size, y * size, z * size, w * size]);\n                }\n            }\n        }\n    }\n    vertices\n}"
+      },
+      "category": "hyperdimensional",
+      "relatedShapes": ["tesseract", "120_cell", "600_cell"]
+    }
+  ]
+}
