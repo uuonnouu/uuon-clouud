@@ -51,3 +51,4 @@ backups/
 *.bak.*
 bisect_progress.txt
 .github/
+dist/

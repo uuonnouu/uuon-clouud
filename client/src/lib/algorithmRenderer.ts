@@ -531,9 +531,8 @@ export class AlgorithmRenderer {
   private static renderVortexField(mapping: AlgorithmMapping, params: any): AlgorithmRenderResult {
     return this.renderGenericAlgorithm(mapping, params);
   }
-}
-// F-H4: Finite point validation helper
-private static isFinitePoint(x: number, y: number, z: number): boolean {
+  // F-H4: Finite point validation helper
+  private static isFinitePoint(x: number, y: number, z: number): boolean {
   return Number.isFinite(x) && Number.isFinite(y) && Number.isFinite(z);
 }
 
@@ -552,4 +551,5 @@ private static addVertex(vertices: number[], x: number, y: number, z: number, la
     vertices.push(0, 0, 0);
     return [0, 0, 0];
   }
+}
 }
