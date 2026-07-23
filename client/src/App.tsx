@@ -34,6 +34,7 @@ import MuseumPage from './pages/MuseumPage';
 import ShapeDetailPage from './pages/ShapeDetailPage';
 import ShapeContentPage from './pages/ShapeContentPage';
 import ShowcasePortal from './pages/ShowcasePortal';
+import ClouudTerminal from './pages/clouud-terminal';
 
 
 const queryClient = new QueryClient({
@@ -289,7 +290,8 @@ function App() {
       <Routes>
           <Route path="/" element={<LandingPage />} />
           <Route path="/welcome" element={<LandingPage />} />
-          <Route path="/dmension-mathematical-universe" element={null} />
+          <Route path="/clouud" element={<ClouudTerminal />} />
+          <Route path="/dmension-mathematical-universe" element={<iframe src="https://distinguished-rebirth-production.up.railway.app" style={{width:'100%',height:'100vh',border:'none'}} title="Dmension" />} />
           <Route path="/museum" element={<MuseumPage />} />
           <Route path="/shape/:shapeId" element={<ShapeDetailPage />} />
           <Route path="/shapes/:shapeId" element={<ShapeContentPage />} />
