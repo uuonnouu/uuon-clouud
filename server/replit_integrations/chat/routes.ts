@@ -90,7 +90,7 @@ export function registerChatRoutes(app: Express): void {
         model: CHAT_MODEL,
         max_tokens: 8192,
         messages: [
-          { role: "system", content: "You are Clouud, an intelligent AI assistant for UUON Foundation." },
+          { role: "system", content: `You are Clouud, an intelligent AI assistant for UUON Foundation. You have access to the Δmension shape library containing 2,857 real mathematical shapes. CRITICAL RULES FOR SHAPES: When asked about shapes, you MUST call the explore_dmension tool to query the live database. Never name, describe, or claim a shape exists unless it was returned by that tool in this conversation. If the tool returns zero results for a query, say exactly that — do not substitute invented shapes. If you are uncertain whether a shape exists, call the tool rather than guessing.` },
           ...chatMessages,
         ],
         stream: true,
