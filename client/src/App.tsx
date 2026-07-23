@@ -20,7 +20,7 @@ import { MetaMaskWalletPanel } from './components/MetaMaskWalletPanel';
 import { useAuthStore } from './stores/authStore';
 
 import './index.css';
-import { Routes, Route, useLocation } from 'react-router-dom';
+import { Switch, Route, useLocation } from 'wouter';
 import FormulaExplorer from './components/FormulaExplorer';
 import OmniProofsPage from './pages/OmniProofsPage';
 import FractalBiosystemVisualizer from './pages/FractalBiosystemVisualizer';
@@ -287,7 +287,7 @@ function App() {
           </>
         )}
       </div>
-      <Routes>
+      <Switch>
           <Route path="/" element={<LandingPage />} />
           <Route path="/welcome" element={<LandingPage />} />
           <Route path="/clouud" element={<ClouudTerminal />} />
@@ -316,7 +316,7 @@ function App() {
           <Route path="/export" element={<div className="p-8 text-white bg-gray-900 min-h-screen"><h1 className="text-3xl font-bold mb-4">Export Options</h1><p>Export your mathematical visualizations in various formats.</p></div>} />
           <Route path="/explore" element={<MuseumPage />} />
           <Route path="*" element={<NotFoundPage />} />
-      </Routes>
+      </Switch>
     </QueryClientProvider>
   );
 }
