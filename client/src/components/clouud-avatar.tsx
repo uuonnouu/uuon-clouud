@@ -1,5 +1,4 @@
 import { motion } from "framer-motion";
-import clouudImage from "@assets/Image_2-26-26_at_01.30_1772066494720.png";
 
 type ClouudState = "idle" | "thinking" | "speaking";
 
@@ -39,7 +38,7 @@ export default function ClouudAvatar({ state, size = "md", showLabel = false }: 
         }}
       >
         <img
-          src={clouudImage}
+          src=""
           alt="Clouud"
           className="w-full h-full object-cover rounded-full"
           draggable={false}
