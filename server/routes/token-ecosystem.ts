@@ -407,7 +407,9 @@ router.post('/admin/seed-all-shapes', async (req, res) => {
 });
 
 // Generate tokens from user interactions
-router.post('/generate-interaction', async (req, res) => {
+router.post("/generate-interaction", async (req, res) => {
+  return res.status(403).json({ error: "disabled" });
+  try {
   try {
     const { tokens, energy, timestamp, source, shapeType } = req.body;
 
@@ -437,6 +439,7 @@ router.post('/generate-interaction', async (req, res) => {
 
 // Bulk sync token batches
 router.post('/bulk-sync', async (req, res) => {
+  return res.status(403).json({ error: 'disabled' });
   try {
     if (!requireMintAuth(req, res)) return;
     const { batches, totalTokens, totalEnergy, totalValue, timestamp } = req.body;
