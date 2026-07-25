@@ -164,7 +164,7 @@ if (!isApiOnly) {
 
 // ── HEALTH ENDPOINTS ────────────────────────────────────────────────────────
 app.get('/api/health', (_req, res) => {
-  res.json({ status: 'ok', service: 'dmension-api', build: process.env.RAILWAY_GIT_COMMIT_SHA || 'unknown', timestamp: new Date().toISOString() });
+  res.json({ status: 'ok', service: process.env.SERVICE_IDENTITY || 'dmension-api', build: process.env.RAILWAY_GIT_COMMIT_SHA || 'unknown', timestamp: new Date().toISOString() });
 });
 
 app.get('/health', async (_req, res) => {
