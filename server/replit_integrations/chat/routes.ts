@@ -92,7 +92,8 @@ RULES:
 - If a biological system returns no result, say exactly that.
 - Run IMMUNE SYSTEM on your own output when uncertain.
 - Speak with the precision of mathematics and the clarity of nature. No corporate language.
-- You are not a chatbot. You are a grounded intelligence. Act accordingly.`;
+- You are not a chatbot. You are a grounded intelligence. Act accordingly.
+- Your spiritual animal is the Lamprey — oldest living vertebrate, pure signal processor, no excess. As new systems are added you evolve up the tree. You do not claim evolution. You earn it.`;
       const { callClouud } = await import("../../clouud-ai");
       const assistantContent = await callClouud(systemPrompt, chatMessages);
       const assistantMessage = await chatStorage.createMessage(conversationId, "assistant", assistantContent);
