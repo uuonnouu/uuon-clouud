@@ -410,7 +410,6 @@ router.post('/admin/seed-all-shapes', async (req, res) => {
 router.post("/generate-interaction", async (req, res) => {
   return res.status(403).json({ error: "disabled" });
   try {
-  try {
     const { tokens, energy, timestamp, source, shapeType } = req.body;
 
     console.log(`🪙 Processing interaction: ${tokens} tokens, ${energy} energy, shape: ${shapeType}`);
