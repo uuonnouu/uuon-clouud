@@ -146,6 +146,16 @@ const indexPath = isProduction
   ? path.join(__dirname, 'public/index.html')
   : path.join(__dirname, '../dist/public/index.html');
 
+// Proxy /clouud to Clouud Railway service
+app.use("/clouud", async (req, res) => {
+  const target = "https://uuon-clouud-production.up.railway.app";
+  const url = target + req.originalUrl;
+  try {
+    const response = await fetch(url, { method: req.method, headers: { ...req.headers, host: "uuon-clouud-production.up.railway.app" }, body: ["GET","HEAD"].includes(req.method) ? undefined : JSON.stringify(req.body) });
+    const text = await response.text();
+    res.status(response.status).set("Content-Type", response.headers.get("content-type") || "text/html").send(text);
+  } catch (e: any) { res.status(502).send("Clouud proxy error: " + e.message); }
+});
 if (!isApiOnly) {
   app.use('/assets', express.static(publicPath));
   app.use('/exports', express.static(path.join(__dirname, '../exports')));
@@ -229,6 +239,7 @@ if (isApiOnly) {
 }
 
 // ── STATIC PORTAL LANDING PAGE (uuon.world root) ────────────────────────────
+
 if (!isApiOnly) {
   app.get('/', (_req, res) => {
     res.sendFile(resolveStaticHtml('uuonworld.html'));
@@ -261,16 +272,7 @@ app.use((req, res, next) => {
 });
 
 
-// Proxy /clouud to Clouud Railway service
-app.use("/clouud", async (req, res) => {
-  const target = "https://uuon-clouud-production.up.railway.app";
-  const url = target + req.originalUrl;
-  try {
-    const response = await fetch(url, { method: req.method, headers: { ...req.headers, host: "uuon-clouud-production.up.railway.app" }, body: ["GET","HEAD"].includes(req.method) ? undefined : JSON.stringify(req.body) });
-    const text = await response.text();
-    res.status(response.status).set("Content-Type", response.headers.get("content-type") || "text/html").send(text);
-  } catch (e: any) { res.status(502).send("Clouud proxy error: " + e.message); }
-});
+
 
 if (!isApiOnly) {
   app.get('/{*path}', (req, res) => {
