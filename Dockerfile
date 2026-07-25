@@ -7,7 +7,7 @@ RUN rm -f package-lock.json && npm install --legacy-peer-deps --include=dev
 
 COPY . .
 
-RUN ./node_modules/.bin/vite build || echo "CLIENT BUILD FAILED - continuing"
+RUN ./node_modules/.bin/vite build
 RUN ./node_modules/.bin/esbuild server/index.ts \
   --platform=node \
   --bundle \
