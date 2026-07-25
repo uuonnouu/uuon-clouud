@@ -6,7 +6,7 @@ import helmet from 'helmet';
 import rateLimit from 'express-rate-limit';
 import path from 'path';
 import fs from 'fs';
-import { fileURLToPath } from 'url';
+
 import trackingRoutes from './routes/tracking';
 import { dirname } from 'path';
 import session from 'express-session';
@@ -37,8 +37,6 @@ const app = express();
 const PORT = parseInt(process.env.PORT || '5000', 10);
 const isProduction = process.env.NODE_ENV === 'production';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
 
 // ── STATIC HTML RESOLVER ─────────────────────────────────────────────────────
 function resolveStaticHtml(filename: string): string {
