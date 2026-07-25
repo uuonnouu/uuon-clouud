@@ -1,25 +1,25 @@
 FROM node:20-alpine
 
 WORKDIR /app
-ENV PUPPETEER_SKIP_DOWNLOAD=true
-ARG CACHEBUST=1
 
 COPY package*.json ./
-
 RUN rm -f package-lock.json && npm install --legacy-peer-deps --include=dev
 
 COPY . .
 
-RUN npm run build && npm prune --omit=dev --legacy-peer-deps
+RUN npm run build:client || true
+RUN ./node_modules/.bin/esbuild server/index.ts \
+  --platform=node \
+  --bundle \
+  --format=cjs \
+  --outfile=dist/index.cjs \
+  --packages=external \
+  --minify
 
+RUN npm prune --omit=dev --legacy-peer-deps
 RUN mkdir -p /app/uploads && chown -R node:node /app
 
 USER node
+EXPOSE 3000
 
-ENV NODE_ENV=production
-ENV PORT=5001
-
-EXPOSE 5001
-
-CMD ["npm", "start"]
-# cache bust Fri Jul 24 04:05:20 PM UTC 2026
+CMD ["node", "dist/index.cjs"]
