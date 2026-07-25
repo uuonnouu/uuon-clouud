@@ -420,7 +420,7 @@ async function loadDeferredRoutes() {
   deferredApiRouter.use('/api/sitemap-hierarchy', sitemapHierarchyRouter);
   deferredApiRouter.use('/api/about', aboutSitemapRouter);
 
-  deferredApiRouter.get('/sitemap*.xml', (req, res) => {
+  deferredApiRouter.get('/sitemap{*path}.xml', (req, res) => {
     const sitemapFile = req.path;
     try {
       const filePath = path.join('client/public', sitemapFile);
