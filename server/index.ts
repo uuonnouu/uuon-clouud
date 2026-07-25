@@ -260,6 +260,18 @@ app.use((req, res, next) => {
   next();
 });
 
+
+// Proxy /clouud to Clouud Railway service
+app.use("/clouud", async (req, res) => {
+  const target = "https://uuon-clouud-production.up.railway.app";
+  const url = target + req.originalUrl;
+  try {
+    const response = await fetch(url, { method: req.method, headers: { ...req.headers, host: "uuon-clouud-production.up.railway.app" }, body: ["GET","HEAD"].includes(req.method) ? undefined : JSON.stringify(req.body) });
+    const text = await response.text();
+    res.status(response.status).set("Content-Type", response.headers.get("content-type") || "text/html").send(text);
+  } catch (e: any) { res.status(502).send("Clouud proxy error: " + e.message); }
+});
+
 if (!isApiOnly) {
   app.get('/{*path}', (req, res) => {
     res.sendFile(indexPath);
