@@ -64,62 +64,29 @@ export function registerChatRoutes(app: Express): void {
     }
   });
 
-  // Send message and get AI response (streaming)
+  // Send message and get AI response (JSON, callClouud with full tool suite)
   app.post("/api/conversations/:id/messages", async (req: Request, res: Response) => {
     try {
       const conversationId = parseInt(req.params.id);
       const { content } = req.body;
-
-      // Save user message
-      await chatStorage.createMessage(conversationId, "user", content);
-
-      // Get conversation history for context
+      const userMessage = await chatStorage.createMessage(conversationId, "user", content);
       const messages = await chatStorage.getMessagesByConversation(conversationId);
-      const chatMessages = messages.map((m) => ({
-        role: m.role as "user" | "assistant",
-        content: m.content,
-      }));
-
-      // Set up SSE
-      res.setHeader("Content-Type", "text/event-stream");
-      res.setHeader("Cache-Control", "no-cache");
-      res.setHeader("Connection", "keep-alive");
-
-      // Stream response via OpenRouter
-      const stream = await openaiClient.chat.completions.create({
-        model: CHAT_MODEL,
-        max_tokens: 8192,
-        messages: [
-          { role: "system", content: `You are Clouud, an intelligent AI assistant for UUON Foundation. You have access to the Δmension shape library containing 2,857 real mathematical shapes. CRITICAL RULES FOR SHAPES: When asked about shapes, you MUST call the explore_dmension tool to query the live database. Never name, describe, or claim a shape exists unless it was returned by that tool in this conversation. If the tool returns zero results for a query, say exactly that — do not substitute invented shapes. If you are uncertain whether a shape exists, call the tool rather than guessing.` },
-          ...chatMessages,
-        ],
-        stream: true,
-      });
-
-      let fullResponse = "";
-
-      for await (const chunk of stream) {
-        const content = chunk.choices[0]?.delta?.content;
-        if (content) {
-          fullResponse += content;
-          res.write(`data: ${JSON.stringify({ content })}\n\n`);
-        }
-      }
-
-      // Save assistant message
-      await chatStorage.createMessage(conversationId, "assistant", fullResponse);
-
-      res.write(`data: ${JSON.stringify({ done: true })}\n\n`);
-      res.end();
+      const chatMessages = messages.map((m) => ({ role: m.role as "user" | "assistant", content: m.content }));
+      const systemPrompt = `You are Clouud — the intelligence layer of UUON Foundation, built by Phillip Aguilar Ruiz III.
+You have live access to the Δmension shape library (569 canonical mathematical shapes, anchored on Base Mainnet).
+You have tools: explore_dmension (live shape search), grade_text (fabrication detection), probability_zone (confidence calibration), ellomental_verify (provenance hashing), lattice_value (33-point lattice), search_founder_memory (835 founder conversations), dmension_search (local codex fallback), lunar_phase, scrape_url, self_assessment.
+RULES:
+- Never invent shape data. If asked about shapes, call explore_dmension first.
+- If a tool returns no results, say exactly that.
+- Grade your own claims when uncertain using grade_text.
+- Speak with the precision of mathematics and the clarity of nature. No corporate language.`;
+      const { callClouud } = await import("../../clouud-ai");
+      const assistantContent = await callClouud(systemPrompt, chatMessages);
+      const assistantMessage = await chatStorage.createMessage(conversationId, "assistant", assistantContent);
+      res.json({ userMessage, assistantMessage });
     } catch (error) {
       console.error("Error sending message:", error);
-      // Check if headers already sent (SSE streaming started)
-      if (res.headersSent) {
-        res.write(`data: ${JSON.stringify({ error: "Failed to send message" })}\n\n`);
-        res.end();
-      } else {
-        res.status(500).json({ error: "Failed to send message" });
-      }
+      res.status(500).json({ error: "Failed to send message" });
     }
   });
 }
