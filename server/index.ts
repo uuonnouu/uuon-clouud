@@ -261,11 +261,11 @@ app.use((req, res, next) => {
 });
 
 if (!isApiOnly) {
-  app.get('*', (req, res) => {
+  app.get('/{*path}', (req, res) => {
     res.sendFile(indexPath);
   });
 } else {
-  app.get('*', (_req, res) => {
+  app.get('/{*path}', (_req, res) => {
     res.status(404).json({ error: 'Not found', hint: 'This is an API-only endpoint. See / for available routes.' });
   });
 }
