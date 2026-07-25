@@ -151,7 +151,7 @@ app.use("/clouud", async (req, res) => {
   const target = "https://uuon-clouud-production.up.railway.app";
   const url = target + req.originalUrl;
   try {
-    const response = await fetch(url, { method: req.method, headers: { ...req.headers, host: "uuon-clouud-production.up.railway.app" }, body: ["GET","HEAD"].includes(req.method) ? undefined : JSON.stringify(req.body) });
+    const response = await fetch(url, { method: req.method, headers: { "content-type": req.headers["content-type"] || "application/json", "x-forwarded-for": req.ip || "", "x-forwarded-host": "uuon.world" }, body: ["GET","HEAD"].includes(req.method) ? undefined : JSON.stringify(req.body), signal: AbortSignal.timeout(15000) });
     const text = await response.text();
     res.status(response.status).set("Content-Type", response.headers.get("content-type") || "text/html").send(text);
   } catch (e: any) { res.status(502).send("Clouud proxy error: " + e.message); }
