@@ -438,58 +438,8 @@ router.post("/generate-interaction", async (req, res) => {
 });
 
 // Bulk sync token batches
-router.post('/bulk-sync', async (req, res) => {
+router.post('/bulk-sync', async (_req, res) => {
   return res.status(403).json({ error: 'disabled' });
-  try {
-    if (!requireMintAuth(req, res)) return;
-    const { batches, totalTokens, totalEnergy, totalValue, timestamp } = req.body;
-
-    console.log(`📤 Bulk sync: ${batches} batches, ${totalTokens} tokens, $${totalValue} value`);
-
-    // Record individual tokens from bulk sync
-    const tokensToCreate = Math.min(totalTokens, 1000); // Limit to prevent database overflow
-    const tokenData = [];
-    for (let i = 0; i < tokensToCreate; i++) {
-      tokenData.push({
-        shape_type: 'bulk_sync_generated',
-        token_type: 'interaction',
-        token_value: `bulk_${timestamp}_${i}`,
-        weight: (totalEnergy / tokensToCreate) || 1,
-        context: `bulk_sync_${batches}_batches`,
-        frequency: 1,
-        last_used: new Date(),
-        created_at: new Date()
-      });
-    }
-
-    // Also record bulk sync metadata
-    tokenData.push({
-      shape_type: 'bulk_sync_meta',
-      token_type: 'system',
-      token_value: `bulk_sync_${timestamp}`,
-      weight: totalEnergy || 1,
-      context: `bulk_sync_${batches}_batches_${tokensToCreate}_tokens`,
-      frequency: batches,
-      last_used: new Date(),
-      created_at: new Date()
-    });
-
-    try {
-      await db.insert(shape_tokens).values(tokenData);
-      console.log(`✅ Bulk sync completed and saved: ${tokensToCreate} tokens, 1 meta entry`);
-      res.json({
-        success: true,
-        message: 'Bulk sync completed',
-        synced: { batches, totalTokens, totalEnergy, totalValue, savedTokens: tokensToCreate }
-      });
-    } catch (dbError) {
-      console.error('Failed to save bulk sync data to database:', dbError);
-      res.status(500).json({ success: false, error: 'Bulk sync failed', details: dbError.message });
-    }
-  } catch (error) {
-    console.error('Bulk sync processing error:', error);
-    res.status(500).json({ success: false, error: 'Bulk sync failed' });
-  }
 });
 
 export { router as tokenEcosystemRoutes };
