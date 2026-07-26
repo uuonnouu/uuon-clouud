@@ -559,6 +559,16 @@ async function loadDeferredRoutes() {
     res.redirect(301, '/apis');
   });
 
+
+  // ── CLOUUD CHAT ROUTES ────────────────────────────────────────────────────
+  try {
+    const { default: chatRoutes } = await import("./replit_integrations/chat/routes");
+    deferredApiRouter.use("/api/conversations", chatRoutes);
+    console.log("✅ Clouud chat routes mounted at /api/conversations");
+  } catch (e) {
+    console.error("❌ Failed to mount chat routes:", e);
+  }
+  // ─────────────────────────────────────────────────────────────────────────
   routesReady = true;
   console.log('✅ All API route modules loaded and registered.');
 }
