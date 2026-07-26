@@ -7,7 +7,7 @@
  */
 
 import {
-  pgTable, serial, text, boolean, real, integer,
+  pgTable, serial, text, boolean, real, integer, timestamp,
   timestamp, jsonb, bigint, varchar,
 } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
@@ -322,3 +322,18 @@ export const token_blocks = pgTable("token_blocks", {
   transaction_count:    integer("transaction_count").notNull().default(1),
   block_timestamp:      timestamp("block_timestamp", { withTimezone: true }).notNull().defaultNow(),
 });
+
+// ── CLOUUD CHAT TABLES ────────────────────────────────────────────────────
+export const conversations = pgTable("conversations", {
+  id:        serial("id").primaryKey(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export const messages = pgTable("messages", {
+  id:             serial("id").primaryKey(),
+  conversationId: integer("conversation_id").notNull(),
+  role:           text("role").notNull(),
+  content:        text("content").notNull(),
+  timestamp:      timestamp("timestamp").defaultNow().notNull(),
+});
+// ─────────────────────────────────────────────────────────────────────────
