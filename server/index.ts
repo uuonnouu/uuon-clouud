@@ -15,6 +15,7 @@ import crypto from 'crypto';
 import pg from 'pg';
 import connectPgSimple from 'connect-pg-simple';
 import { neon } from '@neondatabase/serverless';
+import { registerChatRoutes } from './replit_integrations/chat/index';
 
 // ── REQUIRED ENV VAR GUARD ──────────────────────────────────────────────────
 const REQUIRED_ENV: string[] = ['DATABASE_URL'];
