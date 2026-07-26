@@ -201,3 +201,7 @@ export function getEarthImpactModel(domain: string): {
 
   return models[domain] || models.waste;
 }
+
+export const SHAPE_TOKEN_LEDGER: Array<{token_id: string; shape_type: string; token_name: string}> = [];
+// Loaded at runtime from Neon DB via explore_dmension tool
+// Static fallback: 569 canonical tokens anchored on Base Mainnet block 49015004
