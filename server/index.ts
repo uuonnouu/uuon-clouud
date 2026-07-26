@@ -558,6 +558,7 @@ async function loadDeferredRoutes() {
   deferredApiRouter.get('/developer', (_req, res) => {
     res.redirect(301, '/apis');
   });
+  registerChatRoutes(deferredApiRouter as any);
 
 
   routesReady = true;
