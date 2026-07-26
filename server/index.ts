@@ -559,9 +559,6 @@ async function loadDeferredRoutes() {
     res.redirect(301, '/apis');
   });
 
-  let chatRouteError: string | null = null;
-  try { const { registerChatRoutes } = await import("./replit_integrations/chat/routes"); registerChatRoutes(app); console.log("✅ Clouud chat routes registered"); } catch(e: any) { chatRouteError = e?.message || String(e); console.error("❌ Chat routes failed:", chatRouteError); }
-  deferredApiRouter.get("/api/chat-status", (_req, res) => res.json({ chatRoutesLoaded: !chatRouteError, error: chatRouteError }));
 
   routesReady = true;
   console.log('✅ All API route modules loaded and registered.');
