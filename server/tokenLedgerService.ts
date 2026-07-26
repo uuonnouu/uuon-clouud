@@ -16,6 +16,10 @@
  */
 
 import { db, withRetry } from './storage';
+import { neon as dmensionNeon } from '@neondatabase/serverless';
+import { drizzle as dmensionDrizzle } from 'drizzle-orm/neon-http';
+const _dmensionSql = dmensionNeon(process.env.DMENSION_DATABASE_URL || process.env.DATABASE_URL || '');
+const dmensionDb = dmensionDrizzle(_dmensionSql);
 import { 
   shape_token_ledger, 
   shape_token_metadata,
@@ -582,7 +586,7 @@ export const tokenLedgerService = new TokenLedgerService();
 
 async function verifySchemaCompatibility() {
   try {
-    const schemaCheck = await db.execute(sql`
+    const schemaCheck = await dmensionDb.execute(sql`
       SELECT table_name 
       FROM information_schema.tables 
       WHERE table_schema = 'public' 
