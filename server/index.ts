@@ -317,6 +317,7 @@ async function autoSeedDatabase() {
 }
 
 async function loadDeferredRoutes() {
+  try {
   console.log('⏳ Loading API route modules in background…');
 
 
@@ -561,8 +562,9 @@ async function loadDeferredRoutes() {
   registerChatRoutes(deferredApiRouter as any);
 
 
-  routesReady = true;
+  routesReady = true; // always set even on partial failure
   console.log('✅ All API route modules loaded and registered.');
+  } catch(e) { console.error("❌ loadDeferredRoutes crashed:", e?.message || e); } finally { routesReady = true; }
 }
 
 export default app;
