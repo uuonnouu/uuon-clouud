@@ -2,17 +2,16 @@ import type { Express, Request, Response } from "express";
 import OpenAI from "openai";
 import { chatStorage } from "./storage";
 
-const openaiClient = new OpenAI({
-  apiKey: process.env.OPENROUTER_API_KEY,
-  baseURL: "https://openrouter.ai/api/v1",
-  defaultHeaders: {
-    "HTTP-Referer": "https://uuon.world/app",
-    "X-Title": "UUON Clouud",
-  },
-});
-const CHAT_MODEL = process.env.OPENROUTER_MODEL || "openrouter/free";
-
 export function registerChatRoutes(app: Express): void {
+  const openaiClient = new OpenAI({
+    apiKey: process.env.OPENROUTER_API_KEY || "missing",
+    baseURL: "https://openrouter.ai/api/v1",
+    defaultHeaders: {
+      "HTTP-Referer": "https://uuon.world/app",
+      "X-Title": "UUON Clouud",
+    },
+  });
+  const CHAT_MODEL = process.env.OPENROUTER_MODEL || "openrouter/free";
   // Get all conversations
   app.get("/api/conversations", async (req: Request, res: Response) => {
     try {
