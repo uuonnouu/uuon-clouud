@@ -387,7 +387,6 @@ async function loadDeferredRoutes() {
     { deploymentStatusRoutes },
     { showcaseRoutes },
     { default: uuonCloudBridgeRoutes },
-    { default: d13mon4Routes },
     { comprehensiveDatabaseTrackerRoutes },
     { sdkInfoRoutes },
     { apiStatusRoutes },
@@ -413,7 +412,6 @@ async function loadDeferredRoutes() {
     import('./routes/deployment-status'),
     import('./showcase-routes'),
     import('./routes/uuon-cloud-bridge'),
-    import('./routes/d13mon4'),
     import('./routes/comprehensive-database-tracker'),
     import('./routes/sdk-info'),
     import('./routes/api-status'),
@@ -473,7 +471,6 @@ async function loadDeferredRoutes() {
   deferredApiRouter.use('/api/deployment-status', requireAdmin, deploymentStatusRoutes);
   deferredApiRouter.use('/api/showcase', showcaseRoutes);
   deferredApiRouter.use('/api/bridge', uuonCloudBridgeRoutes);
-  deferredApiRouter.use('/api/d13mon4', requireAdmin, d13mon4Routes);
   deferredApiRouter.use('/api/database-tracker', requireAdmin, comprehensiveDatabaseTrackerRoutes);
 
   deferredApiRouter.get('/api/migration-status', (_req, res) => {
