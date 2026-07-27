@@ -214,6 +214,98 @@ const TOOLS: OpenAI.Chat.ChatCompletionTool[] = [
       parameters: { type: "object", properties: {}, required: [] },
     },
   },
+  ,
+  {
+    type: "function",
+    function: {
+      name: "query_constants",
+      description: "Query mathematical constants from the UUON knowledge base. Returns symbol, value, category, mathematical basis, and real-world applications. Use when asked about π, e, φ, ħ, c, G, or any mathematical or physical constant.",
+      parameters: {
+        type: "object",
+        properties: {
+          symbol: { type: "string", description: "Symbol or name of constant, e.g. π, e, φ, G, c, ħ. Leave empty to get all." },
+        },
+        required: [],
+      },
+    },
+  },
+  {
+    type: "function",
+    function: {
+      name: "query_algorithms",
+      description: "Query blockchain and cryptographic algorithms from the UUON knowledge base. Covers consensus (PoW, PoS, PBFT, Avalanche), cryptographic primitives, ZK proofs, Layer 2, privacy, and post-quantum algorithms.",
+      parameters: {
+        type: "object",
+        properties: {
+          category: { type: "string", description: "Filter by category: consensus, cryptographic, proof_systems, layer2, privacy, post_quantum. Leave empty for all." },
+          id: { type: "string", description: "Specific algorithm id e.g. zk_snark, proof_of_stake. Leave empty to list all." },
+        },
+        required: [],
+      },
+    },
+  },
+  {
+    type: "function",
+    function: {
+      name: "query_shapes",
+      description: "Query the 570 mathematical shapes from the UUON Dmension corpus. Returns shape name, category, formula, and earth link. Use when asked about specific mathematical forms or shape categories.",
+      parameters: {
+        type: "object",
+        properties: {
+          category: { type: "string", description: "Filter by shape category e.g. quantum-mechanics, topology, sacred-geometry." },
+          id: { type: "string", description: "Specific shape_id (0-569) or name." },
+          limit: { type: "number", description: "Max results, default 10." },
+        },
+        required: [],
+      },
+    },
+  }
+  ,
+  {
+    type: "function",
+    function: {
+      name: "query_constants",
+      description: "Query mathematical constants from the UUON knowledge base. Returns symbol, value, category, mathematical basis, and real-world applications. Use when asked about pi, e, golden ratio, Planck constant, speed of light, or any mathematical or physical constant.",
+      parameters: {
+        type: "object",
+        properties: {
+          symbol: { type: "string", description: "Symbol or name e.g. pi, e, phi, G, c. Leave empty to get all." },
+        },
+        required: [],
+      },
+    },
+  },
+  {
+    type: "function",
+    function: {
+      name: "query_algorithms",
+      description: "Query blockchain and cryptographic algorithms from the UUON knowledge base. Covers consensus, cryptographic primitives, ZK proofs, Layer 2, privacy, and post-quantum algorithms.",
+      parameters: {
+        type: "object",
+        properties: {
+          category: { type: "string", description: "Filter: consensus, cryptographic, proof_systems, layer2, privacy, post_quantum. Leave empty for all." },
+          id: { type: "string", description: "Specific algorithm id e.g. zk_snark, proof_of_stake. Leave empty to list all." },
+        },
+        required: [],
+      },
+    },
+  },
+  {
+    type: "function",
+    function: {
+      name: "query_shapes",
+      description: "Query the 570 mathematical shapes from the UUON Dmension corpus. Returns shape name, category, formula, and earth link.",
+      parameters: {
+        type: "object",
+        properties: {
+          category: { type: "string", description: "Filter by category e.g. quantum-mechanics, topology, sacred-geometry." },
+          id: { type: "string", description: "Specific shape_id or name." },
+          limit: { type: "number", description: "Max results, default 10." },
+        },
+        required: [],
+      },
+    },
+  }
 ];
 
 async function executeTool(name: string, args: Record<string, any>): Promise<string> {
@@ -327,6 +419,37 @@ async function executeTool(name: string, args: Record<string, any>): Promise<str
     }
   }
 
+  if (name === "query_constants") {
+    try {
+      const url = name && args.symbol
+        ? `http://localhost:${process.env.PORT || 3000}/api/knowledge/constants/${encodeURIComponent(args.symbol)}`
+        : `http://localhost:${process.env.PORT || 3000}/api/knowledge/constants`;
+      const r = await fetch(url);
+      return await r.text();
+    } catch (e: any) { return JSON.stringify({ error: e.message }); }
+  }
+  if (name === "query_algorithms") {
+    try {
+      const base = `http://localhost:${process.env.PORT || 3000}/api/knowledge`;
+      const url = args.id
+        ? `${base}/algorithms/${args.id}`
+        : args.category
+        ? `${base}/algorithms?category=${encodeURIComponent(args.category)}`
+        : `${base}/algorithms`;
+      const r = await fetch(url);
+      return await r.text();
+    } catch (e: any) { return JSON.stringify({ error: e.message }); }
+  }
+  if (name === "query_shapes") {
+    try {
+      const base = `http://localhost:${process.env.PORT || 3000}/api/knowledge`;
+      const url = args.id
+        ? `${base}/shapes/${args.id}`
+        : `${base}/shapes?limit=${args.limit || 10}${args.category ? "&category=" + encodeURIComponent(args.category) : ""}`;
+      const r = await fetch(url);
+      return await r.text();
+    } catch (e: any) { return JSON.stringify({ error: e.message }); }
+  }
   return JSON.stringify({ error: "unknown tool" });
 }
 
