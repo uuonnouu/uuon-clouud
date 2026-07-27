@@ -1,4 +1,5 @@
 import { Router, Request, Response } from 'express';
+import { neon } from '@neondatabase/serverless';
 import { db } from '../storage';
 import { eq } from 'drizzle-orm';
 import { computeSurfaceGeometry, SurfaceComputeRequest } from '../lib/shapes/shapeComputer';
@@ -218,7 +219,7 @@ async function renderShape(
   if (!shape) {
     // DB-first fallback — query complete_shape_registry in Dmension DB
     try {
-      const { neon } = await import('@neondatabase/serverless');
+
       const DMENSION_DB = process.env.CLEAN_DB || process.env.DMENSION_DATABASE_URL;
       if (DMENSION_DB) {
         const sql = neon(DMENSION_DB);
