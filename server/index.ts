@@ -323,6 +323,7 @@ async function loadDeferredRoutes() {
 
 
   const [
+    { default: knowledgeApiRoutes },
     { default: authRoutes },
     { unifiedSDK },
     { default: agentCoordinationRoutes },
@@ -331,6 +332,7 @@ async function loadDeferredRoutes() {
     { default: quantumRoutes },
     { systemPerformanceRouter },
   ] = await Promise.all([
+    import('./routes/internal-knowledge-api'),
     import('./routes/auth'),
     import('./unified-sdk-implementation'),
     import('./routes/agent-coordination'),
@@ -340,6 +342,7 @@ async function loadDeferredRoutes() {
     import('./routes/system-performance'),
   ]);
 
+  deferredApiRouter.use('/api/knowledge', knowledgeApiRoutes);
   deferredApiRouter.use('/api/auth', authRoutes);
   deferredApiRouter.use('/api/sdk', unifiedSDK.getRouter());
   deferredApiRouter.get('/api/sdk-info', (_req, res) => {
@@ -372,6 +375,7 @@ async function loadDeferredRoutes() {
   console.log('✅ Core API routes registered.');
 
   const [
+    { default: knowledgeApiRoutes },
     { sitemapRoutes },
     { standardizedSitemapRoutes },
     { sitemapFrameworkRoutes },
