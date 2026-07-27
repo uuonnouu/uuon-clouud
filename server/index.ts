@@ -473,7 +473,7 @@ async function loadDeferredRoutes() {
   deferredApiRouter.use('/api/deployment-status', requireAdmin, deploymentStatusRoutes);
   deferredApiRouter.use('/api/showcase', showcaseRoutes);
   deferredApiRouter.use('/api/bridge', uuonCloudBridgeRoutes);
-  deferredApiRouter.use('/api/d13mon4', d13mon4Routes);
+  deferredApiRouter.use('/api/d13mon4', requireAdmin, d13mon4Routes);
   deferredApiRouter.use('/api/database-tracker', requireAdmin, comprehensiveDatabaseTrackerRoutes);
 
   deferredApiRouter.get('/api/migration-status', (_req, res) => {
