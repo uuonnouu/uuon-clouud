@@ -23,6 +23,7 @@ export interface SurfaceComputeRequest {
   uMax: number;
   vMin: number;
   vMax: number;
+  equationJs?: string | null;
 }
 
 export interface SurfaceComputeResult {
@@ -50,8 +51,53 @@ export async function computeSurfaceGeometry(request: SurfaceComputeRequest): Pr
     uMin,
     uMax,
     vMin,
-    vMax
+    vMax,
+    equationJs
   } = request;
+
+  // DB-first: if equationJs provided, eval and compute directly
+  if (equationJs) {
+    try {
+      const equationFn = new Function('u', 'v', 'params', `
+        const fn = ${equationJs};
+        return fn(u, v, params);
+      `);
+      const vertices: number[] = [];
+      const normals: number[] = [];
+      const uvs: number[] = [];
+      const indices: number[] = [];
+      const uStep = (uMax - uMin) / uSegments;
+      const vStep = (vMax - vMin) / vSegments;
+      let vi = 0;
+      for (let i = 0; i <= uSegments; i++) {
+        for (let j = 0; j <= vSegments; j++) {
+          const u = uMin + i * uStep;
+          const v = vMin + j * vStep;
+          const pt = equationFn(u, v, parameters);
+          vertices.push(pt.x ?? pt[0], pt.y ?? pt[1], pt.z ?? pt[2]);
+          normals.push(0, 1, 0);
+          uvs.push(i / uSegments, j / vSegments);
+          if (i < uSegments && j < vSegments) {
+            const a = vi, b = vi + 1, c = vi + vSegments + 1, d = vi + vSegments + 2;
+            indices.push(a, b, c, b, d, c);
+          }
+          vi++;
+        }
+      }
+      return {
+        success: true,
+        shapeId,
+        vertices,
+        normals,
+        uvs,
+        indices,
+        vertexCount: vertices.length / 3,
+        triangleCount: indices.length / 3,
+      };
+    } catch (err: any) {
+      return { success: false, error: `equationJs eval failed: ${err.message}` };
+    }
+  }
 
   // INVERSE FISH-BOWL SPACE MODEL - Mathematical Framework Integration
   if (shapeId === 'unified_mega_formula') {
