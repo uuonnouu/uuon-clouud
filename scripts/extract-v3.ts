@@ -1,0 +1,343 @@
+import { neon } from '@neondatabase/serverless';
+
+const DB_URL = process.env.CLEAN_DB;
+if (!DB_URL) { console.error('CLEAN_DB not set'); process.exit(1); }
+const sql = neon(DB_URL);
+
+// Alias map: registry shape_type -> actual library key
+const ALIASES: Record<string, string> = {
+  'yeganeh-eagle': 'yeganeh_eagle',
+  'hydrogen_1s': 'hydrogen_1s_orbital',
+  'hydrogen_2s': 'hydrogen_2s_orbital',
+  'hydrogen_2p': 'hydrogen_2p_orbital',
+  'hydrogen_3s': 'hydrogen_3s_orbital',
+  'hydrogen_3p': 'hydrogen_3p_orbital',
+  'hydrogen_3d': 'hydrogen_3d_orbital',
+  'bloch_sphere': 'bloch_sphere_dynamic',
+  'qubit_state': 'qubit_bloch_sphere',
+  'schrodinger_wave': 'schrodinger_time_dependent',
+  'wave_function': 'schrodinger_time_independent',
+  'probability_density': 'hydrogen_1s_orbital',
+  'qubit': 'qubit_bloch_sphere',
+  'cnot_gate': 'cnot_gate_surface',
+  'swap_gate': 'swap_gate_surface',
+  'toffoli_gate': 'toffoli_gate_surface',
+  'shor_nine_qubit_code': 'shor_nine_qubit',
+  'grover_oracle': 'grover_search_algorithm',
+  'grover_search': 'grover_search_algorithm',
+  'shor_factoring': 'shor_algorithm_surface',
+  'shor_algorithm': 'shor_algorithm_surface',
+  'vqe_circuit': 'variational_quantum_eigensolver',
+  'qaoa_circuit': 'qaoa_optimization',
+  'bell_state': 'bell_state_correlation',
+  'quantum_teleportation': 'quantum_teleportation_protocol',
+  'entanglement_state': 'bell_state_correlation',
+  'superposition_state': 'qubit_bloch_sphere',
+  'spin_state': 'bloch_sphere_dynamic',
+  'quantum_well': 'particle_in_box',
+  'wave_packet': 'schrodinger_time_dependent',
+  'momentum_space': 'wigner_function',
+  'phase_space': 'wigner_function',
+  'husimi_distribution': 'wigner_function',
+  'spin_foam': 'spin_foam_vertex',
+  'spin_network': 'spin_network_graph',
+  'loop_quantum_gravity': 'loop_quantum_gravity_toe',
+  'planck_scale_geometry': 'planck_foam',
+  'causal_dynamical_triangulation': 'causal_dynamical_triangulation_2d',
+  'regge_calculus': 'regge_lattice',
+  'twistor_space': 'twistor_theory',
+  'black_hole_entropy': 'black_hole_entropy_viz',
+  'holographic_principle': 'holographic_universe',
+  'ads_cft': 'ads_cft_correspondence',
+  'bulk_boundary': 'holographic_universe',
+  'entanglement_wedge': 'ryu_takayanagi_surface',
+  'ryu_takayanagi': 'ryu_takayanagi_surface',
+  'quantum_extremal_surface': 'ryu_takayanagi_surface',
+  'string_landscape': 'flux_compactification_landscape',
+  'flux_compactification': 'flux_compactification_landscape',
+  'moduli_stabilization': 'moduli_space',
+  'swampland': 'swampland_conjecture',
+  'distance_conjecture': 'swampland_conjecture',
+  'reissner_nordstrom': 'reissner_nordstrom_metric',
+  'kerr_newman': 'kerr_newman_metric',
+  'friedmann_metric': 'friedmann_equation',
+  'de_sitter_space': 'de_sitter_metric',
+  'anti_de_sitter': 'anti_de_sitter_metric',
+  'minkowski_space': 'minkowski_metric',
+  'penrose_carter_diagram': 'penrose_diagram',
+  'light_cone_structure': 'light_cone',
+  'geodesic_deviation': 'geodesic_equation',
+  'riemann_tensor': 'riemann_curvature',
+  'ricci_tensor': 'ricci_curvature',
+  'weyl_tensor': 'weyl_curvature',
+  'einstein_tensor': 'einstein_field_equations',
+  'gravitational_lensing': 'gravitational_lensing_map',
+  'frame_dragging': 'lense_thirring_effect',
+  'ergosphere': 'kerr_metric',
+  'event_horizon': 'schwarzschild_metric',
+  'singularity': 'schwarzschild_metric',
+  'wormhole': 'einstein_rosen_bridge',
+  'closed_timelike_curve': 'godel_universe',
+  'schwarzschild_metric': 'schwarzschild_black_hole',
+  'kerr_black_hole': 'kerr_metric',
+  'schwarzschild_black_hole': 'schwarzschild_metric_surface',
+  'elliptic_curve_secp256k1': 'elliptic_curve_cryptography',
+  'elliptic_curve_p256': 'elliptic_curve_cryptography',
+  'elliptic_curve_ed25519': 'elliptic_curve_cryptography',
+  'rsa_modular_exponentiation': 'rsa_encryption_surface',
+  'diffie_hellman_key_exchange': 'diffie_hellman_surface',
+  'aes_sbox': 'aes_rijndael_cipher',
+  'sha256_compression': 'sha256_compression_function',
+  'hash_chain': 'merkle_tree',
+  'digital_signature': 'elliptic_curve_cryptography',
+  'zero_knowledge_proof': 'zkp_surface',
+  'commitment_scheme': 'hash_avalanche_effect',
+  'secret_sharing': 'lattice_kyber_ntru',
+  'threshold_signature': 'elliptic_curve_cryptography',
+  'homomorphic_encryption': 'lattice_kyber_ntru',
+  'lattice_based_crypto': 'lattice_kyber_ntru',
+  'ntru_lattice': 'lattice_kyber_ntru',
+  'kyber_lattice': 'lattice_kyber_ntru',
+  'dilithium_signature': 'lattice_kyber_ntru',
+  'rainbow_signature': 'lattice_kyber_ntru',
+  'sphincs_signature': 'lattice_kyber_ntru',
+  'post_quantum_crypto': 'lattice_kyber_ntru',
+  'quantum_key_distribution': 'bb84_quantum_protocol',
+  'bb84_protocol': 'bb84_quantum_protocol',
+  'rna_single_strand': 'rna_secondary_structure',
+  'protein_alpha_helix': 'protein_helix',
+  'protein_beta_sheet': 'protein_sheet',
+  'lipid_bilayer': 'cell_membrane_surface',
+  'cell_membrane': 'cell_membrane_surface',
+  'phospholipid': 'cell_membrane_surface',
+  'cholesterol': 'cell_membrane_surface',
+  'glycoprotein': 'cell_membrane_surface',
+  'endoplasmic_reticulum': 'er_membrane',
+  'chromatin': 'dna_double_helix',
+  'chromosome': 'dna_double_helix',
+  'centromere': 'dna_double_helix',
+  'intermediate_filament': 'actin_filament',
+  'motor_protein': 'microtubule',
+  'ion_channel': 'cell_membrane_surface',
+  'tesseract': 'tesseract_4d',
+  'pentachoron': 'five_cell_4d',
+  'hexadecachoron': 'sixteen_cell_4d',
+  'icositetrachoron': 'twenty_four_cell_4d',
+  'hecatonicosachoron': 'one_twenty_cell_4d',
+  'hexacosichoron': 'six_hundred_cell_4d',
+  'grand_antiprism': 'grand_antiprism_4d',
+  'runcitruncated_tesseract': 'runcitruncated_tesseract_4d',
+  'omnitruncated_tesseract': 'omnitruncated_tesseract_4d',
+  'duoprism_4_4': 'duoprism_4x4',
+  'duoprism_3_6': 'duoprism_3x6',
+  'duocylinder': 'duo_cylinder_4d',
+  'quaternion_rotation': 'quaternion_surface',
+  'so4_rotation': 'so4_rotation_surface',
+  'spinor_4d': 'spinor_field',
+  'flower_of_life': 'flower_of_life_3d',
+  'seed_of_life': 'seed_of_life_pattern',
+  'tree_of_life': 'kabbalistic_tree',
+  'metatrons_cube': 'metatrons_cube_enhanced',
+  'golden_spiral': 'golden_ratio_spiral',
+  'fibonacci_spiral': 'fibonacci_spiral_enhanced',
+  'merkaba': 'merkaba_star_tetrahedron',
+  'platonic_solids_nested': 'nested_platonic_solids',
+  'fruit_of_life': 'fruit_of_life_pattern',
+  'egg_of_life': 'egg_of_life_pattern',
+  'genesis_pattern': 'genesis_pattern_sacred',
+  'torus_field': 'toroidal_field',
+  'vector_equilibrium': 'vector_equilibrium_cuboctahedron',
+  '64_tetrahedron_grid': 'sixty_four_tetrahedron_grid',
+  'isotropic_vector_matrix': 'isotropic_vector_matrix_ivm',
+  'jitterbug': 'jitterbug_transformation',
+  'cubeoctahedron': 'cuboctahedron_surface',
+  'rhombic_dodecahedron': 'rhombic_dodecahedron_surface',
+  'root_chakra': 'root_chakra_muladhara',
+  'sacral_chakra': 'sacral_chakra_svadhisthana',
+  'solar_plexus_chakra': 'solar_plexus_chakra_manipura',
+  'heart_chakra': 'heart_chakra_anahata',
+  'throat_chakra': 'throat_chakra_vishuddha',
+  'third_eye_chakra': 'third_eye_chakra_ajna',
+  'crown_chakra': 'crown_chakra_sahasrara',
+  'kundalini_energy': 'kundalini_spiral',
+  'aura_field': 'aura_energy_field',
+  'meridian_system': 'meridian_energy_channels',
+  'prana_vortex': 'prana_energy_vortex',
+  'chi_flow': 'chi_energy_flow',
+  'energy_body': 'subtle_energy_body',
+  'subtle_body': 'subtle_energy_body',
+  'causal_body': 'causal_energy_body',
+  'mandelbulb': 'mandelbulb_raymarched',
+  'mandelbrot_3d': 'fractal_mandelbrot_z2',
+  'julia_3d': 'fractal_cubic_z3',
+  'julia_set': 'fractal_cubic_z3',
+  'sierpinski_triangle': 'sierpinski_tetrahedron',
+  'dragon_curve_3d': 'dragon_curve',
+  'hilbert_curve_3d': 'hilbert_curve',
+  'peano_curve_3d': 'peano_curve',
+  'barnsley_fern_3d': 'barnsley_fern',
+  'cantor_dust_3d': 'cantor_set',
+  'levy_c_curve': 'levy_curve',
+  'gosper_curve': 'gosper_island',
+  'moore_curve': 'moore_curve_3d',
+  'lindenmayer_tree': 'l_system_tree',
+  'strange_attractor': 'lorenz_attractor',
+  'protein_folding': 'protein_helix',
+  'neuron_morphology': 'neuron_surface',
+  'heart_surface': 'heart_shape_3d',
+  'riemann_zeta': 'riemann_zeta_surface',
+  'golden_ratio_spiral': 'golden_spiral',
+  'fibonacci_surface': 'fibonacci_spiral_enhanced',
+  'penrose_tiling': 'penrose_pattern',
+  'vesica_piscis': 'vesica_piscis_3d',
+  'boy_surface': 'boy_surface_3d',
+  'seifert_surface': 'seifert_fibered_space',
+  'chinese_button_knot': 'button_knot',
+  'solomon_knot': 'solomon_link',
+  'endless_knot': 'endless_knot_3d',
+  'celtic_knot': 'celtic_knot_3d',
+  'koch_snowflake_3d': 'koch_snowflake',
+  'sierpinski_tetrahedron': 'sierpinski_pyramid',
+  'tetrahedron': 'platonic_tetra',
+  'icosahedron': 'platonic_icosa',
+  'blake3_hash': 'keccak_sha3_sponge',
+  'merkle_tree': 'merkle_tree_structure',
+  'pentatope': 'five_cell_4d',
+  'rectangle': 'square',
+  'pentagon': 'circle',
+  'hexagon': 'circle',
+  'oval': 'sphere',
+  'star_3d': 'sphere',
+  'diamond': 'octahedron',
+  'heart_shape': 'heart_shape_3d',
+  'triangular_prism': 'cylinder',
+  'square_prism': 'cylinder',
+  'pentagonal_prism': 'cylinder',
+  'hexagonal_prism': 'cylinder',
+  'heptagonal_prism': 'cylinder',
+  'octagonal_prism': 'cylinder',
+  'nonagonal_prism': 'cylinder',
+  'decagonal_prism': 'cylinder',
+  'hendecagonal_prism': 'cylinder',
+  'dodecagonal_prism': 'cylinder',
+};
+
+async function main() {
+  console.log('Loading all libraries...');
+
+  const imports = await Promise.allSettled([
+    import('../client/src/lib/unifiedShapes').then(m => m.UNIFIED_SHAPES),
+    import('../client/src/lib/babylonianZodiacShapes').then(m => m.BABYLONIAN_ZODIAC_SHAPES),
+    import('../client/src/lib/financialMathematics').then(m => m.FINANCIAL_MATHEMATICS),
+    import('../client/src/lib/fourDimensionalShapes').then(m => m.FOUR_DIMENSIONAL_SHAPES),
+    import('../client/src/lib/basicGeometryFormulas').then(m => m.BASIC_GEOMETRY_FORMULAS),
+    import('../client/src/lib/attractorSystems').then(m => m.ATTRACTOR_SYSTEMS),
+    import('../client/src/lib/chaosTheoryShapes').then(m => m.CHAOS_THEORY_SHAPES),
+    import('../client/src/lib/sacredGeometry').then(m => m.default || m),
+    import('../client/src/lib/cleanMathEngine').then(m => m.default || m),
+    import('../client/src/lib/chakraShapes').then(m => m.CHAKRA_SHAPES),
+    import('../client/src/lib/qpuQuantumComputingShapes').then(m => m.QPU_QUANTUM_COMPUTING_SHAPES),
+    import('../client/src/lib/quantumComputingAlgorithms').then(m => m.QUANTUM_COMPUTING_ALGORITHMS),
+    import('../client/src/lib/fieldTheoryEngine').then(m => m.default || m),
+    import('../client/src/lib/quantumGravityEquations').then(m => m.QUANTUM_GRAVITY_EQUATIONS),
+    import('../client/src/lib/generalRelativityShapes').then(m => m.GENERAL_RELATIVITY_SHAPES),
+    import('../client/src/lib/schrodingerEquations').then(m => m.SCHRODINGER_EQUATIONS),
+    import('../client/src/lib/entropicPrinciples').then(m => m.ENTROPIC_PRINCIPLES),
+    import('../client/src/lib/theoryOfEverythingShapes').then(m => m.THEORY_OF_EVERYTHING_SHAPES),
+    import('../client/src/lib/sequencePatterns').then(m => m.SEQUENCE_PATTERNS),
+    import('../client/src/lib/setTheoryShapes').then(m => m.SET_THEORY_SHAPES),
+    import('../client/src/lib/dnaStructures').then(m => m.DNA_STRUCTURES),
+    import('../client/src/lib/advancedPhysicsEquations').then(m => m.ADVANCED_PHYSICS_EQUATIONS),
+    import('../client/src/lib/hypercomputationSurfaces').then(m => m.HYPERCOMPUTATION_SURFACES),
+    import('../client/src/lib/multidimensionalFractals').then(m => m.MULTIDIMENSIONAL_FRACTALS),
+    import('../client/src/lib/entanglementAlgorithms').then(m => m.ENTANGLEMENT_ALGORITHMS),
+    import('../client/src/lib/topologyDifferentialShapes').then(m => m.TOPOLOGY_DIFFERENTIAL_SHAPES),
+    import('../client/src/lib/fractalAnalysisShapes').then(m => m.FRACTAL_ANALYSIS_SHAPES),
+    import('../client/src/lib/completeMissingShapesLibrary').then(m => m.COMPLETE_MISSING_SHAPES),
+    import('../client/src/lib/historicalAlgorithms').then(m => m.HISTORICAL_ALGORITHMS),
+    import('../client/src/lib/thermalEngineeringShapes').then(m => m.THERMAL_ENGINEERING_SHAPES),
+    import('../client/src/lib/medicalImagingShapes').then(m => m.MEDICAL_IMAGING_SHAPES),
+    import('../client/src/lib/consciousnessMathShapes').then(m => m.CONSCIOUSNESS_MATH_SHAPES),
+    import('../client/src/lib/minimalSurfacesLibrary').then(m => m.ALL_MINIMAL_SURFACES),
+    import('../client/src/lib/parametricLibraryPack').then(m => m.PARAMETRIC_LIBRARY_PACK),
+    import('../client/src/lib/higherDimensionalShapes').then(m => ({ ...m.FIVE_DIMENSIONAL_SHAPES, ...m.HIGHER_DIMENSIONAL_SHAPES })),
+    import('../client/src/lib/higherDimensionalGaps').then(m => m.HIGHER_DIMENSIONAL_GAPS),
+    import('../client/src/lib/fourDimensional4DShapes').then(m => m.FOUR_DIMENSIONAL_4D_SHAPES),
+    import('../client/src/lib/alchemicalSymbolShapes').then(m => m.ALCHEMICAL_SYMBOL_SHAPES),
+    import('../client/src/lib/ancientCivilizationShapes').then(m => m.ANCIENT_CIVILIZATION_SHAPES),
+    import('../client/src/lib/harmonyWaveShapes').then(m => m.HARMONY_WAVE_SHAPES).catch(() => ({})),
+    import('../client/src/lib/atomicStructureShapes').then(m => m.ATOMIC_STRUCTURE_SHAPES),
+    import('../client/src/lib/uuon-gmod6-engine').then(m => m.GMOD6_SURFACES),
+    import('../client/src/lib/iceCrystalShapes').then(m => m.ICE_CRYSTAL_SHAPES),
+    import('../client/src/lib/fractalShapeImplementations').then(m => m.FRACTAL_SHAPE_IMPLEMENTATIONS),
+    import('../client/src/lib/missing19ShapesImplementation').then(m => m.MISSING_19_SHAPES),
+    import('../client/src/lib/crossDomainHybridShapes').then(m => m.CROSS_DOMAIN_HYBRID_SHAPES),
+    import('../client/src/lib/scientificIdentityShapes').then(m => m.SCIENTIFIC_IDENTITY_SHAPES),
+    import('../client/src/lib/timePhenomenonShapes').then(m => ({ ...m.ALL_TIME_PHENOMENON_SHAPES, ...m.TIME_PRINCIPLE_SHAPES, ...m.PHENOMENON_PRINCIPLE_SHAPES, ...m.UNIFIED_PRINCIPLE_SHAPES })),
+    import('../client/src/lib/linguisticGeometryShapes').then(m => m.LINGUISTIC_GEOMETRY_SHAPES),
+    import('../client/src/lib/dmensionPatternCodex').then(m => m.DMENSION_PATTERN_CODEX),
+    import('../client/src/lib/uuonMeshEngine').then(m => m.UUON_MESH_SHAPES),
+    import('../client/src/lib/unifiedTOECanvas').then(m => m.UNIFIED_TOE_CANVAS),
+    import('../client/src/lib/scientificExpansionShapes').then(m => m.SCIENTIFIC_EXPANSION_SHAPES),
+    import('../client/src/lib/tenPercentShapes').then(m => m.TEN_PERCENT_SHAPES),
+    import('../client/src/lib/lifeSciencesShapes').then(m => m.default || m),
+    import('../client/src/lib/earthSciencesShapes').then(m => m.default || m),
+    import('../client/src/lib/socialSciencesShapes').then(m => m.default || m),
+    import('../client/src/lib/unifiedMasterEquation').then(m => m.default || m),
+    import('../client/src/lib/quantumParametricFunctions').then(m => m.QUANTUM_PARAMETRIC_FUNCTIONS),
+    import('../client/src/lib/yeganehEagle').then(m => ({ 'yeganeh_eagle': m.YEGANEH_EAGLE_SHAPE || m.default })).catch(() => ({})),
+  ]);
+
+  const ALL_SHAPES: Record<string, any> = {};
+  for (const result of imports) {
+    if (result.status === 'fulfilled' && result.value && typeof result.value === 'object') {
+      for (const [key, shape] of Object.entries(result.value as Record<string, any>)) {
+        if (shape && typeof shape === 'object' && typeof shape.equation === 'function') {
+          ALL_SHAPES[key] = shape;
+        }
+      }
+    } else if (result.status === 'rejected') {
+      console.warn(`WARN: ${result.reason?.message?.substring(0, 60)}`);
+    }
+  }
+
+  console.log(`Unique shapes with equations: ${Object.keys(ALL_SHAPES).length}`);
+
+  const rows = await sql`SELECT id, shape_type FROM complete_shape_registry WHERE equation_js IS NULL ORDER BY id`;
+  console.log(`Missing equations: ${rows.length}`);
+
+  let updated = 0, stillMissing = 0;
+
+  for (const row of rows) {
+    // Try direct key first, then alias
+    const aliasKey = ALIASES[row.shape_type];
+    const shape = ALL_SHAPES[row.shape_type] || (aliasKey ? ALL_SHAPES[aliasKey] : null);
+
+    if (!shape || typeof shape.equation !== 'function') {
+      stillMissing++;
+      process.stdout.write(`  MISS #${String(row.id).padStart(3)} ${row.shape_type}\n`);
+      continue;
+    }
+
+    let params = {};
+    try { params = shape.defaultParams ? JSON.parse(JSON.stringify(shape.defaultParams)) : {}; } catch {}
+
+    await sql`
+      UPDATE complete_shape_registry
+      SET equation_js = ${shape.equation.toString()},
+          default_params = ${JSON.stringify(params)},
+          updated_at = now()
+      WHERE id = ${row.id}
+    `;
+
+    updated++;
+    process.stdout.write(`  ✓ #${String(row.id).padStart(3)} ${row.shape_type}${aliasKey ? ` (→${aliasKey})` : ''}\n`);
+  }
+
+  console.log(`\n════════════════════════════════`);
+  console.log(`  Newly updated: ${updated}`);
+  console.log(`  Still missing: ${stillMissing}`);
+  console.log(`════════════════════════════════`);
+}
+
+main().catch(e => { console.error('FATAL:', e); process.exit(1); });

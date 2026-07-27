@@ -1,3 +1,4 @@
+modules = ["nodejs-20"]
 [agent]
 stack = "MOCKUP_JS"
 mockupState = "PENDING"
