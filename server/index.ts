@@ -372,9 +372,9 @@ async function loadDeferredRoutes() {
   deferredApiRouter.use('/api/quantum', quantumRoutes);
   deferredApiRouter.use('/api/system-performance', systemPerformanceRouter);
 
+  const [
   console.log('✅ Core API routes registered.');
 
-  const [
     { default: knowledgeApiRoutes },
     { sitemapRoutes },
     { standardizedSitemapRoutes },
