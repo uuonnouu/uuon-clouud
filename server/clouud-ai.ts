@@ -304,7 +304,7 @@ async function executeTool(name: string, args: Record<string, any>): Promise<str
   if (name === "dmension_search") {
     try {
       const { searchDmensionShapes } = await import("./dmension-codex");
-      const results = searchDmensionShapes(String(args.query || ""));
+      const results = await searchDmensionShapes(String(args.query || ""));
       return JSON.stringify({ results: results.slice(0, 5), source: "local-codex-cache" });
     } catch (e: any) {
       return JSON.stringify({ error: e.message || "dmension search failed" });
