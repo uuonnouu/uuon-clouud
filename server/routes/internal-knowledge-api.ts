@@ -11,7 +11,7 @@ router.get('/constants', async (req, res) => {
   try {
     const sql = getClouudDB();
     const rows = await sql`
-      SELECT symbol, name, value, value_text, units, category, description, domain, earth_link
+      SELECT symbol, name, value, value_text, category, description, domain, earth_link
       FROM mathematical_constants
       ORDER BY category, name
     `;
