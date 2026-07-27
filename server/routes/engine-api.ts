@@ -407,3 +407,64 @@ router.post('/render/png', async (req: Request, res: Response) => {
     res.status(500).json({ error: err.message, shapeId });
   }
 });
+
+// ── Universal DB Render Endpoint ─────────────────────────────────────────────
+// POST /api/engines/render/universal
+// Body: { shapeId, uSegments?, vSegments?, uMin?, uMax?, vMin?, vMax? }
+// Goes straight to complete_shape_registry — no TypeScript library lookup.
+// This is the DB-as-truth endpoint for all 449 unrouted shapes.
+router.post('/render/universal', async (req: Request, res: Response) => {
+  const { shapeId, uSegments = 80, vSegments = 80, uMin = 0, uMax = Math.PI * 2, vMin = 0, vMax = Math.PI * 2 } = req.body;
+  if (!shapeId) return res.status(400).json({ error: 'shapeId required' });
+  try {
+    const DMENSION_DB = process.env.CLEAN_DB || process.env.DMENSION_DATABASE_URL;
+    if (!DMENSION_DB) return res.status(500).json({ error: 'CLEAN_DB not configured' });
+    const sql = neon(DMENSION_DB);
+    const rows = await sql`
+      SELECT equation_js, display_name, default_params
+      FROM complete_shape_registry
+      WHERE shape_type = ${shapeId}
+      LIMIT 1
+    `;
+    if (!rows[0]?.equation_js) {
+      return res.status(404).json({ error: `Shape '${shapeId}' not found in DB`, shapeId });
+    }
+    const fn = eval(`(${rows[0].equation_js})`);
+    const vertices: number[] = [];
+    const normals: number[] = [];
+    const indices: number[] = [];
+    const uStep = (uMax - uMin) / uSegments;
+    const vStep = (vMax - vMin) / vSegments;
+    for (let i = 0; i <= uSegments; i++) {
+      for (let j = 0; j <= vSegments; j++) {
+        const u = uMin + i * uStep;
+        const v = vMin + j * vStep;
+        const p = fn(u, v, {});
+        vertices.push(p[0], p[1], p[2]);
+        normals.push(0, 1, 0);
+      }
+    }
+    for (let i = 0; i < uSegments; i++) {
+      for (let j = 0; j < vSegments; j++) {
+        const a = i * (vSegments + 1) + j;
+        const b = a + 1;
+        const c = a + (vSegments + 1);
+        const d = c + 1;
+        indices.push(a, b, d, a, d, c);
+      }
+    }
+    res.json({
+      success: true,
+      shapeId,
+      source: 'neon_db',
+      displayName: rows[0].display_name ?? shapeId,
+      vertices,
+      normals,
+      indices,
+      vertexCount: vertices.length / 3,
+      triangleCount: indices.length / 3
+    });
+  } catch (err: any) {
+    res.status(500).json({ error: err.message, shapeId });
+  }
+});
