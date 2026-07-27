@@ -168,7 +168,10 @@ app.get('/health', async (_req, res) => {
   let dbLatencyMs: number | null = null;
   try {
     const t0 = Date.now();
-    await sql`SELECT 1`;
+    await Promise.race([
+      sql`SELECT 1`,
+      new Promise((_, reject) => setTimeout(() => reject(new Error('DB health check timed out')), 2000)),
+    ]);
     dbLatencyMs = Date.now() - t0;
     dbStatus = true;
   } catch (e) {

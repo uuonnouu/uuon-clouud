@@ -9,7 +9,7 @@
     "runtime": "V2",
     "numReplicas": 1,
     "startCommand": "node dist/index.cjs",
-    "healthcheckPath": "/health",
+    "healthcheckPath": "/api/health",
     "sleepApplication": false,
     "useLegacyStacker": false,
     "ipv6EgressEnabled": false,
