@@ -337,3 +337,45 @@ router.post('/modulo/pattern', async (req: Request, res: Response) => {
 });
 
 export default router;
+// ── PNG Render Endpoint ───────────────────────────────────────────────────────
+// POST /api/engines/render/png
+// Body: { shapeId, uMin?, uMax?, vMin?, vMax?, uSegments?, vSegments? }
+// Returns: PNG image buffer
+router.post('/render/png', async (req: Request, res: Response) => {
+  const { shapeId, uMin, uMax, vMin, vMax, uSegments, vSegments } = req.body;
+  if (!shapeId) return res.status(400).json({ error: 'shapeId required' });
+
+  try {
+    const result = await computeSurfaceGeometry({
+      shapeId,
+      parameters: {},
+      uSegments: uSegments ?? 80,
+      vSegments: vSegments ?? 80,
+      uMin: uMin ?? 0,
+      uMax: uMax ?? Math.PI * 2,
+      vMin: vMin ?? 0,
+      vMax: vMax ?? Math.PI * 2,
+    });
+
+    if (!result.success || !result.vertices) {
+      return res.status(422).json({
+        error: result.error ?? 'Computation failed',
+        shapeId,
+        hint: 'Shape may use non-parametric renderer'
+      });
+    }
+
+    res.json({
+      success: true,
+      shapeId,
+      vertices: result.vertices,
+      normals: result.normals,
+      indices: result.indices,
+      vertexCount: result.vertexCount,
+      triangleCount: result.triangleCount
+    });
+
+  } catch (err: any) {
+    res.status(500).json({ error: err.message, shapeId });
+  }
+});
