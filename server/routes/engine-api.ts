@@ -212,7 +212,33 @@ async function renderShape(
     });
   }
 
-  const shape = shapeList.find(s => s.id === shapeId);
+  let shape = shapeList.find(s => s.id === shapeId);
+  let dbEquationJs: string | null = null;
+
+  if (!shape) {
+    // DB-first fallback — query complete_shape_registry in Dmension DB
+    try {
+      const { neon } = await import('@neondatabase/serverless');
+      const DMENSION_DB = process.env.CLEAN_DB || process.env.DMENSION_DATABASE_URL;
+      if (DMENSION_DB) {
+        const sql = neon(DMENSION_DB);
+        const rows = await sql`
+          SELECT equation_js, display_name, formula, parameters, earth_link
+          FROM complete_shape_registry
+          WHERE shape_type = ${shapeId}
+          LIMIT 1
+        `;
+        if (rows[0]?.equation_js) {
+          dbEquationJs = rows[0].equation_js;
+          // Synthesize a minimal shape object so the rest of the pipeline continues
+          shape = { id: shapeId, name: rows[0].display_name ?? shapeId, equation: null } as any;
+        }
+      }
+    } catch (dbErr) {
+      console.error('[engine-api] DB fallback error:', dbErr);
+    }
+  }
+
   if (!shape) {
     return res.status(404).json({
       error: `Shape '${shapeId}' not found in ${engineId}`,
@@ -224,6 +250,8 @@ async function renderShape(
 
   try {
     const result = await computeSurfaceGeometry({
+      equationJs: dbEquationJs,
+      equationJs: dbEquationJs,
       shapeId,
       parameters,
       uSegments: uSegments ?? defaults.uSegments,
