@@ -11,9 +11,9 @@ router.get('/constants', async (req, res) => {
   try {
     const sql = getClouudDB();
     const rows = await sql`
-      SELECT symbol, constant_name, value, scientific_notation, units, category, description, mathematical_basis, real_world_applications
+      SELECT symbol, name, value, value_text, units, category, description, domain, earth_link
       FROM mathematical_constants
-      ORDER BY category, constant_name
+      ORDER BY category, name
     `;
     res.json({ success: true, count: rows.length, data: rows });
   } catch (err: any) {
@@ -26,7 +26,7 @@ router.get('/constants/:symbol', async (req, res) => {
     const sql = getClouudDB();
     const rows = await sql`
       SELECT * FROM mathematical_constants
-      WHERE symbol = ${req.params.symbol} OR constant_name ILIKE ${req.params.symbol}
+      WHERE symbol = ${req.params.symbol} OR name ILIKE ${req.params.symbol}
       LIMIT 1
     `;
     if (!rows[0]) return res.status(404).json({ success: false, error: 'Constant not found' });
