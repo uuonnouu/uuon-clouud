@@ -252,7 +252,6 @@ async function renderShape(
   try {
     const result = await computeSurfaceGeometry({
       equationJs: dbEquationJs,
-      equationJs: dbEquationJs,
       shapeId,
       parameters,
       uSegments: uSegments ?? defaults.uSegments,
