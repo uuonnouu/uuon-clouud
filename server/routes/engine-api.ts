@@ -7,13 +7,11 @@ import { requirePIEZ, requirePSENT } from '../../middleware/piez-middleware.mjs'
 
 const router = Router();
 
-// ── Shape ID normalization — accept common aliases without _surface suffix ──
 const SHAPE_ID_ALIASES: Record<string, string> = {
   torus:       'torus_surface',
   sphere:      'sphere_surface',
   torus_basic: 'torus_surface',
   sphere_basic: 'sphere_surface',
-  // Reverse aliases so _surface callers also resolve
   torus_surface: 'torus_surface',
   sphere_surface: 'sphere_surface',
 };
@@ -21,22 +19,6 @@ const SHAPE_ID_ALIASES: Record<string, string> = {
 function normalizeShapeId(id: string): string {
   return SHAPE_ID_ALIASES[id] ?? id;
 }
-
-// ── Shape registries ────────────────────────────────────────────────────────
-// All IDs here are verified against UNIFIED_SHAPES at build/test time.
-// Quantum: bloch_sphere_dynamic, bell_state_correlation, quantum_gate_rotation,
-//          fibonacci_anyon_braiding, quantum_neural_network from COMPLETE_MISSING_SHAPES;
-//          hydrogen_*_orbital from main UNIFIED_SHAPES body;
-//          schrodinger_*, quantum_harmonic_oscillator, particle_in_box from SCHRODINGER_EQUATIONS;
-//          wigner_function, bell_inequality_chsh from SCHRODINGER_EQUATIONS (new implementations);
-//          lorentz_factor_gamma (relativistic correction) from GENERAL_RELATIVITY_SHAPES
-// Relativity: gravitational_wave from main body; rest from GENERAL_RELATIVITY_SHAPES
-// Fractal/Modulo: gmod6_* from GMOD6_SURFACES; fractal_time_spiral from main body;
-//                 fractal_mandelbrot_z2, fractal_cubic_z3, fractal_burning_ship,
-//                 fractal_trig_chaos, fractal_hyper_spike from FRACTAL_SHAPE_IMPLEMENTATIONS;
-//                 box_counting_dimension, minkowski_bouligand_dimension,
-//                 mass_fractal_dimension_df, lacunarity_gap_analysis,
-//                 dlca_aggregation_mechanism from FRACTAL_ANALYSIS_SHAPES
 
 const QUANTUM_SHAPES = [
   { id: 'bloch_sphere_dynamic',          name: 'Bloch Sphere',                   description: 'Qubit state on unit sphere with dynamic polar angle' },
@@ -104,7 +86,6 @@ const MODULO_SHAPES = [
   { id: 'gmod6_dimensional_cluster', name: 'GMod6 Dimensional Cluster',   description: 'Multi-dimensional modular cluster' },
 ];
 
-// ── Engine catalog (shapeCount derived from arrays above) ──────────────────
 const ENGINE_CATALOG = [
   {
     id: 'ENGINE_QUANTUM',
@@ -140,7 +121,6 @@ const ENGINE_CATALOG = [
   },
 ];
 
-// ── UV/segment defaults per engine ─────────────────────────────────────────
 const ENGINE_DEFAULTS: Record<string, Omit<SurfaceComputeRequest, 'shapeId' | 'parameters'>> = {
   quantum:    { uSegments: 64, vSegments: 48, uMin: 0, uMax: Math.PI * 2, vMin: 0,            vMax: Math.PI },
   relativity: { uSegments: 64, vSegments: 48, uMin: 0, uMax: Math.PI * 2, vMin: -Math.PI / 2, vMax: Math.PI / 2 },
@@ -148,25 +128,11 @@ const ENGINE_DEFAULTS: Record<string, Omit<SurfaceComputeRequest, 'shapeId' | 'p
   modulo:     { uSegments: 64, vSegments: 48, uMin: 0, uMax: Math.PI * 2, vMin: 0,            vMax: Math.PI * 2 },
 };
 
-// ── Auth — REPLACED. Was a broken local stub referencing an undefined `rows`
-//     variable (always 503'd on any non-empty key). Now delegates to the real,
-//     working middleware/piez-middleware.mjs, which does an actual on-chain
-//     balanceOf() check on Base for PIEZ or PSENT. ──────────────────────────
-//
-// ASSUMPTIONS — confirm both before relying on this in production:
-//   1. Engine routes accept EITHER PIEZ or PSENT (per "users acquire PSENT or
-//      PIEZ tokens to access engine endpoints"). If you want only one token
-//      type gating these specific routes, tell me which and I'll narrow it.
-//   2. Tier-per-engine mapping below is my best guess from your stated tiers
-//      (Standard/Professional/Enterprise), not something specified anywhere.
-//      The four price points themselves [0.001, 0.001618, 0.002618, 0.004236]
-//      are real, from piez-middleware.mjs — only the engine→tier assignment
-//      is invented here.
 const ENGINE_TIER: Record<keyof typeof ENGINE_DEFAULTS, number> = {
-  modulo: 0,     // Standard
-  relativity: 1, // Professional
-  fractal: 2,    // Professional
-  quantum: 3,    // Enterprise
+  modulo: 0,
+  relativity: 1,
+  fractal: 2,
+  quantum: 3,
 };
 
 async function requireApiKey(
@@ -179,11 +145,11 @@ async function requireApiKey(
 
   if (/^PIEZ-Balance\s/i.test(auth)) {
     const gate = await requirePIEZ(req, res, tier);
-    return !!gate; // requirePIEZ already wrote the 401/402 response on failure
+    return !!gate;
   }
   if (/^PSENT-Balance\s/i.test(auth)) {
     const gate = await requirePSENT(req, res, tier);
-    return !!gate; // requirePSENT already wrote the 401/402 response on failure
+    return !!gate;
   }
 
   res.status(401).json({
@@ -193,7 +159,6 @@ async function requireApiKey(
   return false;
 }
 
-// ── Core compute helper ────────────────────────────────────────────────────
 async function renderShape(
   engineId: string,
   shapeList: typeof QUANTUM_SHAPES,
@@ -201,7 +166,6 @@ async function renderShape(
   res: Response,
   engineKey: keyof typeof ENGINE_DEFAULTS,
 ) {
-  // Accept either shapeId or shape_type (alias) for API flexibility; normalize aliases
   const rawId: string | undefined = req.body.shapeId ?? req.body.shape_type;
   const shapeId = rawId ? normalizeShapeId(rawId) : undefined;
   const { parameters = {}, uSegments, vSegments, uMin, uMax, vMin, vMax } = req.body;
@@ -217,9 +181,7 @@ async function renderShape(
   let dbEquationJs: string | null = null;
 
   if (!shape) {
-    // DB-first fallback — query complete_shape_registry in Dmension DB
     try {
-
       const DMENSION_DB = process.env.CLEAN_DB || process.env.DMENSION_DATABASE_URL;
       if (DMENSION_DB) {
         const sql = neon(DMENSION_DB);
@@ -231,7 +193,6 @@ async function renderShape(
         `;
         if (rows[0]?.equation_js) {
           dbEquationJs = rows[0].equation_js;
-          // Synthesize a minimal shape object so the rest of the pipeline continues
           shape = { id: shapeId, name: rows[0].display_name ?? shapeId, equation: null } as any;
         }
       }
@@ -302,7 +263,6 @@ router.get('/', (_req: Request, res: Response) => {
   });
 });
 
-// Quantum
 router.get('/quantum/shapes', async (req: Request, res: Response) => {
   if (!await requireApiKey(req, res, 'quantum')) return;
   res.json({ engine: 'ENGINE_QUANTUM', shapes: QUANTUM_SHAPES, count: QUANTUM_SHAPES.length });
@@ -331,7 +291,6 @@ router.post('/quantum/bridge', async (req: Request, res: Response) => {
   });
 });
 
-// Relativity
 router.get('/relativity/shapes', async (req: Request, res: Response) => {
   if (!await requireApiKey(req, res, 'relativity')) return;
   res.json({ engine: 'ENGINE_RELATIVITY', shapes: RELATIVITY_SHAPES, count: RELATIVITY_SHAPES.length });
@@ -342,7 +301,6 @@ router.post('/relativity/render', async (req: Request, res: Response) => {
   await renderShape('ENGINE_RELATIVITY', RELATIVITY_SHAPES, req, res, 'relativity');
 });
 
-// Fractal
 router.get('/fractal/shapes', async (req: Request, res: Response) => {
   if (!await requireApiKey(req, res, 'fractal')) return;
   res.json({ engine: 'ENGINE_FRACTAL', shapes: FRACTAL_SHAPES, count: FRACTAL_SHAPES.length });
@@ -353,7 +311,6 @@ router.post('/fractal/render', async (req: Request, res: Response) => {
   await renderShape('ENGINE_FRACTAL', FRACTAL_SHAPES, req, res, 'fractal');
 });
 
-// Modulo
 router.get('/modulo/shapes', async (req: Request, res: Response) => {
   if (!await requireApiKey(req, res, 'modulo')) return;
   res.json({ engine: 'ENGINE_MODULO', shapes: MODULO_SHAPES, count: MODULO_SHAPES.length });
@@ -365,10 +322,8 @@ router.post('/modulo/pattern', async (req: Request, res: Response) => {
 });
 
 export default router;
-// ── PNG Render Endpoint ───────────────────────────────────────────────────────
-// POST /api/engines/render/png
-// Body: { shapeId, uMin?, uMax?, vMin?, vMax?, uSegments?, vSegments? }
-// Returns: PNG image buffer
+
+// ── PNG Render Endpoint ───────────────────────────────────────────────────
 router.post('/render/png', async (req: Request, res: Response) => {
   const { shapeId, uMin, uMax, vMin, vMax, uSegments, vSegments } = req.body;
   if (!shapeId) return res.status(400).json({ error: 'shapeId required' });
@@ -408,11 +363,7 @@ router.post('/render/png', async (req: Request, res: Response) => {
   }
 });
 
-// ── Universal DB Render Endpoint ─────────────────────────────────────────────
-// POST /api/engines/render/universal
-// Body: { shapeId, uSegments?, vSegments?, uMin?, uMax?, vMin?, vMax? }
-// Goes straight to complete_shape_registry — no TypeScript library lookup.
-// This is the DB-as-truth endpoint for all 449 unrouted shapes.
+// ── Universal DB Render Endpoint ──────────────────────────────────────────
 router.post('/render/universal', async (req: Request, res: Response) => {
   const { shapeId, uSegments = 80, vSegments = 80, uMin = 0, uMax = Math.PI * 2, vMin = 0, vMax = Math.PI * 2 } = req.body;
   if (!shapeId) return res.status(400).json({ error: 'shapeId required' });
@@ -466,5 +417,138 @@ router.post('/render/universal', async (req: Request, res: Response) => {
     });
   } catch (err: any) {
     res.status(500).json({ error: err.message, shapeId });
+  }
+});
+
+// ── HTML Render Endpoint ──────────────────────────────────────────────────
+// POST /api/engines/render/html
+// Body: { shapeId }
+// Returns: self-contained Three.js HTML for animation_url (IPFS)
+// No auth required — this is a public asset generation endpoint.
+
+function generateHtmlRenderer(shape: {
+  shape_type: string;
+  equation_js: string;
+  default_params: Record<string, number>;
+  name?: string;
+  description?: string;
+}): string {
+  const params = shape.default_params || { a: 1, b: 1, c: 1 };
+  const paramsJson = JSON.stringify(params);
+  const label = (shape.name || shape.shape_type).replace(/[^a-zA-Z0-9 _\-]/g, '');
+  const desc = (shape.description || '').replace(/`/g, "'").slice(0, 200);
+  const eqEscaped = shape.equation_js.replace(/\\/g, '\\\\').replace(/`/g, '\\`');
+
+  return `<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>${label} — UUON Dmension</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#000;overflow:hidden;font-family:monospace}
+canvas{display:block}
+#label{position:fixed;bottom:16px;left:50%;transform:translateX(-50%);color:#00ff88;font-size:12px;letter-spacing:2px;text-align:center;text-shadow:0 0 8px #00ff88;pointer-events:none}
+#desc{position:fixed;top:12px;left:50%;transform:translateX(-50%);color:#ffffff44;font-size:10px;max-width:80vw;text-align:center;letter-spacing:1px;pointer-events:none}
+</style>
+</head>
+<body>
+<div id="desc">${desc}</div>
+<div id="label">${label.toUpperCase()} &nbsp;&middot;&nbsp; UUON DMENSION</div>
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.module.js"}}</script>
+<script type="module">
+import * as THREE from 'three';
+const equationSrc = \`${eqEscaped}\`;
+const params = ${paramsJson};
+let shapeFn;
+try { shapeFn = eval('(' + equationSrc + ')'); } catch(e) {
+  shapeFn = (u,v,p)=>{const phi=u*Math.PI*2,theta=v*Math.PI;return{x:Math.sin(theta)*Math.cos(phi),y:Math.sin(theta)*Math.sin(phi),z:Math.cos(theta)};};
+}
+const renderer=new THREE.WebGLRenderer({antialias:true});
+renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+renderer.setSize(innerWidth,innerHeight);
+renderer.setClearColor(0x000000);
+document.body.appendChild(renderer.domElement);
+const scene=new THREE.Scene();
+const camera=new THREE.PerspectiveCamera(50,innerWidth/innerHeight,0.01,100);
+camera.position.set(0,0,3.5);
+scene.add(new THREE.AmbientLight(0xffffff,0.3));
+const d1=new THREE.DirectionalLight(0x00ffaa,1.2);d1.position.set(3,5,3);scene.add(d1);
+const d2=new THREE.DirectionalLight(0x4488ff,0.6);d2.position.set(-3,-2,2);scene.add(d2);
+const SEGS=80;
+const pos=[],idx=[],uv2=[];
+function sample(u,v){try{const r=shapeFn(u,v,params);if(!r||isNaN(r.x))return null;return r;}catch{return null;}}
+for(let j=0;j<=SEGS;j++)for(let i=0;i<=SEGS;i++){const u=i/SEGS,v=j/SEGS,p=sample(u,v)||{x:0,y:0,z:0};pos.push(p.x,p.y,p.z);uv2.push(u,v);}
+for(let j=0;j<SEGS;j++)for(let i=0;i<SEGS;i++){const a=j*(SEGS+1)+i,b=a+1,c=a+(SEGS+1),d=c+1;idx.push(a,c,b,b,c,d);}
+const geo=new THREE.BufferGeometry();
+geo.setAttribute('position',new THREE.Float32BufferAttribute(pos,3));
+geo.setAttribute('uv',new THREE.Float32BufferAttribute(uv2,2));
+geo.setIndex(idx);geo.computeVertexNormals();
+geo.computeBoundingBox();
+const box=geo.boundingBox,ctr=new THREE.Vector3(),sz=new THREE.Vector3();
+box.getCenter(ctr);box.getSize(sz);
+const sc=2.0/Math.max(sz.x,sz.y,sz.z,0.001);
+geo.translate(-ctr.x,-ctr.y,-ctr.z);
+const solidMat=new THREE.MeshStandardMaterial({color:0x00ff88,metalness:0.2,roughness:0.5,side:THREE.DoubleSide,transparent:true,opacity:0.72});
+const wireMat=new THREE.MeshBasicMaterial({color:0x00ffaa,wireframe:true,transparent:true,opacity:0.18});
+const pivot=new THREE.Group();pivot.scale.setScalar(sc);scene.add(pivot);
+pivot.add(new THREE.Mesh(geo,solidMat));pivot.add(new THREE.Mesh(geo,wireMat));
+const ptPos=[];for(let k=0;k<300;k++)ptPos.push((Math.random()-.5)*8,(Math.random()-.5)*8,(Math.random()-.5)*8);
+const ptGeo=new THREE.BufferGeometry();ptGeo.setAttribute('position',new THREE.Float32BufferAttribute(ptPos,3));
+scene.add(new THREE.Points(ptGeo,new THREE.PointsMaterial({color:0x00ff88,size:0.015,transparent:true,opacity:0.4})));
+let t=0;
+(function animate(){requestAnimationFrame(animate);t+=0.004;pivot.rotation.y=t*.7;pivot.rotation.x=Math.sin(t*.3)*.3;solidMat.opacity=.65+Math.sin(t*1.2)*.08;renderer.render(scene,camera);})();
+window.addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight);});
+</script>
+</body>
+</html>`;
+}
+
+router.post('/render/html', async (req: Request, res: Response) => {
+  const { shapeId } = req.body as { shapeId: string };
+  if (!shapeId) return res.status(400).json({ error: 'shapeId required' });
+
+  const DMENSION_DB = process.env.CLEAN_DB || process.env.DMENSION_DATABASE_URL;
+  if (!DMENSION_DB) return res.status(500).json({ error: 'CLEAN_DB not configured' });
+
+  try {
+    const sql = neon(DMENSION_DB);
+    const rows = await sql`
+      SELECT shape_type, equation_js, default_params, display_name AS name, description
+      FROM complete_shape_registry
+      WHERE shape_type = ${shapeId} OR id::text = ${shapeId}
+      LIMIT 1
+    `;
+
+    if (!rows[0]) {
+      return res.status(404).json({ error: `Shape '${shapeId}' not found` });
+    }
+    if (!rows[0].equation_js) {
+      return res.status(422).json({ error: `Shape '${shapeId}' has no equation_js` });
+    }
+
+    let defaultParams: Record<string, number> = {};
+    try {
+      defaultParams = typeof rows[0].default_params === 'string'
+        ? JSON.parse(rows[0].default_params)
+        : (rows[0].default_params || {});
+    } catch { defaultParams = {}; }
+
+    const html = generateHtmlRenderer({
+      shape_type: rows[0].shape_type,
+      equation_js: rows[0].equation_js,
+      default_params: defaultParams,
+      name: rows[0].name,
+      description: rows[0].description,
+    });
+
+    res.setHeader('Content-Type', 'text/html');
+    res.setHeader('X-Shape-Type', rows[0].shape_type);
+    res.setHeader('X-Source', 'neon_db');
+    return res.status(200).send(html);
+
+  } catch (err: any) {
+    return res.status(500).json({ error: err.message, shapeId });
   }
 });
