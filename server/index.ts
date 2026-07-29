@@ -156,6 +156,7 @@ if (!isApiOnly) {
   app.use('/assets', express.static(publicPath));
   app.use('/exports', express.static(path.join(__dirname, '../exports')));
   app.use('/uploads', express.static('uploads'));
+app.use("/engine", express.static(path.join(process.cwd(), "engine")));
 }
 
 // ── HEALTH ENDPOINTS ────────────────────────────────────────────────────────
