@@ -72,6 +72,7 @@ const allowedOrigins = [
   'https://dmension-mathematical-universe.replit.dev',
   'https://uuon.world',
   'https://www.uuon.world',
+  'https://uuon-foundation.github.io',
   'https://dmension.app',
   'https://www.dmension.app',
   'https://uuon.uuorld',
@@ -156,7 +157,7 @@ if (!isApiOnly) {
   app.use('/assets', express.static(publicPath));
   app.use('/exports', express.static(path.join(__dirname, '../exports')));
   app.use('/uploads', express.static('uploads'));
-app.use("/engine", express.static(path.join(process.cwd(), "engine")));
+app.use("/engine", (_req, res, next) => { res.setHeader("Access-Control-Allow-Origin", "*"); next(); }, express.static(path.join(process.cwd(), "engine")));
 }
 
 // ── HEALTH ENDPOINTS ────────────────────────────────────────────────────────
