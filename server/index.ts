@@ -157,7 +157,7 @@ if (!isApiOnly) {
   app.use('/assets', express.static(publicPath));
   app.use('/exports', express.static(path.join(__dirname, '../exports')));
   app.use('/uploads', express.static('uploads'));
-app.use("/engine", (_req, res, next) => { res.setHeader("Access-Control-Allow-Origin", "*"); res.setHeader("Cross-Origin-Resource-Policy", "cross-origin"); next(); }, express.static(path.join(process.cwd(), "engine")));
+  app.use("/engine", express.static(path.join(process.cwd(), "engine"), { setHeaders: (res, filePath) => { res.setHeader("Access-Control-Allow-Origin", "*"); res.setHeader("Cross-Origin-Resource-Policy", "cross-origin"); if (filePath.endsWith(".js")) { res.setHeader("Content-Type", "application/javascript; charset=utf-8"); } } }));
 }
 
 // ── HEALTH ENDPOINTS ────────────────────────────────────────────────────────
