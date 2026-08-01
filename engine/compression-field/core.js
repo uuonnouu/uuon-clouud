@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 /**
  * UUON Compression Field Engine — Core
  * AI Information Black Hole // core/engine.js
@@ -160,6 +159,3 @@
   };
 
 }(window));
-=======
-404: Not Found
->>>>>>> 6c9423dc984dca530dcf5e78710ffd0cbfa9abbb
