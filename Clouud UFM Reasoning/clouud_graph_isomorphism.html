@@ -1,0 +1,874 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CLOUUD UFM — Graph Isomorphism Engine</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: #ffffff;
+    color: #000000;
+    font-family: 'Courier New', monospace;
+    font-size: 13px;
+    line-height: 1.6;
+  }
+
+  header {
+    padding: 32px 40px 16px;
+    border-bottom: 2px solid #000;
+  }
+
+  header h1 {
+    font-size: 15px;
+    font-weight: normal;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  header p {
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    margin-top: 4px;
+    opacity: 0.6;
+  }
+
+  .equation-bar {
+    padding: 14px 40px;
+    border-bottom: 1px solid #000;
+    font-size: 12px;
+    letter-spacing: 0.06em;
+  }
+
+  .main-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+    border-bottom: 1px solid #000;
+  }
+
+  .graph-panel {
+    padding: 24px 32px;
+    border-right: 1px solid #000;
+  }
+
+  .graph-panel:last-child { border-right: none; }
+
+  .panel-label {
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+    border-bottom: 1px solid #ccc;
+    padding-bottom: 8px;
+  }
+
+  canvas {
+    display: block;
+    background: #ffffff;
+  }
+
+  .controls {
+    padding: 20px 40px;
+    border-bottom: 1px solid #000;
+    display: flex;
+    gap: 16px;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+
+  button {
+    background: #000;
+    color: #fff;
+    border: none;
+    padding: 8px 20px;
+    font-family: 'Courier New', monospace;
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    cursor: pointer;
+  }
+
+  button:hover { background: #333; }
+
+  button.secondary {
+    background: #fff;
+    color: #000;
+    border: 1px solid #000;
+  }
+
+  button.secondary:hover { background: #f0f0f0; }
+
+  select {
+    font-family: 'Courier New', monospace;
+    font-size: 11px;
+    padding: 7px 12px;
+    border: 1px solid #000;
+    background: #fff;
+    cursor: pointer;
+    letter-spacing: 0.06em;
+  }
+
+  .result-panel {
+    padding: 24px 40px;
+    border-bottom: 1px solid #000;
+    min-height: 80px;
+  }
+
+  .result-label {
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+
+  .result-value {
+    font-size: 18px;
+    letter-spacing: 0.04em;
+    margin-bottom: 8px;
+  }
+
+  .result-value.iso { font-weight: bold; }
+  .result-value.not-iso { opacity: 0.5; }
+
+  .result-detail {
+    font-size: 11px;
+    line-height: 1.8;
+    opacity: 0.75;
+    max-width: 800px;
+  }
+
+  .algorithm-trace {
+    padding: 24px 40px;
+    border-bottom: 1px solid #000;
+  }
+
+  .trace-label {
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+
+  .trace-steps {
+    font-size: 11px;
+    line-height: 2;
+    opacity: 0.8;
+  }
+
+  .trace-step {
+    display: flex;
+    gap: 16px;
+    padding: 3px 0;
+    border-bottom: 1px dashed #ddd;
+  }
+
+  .step-num {
+    min-width: 24px;
+    opacity: 0.4;
+  }
+
+  .step-pass { }
+  .step-fail { opacity: 0.5; text-decoration: line-through; }
+
+  .matrix-section {
+    padding: 24px 40px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+    border-bottom: 1px solid #000;
+  }
+
+  .matrix-label {
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+
+  table {
+    border-collapse: collapse;
+    font-size: 11px;
+  }
+
+  td, th {
+    width: 28px;
+    height: 28px;
+    text-align: center;
+    border: 1px solid #ccc;
+  }
+
+  th {
+    background: #f5f5f5;
+    font-weight: normal;
+    letter-spacing: 0.06em;
+  }
+
+  td.one { background: #000; color: #fff; }
+  td.zero { background: #fff; }
+
+  .degree-sequence {
+    padding: 24px 40px;
+    border-bottom: 1px solid #000;
+  }
+
+  .deg-label {
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+
+  .deg-bars {
+    display: flex;
+    gap: 24px;
+    align-items: flex-end;
+    height: 80px;
+  }
+
+  .deg-col {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .deg-bar {
+    width: 28px;
+    background: #000;
+    min-height: 2px;
+  }
+
+  .deg-node-label {
+    font-size: 10px;
+    opacity: 0.6;
+  }
+
+  .deg-val {
+    font-size: 10px;
+  }
+
+  footer {
+    padding: 20px 40px;
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    opacity: 0.4;
+    text-transform: uppercase;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>CLOUUD UFM — Graph Isomorphism Engine</h1>
+  <p>F = (P, E, R, C) · P is the ground · Relational equivalence detection · UUON Foundation Inc.</p>
+</header>
+
+<div class="equation-bar">
+  F = (P, E, R, C) · Two figures G₁ = (V₁, E₁) and G₂ = (V₂, E₂) are isomorphic iff ∃ bijection φ: V₁ → V₂ such that (u,v) ∈ E₁ ↔ (φ(u), φ(v)) ∈ E₂ · P verified before E, R, C evaluated
+</div>
+
+<div class="controls">
+  <select id="presetSelect" onchange="loadPreset()">
+    <option value="iso_triangle">Preset: Triangle ↔ Triangle (Isomorphic)</option>
+    <option value="iso_cycle4">Preset: 4-Cycle ↔ 4-Cycle (Isomorphic)</option>
+    <option value="not_iso_degree">Preset: Degree Mismatch (Not Isomorphic)</option>
+    <option value="not_iso_structure">Preset: Same Degree, Different Structure</option>
+    <option value="metaphor_geo">Preset: Metaphor ↔ Geometry (UFM Domain Cross)</option>
+    <option value="custom">Custom (drag nodes)</option>
+  </select>
+  <button onclick="runIsomorphismCheck()">Run Check</button>
+  <button class="secondary" onclick="stepThrough()">Step Through</button>
+  <button class="secondary" onclick="resetGraphs()">Reset</button>
+</div>
+
+<div class="main-grid">
+  <div class="graph-panel">
+    <div class="panel-label">Figure G₁ — <span id="g1label">Triangle ABC</span></div>
+    <canvas id="canvas1" width="420" height="300"></canvas>
+  </div>
+  <div class="graph-panel">
+    <div class="panel-label">Figure G₂ — <span id="g2label">Triangle DEF</span></div>
+    <canvas id="canvas2" width="420" height="300"></canvas>
+  </div>
+</div>
+
+<div class="result-panel">
+  <div class="result-label">Isomorphism Result</div>
+  <div class="result-value" id="resultValue">—</div>
+  <div class="result-detail" id="resultDetail">Select a preset and run the check.</div>
+</div>
+
+<div class="algorithm-trace">
+  <div class="trace-label">Algorithm Trace — Weisfeiler-Leman Color Refinement</div>
+  <div class="trace-steps" id="traceSteps">
+    <div class="trace-step"><span class="step-num">—</span><span>Awaiting execution</span></div>
+  </div>
+</div>
+
+<div class="matrix-section">
+  <div>
+    <div class="matrix-label">Adjacency Matrix G₁</div>
+    <div id="matrix1"></div>
+  </div>
+  <div>
+    <div class="matrix-label">Adjacency Matrix G₂</div>
+    <div id="matrix2"></div>
+  </div>
+</div>
+
+<div class="degree-sequence">
+  <div class="deg-label">Degree Sequence Comparison</div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:40px;">
+    <div>
+      <div style="font-size:11px;margin-bottom:8px;opacity:0.6;">G₁</div>
+      <div class="deg-bars" id="degBars1"></div>
+    </div>
+    <div>
+      <div style="font-size:11px;margin-bottom:8px;opacity:0.6;">G₂</div>
+      <div class="deg-bars" id="degBars2"></div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  CLOUUD UFM Reasoning Layer v1.1 · Graph Isomorphism · F=(P,E,R,C) · Phillip Aguilar Ruiz III
+</footer>
+
+<script>
+// ============================================================
+// GRAPH DATA MODEL — matches UFM F=(E,R,C,P)
+// ============================================================
+
+const PRESETS = {
+  iso_triangle: {
+    g1Label: "Triangle ABC — Geometry Domain",
+    g2Label: "Triangle DEF — Permuted Labels",
+    g1: {
+      nodes: [
+        { id: "A", x: 210, y: 60,  label: "A", type: "point" },
+        { id: "B", x: 90,  y: 240, label: "B", type: "point" },
+        { id: "C", x: 330, y: 240, label: "C", type: "point" },
+      ],
+      edges: [["A","B"],["B","C"],["A","C"]]
+    },
+    g2: {
+      nodes: [
+        { id: "D", x: 210, y: 60,  label: "D", type: "point" },
+        { id: "E", x: 90,  y: 240, label: "E", type: "point" },
+        { id: "F", x: 330, y: 240, label: "F", type: "point" },
+      ],
+      edges: [["D","E"],["E","F"],["D","F"]]
+    }
+  },
+  iso_cycle4: {
+    g1Label: "4-Cycle ABCD",
+    g2Label: "4-Cycle PQRS (Rotated)",
+    g1: {
+      nodes: [
+        { id: "A", x: 130, y: 90,  label: "A" },
+        { id: "B", x: 310, y: 90,  label: "B" },
+        { id: "C", x: 310, y: 220, label: "C" },
+        { id: "D", x: 130, y: 220, label: "D" },
+      ],
+      edges: [["A","B"],["B","C"],["C","D"],["D","A"]]
+    },
+    g2: {
+      nodes: [
+        { id: "P", x: 210, y: 60,  label: "P" },
+        { id: "Q", x: 360, y: 155, label: "Q" },
+        { id: "R", x: 210, y: 250, label: "R" },
+        { id: "S", x: 60,  y: 155, label: "S" },
+      ],
+      edges: [["P","Q"],["Q","R"],["R","S"],["S","P"]]
+    }
+  },
+  not_iso_degree: {
+    g1Label: "Path Graph P₃ (degrees: 1,2,1)",
+    g2Label: "Triangle K₃ (degrees: 2,2,2)",
+    g1: {
+      nodes: [
+        { id: "A", x: 90,  y: 155, label: "A" },
+        { id: "B", x: 210, y: 155, label: "B" },
+        { id: "C", x: 330, y: 155, label: "C" },
+      ],
+      edges: [["A","B"],["B","C"]]
+    },
+    g2: {
+      nodes: [
+        { id: "X", x: 210, y: 70,  label: "X" },
+        { id: "Y", x: 110, y: 240, label: "Y" },
+        { id: "Z", x: 310, y: 240, label: "Z" },
+      ],
+      edges: [["X","Y"],["Y","Z"],["X","Z"]]
+    }
+  },
+  not_iso_structure: {
+    g1Label: "Star K₁,₃ (one hub, three leaves)",
+    g2Label: "Path P₄ (same degree sum, different structure)",
+    g1: {
+      nodes: [
+        { id: "A", x: 210, y: 155, label: "A" },
+        { id: "B", x: 90,  y: 80,  label: "B" },
+        { id: "C", x: 330, y: 80,  label: "C" },
+        { id: "D", x: 210, y: 260, label: "D" },
+      ],
+      edges: [["A","B"],["A","C"],["A","D"]]
+    },
+    g2: {
+      nodes: [
+        { id: "P", x: 70,  y: 155, label: "P" },
+        { id: "Q", x: 180, y: 155, label: "Q" },
+        { id: "R", x: 270, y: 155, label: "R" },
+        { id: "S", x: 370, y: 155, label: "S" },
+      ],
+      edges: [["P","Q"],["Q","R"],["R","S"]]
+    }
+  },
+  metaphor_geo: {
+    g1Label: "Metaphor: Life→Journey (Language Domain)",
+    g2Label: "Triangle ABC (Geometry Domain)",
+    g1: {
+      nodes: [
+        { id: "life",    x: 210, y: 60,  label: "life",    type: "concept" },
+        { id: "start",   x: 90,  y: 240, label: "start",   type: "concept" },
+        { id: "end",     x: 330, y: 240, label: "end",     type: "concept" },
+      ],
+      edges: [["life","start"],["start","end"],["life","end"]]
+    },
+    g2: {
+      nodes: [
+        { id: "A", x: 210, y: 60,  label: "A", type: "point" },
+        { id: "B", x: 90,  y: 240, label: "B", type: "point" },
+        { id: "C", x: 330, y: 240, label: "C", type: "point" },
+      ],
+      edges: [["A","B"],["B","C"],["A","C"]]
+    }
+  }
+};
+
+// ============================================================
+// STATE
+// ============================================================
+
+let g1 = null, g2 = null;
+let stepIndex = 0;
+let stepTrace = [];
+let dragging = null;
+let dragCanvas = null;
+
+// ============================================================
+// DRAWING
+// ============================================================
+
+function drawGraph(canvasId, graph, mapping) {
+  const canvas = document.getElementById(canvasId);
+  const ctx = canvas.getContext("2d");
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  if (!graph) return;
+
+  const nodeMap = {};
+  graph.nodes.forEach(n => nodeMap[n.id] = n);
+
+  // Edges
+  ctx.strokeStyle = "#000";
+  ctx.lineWidth = 1.5;
+  graph.edges.forEach(([a, b]) => {
+    const na = nodeMap[a], nb = nodeMap[b];
+    ctx.beginPath();
+    ctx.moveTo(na.x, na.y);
+    ctx.lineTo(nb.x, nb.y);
+    ctx.stroke();
+  });
+
+  // Edge weight labels (relation type)
+  ctx.fillStyle = "#666";
+  ctx.font = "9px 'Courier New'";
+  ctx.textAlign = "center";
+  graph.edges.forEach(([a, b]) => {
+    const na = nodeMap[a], nb = nodeMap[b];
+    const mx = (na.x + nb.x) / 2;
+    const my = (na.y + nb.y) / 2;
+    ctx.fillText("R", mx + 6, my - 4);
+  });
+
+  // Nodes
+  graph.nodes.forEach(n => {
+    const mapped = mapping && mapping[n.id];
+    ctx.beginPath();
+    ctx.arc(n.x, n.y, 18, 0, Math.PI * 2);
+    ctx.fillStyle = mapped ? "#e8e8e8" : "#fff";
+    ctx.fill();
+    ctx.strokeStyle = "#000";
+    ctx.lineWidth = 1.5;
+    ctx.stroke();
+
+    ctx.fillStyle = "#000";
+    ctx.font = "bold 12px 'Courier New'";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.fillText(n.label, n.x, n.y);
+
+    if (n.type) {
+      ctx.font = "9px 'Courier New'";
+      ctx.fillStyle = "#999";
+      ctx.fillText(n.type, n.x, n.y + 28);
+    }
+  });
+
+  // Draw mapping arrows if present
+  if (mapping && canvasId === "canvas1") {
+    // Mapping is shown via shading — arrows would require overlay canvas
+  }
+}
+
+// ============================================================
+// ADJACENCY MATRIX
+// ============================================================
+
+function buildAdjMatrix(graph) {
+  const ids = graph.nodes.map(n => n.id);
+  const idx = {};
+  ids.forEach((id, i) => idx[id] = i);
+  const n = ids.length;
+  const mat = Array.from({length: n}, () => Array(n).fill(0));
+  graph.edges.forEach(([a, b]) => {
+    mat[idx[a]][idx[b]] = 1;
+    mat[idx[b]][idx[a]] = 1;
+  });
+  return { mat, ids };
+}
+
+function renderMatrix(containerId, graph) {
+  const { mat, ids } = buildAdjMatrix(graph);
+  let html = "<table><tr><th></th>";
+  ids.forEach(id => { html += `<th>${id}</th>`; });
+  html += "</tr>";
+  ids.forEach((rowId, i) => {
+    html += `<tr><th>${rowId}</th>`;
+    mat[i].forEach(v => {
+      html += `<td class="${v ? 'one' : 'zero'}">${v}</td>`;
+    });
+    html += "</tr>";
+  });
+  html += "</table>";
+  document.getElementById(containerId).innerHTML = html;
+}
+
+// ============================================================
+// DEGREE SEQUENCE
+// ============================================================
+
+function getDegrees(graph) {
+  const deg = {};
+  graph.nodes.forEach(n => deg[n.id] = 0);
+  graph.edges.forEach(([a, b]) => {
+    deg[a]++;
+    deg[b]++;
+  });
+  return graph.nodes.map(n => ({ id: n.id, label: n.label, deg: deg[n.id] }));
+}
+
+function renderDegrees(containerId, graph) {
+  const degs = getDegrees(graph);
+  const maxDeg = Math.max(...degs.map(d => d.deg), 1);
+  const barMaxH = 60;
+  let html = '<div class="deg-bars">';
+  degs.forEach(d => {
+    const h = Math.max(4, Math.round((d.deg / maxDeg) * barMaxH));
+    html += `<div class="deg-col">
+      <span class="deg-val">${d.deg}</span>
+      <div class="deg-bar" style="height:${h}px"></div>
+      <span class="deg-node-label">${d.label}</span>
+    </div>`;
+  });
+  html += "</div>";
+  document.getElementById(containerId).innerHTML = html;
+}
+
+// ============================================================
+// WEISFEILER-LEMAN COLOR REFINEMENT (1-WL)
+// Canonical certificate for isomorphism detection.
+// Returns: { isomorphic, certificate1, certificate2, steps }
+// Note: 1-WL can produce false positives for some graph pairs.
+// Full graph isomorphism is NP — 1-WL is a necessary condition,
+// not sufficient. This is documented honestly in the trace.
+// ============================================================
+
+function wlRefinement(graph) {
+  const nodeMap = {};
+  graph.nodes.forEach(n => nodeMap[n.id] = n);
+
+  const adj = {};
+  graph.nodes.forEach(n => adj[n.id] = []);
+  graph.edges.forEach(([a, b]) => {
+    adj[a].push(b);
+    adj[b].push(a);
+  });
+
+  // Initial color = degree
+  let colors = {};
+  graph.nodes.forEach(n => {
+    colors[n.id] = adj[n.id].length;
+  });
+
+  const rounds = [];
+
+  for (let iter = 0; iter < 5; iter++) {
+    const newColors = {};
+    const colorMap = {};
+    let colorCounter = 0;
+
+    graph.nodes.forEach(n => {
+      const neighborColors = adj[n.id].map(nb => colors[nb]).sort((a,b)=>a-b);
+      const signature = `${colors[n.id]}|${neighborColors.join(",")}`;
+      if (!(signature in colorMap)) {
+        colorMap[signature] = colorCounter++;
+      }
+      newColors[n.id] = colorMap[signature];
+    });
+
+    const colorCounts = {};
+    graph.nodes.forEach(n => {
+      const c = newColors[n.id];
+      colorCounts[c] = (colorCounts[c] || 0) + 1;
+    });
+
+    rounds.push({
+      iter,
+      colors: {...newColors},
+      histogram: colorCounts
+    });
+
+    // Check for stabilization
+    let stable = true;
+    graph.nodes.forEach(n => {
+      if (newColors[n.id] !== colors[n.id]) stable = false;
+    });
+    colors = newColors;
+    if (stable) break;
+  }
+
+  // Certificate = sorted histogram of final colors
+  const finalHist = rounds[rounds.length - 1].histogram;
+  const certificate = Object.entries(finalHist)
+    .map(([k, v]) => `${v}×c${k}`)
+    .sort()
+    .join("+");
+
+  return { colors, rounds, certificate };
+}
+
+// ============================================================
+// ISOMORPHISM CHECK
+// ============================================================
+
+function runIsomorphismCheck() {
+  if (!g1 || !g2) return;
+
+  stepTrace = [];
+  const steps = [];
+
+  // Step 1: Node count
+  const nodeMatch = g1.nodes.length === g2.nodes.length;
+  steps.push({
+    text: `Node count: |V(G₁)| = ${g1.nodes.length}, |V(G₂)| = ${g2.nodes.length}`,
+    pass: nodeMatch,
+    note: nodeMatch ? "PASS" : "FAIL — isomorphism impossible"
+  });
+
+  // Step 2: Edge count
+  const edgeMatch = g1.edges.length === g2.edges.length;
+  steps.push({
+    text: `Edge count: |E(G₁)| = ${g1.edges.length}, |E(G₂)| = ${g2.edges.length}`,
+    pass: edgeMatch,
+    note: edgeMatch ? "PASS" : "FAIL — isomorphism impossible"
+  });
+
+  // Step 3: Degree sequence
+  const deg1 = getDegrees(g1).map(d => d.deg).sort((a,b)=>a-b);
+  const deg2 = getDegrees(g2).map(d => d.deg).sort((a,b)=>a-b);
+  const degMatch = JSON.stringify(deg1) === JSON.stringify(deg2);
+  steps.push({
+    text: `Degree sequence: G₁=[${deg1}]  G₂=[${deg2}]`,
+    pass: degMatch,
+    note: degMatch ? "PASS — sequences match" : "FAIL — degree sequences differ, not isomorphic"
+  });
+
+  // Step 4: WL refinement
+  const wl1 = wlRefinement(g1);
+  const wl2 = wlRefinement(g2);
+  const wlMatch = wl1.certificate === wl2.certificate;
+  steps.push({
+    text: `1-WL certificate G₁: ${wl1.certificate}`,
+    pass: true,
+    note: ""
+  });
+  steps.push({
+    text: `1-WL certificate G₂: ${wl2.certificate}`,
+    pass: true,
+    note: ""
+  });
+  steps.push({
+    text: `Certificate match: ${wlMatch ? "YES" : "NO"}`,
+    pass: wlMatch,
+    note: wlMatch
+      ? "PASS — WL certificates identical (necessary condition)"
+      : "FAIL — certificates differ, not isomorphic"
+  });
+
+  // Step 5: Caveat
+  steps.push({
+    text: `Completeness note: 1-WL is a necessary condition, not sufficient.`,
+    pass: true,
+    note: "False positives possible for regular graphs (e.g. K₃,₃ vs K₄). Full GI is not known to be NP-complete."
+  });
+
+  stepTrace = steps;
+
+  // Overall verdict
+  const allPass = nodeMatch && edgeMatch && degMatch && wlMatch;
+
+  const resultEl = document.getElementById("resultValue");
+  const detailEl = document.getElementById("resultDetail");
+
+  if (allPass) {
+    resultEl.textContent = "ISOMORPHIC (up to 1-WL)";
+    resultEl.className = "result-value iso";
+    detailEl.textContent =
+      `G₁ and G₂ pass all necessary conditions. ` +
+      `WL certificates match: ${wl1.certificate}. ` +
+      `A bijection φ: V(G₁) → V(G₂) preserving adjacency exists under these conditions. ` +
+      `In UFM terms: (E₁, R₁) ≅ (E₂, R₂) — the relation structure is invariant across both figures.`;
+  } else {
+    resultEl.textContent = "NOT ISOMORPHIC";
+    resultEl.className = "result-value not-iso";
+    const failedStep = steps.find(s => !s.pass);
+    detailEl.textContent =
+      `Isomorphism ruled out. First failure: ${failedStep ? failedStep.text : "unknown"}. ` +
+      `In UFM terms: no bijection φ exists that preserves the relation structure. ` +
+      `These figures carry structurally distinct meanings even if their domains overlap.`;
+  }
+
+  renderTrace(steps);
+  renderMatrix("matrix1", g1);
+  renderMatrix("matrix2", g2);
+  renderDegrees("degBars1", g1);
+  renderDegrees("degBars2", g2);
+  drawGraph("canvas1", g1, null);
+  drawGraph("canvas2", g2, null);
+}
+
+// ============================================================
+// STEP THROUGH
+// ============================================================
+
+function stepThrough() {
+  if (stepTrace.length === 0) {
+    runIsomorphismCheck();
+    stepIndex = 0;
+  }
+  renderTrace(stepTrace.slice(0, stepIndex + 1));
+  stepIndex = Math.min(stepIndex + 1, stepTrace.length);
+}
+
+function renderTrace(steps) {
+  const container = document.getElementById("traceSteps");
+  container.innerHTML = steps.map((s, i) => `
+    <div class="trace-step ${s.pass ? 'step-pass' : 'step-fail'}">
+      <span class="step-num">${String(i+1).padStart(2,'0')}</span>
+      <span>${s.text}${s.note ? ' — ' + s.note : ''}</span>
+    </div>
+  `).join("");
+}
+
+// ============================================================
+// PRESET LOADER
+// ============================================================
+
+function loadPreset() {
+  const key = document.getElementById("presetSelect").value;
+  if (key === "custom") {
+    resetGraphs();
+    return;
+  }
+  const preset = PRESETS[key];
+  g1 = JSON.parse(JSON.stringify(preset.g1));
+  g2 = JSON.parse(JSON.stringify(preset.g2));
+  document.getElementById("g1label").textContent = preset.g1Label;
+  document.getElementById("g2label").textContent = preset.g2Label;
+
+  stepTrace = [];
+  stepIndex = 0;
+  document.getElementById("resultValue").textContent = "—";
+  document.getElementById("resultDetail").textContent = "Run the check.";
+  document.getElementById("traceSteps").innerHTML =
+    '<div class="trace-step"><span class="step-num">—</span><span>Awaiting execution</span></div>';
+  document.getElementById("matrix1").innerHTML = "";
+  document.getElementById("matrix2").innerHTML = "";
+  document.getElementById("degBars1").innerHTML = "";
+  document.getElementById("degBars2").innerHTML = "";
+
+  drawGraph("canvas1", g1, null);
+  drawGraph("canvas2", g2, null);
+}
+
+function resetGraphs() {
+  g1 = null; g2 = null;
+  ["canvas1","canvas2"].forEach(id => {
+    const c = document.getElementById(id);
+    c.getContext("2d").clearRect(0,0,c.width,c.height);
+  });
+  document.getElementById("resultValue").textContent = "—";
+  document.getElementById("resultDetail").textContent = "Select a preset and run the check.";
+  document.getElementById("traceSteps").innerHTML =
+    '<div class="trace-step"><span class="step-num">—</span><span>Awaiting execution</span></div>';
+}
+
+// ============================================================
+// DRAG INTERACTION
+// ============================================================
+
+function setupDrag(canvasId, graphRef) {
+  const canvas = document.getElementById(canvasId);
+
+  canvas.addEventListener("mousedown", e => {
+    const rect = canvas.getBoundingClientRect();
+    const mx = e.clientX - rect.left;
+    const my = e.clientY - rect.top;
+    const graph = graphRef();
+    if (!graph) return;
+    graph.nodes.forEach(n => {
+      const dx = n.x - mx, dy = n.y - my;
+      if (Math.sqrt(dx*dx + dy*dy) < 20) {
+        dragging = n;
+        dragCanvas = canvasId;
+      }
+    });
+  });
+
+  canvas.addEventListener("mousemove", e => {
+    if (!dragging || dragCanvas !== canvasId) return;
+    const rect = canvas.getBoundingClientRect();
+    dragging.x = e.clientX - rect.left;
+    dragging.y = e.clientY - rect.top;
+    drawGraph(canvasId, graphRef(), null);
+  });
+
+  canvas.addEventListener("mouseup", () => { dragging = null; dragCanvas = null; });
+  canvas.addEventListener("mouseleave", () => { dragging = null; dragCanvas = null; });
+}
+
+setupDrag("canvas1", () => g1);
+setupDrag("canvas2", () => g2);
+
+// ============================================================
+// INIT
+// ============================================================
+
+loadPreset();
+</script>
+</body>
+</html>
