@@ -460,5 +460,3 @@ export function colorPixel(res: IterResult, p: FractalParams): [number,number,nu
 
   return palette(t, p.palette, p.cycles ?? 1, p.col_offset ?? 0, p.col_phase ?? 0, p.contrast ?? 0.65, p.invert ?? 0);
 }
-
-function mixC(a: number, b: number, t: number): number { return a*(1-t)+b*t; }
