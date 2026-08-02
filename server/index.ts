@@ -421,6 +421,7 @@ async function loadDeferredRoutes() {
     import('./routes/ai-analysis'),
     import('./routes/shaders-materials-api'),
     import('./routes/engine-api'),
+    import('./routes/fractal'),
     import('./routes/page-routes'),
     import('./routes/token-ecosystem'),
     import('./routes/lexicon'),
