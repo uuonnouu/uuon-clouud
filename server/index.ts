@@ -500,6 +500,8 @@ async function loadDeferredRoutes() {
 
   deferredApiRouter.use('/api', shadersMaterialsApi);
   deferredApiRouter.use('/api/engines', engineApiRouter);
+  const { default: fractalRoutes } = await import('./routes/fractal');
+  deferredApiRouter.use('/api/fractal', fractalRoutes);  
   deferredApiRouter.use('/api/ipfs', nftMintingRoutes);
   deferredApiRouter.use('/api/nft-minting', nftMintingRoutes);
   deferredApiRouter.use('/api/nft', nftMintingRoutes);
