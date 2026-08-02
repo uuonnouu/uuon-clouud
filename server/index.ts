@@ -272,9 +272,6 @@ app.use((req, res, next) => {
   next();
 });
 
-
-
-
 if (!isApiOnly) {
   app.get('/{*path}', (req, res) => {
     res.sendFile(indexPath);
@@ -324,253 +321,259 @@ async function autoSeedDatabase() {
 
 async function loadDeferredRoutes() {
   try {
-  console.log('⏳ Loading API route modules in background…');
+    console.log('⏳ Loading API route modules in background…');
 
+    const [
+      { default: knowledgeApiRoutes },
+      { default: authRoutes },
+      { unifiedSDK },
+      { default: agentCoordinationRoutes },
+      { shapeRoutes },
+      { healthRouter },
+      { default: quantumRoutes },
+      { systemPerformanceRouter },
+    ] = await Promise.all([
+      import('./routes/internal-knowledge-api'),
+      import('./routes/auth'),
+      import('./unified-sdk-implementation'),
+      import('./routes/agent-coordination'),
+      import('./shape-routes'),
+      import('./routes/health'),
+      import('./routes/quantum'),
+      import('./routes/system-performance'),
+    ]);
 
-  const [
-    { default: knowledgeApiRoutes },
-    { default: authRoutes },
-    { unifiedSDK },
-    { default: agentCoordinationRoutes },
-    { shapeRoutes },
-    { healthRouter },
-    { default: quantumRoutes },
-    { systemPerformanceRouter },
-  ] = await Promise.all([
-    import('./routes/internal-knowledge-api'),
-    import('./routes/auth'),
-    import('./unified-sdk-implementation'),
-    import('./routes/agent-coordination'),
-    import('./shape-routes'),
-    import('./routes/health'),
-    import('./routes/quantum'),
-    import('./routes/system-performance'),
-  ]);
+    deferredApiRouter.use('/api/knowledge', knowledgeApiRoutes);
+    deferredApiRouter.use('/api/auth', authRoutes);
+    deferredApiRouter.use('/api/sdk', unifiedSDK.getRouter());
+    deferredApiRouter.get('/api/sdk-info', (_req, res) => {
+      res.json({
+        name: 'Δmension Unified SDK',
+        version: '1.0.0',
+        description: 'Unified API gateway consolidating all mathematical, quantum, and biological services',
+        endpoints: {
+          unified: '/api/sdk/unified/:module/:operation',
+          health: '/api/sdk/health',
+          discover: '/api/sdk/discover'
+        },
+        modules: {
+          shapes: 'Parametric surface computation and management',
+          quantum: 'Quantum computing algorithms and circuits',
+          physics: 'Physics simulations and field calculations',
+          biology: 'Biological system modeling and analysis',
+          mathematics: 'Mathematical proof verification and solving',
+          export: 'Multi-format export and token generation',
+          aiml: 'AI/ML recognition and optimization'
+        }
+      });
+    });
+    deferredApiRouter.use('/api/agents', requireAdmin, agentCoordinationRoutes);
+    deferredApiRouter.use('/api/shapes', shapeRoutes);
+    deferredApiRouter.use('/api/health', healthRouter);
+    deferredApiRouter.use('/api/quantum', quantumRoutes);
+    deferredApiRouter.use('/api/system-performance', systemPerformanceRouter);
 
-  deferredApiRouter.use('/api/knowledge', knowledgeApiRoutes);
-  deferredApiRouter.use('/api/auth', authRoutes);
-  deferredApiRouter.use('/api/sdk', unifiedSDK.getRouter());
-  deferredApiRouter.get('/api/sdk-info', (_req, res) => {
-    res.json({
-      name: 'Δmension Unified SDK',
-      version: '1.0.0',
-      description: 'Unified API gateway consolidating all mathematical, quantum, and biological services',
-      endpoints: {
-        unified: '/api/sdk/unified/:module/:operation',
-        health: '/api/sdk/health',
-        discover: '/api/sdk/discover'
-      },
-      modules: {
-        shapes: 'Parametric surface computation and management',
-        quantum: 'Quantum computing algorithms and circuits',
-        physics: 'Physics simulations and field calculations',
-        biology: 'Biological system modeling and analysis',
-        mathematics: 'Mathematical proof verification and solving',
-        export: 'Multi-format export and token generation',
-        aiml: 'AI/ML recognition and optimization'
+    console.log('✅ Core API routes registered.');
+
+    const [
+      { sitemapRoutes },
+      { standardizedSitemapRoutes },
+      { sitemapFrameworkRoutes },
+      { sitemapHierarchyRouter },
+      { default: aboutSitemapRouter },
+      { deploymentOptimizationRoutes },
+      { deploymentStatusRoutes },
+      { showcaseRoutes },
+      { default: uuonCloudBridgeRoutes },
+      { comprehensiveDatabaseTrackerRoutes },
+      { sdkInfoRoutes },
+      { apiStatusRoutes },
+      { default: githubRoutes },
+      { default: aiAnalysisRoutes },
+      { default: shadersMaterialsApi },
+      { default: engineApiRouter },
+      { default: fractalRoutes },
+      { pageRoutes },
+      { tokenEcosystemRoutes },
+      { default: lexiconRoutes },
+      { default: tokenLedgerRoutes },
+      { default: aiRoutes },
+      { default: seoShapesRoutes },
+      { default: seoGlossaryRoutes },
+      { default: seoApiDocsRoutes },
+    ] = await Promise.all([
+      import('./routes/sitemap-generator'),
+      import('./routes/standardized-sitemaps'),
+      import('./routes/sitemap-framework'),
+      import('./routes/sitemap-hierarchy'),
+      import('./routes/about-sitemap'),
+      import('./routes/deployment-optimization'),
+      import('./routes/deployment-status'),
+      import('./showcase-routes'),
+      import('./routes/uuon-cloud-bridge'),
+      import('./routes/comprehensive-database-tracker'),
+      import('./routes/sdk-info'),
+      import('./routes/api-status'),
+      import('./routes/github'),
+      import('./routes/ai-analysis'),
+      import('./routes/shaders-materials-api'),
+      import('./routes/engine-api'),
+      import('./routes/fractal'),
+      import('./routes/page-routes'),
+      import('./routes/token-ecosystem'),
+      import('./routes/lexicon'),
+      import('./routes/token-ledger'),
+      import('./ai-routes'),
+      import('./routes/seo-shapes'),
+      import('./routes/seo-glossary'),
+      import('./routes/seo-apidocs'),
+    ]);
+
+    deferredApiRouter.use('/api/sitemap', sitemapRoutes);
+    deferredApiRouter.use('/api/sitemap-standard', standardizedSitemapRoutes);
+    deferredApiRouter.use('/api/sitemap-framework', sitemapFrameworkRoutes);
+    deferredApiRouter.use('/api/sitemap-hierarchy', sitemapHierarchyRouter);
+    deferredApiRouter.use('/api/about', aboutSitemapRouter);
+
+    deferredApiRouter.get('/sitemap{*path}.xml', (req, res) => {
+      const sitemapFile = req.path;
+      try {
+        const filePath = path.join('client/public', sitemapFile);
+        if (fs.existsSync(filePath)) {
+          const actualHost = req.hostname || (process.env.REPLIT_DOMAINS ? process.env.REPLIT_DOMAINS.split(',')[0].trim() : null);
+          const raw = fs.readFileSync(path.resolve(filePath), 'utf-8');
+          const fixed = actualHost
+            ? raw.replace(/https?:\/\/uuon-foundation\.com/g, `https://${actualHost}`)
+                .replace(/https?:\/\/www\.uuon-foundation\.com/g, `https://${actualHost}`)
+            : raw;
+          res.setHeader('Content-Type', 'application/xml; charset=utf-8');
+          res.send(fixed);
+        } else {
+          res.status(404).send('Sitemap not found');
+        }
+      } catch (error) {
+        res.status(500).send('Error serving sitemap');
       }
     });
-  });
-  deferredApiRouter.use('/api/agents', requireAdmin, agentCoordinationRoutes);
-  deferredApiRouter.use('/api/shapes', shapeRoutes);
-  deferredApiRouter.use('/api/health', healthRouter);
-  deferredApiRouter.use('/api/quantum', quantumRoutes);
-  deferredApiRouter.use('/api/system-performance', systemPerformanceRouter);
 
-  console.log('✅ Core API routes registered.');
-
-  const [
-    { sitemapRoutes },
-    { standardizedSitemapRoutes },
-    { sitemapFrameworkRoutes },
-    { sitemapHierarchyRouter },
-    { default: aboutSitemapRouter },
-    { deploymentOptimizationRoutes },
-    { deploymentStatusRoutes },
-    { showcaseRoutes },
-    { default: uuonCloudBridgeRoutes },
-    { comprehensiveDatabaseTrackerRoutes },
-    { sdkInfoRoutes },
-    { apiStatusRoutes },
-    { default: githubRoutes },
-    { default: aiAnalysisRoutes },
-    { default: shadersMaterialsApi },
-    { default: engineApiRouter },
-    { pageRoutes },
-    { tokenEcosystemRoutes },
-    { default: lexiconRoutes },
-    { default: tokenLedgerRoutes },
-    { default: aiRoutes },
-    { default: seoShapesRoutes },
-    { default: seoGlossaryRoutes },
-    { default: seoApiDocsRoutes },
-  ] = await Promise.all([
-    import('./routes/sitemap-generator'),
-    import('./routes/standardized-sitemaps'),
-    import('./routes/sitemap-framework'),
-    import('./routes/sitemap-hierarchy'),
-    import('./routes/about-sitemap'),
-    import('./routes/deployment-optimization'),
-    import('./routes/deployment-status'),
-    import('./showcase-routes'),
-    import('./routes/uuon-cloud-bridge'),
-    import('./routes/comprehensive-database-tracker'),
-    import('./routes/sdk-info'),
-    import('./routes/api-status'),
-    import('./routes/github'),
-    import('./routes/ai-analysis'),
-    import('./routes/shaders-materials-api'),
-    import('./routes/engine-api'),
-    import('./routes/page-routes'),
-    import('./routes/token-ecosystem'),
-    import('./routes/lexicon'),
-    import('./routes/token-ledger'),
-    import('./ai-routes'),
-    import('./routes/seo-shapes'),
-    import('./routes/seo-glossary'),
-    import('./routes/seo-apidocs'),
-  ]);
-
-  deferredApiRouter.use('/api/sitemap', sitemapRoutes);
-  deferredApiRouter.use('/api/sitemap-standard', standardizedSitemapRoutes);
-  deferredApiRouter.use('/api/sitemap-framework', sitemapFrameworkRoutes);
-  deferredApiRouter.use('/api/sitemap-hierarchy', sitemapHierarchyRouter);
-  deferredApiRouter.use('/api/about', aboutSitemapRouter);
-
-  deferredApiRouter.get('/sitemap{*path}.xml', (req, res) => {
-    const sitemapFile = req.path;
-    try {
-      const filePath = path.join('client/public', sitemapFile);
-      if (fs.existsSync(filePath)) {
-        const actualHost = req.hostname || (process.env.REPLIT_DOMAINS ? process.env.REPLIT_DOMAINS.split(',')[0].trim() : null);
-        const raw = fs.readFileSync(path.resolve(filePath), 'utf-8');
-        const fixed = actualHost
-          ? raw.replace(/https?:\/\/uuon-foundation\.com/g, `https://${actualHost}`)
-              .replace(/https?:\/\/www\.uuon-foundation\.com/g, `https://${actualHost}`)
-          : raw;
-        res.setHeader('Content-Type', 'application/xml; charset=utf-8');
-        res.send(fixed);
-      } else {
-        res.status(404).send('Sitemap not found');
+    // ── Admin-only gate for internal/ops routes ──────────────────────────────
+    function requireAdmin(req: any, res: any, next: any) {
+      const isAuthed = req.isAuthenticated && req.isAuthenticated();
+      const role = req.user?.role;
+      const isFounder = req.user?.github_username === 'uuonnouu';
+      if (!isAuthed || !req.user || (!isFounder && !['admin', 'founder', 'owner'].includes(role))) {
+        return res.status(401).json({ error: 'UNAUTHORIZED', message: 'Admin access required.' });
       }
-    } catch (error) {
-      res.status(500).send('Error serving sitemap');
+      next();
     }
-  });
 
-  // ── Admin-only gate for internal/ops routes ────────────────────────────────
-  function requireAdmin(req: any, res: any, next: any) {
-    const isAuthed = req.isAuthenticated && req.isAuthenticated();
-    const role = req.user?.role;
-    const isFounder = req.user?.github_username === 'uuonnouu';
-    if (!isAuthed || !req.user || (!isFounder && !['admin', 'founder', 'owner'].includes(role))) {
-      return res.status(401).json({ error: 'UNAUTHORIZED', message: 'Admin access required.' });
-    }
-    next();
+    deferredApiRouter.use('/api/deployment', requireAdmin, deploymentOptimizationRoutes);
+    deferredApiRouter.use('/api/deployment-status', requireAdmin, deploymentStatusRoutes);
+    deferredApiRouter.use('/api/showcase', showcaseRoutes);
+    deferredApiRouter.use('/api/bridge', uuonCloudBridgeRoutes);
+    deferredApiRouter.use('/api/database-tracker', requireAdmin, comprehensiveDatabaseTrackerRoutes);
+
+    deferredApiRouter.get('/api/migration-status', (_req, res) => {
+      res.json({
+        status: 'SDK_TRANSITION_ACTIVE',
+        unifiedSDK: { status: 'operational' },
+        legacyAPIs: { status: 'deprecated_but_functional', sunsetDate: '2027-01-01' }
+      });
+    });
+
+    deferredApiRouter.use('/api/sdk-info', sdkInfoRoutes);
+    deferredApiRouter.use('/api/status', apiStatusRoutes);
+    deferredApiRouter.use('/api/github', requireAdmin, githubRoutes);
+    deferredApiRouter.use('/api/ai-analysis', aiAnalysisRoutes);
+
+    deferredApiRouter.get('/api', (_req, res) => {
+      res.json({
+        name: 'Δmension Mathematical Universe API',
+        version: '1.0.0',
+        genesis: 'cf114022b5e4e1d6fdeb36890f35f605857cf2de93b53ebcb9c8e5652413ca04',
+        docs: '/api/sdk-info'
+      });
+    });
+
+    deferredApiRouter.use('/api', shadersMaterialsApi);
+    deferredApiRouter.use('/api/engines', engineApiRouter);
+    deferredApiRouter.use('/api/fractal', fractalRoutes);
+    deferredApiRouter.use('/api/ipfs', nftMintingRoutes);
+    deferredApiRouter.use('/api/nft-minting', nftMintingRoutes);
+    deferredApiRouter.use('/api/nft', nftMintingRoutes);
+    deferredApiRouter.use('/api/token-ecosystem', tokenEcosystemRoutes);
+    deferredApiRouter.use('/api/tracking', trackingRoutes);
+    deferredApiRouter.use('/api/token-ledger', tokenEcosystemRoutes);
+    deferredApiRouter.use(pageRoutes);
+    deferredApiRouter.use('/api/lexicon', lexiconRoutes);
+    deferredApiRouter.use('/api/changelog', changelogRoutes);
+    deferredApiRouter.use('/api/tokens', tokenLedgerRoutes);
+    deferredApiRouter.use('/api/token-ledger', tokenLedgerRoutes);
+    deferredApiRouter.use('/api', aiRoutes);
+    deferredApiRouter.use('/shapes', seoShapesRoutes);
+    deferredApiRouter.use('/glossary', seoGlossaryRoutes);
+    deferredApiRouter.use('/api/docs', seoApiDocsRoutes);
+
+    deferredApiRouter.get('/apis', (_req, res) => {
+      res.sendFile(resolveStaticHtml('developer.html'));
+    });
+
+    // ── GitHub OAuth ────────────────────────────────────────────────────────
+    deferredApiRouter.get('/auth/github/login', passport.authenticate('github'));
+
+    deferredApiRouter.get('/auth/github/callback',
+      passport.authenticate('github', { failureRedirect: '/?auth=failed' }),
+      (req, res) => {
+        res.redirect('/dashboard');
+      }
+    );
+
+    deferredApiRouter.get('/auth/github/status', (req: any, res) => {
+      res.json({
+        authenticated: req.isAuthenticated ? req.isAuthenticated() : false,
+        user: req.user ? {
+          id: req.user.id,
+          username: req.user.username,
+          github_username: req.user.github_username,
+          role: req.user.role,
+        } : null,
+      });
+    });
+    // ────────────────────────────────────────────────────────────────────────
+
+    deferredApiRouter.get('/rapidapi', (_req, res) => {
+      res.sendFile(resolveStaticHtml('rapidapi.html'));
+    });
+
+    deferredApiRouter.get('/science', (_req, res) => {
+      res.sendFile(resolveStaticHtml('science.html'));
+    });
+
+    deferredApiRouter.get('/ai', (_req, res) => {
+      res.sendFile(resolveStaticHtml('ai.html'));
+    });
+
+    deferredApiRouter.get('/token', (_req, res) => {
+      res.sendFile(resolveStaticHtml('token.html'));
+    });
+
+    deferredApiRouter.get('/dashboard', (_req, res) => {
+      res.sendFile(resolveStaticHtml('dashboard.html'));
+    });
+
+    deferredApiRouter.get('/developer', (_req, res) => {
+      res.redirect(301, '/apis');
+    });
+
+    registerChatRoutes(deferredApiRouter as any);
+
+    routesReady = true;
+    console.log('✅ All API route modules loaded and registered.');
+  } catch(e: any) {
+    console.error("❌ loadDeferredRoutes crashed:", e?.message || e);
+  } finally {
+    routesReady = true;
   }
-
-  deferredApiRouter.use('/api/deployment', requireAdmin, deploymentOptimizationRoutes);
-  deferredApiRouter.use('/api/deployment-status', requireAdmin, deploymentStatusRoutes);
-  deferredApiRouter.use('/api/showcase', showcaseRoutes);
-  deferredApiRouter.use('/api/bridge', uuonCloudBridgeRoutes);
-  deferredApiRouter.use('/api/database-tracker', requireAdmin, comprehensiveDatabaseTrackerRoutes);
-
-  deferredApiRouter.get('/api/migration-status', (_req, res) => {
-    res.json({
-      status: 'SDK_TRANSITION_ACTIVE',
-      unifiedSDK: { status: 'operational' },
-      legacyAPIs: { status: 'deprecated_but_functional', sunsetDate: '2027-01-01' }
-    });
-  });
-
-  deferredApiRouter.use('/api/sdk-info', sdkInfoRoutes);
-  deferredApiRouter.use('/api/status', apiStatusRoutes);
-  deferredApiRouter.use('/api/github', requireAdmin, githubRoutes);
-  deferredApiRouter.use('/api/ai-analysis', aiAnalysisRoutes);
-
-  deferredApiRouter.get('/api', (_req, res) => {
-    res.json({
-      name: 'Δmension Mathematical Universe API',
-      version: '1.0.0',
-      genesis: 'cf114022b5e4e1d6fdeb36890f35f605857cf2de93b53ebcb9c8e5652413ca04',
-      docs: '/api/sdk-info'
-    });
-  });
-
-  deferredApiRouter.use('/api', shadersMaterialsApi);
-  deferredApiRouter.use('/api/engines', engineApiRouter);
-  deferredApiRouter.use('/api/ipfs', nftMintingRoutes);
-  deferredApiRouter.use('/api/nft-minting', nftMintingRoutes);
-  deferredApiRouter.use('/api/nft', nftMintingRoutes);
-  deferredApiRouter.use('/api/token-ecosystem', tokenEcosystemRoutes);
-  deferredApiRouter.use('/api/tracking', trackingRoutes);
-  deferredApiRouter.use('/api/token-ledger', tokenEcosystemRoutes);
-  deferredApiRouter.use(pageRoutes);
-  deferredApiRouter.use('/api/lexicon', lexiconRoutes);
-  deferredApiRouter.use('/api/changelog', changelogRoutes);
-  deferredApiRouter.use('/api/tokens', tokenLedgerRoutes);
-  deferredApiRouter.use('/api/token-ledger', tokenLedgerRoutes);
-  deferredApiRouter.use('/api', aiRoutes);
-  deferredApiRouter.use('/shapes', seoShapesRoutes);
-  deferredApiRouter.use('/glossary', seoGlossaryRoutes);
-  deferredApiRouter.use('/api/docs', seoApiDocsRoutes);
-
-  deferredApiRouter.get('/apis', (_req, res) => {
-    res.sendFile(resolveStaticHtml('developer.html'));
-  });
-
-  // ── GitHub OAuth ──────────────────────────────────────────────────────────
-  deferredApiRouter.get('/auth/github/login', passport.authenticate('github'));
-
-  deferredApiRouter.get('/auth/github/callback',
-    passport.authenticate('github', { failureRedirect: '/?auth=failed' }),
-    (req, res) => {
-      res.redirect('/dashboard');
-    }
-  );
-
-  deferredApiRouter.get('/auth/github/status', (req: any, res) => {
-    res.json({
-      authenticated: req.isAuthenticated ? req.isAuthenticated() : false,
-      user: req.user ? {
-        id: req.user.id,
-        username: req.user.username,
-        github_username: req.user.github_username,
-        role: req.user.role,
-      } : null,
-    });
-  });
-  // ──────────────────────────────────────────────────────────────────────────
-
-  deferredApiRouter.get('/rapidapi', (_req, res) => {
-    res.sendFile(resolveStaticHtml('rapidapi.html'));
-  });
-
-  deferredApiRouter.get('/science', (_req, res) => {
-    res.sendFile(resolveStaticHtml('science.html'));
-  });
-
-  deferredApiRouter.get('/ai', (_req, res) => {
-    res.sendFile(resolveStaticHtml('ai.html'));
-  });
-
-  deferredApiRouter.get('/token', (_req, res) => {
-    res.sendFile(resolveStaticHtml('token.html'));
-  });
-
-  deferredApiRouter.get('/dashboard', (_req, res) => {
-    res.sendFile(resolveStaticHtml('dashboard.html'));
-  });
-
-  deferredApiRouter.get('/developer', (_req, res) => {
-    res.redirect(301, '/apis');
-  });
-  registerChatRoutes(deferredApiRouter as any);
-
-
-  routesReady = true; // always set even on partial failure
-  console.log('✅ All API route modules loaded and registered.');
-  } catch(e) { console.error("❌ loadDeferredRoutes crashed:", e?.message || e); } finally { routesReady = true; }
 }
 
 export default app;
