@@ -34,6 +34,7 @@ export default defineConfig({
     cssCodeSplit: true,
     reportCompressedSize: false
   },
+  publicDir: path.resolve(__dirname, "client/public"),
   assetsInclude: ["**/*.gltf", "**/*.glb", "**/*.mp3", "**/*.ogg", "**/*.wav"],
   server: {
     host: '0.0.0.0',

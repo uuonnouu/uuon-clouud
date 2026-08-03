@@ -9,22 +9,25 @@
   * { margin:0; padding:0; box-sizing:border-box; }
   body { background:var(--black); color:var(--white); font-family:'Arial Narrow','Helvetica Neue',Arial,sans-serif; min-height:100vh; }
   a { color:inherit; text-decoration:none; }
-  a:focus-visible { outline:2px solid var(--white); outline-offset:3px; }
   header { padding:24px 36px; border-bottom:1px solid var(--line); display:flex; align-items:center; justify-content:space-between; }
-  .back { font-size:12px; letter-spacing:0.1em; text-transform:uppercase; color:var(--dim); font-weight:700; display:flex; align-items:center; gap:8px; }
+  .back { font-size:12px; letter-spacing:0.1em; text-transform:uppercase; color:var(--dim); font-weight:700; }
   .back:hover { color:var(--white); }
   .crumb { font-size:11px; letter-spacing:0.14em; text-transform:uppercase; color:var(--dim); font-weight:600; }
-  main { max-width:900px; margin:0 auto; padding:90px 32px; text-align:center; }
-  h1 { font-size:32px; font-weight:800; text-transform:uppercase; letter-spacing:0.03em; margin-bottom:18px; }
-  p.lead { color:var(--dim); font-size:14px; line-height:1.7; max-width:560px; margin:0 auto 56px; }
-  .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:1px; background:var(--line); border:1px solid var(--line); }
-  .card { background:#050505; padding:30px 24px; text-align:left; }
-  .card h2 { font-size:14px; font-weight:800; letter-spacing:0.04em; text-transform:uppercase; margin-bottom:10px; }
-  .card p { font-size:13px; color:var(--dim); line-height:1.6; }
-  a.card { transition: background 0.15s; }
-  a.card:hover { background: #0c0c0c; }
-  a.card:hover h2 { color: var(--white); }
-  .tag { display:inline-block; margin-top:14px; font-size:10px; letter-spacing:0.12em; text-transform:uppercase; color:var(--dim); border:1px solid var(--line); padding:4px 9px; }
+  main { max-width:1100px; margin:0 auto; padding:72px 32px 120px; }
+  .section-label { font-size:10px; letter-spacing:0.18em; text-transform:uppercase; color:var(--dim); font-weight:700; margin-bottom:24px; padding-bottom:12px; border-bottom:1px solid var(--line-soft); }
+  h1 { font-size:32px; font-weight:800; text-transform:uppercase; letter-spacing:0.03em; margin-bottom:12px; }
+  p.lead { color:var(--dim); font-size:14px; line-height:1.7; max-width:560px; margin:0 0 56px; }
+  .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:1px; background:var(--line); border:1px solid var(--line); margin-bottom:64px; }
+  .card { background:#050505; padding:28px 24px; text-align:left; display:flex; flex-direction:column; }
+  .card h2 { font-size:13px; font-weight:800; letter-spacing:0.06em; text-transform:uppercase; margin-bottom:8px; }
+  .card p { font-size:12.5px; color:var(--dim); line-height:1.65; flex:1; }
+  .card .meta { font-size:10px; letter-spacing:0.1em; text-transform:uppercase; color:var(--dim); margin-top:6px; }
+  a.card { transition:background 0.15s; cursor:pointer; }
+  a.card:hover { background:#0c0c0c; }
+  a.card:hover h2 { color:var(--white); }
+  .tag { display:inline-block; margin-top:16px; font-size:10px; letter-spacing:0.12em; text-transform:uppercase; color:var(--dim); border:1px solid var(--line); padding:4px 9px; }
+  .tag.live { border-color:var(--white); color:var(--white); }
+  .tag.soon { opacity:0.4; }
 </style>
 </head>
 <body>
@@ -34,11 +37,89 @@
 </header>
 <main>
   <h1>Apps</h1>
-  <p class="lead">User-facing applications built on the Δmension Mathematical Universe. Directory grows over time — this is the first of many.</p>
+  <p class="lead">Mathematical engines built on the UUON Foundation computational substrate. Each engine is a live, browser-native artifact — no install required.</p>
+
+  <div class="section-label">UUON Foundation Engines — Live</div>
   <div class="grid">
-    <a class="card" href="/apps/shape-explorer.html"><h2>Shape Explorer</h2><p>Interactive wireframe / point-cloud / shaded viewer — 12 parametric shapes, mouse orbit, scroll zoom, live parameter controls.</p><span class="tag" style="border-color:var(--white);color:var(--white)">Live — Open</span></a>
-    <div class="card"><h2>gPoW Console</h2><p>Submit and verify Geometric Proof of Work attempts.</p><span class="tag">Coming soon</span></div>
-    <div class="card"><h2>Token Wallet View</h2><p>Check UUON / PSENT / PIEZ balances and history.</p><span class="tag">Coming soon</span></div>
+    <a class="card" href="/apps/dmension-mathematical-universe">
+      <h2>Δmension Mathematical Universe</h2>
+      <p>Mathematical operating system. 2,856 parametric 3D shapes as cryptographic objects. Merkle-anchored equation DNA, real-time geometry computation, token-gated quantum engine.</p>
+      <div class="meta">TypeScript · Railway · Token-gated</div>
+      <span class="tag live">Live — Open</span>
+    </a>
+    <a class="card" href="/apps/recursive-fractal-engine">
+      <h2>Recursive Fractal Engine</h2>
+      <p>WebGL2 engine rendering 7,744 distinct dynamical systems from one compiled shader. Quantum generators produce probability density landscapes via Born rule iteration.</p>
+      <div class="meta">WebGL2 · GLSL · GitHub Pages</div>
+      <span class="tag live">Live — Open</span>
+    </a>
+    <a class="card" href="/apps/wave-field-3d-engine">
+      <h2>Wave Field 3D Engine</h2>
+      <p>24 physically-grounded wave algorithms applied to 3D geometry. Unified surface coordinate system. Animated GLB morph-target export. F=(P,E,M,R,C).</p>
+      <div class="meta">Three.js · GLB Export · GitHub Pages</div>
+      <span class="tag live">Live — Open</span>
+    </a>
+    <a class="card" href="/apps/pythagorean-graph-engine">
+      <h2>Pythagorean Graph Engine</h2>
+      <p>Recursive binary tree topology from Pythagorean triples. Five parameters reconstruct any branching topology deterministically. Full graph JSON export with provenance.</p>
+      <div class="meta">Three.js · Graph Export · GitHub Pages</div>
+      <span class="tag live">Live — Open</span>
+    </a>
+    <a class="card" href="/apps/compression-field-engine">
+      <h2>Compression Field Engine</h2>
+      <p>Geometric compression field engine. Four-zone infall model rendering information encoding as a live particle field.</p>
+      <div class="meta">WebGL · Canvas · GitHub Pages</div>
+      <span class="tag live">Live — Open</span>
+    </a>
+    <a class="card" href="/apps/mandelbox-amazing-family-engine">
+      <h2>Mandelbox Amazing Family Engine</h2>
+      <p>WebGL2 fractal engine rendering Mandelbox, Amazing Surf, Surf Mod1, and Box Julia attractors via GLSL 300es ray marching. Base Mainnet token-gated features.</p>
+      <div class="meta">WebGL2 · GLSL · Base Mainnet</div>
+      <span class="tag live">Live — Open</span>
+    </a>
+    <a class="card" href="/apps/pscience-perception-engine">
+      <h2>ψcience Perception Engine</h2>
+      <p>Holds competing interpretations as ψ(P) = Σᵢ αᵢ|hᵢ⟩ before collapsing to the most information-dense candidate. Moiré interference as live hypothesis field.</p>
+      <div class="meta">Canvas · Interference · GitHub Pages</div>
+      <span class="tag live">Live — Open</span>
+    </a>
+    <div class="card">
+      <h2>Boundary State Engine</h2>
+      <p>Binary boundary systems: 2ⁿ states, 0D–3D hypercube geometry. Shannon entropy, Boltzmann entropy, efficiency ratio.</p>
+      <div class="meta">Built — deployment pending</div>
+      <span class="tag soon">Coming Soon</span>
+    </div>
+    <div class="card">
+      <h2>Propagation Engine</h2>
+      <p>State change through connected graph networks. Neural, Stress, and Epidemic modes. Emergent reentrant excitation at stable ~62% network activation.</p>
+      <div class="meta">Built — deployment pending</div>
+      <span class="tag soon">Coming Soon</span>
+    </div>
+    <div class="card">
+      <h2>Kleinian-Hybrid IFS Engine</h2>
+      <p>462,026 vertices, 541,707 triangles, fractal dimension ≈2.20–2.25. Tetrahedral symmetry. 63 discrete curvature levels for live scalar mapping.</p>
+      <div class="meta">GLB · Three.js · In progress</div>
+      <span class="tag soon">Coming Soon</span>
+    </div>
+  </div>
+
+  <div class="section-label">User Applications</div>
+  <div class="grid">
+    <a class="card" href="/apps/shape-explorer.html">
+      <h2>Shape Explorer</h2>
+      <p>Interactive wireframe / point-cloud / shaded viewer — 12 parametric shapes, mouse orbit, scroll zoom, live parameter controls.</p>
+      <span class="tag live">Live — Open</span>
+    </a>
+    <div class="card">
+      <h2>gPoW Console</h2>
+      <p>Submit and verify Geometric Proof of Work attempts against the Dmension equation registry.</p>
+      <span class="tag soon">Coming Soon</span>
+    </div>
+    <div class="card">
+      <h2>Token Wallet View</h2>
+      <p>Check UUON / PSENT / PIEZ balances and transaction history on Base Mainnet.</p>
+      <span class="tag soon">Coming Soon</span>
+    </div>
   </div>
 </main>
 </body>

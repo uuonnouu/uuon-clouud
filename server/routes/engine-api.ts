@@ -380,7 +380,7 @@ router.post('/render/universal', async (req: Request, res: Response) => {
     if (!rows[0]?.equation_js) {
       return res.status(404).json({ error: `Shape '${shapeId}' not found in DB`, shapeId });
     }
-    const fn = eval(`(${rows[0].equation_js})`);
+    const fn = (0, eval)(`(${rows[0].equation_js})`);
     const vertices: number[] = [];
     const normals: number[] = [];
     const indices: number[] = [];

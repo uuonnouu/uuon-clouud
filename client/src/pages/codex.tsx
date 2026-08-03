@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { useLocation } from "wouter";
 import { motion, AnimatePresence } from "framer-motion";
 import { ArrowLeft, Search, Filter, CheckCircle2, Lock, Eye, Network, Bell, BellOff, Upload, Play, Loader2, Shield, Link2, ChevronDown, ChevronUp, X } from "lucide-react";
-import uuonLogo from "@assets/A7950814-2592-4E7D-858F-3AEB1D632F98_1772064571557.png";
 
 type Pattern = {
   id: number;
@@ -230,7 +229,7 @@ export default function CodexPage() {
               >
                 <ArrowLeft size={18} />
               </button>
-              <img src={uuonLogo} alt="" className="w-7 h-7 rounded-full opacity-80" />
+              <div className="w-7 h-7 rounded-full opacity-80 bg-white/20 flex items-center justify-center text-xs font-mono">U</div>
               <div>
                 <h1 className="text-lg font-semibold tracking-wide">
                   UUON Code<span className="text-[#00d4ff]">χ</span>

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, Suspense, lazy } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link } from 'wouter';
 import { ExternalLink, Play, BookOpen, Code, Microscope, X, ArrowLeft, Atom } from 'lucide-react';
 
 const MathVisualizer = lazy(() => import('../components/MathVisualizer'));
