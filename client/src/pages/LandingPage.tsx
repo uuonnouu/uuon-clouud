@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link } from 'wouter';
 import './LandingPage.css';
 
 const WP_TABS = ['tokenomics', 'architecture', 'roadmap', 'governance', 'waves'] as const;

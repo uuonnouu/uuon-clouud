@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useRef, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link } from 'wouter';
 import { Canvas, useLoader, useFrame } from '@react-three/fiber';
 import { OrbitControls, Environment, useGLTF, Html, Center } from '@react-three/drei';
 import * as THREE from 'three';
