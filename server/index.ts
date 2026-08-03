@@ -246,6 +246,38 @@ if (!isApiOnly) {
     res.sendFile(resolveStaticHtml('uuonworld.html'));
   });
 
+
+  // Engine redirects — /apps/[engine-slug]
+  const ENGINE_URLS: Record<string, string> = {
+    "dmension-mathematical-universe": "https://distinguished-rebirth-production.up.railway.app",
+    "recursive-fractal-engine": "https://uuon-foundation.github.io/recursive-fractal-engine/",
+    "wave-field-3d-engine": "https://uuon-foundation.github.io/wave-field-3d-engine/",
+    "pythagorean-graph-engine": "https://uuon-foundation.github.io/pythagorean-graph-engine/",
+    "compression-field-engine": "https://uuon-foundation.github.io/compression-field-engine/",
+    "mandelbox-amazing-family-engine": "https://uuon-foundation.github.io/mandelbox-amazing-family-engine/",
+    "pscience-perception-engine": "https://uuon-foundation.github.io/pscience-perception-engine/",
+  };
+  app.get("/apps/:slug", (req, res) => {
+    const src = ENGINE_URLS[req.params.slug];
+    if (!src) { res.status(404).send("App not found"); return; }
+    res.redirect(302, src);
+  });
+
+  // Engine redirects — /apps/[engine-slug]
+  const ENGINE_URLS: Record<string, string> = {
+    "dmension-mathematical-universe": "https://distinguished-rebirth-production.up.railway.app",
+    "recursive-fractal-engine": "https://uuon-foundation.github.io/recursive-fractal-engine/",
+    "wave-field-3d-engine": "https://uuon-foundation.github.io/wave-field-3d-engine/",
+    "pythagorean-graph-engine": "https://uuon-foundation.github.io/pythagorean-graph-engine/",
+    "compression-field-engine": "https://uuon-foundation.github.io/compression-field-engine/",
+    "mandelbox-amazing-family-engine": "https://uuon-foundation.github.io/mandelbox-amazing-family-engine/",
+    "pscience-perception-engine": "https://uuon-foundation.github.io/pscience-perception-engine/",
+  };
+  app.get("/apps/:slug", (req, res) => {
+    const src = ENGINE_URLS[req.params.slug];
+    if (!src) { res.status(404).send("App not found"); return; }
+    res.redirect(302, src);
+  });
   app.get('/apps', (_req, res) => {
     res.sendFile(resolveStaticHtml('apps.html'));
   });
