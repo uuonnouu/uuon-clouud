@@ -49,6 +49,8 @@ function resolveStaticHtml(filename: string): string {
 
 app.set('trust proxy', 1);
 
+app.use("/engine", express.static(path.join(process.cwd(), "engine"), { setHeaders: (res, filePath) => { res.setHeader("Access-Control-Allow-Origin", "*"); res.setHeader("Cross-Origin-Resource-Policy", "cross-origin"); res.setHeader("Cross-Origin-Embedder-Policy", "unsafe-none"); if (filePath.endsWith(".js")) { res.setHeader("Content-Type", "application/javascript; charset=utf-8"); res.removeHeader("X-Content-Type-Options"); } } }));
+
 app.use(helmet({
   contentSecurityPolicy: {
     directives: {
@@ -157,7 +159,7 @@ if (!isApiOnly) {
   app.use('/assets', express.static(publicPath));
   app.use('/exports', express.static(path.join(__dirname, '../exports')));
   app.use('/uploads', express.static('uploads'));
-  app.use("/engine", express.static(path.join(process.cwd(), "engine"), { setHeaders: (res, filePath) => { res.setHeader("Access-Control-Allow-Origin", "*"); res.setHeader("Cross-Origin-Resource-Policy", "cross-origin"); if (filePath.endsWith(".js")) { res.setHeader("Content-Type", "application/javascript; charset=utf-8"); } } }));
+
 }
 
 // ── HEALTH ENDPOINTS ────────────────────────────────────────────────────────
