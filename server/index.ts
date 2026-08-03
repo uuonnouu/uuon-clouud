@@ -246,6 +246,22 @@ if (!isApiOnly) {
     res.sendFile(resolveStaticHtml('uuonworld.html'));
   });
 
+
+  // Engine iframe shells — /apps/[engine-slug]
+  const ENGINE_URLS: Record<string, string> = {
+    "dmension-mathematical-universe": "https://distinguished-rebirth-production.up.railway.app",
+    "recursive-fractal-engine": "https://uuon-foundation.github.io/recursive-fractal-engine/",
+    "wave-field-3d-engine": "https://uuon-foundation.github.io/wave-field-3d-engine/",
+    "pythagorean-graph-engine": "https://uuon-foundation.github.io/pythagorean-graph-engine/",
+    "compression-field-engine": "https://uuon-foundation.github.io/compression-field-engine/",
+    "mandelbox-amazing-family-engine": "https://uuon-foundation.github.io/mandelbox-amazing-family-engine/",
+    "pscience-perception-engine": "https://uuon-foundation.github.io/pscience-perception-engine/",
+  };
+  app.get("/apps/:slug", (req, res) => {
+    const src = ENGINE_URLS[req.params.slug];
+    if (!src) { res.status(404).send("App not found"); return; }
+    res.send(`<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>UUON Apps</title><style>*{margin:0;padding:0;box-sizing:border-box}html,body{height:100%;background:#000}header{position:fixed;top:0;left:0;right:0;padding:10px 20px;background:rgba(0,0,0,0.85);backdrop-filter:blur(8px);border-bottom:1px solid rgba(255,255,255,0.1);display:flex;align-items:center;z-index:100;font-family:Arial Narrow,Arial,sans-serif}a{color:rgba(255,255,255,0.6);text-decoration:none;font-size:11px;letter-spacing:0.14em;text-transform:uppercase}a:hover{color:#fff}.wrap{padding-top:41px;height:100vh}iframe{width:100%;height:100%;border:none}</style></head><body><header><a href="/apps">&larr; Apps</a></header><div class="wrap"><iframe src="${src}" allowfullscreen></iframe></div></body></html>`);
+  });
   app.get('/apps', (_req, res) => {
     res.sendFile(resolveStaticHtml('apps.html'));
   });
