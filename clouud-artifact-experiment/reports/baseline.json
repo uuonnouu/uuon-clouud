@@ -1,0 +1,60 @@
+{
+  "experiment": "CLOUUD Artifact Baseline",
+  "version": "0.1.0",
+  "modes": {
+    "lossless": true,
+    "reduction": false
+  },
+  "results": [
+    {
+      "file": "algorithm_cache_1764581301849.json",
+      "type": ".json",
+      "original_bytes": 2096161,
+      "zip_bytes": 1504400,
+      "zip_reduction_percent": 28.231,
+      "original_sha256": "c665d4c20c1ac22c38e18c70f57723e70488be02595a7cd3692221654d7a5663",
+      "restored_sha256": "c665d4c20c1ac22c38e18c70f57723e70488be02595a7cd3692221654d7a5663",
+      "lossless_restore": true
+    },
+    {
+      "file": "fractal_analysis.html",
+      "type": ".html",
+      "original_bytes": 43235,
+      "zip_bytes": 12536,
+      "zip_reduction_percent": 71.005,
+      "original_sha256": "4ab0b1fcd4ef9518e8e0a16fcdce6efb447a666cc34cbae52429b7d855dafea2",
+      "restored_sha256": "4ab0b1fcd4ef9518e8e0a16fcdce6efb447a666cc34cbae52429b7d855dafea2",
+      "lossless_restore": true
+    },
+    {
+      "file": "fractalskin-mandelbrot.obj",
+      "type": ".obj",
+      "original_bytes": 19174601,
+      "zip_bytes": 4112188,
+      "zip_reduction_percent": 78.554,
+      "original_sha256": "a614fcf5bbe3b0fe46051d7fda6bd9d5537522e7432ef00f0e5f17de192c214b",
+      "restored_sha256": "a614fcf5bbe3b0fe46051d7fda6bd9d5537522e7432ef00f0e5f17de192c214b",
+      "lossless_restore": true
+    },
+    {
+      "file": "fractalskin-tanh-wave.glb",
+      "type": ".glb",
+      "original_bytes": 1377692,
+      "zip_bytes": 195278,
+      "zip_reduction_percent": 85.826,
+      "original_sha256": "7163b11afcf6d2c342393836decedfcbfa1ce186d360f0eed55fed943e04d758",
+      "restored_sha256": "7163b11afcf6d2c342393836decedfcbfa1ce186d360f0eed55fed943e04d758",
+      "lossless_restore": true
+    },
+    {
+      "file": "init.py",
+      "type": ".py",
+      "original_bytes": 55,
+      "zip_bytes": 164,
+      "zip_reduction_percent": -198.182,
+      "original_sha256": "c58161acb0dbb5807aa6821fc8c7bb78fb0f411d5e05462bea18a317d8ed5a4b",
+      "restored_sha256": "c58161acb0dbb5807aa6821fc8c7bb78fb0f411d5e05462bea18a317d8ed5a4b",
+      "lossless_restore": true
+    }
+  ]
+}
