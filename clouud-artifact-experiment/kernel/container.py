@@ -73,21 +73,7 @@ def deserialize_artifact(data: bytes) -> AdaptiveArtifact:
     )
 
 
-def pack_artifact(
-    filename: str,
-    original: bytes,
-    media_type: str = "application/octet-stream",
-) -> bytes:
-    """
-    Create an artifact and serialize it into a container.
-    """
-
-    artifact = create_artifact(
-        filename=filename,
-        original=original,
-        media_type=media_type,
-    )
-
+def pack_artifact(artifact: AdaptiveArtifact) -> bytes:
     return serialize_artifact(artifact)
 
 
@@ -99,7 +85,4 @@ def unpack_and_verify(data: bytes) -> dict[str, Any]:
     artifact = deserialize_artifact(data)
     result = verify_artifact(artifact)
 
-    return {
-        "artifact": artifact,
-        "verification": result,
-    }
+    return artifact, result

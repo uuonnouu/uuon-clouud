@@ -99,3 +99,5 @@ def provenance_status(
         "algorithm_node": ALGORITHM_NODES[algorithm],
         "execution_path": " -> ".join(path),
     }
+from .artifact import AdaptiveArtifact
+def validate_provenance(artifact: AdaptiveArtifact) -> dict[str, bool | str]: return {"valid": validate_execution_path(artifact.execution_path, artifact.algorithm), "algorithm": artifact.algorithm}
