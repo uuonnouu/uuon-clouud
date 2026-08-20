@@ -530,7 +530,15 @@ async function loadDeferredRoutes() {
     deferredApiRouter.use('/api', aiRoutes);
     deferredApiRouter.use('/shapes', seoShapesRoutes);
     deferredApiRouter.use('/glossary', seoGlossaryRoutes);
-    deferredApiRouter.use('/api/docs', seoApiDocsRoutes);
+    deferredApiRouter.use("/api/docs", seoApiDocsRoutes);
+
+    // ── WORLD CONTEXT — Ollama + WorldMonitor ────────────────────────────────
+    const { default: worldRoutes } = await import("../src/routes/worldmonitor");
+    deferredApiRouter.use("/api/world", worldRoutes);
+
+    // ── BIOLOGICAL ARCHITECTURE — F=(P,E,M,R,C) ─────────────────────────────
+    const { default: biologicalRoutes } = await import("../src/routes/biological-api");
+    deferredApiRouter.use("/api/biological", biologicalRoutes);
 
     deferredApiRouter.get('/apis', (_req, res) => {
       res.sendFile(resolveStaticHtml('developer.html'));

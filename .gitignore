@@ -54,3 +54,9 @@ bisect_progress.txt
 dist/
 dist/
 API-Gateway/
+
+# ── Proprietary engine cores ─────────────────────────────────────────────────
+engine/wave-field-3d/core.js
+engine/amazing-family/core.js
+engine/pscience/core.js
+engine/compression-field/core.js
