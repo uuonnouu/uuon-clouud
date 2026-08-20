@@ -15,8 +15,8 @@
  */
 
 import { Router, Request, Response } from 'express';
-import { WorldMonitorAdapter } from './worldmonitor-adapter';
-import { OllamaGateway } from './ollama-gateway';
+import { WorldMonitorAdapter } from '../adapters/worldmonitor-adapter';
+import { OllamaGateway } from '../adapters/ollama-gateway';
 
 const router = Router();
 
