@@ -53,6 +53,26 @@ export interface EngineRecord {
 
 export const BIOLOGICAL_REGISTRY: EngineRecord[] = [
 
+  // ── LAYER 00 — Pre-Biological / Input Codec ───────────────────────────────────
+  // Sits before the organism receives a signal. Encodes/decodes IFS attractors
+  // before they enter the parameter pipeline. Not a biological organ — a substrate.
+  {
+    engine_id:    'ifs-inverse-codec-engine',
+    name:         'IFS Inverse Codec Engine',
+    layer:        0,
+    bio_system:   'Pre-Biological',
+    bio_function: 'Compression and encoding of IFS attractors — encodes raw attractor geometry into parameter seeds, decodes parameter seeds back to attractor geometry. Input preprocessing before organism receives signal.',
+    signal_type:  'ROUTED',
+    serve_type:   ['PAGES'],
+    npm_package:  null,
+    upstream_url: 'https://github.com/UUON-Foundation/ifs-inverse-codec-engine',
+    gate_endpoint: null,
+    core_path:    null,
+    pages_url:    null,
+    status:       'BUILT',
+    p_vector:     null,
+  },
+
   // ── LAYER 01 — Spine / CNS ──────────────────────────────────────────────────
   {
     engine_id:    'uuon-clouud-routing',
@@ -106,22 +126,7 @@ export const BIOLOGICAL_REGISTRY: EngineRecord[] = [
     status:       'LIVE',
     p_vector:     { shape: 'sphere', algorithm: 'F1', amplitude: 0.3, frequency: 1.0, speed: 1.0, octaves: 1 },
   },
-  {
-    engine_id:    'menger-studio-engine',
-    name:         'Menger Studio Engine',
-    layer:        3,
-    bio_system:   'Skeletal (Secondary)',
-    bio_function: 'IFS geometry and trabecular bone structure. Iterated function system surfaces via marching cubes — secondary skeletal scaffold.',
-    signal_type:  'ROUTED',
-    serve_type:   ['PAGES'],
-    npm_package:  '@uuon-foundation/menger-studio-engine',
-    upstream_url: 'https://github.com/UUON-Foundation/menger-studio-engine',
-    gate_endpoint: null,
-    core_path:    null,
-    pages_url:    'https://uuon-foundation.github.io/menger-studio-engine/',
-    status:       'LIVE',
-    p_vector:     null,
-  },
+  // Menger Studio moved to Layer 08c — see Skeletal cluster below
 
   // ── LAYER 04 — Proprioception ────────────────────────────────────────────────
   {
@@ -207,6 +212,23 @@ export const BIOLOGICAL_REGISTRY: EngineRecord[] = [
     p_vector:     { steps: 128, fold: 2.24, slices: 24, hue: 6.24, spd: 0.20, tilt: -0.58, layers: 8, sep: 0.05, ao: 0.55, fog: 0.4 },
   },
 
+  {
+    engine_id:    'parametric-ifs-discovery-engine',
+    name:         'Parametric IFS Discovery Engine',
+    layer:        5,
+    bio_system:   'Visual Cortex Discovery',
+    bio_function: 'Parameter space exploration — maps unknown IFS attractors by traversing parameter space. The organism discovers new visual patterns it has never seen. Layer 05e: discovery arm of the visual cortex.',
+    signal_type:  'ROUTED',
+    serve_type:   ['PAGES'],
+    npm_package:  null,
+    upstream_url: 'https://github.com/UUON-Foundation/parametric-ifs-engine',
+    gate_endpoint: null,
+    core_path:    null,
+    pages_url:    null,
+    status:       'BUILT',
+    p_vector:     null,
+  },
+
   // ── LAYER 06 — Deep Visual / Attractor Field ─────────────────────────────────
   {
     engine_id:    'mandelbox-amazing-family-engine',
@@ -259,7 +281,57 @@ export const BIOLOGICAL_REGISTRY: EngineRecord[] = [
     p_vector:     null,
   },
 
-  // ── LAYER 08 — Endocrine / Vascular ──────────────────────────────────────────
+  // ── LAYER 08 — Skeletal / Endocrine ──────────────────────────────────────────
+  // 08a-08c: Bone scaffold cluster (volumetric, self-similar, load-distributing)
+  // 08 (base): Endocrine — orbital broadcast modulation
+  {
+    engine_id:    'queuepit-fractal-engine',
+    name:         'queuePIT — Menger-Kleinian IFS Engine',
+    layer:        8,
+    bio_system:   'Skeletal — Trabecular Bone',
+    bio_function: 'Self-similar volumetric scaffold — trabecular bone geometry via WebGL GLSL ray-marching distance estimator. Menger-Kleinian IFS. Internal load-distributing sponge structure. Layer 08a.',
+    signal_type:  'ROUTED',
+    serve_type:   ['PAGES'],
+    npm_package:  null,
+    upstream_url: 'https://github.com/UUON-Foundation/queuepit-fractal-engine',
+    gate_endpoint: null,
+    core_path:    null,
+    pages_url:    null,
+    status:       'BUILT',
+    p_vector:     null,
+  },
+  {
+    engine_id:    'platonic-ifs-engine',
+    name:         'Platonic IFS Engine',
+    layer:        8,
+    bio_system:   'Skeletal — Cortical Bone Shell',
+    bio_function: 'Rigid symmetry containers — Platonic solid geometry as cortical bone shell. Hard outer boundary of the skeletal system. Layer 08b.',
+    signal_type:  'ROUTED',
+    serve_type:   ['PAGES'],
+    npm_package:  null,
+    upstream_url: 'https://github.com/UUON-Foundation/platonic-ifs-engine',
+    gate_endpoint: null,
+    core_path:    null,
+    pages_url:    null,
+    status:       'BUILT',
+    p_vector:     null,
+  },
+  {
+    engine_id:    'menger-studio-engine',
+    name:         'Menger Studio Engine',
+    layer:        8,
+    bio_system:   'Skeletal — Volumetric Scaffold',
+    bio_function: 'Recursive cubic lattice via marching cubes — volumetric skeletal scaffold. IFS geometry as load-bearing internal structure. Layer 08c. (Previously misassigned to Layer 11 Skin — corrected: Menger geometry is volumetric, not a surface.)',
+    signal_type:  'ROUTED',
+    serve_type:   ['PAGES'],
+    npm_package:  '@uuon-foundation/menger-studio-engine',
+    upstream_url: 'https://github.com/UUON-Foundation/menger-studio-engine',
+    gate_endpoint: null,
+    core_path:    null,
+    pages_url:    'https://uuon-foundation.github.io/menger-studio-engine/',
+    status:       'LIVE',
+    p_vector:     null,
+  },
   {
     engine_id:    'hydrogenoid-atom-engine',
     name:         'Hydrogenoid Atom Engine',
@@ -376,6 +448,22 @@ export const BIOLOGICAL_REGISTRY: EngineRecord[] = [
     core_path:    null,
     pages_url:    null,
     status:       'LIVE',
+    p_vector:     null,
+  },
+  {
+    engine_id:    'fractal-weave-engine',
+    name:         'Fractal Weave Engine',
+    layer:        11,
+    bio_system:   'Connective Tissue',
+    bio_function: 'Fibrous binding between surfaces — fractal weave geometry as connective tissue between perimeter layers. Binds FSE, Fractal EM Skin, TME into a coherent boundary system. Layer 11d.',
+    signal_type:  'ROUTED',
+    serve_type:   ['PAGES'],
+    npm_package:  null,
+    upstream_url: 'https://github.com/UUON-Foundation/fractal-weave-engine',
+    gate_endpoint: null,
+    core_path:    null,
+    pages_url:    null,
+    status:       'BUILT',
     p_vector:     null,
   },
   {
