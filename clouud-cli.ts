@@ -109,7 +109,7 @@ function stripMarkdown(text: string): string {
 // ── Banner ────────────────────────────────────────────────────────────────────
 
 function banner(wmAvailable: boolean, models: string[]) {
-  const model   = process.env.OLLAMA_MODEL ?? 'gemma3';
+  const model   = process.env.OLLAMA_MODEL ?? 'clouud';
   const wmState = wmAvailable
     ? `${C.green}Live${C.reset}`
     : `${C.yellow}Offline${C.reset}`;
