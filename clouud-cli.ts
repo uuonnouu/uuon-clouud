@@ -159,7 +159,8 @@ function printResponseEnd() {
 
 async function ask(question: string): Promise<void> {
   printQuestion(question);
-  process.stdout.write(`${C.gray}  fetching context...${C.reset}\r`);
+  process.stdout.write(`${C.gray}  fetching context...${C.reset}\n`);
+`);
 
   printResponseStart();
 
