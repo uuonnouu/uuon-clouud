@@ -60,3 +60,6 @@ engine/wave-field-3d/core.js
 engine/amazing-family/core.js
 engine/pscience/core.js
 engine/compression-field/core.js
+lib/
+bin/
+files.zip
