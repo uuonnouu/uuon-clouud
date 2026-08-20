@@ -148,7 +148,7 @@ function printResponseStart() {
 }
 
 function printResponseChunk(chunk: string) {
-  process.stdout.write(`${C.white}${chunk}${C.reset}`);
+  process.stdout.write(chunk);
 }
 
 function printResponseEnd() {
