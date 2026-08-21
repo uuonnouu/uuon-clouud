@@ -1,0 +1,69 @@
+
+<!-- Mailchimp Newsletter Signup -->
+<div id="mc_embed_signup">
+  <form action="https://YOUR_DOMAIN.us1.list-manage.com/subscribe/post?u=YOUR_USER_ID&amp;id=YOUR_LIST_ID" 
+        method="post" 
+        id="mc-embedded-subscribe-form" 
+        name="mc-embedded-subscribe-form" 
+        class="validate" 
+        target="_blank" 
+        novalidate>
+    <div id="mc_embed_signup_scroll">
+      <h2>Subscribe to Mathematical Universe Updates</h2>
+      <div class="mc-field-group">
+        <label for="mce-EMAIL">Email Address</label>
+        <input type="email" value="" name="EMAIL" class="required email" id="mce-EMAIL">
+      </div>
+      <div id="mce-responses" class="clear">
+        <div class="response" id="mce-error-response" style="display:none"></div>
+        <div class="response" id="mce-success-response" style="display:none"></div>
+      </div>
+      <div style="position: absolute; left: -5000px;" aria-hidden="true">
+        <input type="text" name="b_YOUR_BOT_CHECK" tabindex="-1" value="">
+      </div>
+      <div class="clear">
+        <input type="submit" value="Subscribe" name="subscribe" id="mc-embedded-subscribe" class="button">
+      </div>
+    </div>
+  </form>
+</div>
+
+<!-- Exit Intent Popup -->
+<script>
+document.addEventListener('mouseleave', function(e) {
+  if (e.clientY <= 0) {
+    // Show exit intent popup
+    if (!localStorage.getItem('exitIntentShown')) {
+      showExitIntentModal();
+      localStorage.setItem('exitIntentShown', 'true');
+    }
+  }
+});
+
+function showExitIntentModal() {
+  const modal = document.createElement('div');
+  modal.innerHTML = `
+    <div style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+                background: rgba(0,0,0,0.8); z-index: 10000; display: flex; 
+                align-items: center; justify-content: center;">
+      <div style="background: white; padding: 2rem; border-radius: 8px; max-width: 500px;">
+        <h3>Don't Leave Yet! 🌌</h3>
+        <p>Discover the healing power of mathematical visualization. 
+           Sign up for exclusive updates and early access to new features.</p>
+        <button onclick="this.closest('div').remove()" 
+                style="background: #00ff88; color: black; padding: 10px 20px; 
+                       border: none; border-radius: 4px; cursor: pointer;">
+          Subscribe Now
+        </button>
+        <button onclick="this.closest('div').remove()" 
+                style="margin-left: 10px; background: transparent; 
+                       border: 1px solid #ccc; padding: 10px 20px; 
+                       border-radius: 4px; cursor: pointer;">
+          Close
+        </button>
+      </div>
+    </div>
+  `;
+  document.body.appendChild(modal);
+}
+</script>

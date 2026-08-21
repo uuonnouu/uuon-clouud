@@ -219,6 +219,11 @@ app.get(/^\/sitemap.*\.xml$/, (req, res) => {
 
 if (isProduction && !isApiOnly) {
   app.use(express.static(path.join(__dirname, 'public'), { index: false }));
+
+  // ── Δmension Mathematical Universe ──────────────────────────────────────────
+  app.use("/dmension", express.static(path.join(process.cwd(), "public/dmension")));
+  app.get("/dmension", (_req, res) => res.sendFile(path.join(process.cwd(), "public/dmension/index.html")));
+  app.get("/dmension/*", (_req, res) => res.sendFile(path.join(process.cwd(), "public/dmension/index.html")));
 }
 
 if (isApiOnly) {
