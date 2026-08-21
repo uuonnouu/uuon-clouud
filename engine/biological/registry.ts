@@ -523,7 +523,7 @@ export const BIOLOGICAL_REGISTRY: EngineRecord[] = [
   {
     engine_id:    'qubit-flow-field-engine',
     name:         'Qubit Flow Field Engine (QFE-001)',
-    layer:        null,
+    layer:        9,
     bio_system:   'UNASSIGNED',
     bio_function: 'Quantum field simulation. Biological layer pending mechanistic analog.',
     signal_type:  'ROUTED',
