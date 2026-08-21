@@ -505,7 +505,7 @@ export const BIOLOGICAL_REGISTRY: EngineRecord[] = [
   {
     engine_id:    'asciii-continuous-psystem',
     name:         'ASCIII Continuous Psystem',
-    layer:        null,
+    layer:        13,
     bio_system:   'Universal Display Layer',
     bio_function: 'Character-space field — renders any engine output as ASCIII spatial field. Receives: BSE entropy (→ temporal v4), pscience hypotheses (→ semantic v5), Phyllotaxis seeds (→ field positions). The organism\'s universal display codec.',
     signal_type:  'ROUTED',
@@ -539,7 +539,7 @@ export const BIOLOGICAL_REGISTRY: EngineRecord[] = [
   {
     engine_id:    'spatial-synthesis-engine',
     name:         'Spatial Synthesis Engine (SSE-001)',
-    layer:        null,
+    layer:        8,
     bio_system:   'UNASSIGNED',
     bio_function: 'Isopsephy/synth field. Biological layer pending mechanistic analog.',
     signal_type:  'ROUTED',
@@ -555,7 +555,7 @@ export const BIOLOGICAL_REGISTRY: EngineRecord[] = [
   {
     engine_id:    'graph-theory-engine',
     name:         'Graph Theory Engine (GTE-001)',
-    layer:        null,
+    layer:        5,
     bio_system:   'UNASSIGNED',
     bio_function: 'Graph property visualization. Biological layer pending mechanistic analog.',
     signal_type:  'ROUTED',
@@ -571,7 +571,7 @@ export const BIOLOGICAL_REGISTRY: EngineRecord[] = [
   {
     engine_id:    'grey-engine',
     name:         '/ɡreɪ/ Engine',
-    layer:        null,
+    layer:        0,
     bio_system:   'UNASSIGNED',
     bio_function: 'Δ=17 RGB coordinate system — repeating-digit hex (#111111–#FFFFFF) discrete color space. Hard-snap traversal only. Biological layer pending.',
     signal_type:  'ROUTED',
@@ -587,7 +587,7 @@ export const BIOLOGICAL_REGISTRY: EngineRecord[] = [
   {
     engine_id:    'quantum-entanglement-engine',
     name:         'Quantum Entanglement Engine (QEE)',
-    layer:        null,
+    layer:        10,
     bio_system:   'Reproductive / Gamete',
     bio_function: 'Correlated seed coupling — entangled P-vector pairs. Biological layer formally unassigned pending QEE/Layer 10 interaction review.',
     signal_type:  'PUBLISHED',
@@ -603,7 +603,7 @@ export const BIOLOGICAL_REGISTRY: EngineRecord[] = [
   {
     engine_id:    'nerf-pstudio',
     name:         'NeRF Pstudio',
-    layer:        null,
+    layer:        99,
     bio_system:   'UNASSIGNED',
     bio_function: 'Neural implicit shape viewer — WebGL wireframe, three render modes. Standalone HTML. Biological layer pending.',
     signal_type:  'ROUTED',
@@ -668,9 +668,9 @@ export const FRACTAL_ATTRACTOR_CONSTANTS = {
 // Format: { from, to, payload, status }
 
 export const CROSS_ENGINE_WIRES = [
-  { from: 'boundary-state-engine',   to: 'asciii-continuous-psystem', payload: 'entropy_score',        status: 'PENDING' },
-  { from: 'phyllotaxis-seed-engine', to: 'asciii-continuous-psystem', payload: 'seed_positions_array',  status: 'PENDING' },
-  { from: 'pscience-perception-engine', to: 'asciii-continuous-psystem', payload: 'hypotheses_word_attractors', status: 'PENDING' },
+  { from: 'boundary-state-engine',   to: 'asciii-continuous-psystem', payload: 'entropy_score',        status: 'LIVE' },
+  { from: 'phyllotaxis-seed-engine', to: 'asciii-continuous-psystem', payload: 'seed_positions_array',  status: 'LIVE' },
+  { from: 'pscience-perception-engine', to: 'asciii-continuous-psystem', payload: 'hypotheses_word_attractors', status: 'LIVE' },
   { from: 'boundary-state-engine',   to: 'field-surface-engine',      payload: 'entropy_morph_amplitude', status: 'PENDING' },
   { from: 'propagation-engine',      to: 'field-surface-engine',      payload: 'activation_wall_shift',  status: 'PENDING' },
   { from: 'phyllotaxis-seed-engine', to: 'field-surface-engine',      payload: 'seed_field_surface',     status: 'PENDING' },
