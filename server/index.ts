@@ -148,11 +148,6 @@ const indexPath = isProduction
   ? path.join(__dirname, 'public/index.html')
   : path.join(__dirname, '../dist/public/index.html');
 
-// Redirect /clouud to Clouud Railway service
-app.use("/clouud", (req, res) => {
-  const target = "https://uuon-clouud-production.up.railway.app";
-  res.redirect(302, target + req.originalUrl.replace('/clouud', ''));
-});
 if (!isApiOnly) {
   app.use('/assets', express.static(publicPath));
   app.use('/exports', express.static(path.join(__dirname, '../exports')));
@@ -162,7 +157,7 @@ if (!isApiOnly) {
 
 // ── HEALTH ENDPOINTS ────────────────────────────────────────────────────────
 app.get('/api/health', (_req, res) => {
-  res.json({ status: 'ok', service: process.env.SERVICE_IDENTITY || 'dmension-api', build: process.env.RAILWAY_GIT_COMMIT_SHA || 'unknown', timestamp: new Date().toISOString() });
+  res.json({ status: 'ok', service: process.env.SERVICE_IDENTITY || 'clouud', build: process.env.RAILWAY_GIT_COMMIT_SHA || 'unknown', timestamp: new Date().toISOString() });
 });
 
 app.get('/health', async (_req, res) => {
@@ -185,8 +180,6 @@ app.get('/health', async (_req, res) => {
     db: dbStatus,
     db_latency_ms: dbLatencyMs,
     uptime: Math.floor(process.uptime()),
-    genesis: 'cf114022b5e4e1d6fdeb36890f35f605857cf2de93b53ebcb9c8e5652413ca04',
-    merkle_root: '54fff9e19a729a3bfffbf9926d1e09d5134cb6e12a0723211ea04904d68530af',
     build_marker: process.env.RAILWAY_GIT_COMMIT_SHA || 'unknown',
     timestamp: new Date().toISOString()
   });
@@ -222,32 +215,21 @@ if (isProduction && !isApiOnly) {
 if (isApiOnly) {
   app.get('/', (_req, res) => {
     res.json({
-      name: 'Δmension Mathematical Universe API',
-      description: '2,856 parametric 3D shapes · Merkle-anchored equation DNA · Real-time geometry computation',
+      name: 'Clouud — UUON Foundation',
+      description: 'Biological computing OS. F=(P,E,M,R,C).',
       version: '1.0.0',
-      genesis: 'cf114022b5e4e1d6fdeb36890f35f605857cf2de93b53ebcb9c8e5652413ca04',
-      merkle_root: '54fff9e19a729a3bfffbf9926d1e09d5134cb6e12a0723211ea04904d68530af',
       endpoints: {
         health: '/health',
-        shapes: '/api/shapes/categories',
-        compute: 'POST /api/shapes/compute',
-        quantum: '/api/quantum/status',
-        engines: '/api/engines',
         status: '/api/status'
       }
     });
   });
 }
 
-// ── STATIC PORTAL LANDING PAGE (uuon.world root) ────────────────────────────
-
+// ── CLOUUD TERMINAL ROOT ─────────────────────────────────────────────────────
 if (!isApiOnly) {
   app.get('/', (_req, res) => {
-    res.sendFile(resolveStaticHtml('uuonworld.html'));
-  });
-
-  app.get('/apps', (_req, res) => {
-    res.sendFile(resolveStaticHtml('apps.html'));
+    res.sendFile(resolveStaticHtml('index.html'));
   });
 }
 // ────────────────────────────────────────────────────────────────────────────
@@ -295,11 +277,11 @@ app.use((err: any, req: express.Request, res: express.Response, next: express.Ne
 
 app.listen(PORT, '0.0.0.0', () => {
   console.log(`
-🚀 Δmension Mathematical Universe Server
+🚀 Clouud — UUON Foundation
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ✅ Server running on http://0.0.0.0:${PORT}
 🔧 Environment: ${process.env.NODE_ENV || 'development'}
-🌐 Public API Access: ENABLED
+🌐 F=(P,E,M,R,C)
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 `);
 
@@ -309,15 +291,6 @@ app.listen(PORT, '0.0.0.0', () => {
     });
   });
 });
-
-async function autoSeedDatabase() {
-  try {
-    const { seeder } = await import('./database-seeder');
-    await seeder.seedAll();
-  } catch (err) {
-    console.error('⚠️ Auto-seed failed (non-fatal):', err instanceof Error ? err.message : err);
-  }
-}
 
 async function loadDeferredRoutes() {
   try {
@@ -488,9 +461,8 @@ async function loadDeferredRoutes() {
 
     deferredApiRouter.get('/api', (_req, res) => {
       res.json({
-        name: 'Δmension Mathematical Universe API',
+        name: 'Clouud API — UUON Foundation',
         version: '1.0.0',
-        genesis: 'cf114022b5e4e1d6fdeb36890f35f605857cf2de93b53ebcb9c8e5652413ca04',
         docs: '/api/sdk-info'
       });
     });
@@ -514,17 +486,13 @@ async function loadDeferredRoutes() {
     deferredApiRouter.use('/glossary', seoGlossaryRoutes);
     deferredApiRouter.use('/api/docs', seoApiDocsRoutes);
 
-    deferredApiRouter.get('/apis', (_req, res) => {
-      res.sendFile(resolveStaticHtml('developer.html'));
-    });
-
     // ── GitHub OAuth ────────────────────────────────────────────────────────
     deferredApiRouter.get('/auth/github/login', passport.authenticate('github'));
 
     deferredApiRouter.get('/auth/github/callback',
       passport.authenticate('github', { failureRedirect: '/?auth=failed' }),
       (req, res) => {
-        res.redirect('/dashboard');
+        res.redirect('/');
       }
     );
 
@@ -540,30 +508,6 @@ async function loadDeferredRoutes() {
       });
     });
     // ────────────────────────────────────────────────────────────────────────
-
-    deferredApiRouter.get('/rapidapi', (_req, res) => {
-      res.sendFile(resolveStaticHtml('rapidapi.html'));
-    });
-
-    deferredApiRouter.get('/science', (_req, res) => {
-      res.sendFile(resolveStaticHtml('science.html'));
-    });
-
-    deferredApiRouter.get('/ai', (_req, res) => {
-      res.sendFile(resolveStaticHtml('ai.html'));
-    });
-
-    deferredApiRouter.get('/token', (_req, res) => {
-      res.sendFile(resolveStaticHtml('token.html'));
-    });
-
-    deferredApiRouter.get('/dashboard', (_req, res) => {
-      res.sendFile(resolveStaticHtml('dashboard.html'));
-    });
-
-    deferredApiRouter.get('/developer', (_req, res) => {
-      res.redirect(301, '/apis');
-    });
 
     registerChatRoutes(deferredApiRouter as any);
 
