@@ -12,3 +12,8 @@
 	path = repos/public-apis
 	url = https://github.com/public-apis/public-apis.git
 	branch = master
+
+[submodule "API-Gateway"]
+	path = API-Gateway
+	url = https://github.com/uuonnouu/API-Gateway.git
+	branch = main
