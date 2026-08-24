@@ -1,6 +1,10 @@
 FROM node:20-alpine
 
+RUN apk add --no-cache git
+
 WORKDIR /app
+
+RUN git config --global submodule.recurse false
 
 COPY package*.json ./
 RUN rm -f package-lock.json && npm install --legacy-peer-deps --include=dev
